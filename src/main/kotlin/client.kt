@@ -22,7 +22,13 @@ class Duration(
     val days get() = timeInMilliseconds / 86400000
 }
 
-val table get() = document.getElementById("table") as HTMLTableElement
+object Ids {
+    const val TABLE = "table"
+    const val START_TIME_INPUT = "start_time_input"
+    const val END_TIME_INPUT = "end_time_input"
+}
+
+val table get() = document.getElementById(Ids.TABLE) as HTMLTableElement
 
 var rowId = 0
 fun getIncrementedRowId() = rowId++.toString()
@@ -39,7 +45,7 @@ fun Node.sayHello() {
     append {
         div {
             table {
-                id = "table"
+                id = Ids.TABLE
                 tr {
                     id = getIncrementedRowId()
                     inputRow(id)
@@ -55,24 +61,12 @@ fun Node.sayHello() {
 
 fun TagConsumer<HTMLElement>.inputRow(rowId: String) {
     td { +"Start" }
-    td {
-        id = rowId + "start_date_input"
-        dateTimeLocalInput {  }
-    }
+    td { dateTimeLocalInput { id = Ids.START_TIME_INPUT } }
     td { +"End" }
+    td { dateTimeLocalInput { id = Ids.END_TIME_INPUT } }
     td {
-        id = rowId + "end_date_input"
-        dateTimeLocalInput {  }
-    }
-    td {
-        button {
-            +"Add"
-            onClickFunction = { addRow(rowId) }
-        }
-        button {
-            +"Remove"
-            onClickFunction = { removeRow() }
-        }
+        button { +"Add"; onClickFunction = { addRow(rowId) } }
+        button { +"Remove"; onClickFunction = { removeRow() } }
     }
 }
 
@@ -97,8 +91,8 @@ fun checkIfOnlyOneRow() {
 fun parseEntries() {
     try {
         val entries = table.rows.asList().map { row ->
-            val startTime = ((row.children[1] as HTMLTableCellElement).firstChild as HTMLInputElement).value
-            val endTime = ((row.children[3] as HTMLTableCellElement).firstChild as HTMLInputElement).value
+            val startTime = (row.querySelector('#' + Ids.START_TIME_INPUT) as HTMLInputElement).value
+            val endTime = (row.querySelector('#' + Ids.END_TIME_INPUT) as HTMLInputElement).value
             if (startTime.isEmpty() || endTime.isEmpty()) {
                 window.alert("Please enter all the dates")
                 throw NullPointerException()
