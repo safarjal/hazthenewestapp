@@ -6,6 +6,7 @@ import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import kotlin.js.Date
 
 class Entry(
@@ -57,16 +58,12 @@ fun Node.insert(index: Int, block: TagConsumer<HTMLElement>.() -> Unit): List<HT
         }.block()
     }
 
-var rowId = 0
-fun getIncrementedRowId() = rowId++.toString()
-fun getRowById(rowId: String) = document.getElementById(rowId) as HTMLTableRowElement
-
 fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 fun main() {
     window.onload = {
         document.body?.sayHello()
-        checkIfOnlyOneRow()
+        disableRemoveButtonForLastEntry()
     }
 }
 
@@ -87,38 +84,34 @@ fun Node.sayHello() {
 
 fun TagConsumer<HTMLElement>.inputRow() {
     tr {
-        val rowId = getIncrementedRowId()
-        id = rowId
         td { +"Start" }
         td { dateTimeLocalInput { id = Ids.Row.INPUT_START_TIME } }
         td { +"End" }
         td { dateTimeLocalInput { id = Ids.Row.INPUT_END_TIME } }
         td {
+            fun getRow(event: Event) = (event.target as Element).parentNode!!.parentNode as HTMLTableRowElement
+
             button {
                 +"Add"
                 id = Ids.Row.BUTTON_ADD
-                onClickFunction = { addRow(rowId) }
+                onClickFunction = { event ->
+                    table.insert(getRow(event).rowIndex + 1) { inputRow() }
+                    disableRemoveButtonForLastEntry()
+                }
             }
             button {
                 +"Remove"
                 id = Ids.Row.BUTTON_REMOVE
-                onClickFunction = { removeRow(rowId) }
+                onClickFunction = { event ->
+                    table.removeChild(getRow(event))
+                    disableRemoveButtonForLastEntry()
+                }
             }
         }
     }
 }
 
-fun addRow(rowId: String) {
-    table.insert(getRowById(rowId).rowIndex + 1) { inputRow() }
-    checkIfOnlyOneRow()
-}
-
-fun removeRow(rowId: String) {
-    table.removeChild(document.getElementById(rowId)!!)
-    checkIfOnlyOneRow()
-}
-
-fun checkIfOnlyOneRow() {
+fun disableRemoveButtonForLastEntry() {
     val rows = table.rows
     (rows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = rows.length == 1
 }
