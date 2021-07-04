@@ -132,7 +132,8 @@ fun parseEntries() {
         }
         handleEntries(entries)
     } catch (e: NullPointerException) {
-        println("catching null pointer")
+        // We abort the mapping with a NullPointerException after showing an alert when
+        // encountering an empty (unset) time input field. Nothing to do here.
     }
 }
 
@@ -142,6 +143,7 @@ fun handleEntries(entries: List<Entry>) {
         .map { it.getTime() }
     if (times != times.sorted()) {
         window.alert("Please enter the dates in order")
+        return
     }
     var isDam = true
     val durations = times.zipWithNext { firstTime, secondTime ->
