@@ -62,12 +62,12 @@ fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 fun main() {
     window.onload = {
-        document.body!!.sayHello()
+        document.body!!.addInputLayout()
         ensureRemoveButtonDisabledOnlyForLastEntry()
     }
 }
 
-fun Node.sayHello() {
+fun Node.addInputLayout() {
     append {
         div {
             table {
