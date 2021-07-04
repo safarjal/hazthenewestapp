@@ -62,8 +62,8 @@ fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 fun main() {
     window.onload = {
-        document.body?.sayHello()
-        disableRemoveButtonForLastEntry()
+        document.body!!.sayHello()
+        ensureRemoveButtonDisabledOnlyForLastEntry()
     }
 }
 
@@ -96,7 +96,7 @@ fun TagConsumer<HTMLElement>.inputRow() {
                 id = Ids.Row.BUTTON_ADD
                 onClickFunction = { event ->
                     table.insert(getRow(event).rowIndex + 1) { inputRow() }
-                    disableRemoveButtonForLastEntry()
+                    ensureRemoveButtonDisabledOnlyForLastEntry()
                 }
             }
             button {
@@ -104,14 +104,14 @@ fun TagConsumer<HTMLElement>.inputRow() {
                 id = Ids.Row.BUTTON_REMOVE
                 onClickFunction = { event ->
                     table.removeChild(getRow(event))
-                    disableRemoveButtonForLastEntry()
+                    ensureRemoveButtonDisabledOnlyForLastEntry()
                 }
             }
         }
     }
 }
 
-fun disableRemoveButtonForLastEntry() {
+fun ensureRemoveButtonDisabledOnlyForLastEntry() {
     val rows = table.rows
     (rows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = rows.length == 1
 }
