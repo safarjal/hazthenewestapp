@@ -118,16 +118,14 @@ fun handleEntries(entries: List<Entry>) {
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
         .map { it.getTime() }
-    val sortedTimes = times.sorted()
-    if (times != sortedTimes) {
+    if (times != times.sorted()) {
         window.alert("Please enter the dates in order")
     }
-    val durations = mutableListOf<Duration>()
     var isDam = true
-    for ((index, time) in times.dropLast(1).withIndex()) {
-        val nextTime = times[index + 1]
-        durations.add(Duration(if (isDam) DurationType.DAM else DurationType.TUHR,nextTime - time))
+    val durations = times.zipWithNext { firstTime, secondTime ->
+        val type = if (isDam) DurationType.DAM else DurationType.TUHR
         isDam = !isDam
+        Duration(type, timeInMilliseconds = secondTime - firstTime)
     }
     for (duration in durations) {
         println("duration type = ${duration.type}, duration days = ${duration.days}")
