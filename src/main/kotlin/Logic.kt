@@ -1,5 +1,3 @@
-import kotlinx.browser.window
-
 fun handleEntries(entries: List<Entry>) {
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
