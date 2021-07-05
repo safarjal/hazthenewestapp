@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="HazApp-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/build/libs</output-path>
-    <root id="archive" name="HazApp-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="HazApp.main" />
-    </root>
-  </artifact>
-</component>
