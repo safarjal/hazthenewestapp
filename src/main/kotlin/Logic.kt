@@ -4,10 +4,7 @@ fun handleEntries(entries: List<Entry>) {
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
         .map { it.getTime() }
-    if (times != times.sorted()) {
-        window.alert("Please enter the dates in order")
-        return
-    }
+    require(times == times.sorted())
     var isDam = true
     val durations = times.zipWithNext { firstTime, secondTime ->
         val type = if (isDam) DurationType.DAM else DurationType.TUHR
