@@ -1,8 +1,10 @@
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
+import kotlinx.html.form
+import kotlinx.html.js.*
+import kotlinx.html.tr
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import kotlin.js.Date
@@ -25,79 +27,109 @@ val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElem
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        ensureRemoveButtonDisabledOnlyForLastEntry()
+        updateRemoveButtonDisabledStateForFirstRow()
     }
 }
 
 fun Node.addInputLayout() {
     append {
-        div {
+        form(action = "javascript:void(0);") {
             table {
                 id = Ids.INPUT_TABLE
                 inputRow()
             }
-            button {
+            submitInput {
                 +"Calculate"
                 id = Ids.BUTTON_CALCULATE
-                onClickFunction = { parseEntries() }
             }
+            onSubmitFunction = { parseEntries() }
         }
     }
 }
 
 fun TagConsumer<HTMLElement>.inputRow() {
     tr {
-        td { +"Start" }
-        td { dateTimeLocalInput { id = Ids.Row.INPUT_START_TIME } }
-        td { +"End" }
-        td { dateTimeLocalInput { id = Ids.Row.INPUT_END_TIME } }
-
         fun getRow(event: Event) = (event.currentTarget as Element).parentNode!!.parentNode as HTMLTableRowElement
 
         td {
-            button {
+            label {
+                +"Start"
+                htmlFor = Ids.Row.INPUT_START_TIME
+            }
+            dateTimeLocalInput {
+                id = Ids.Row.INPUT_START_TIME
+                required = true
+                onClickFunction = { event -> setMinMaxForTimeInput(getRow(event).rowIndex * 2) }
+            }
+        }
+        td {
+            label {
+                +"End"
+                htmlFor = Ids.Row.INPUT_END_TIME
+            }
+            dateTimeLocalInput {
+                id = Ids.Row.INPUT_END_TIME
+                required = true
+                onClickFunction = { event -> setMinMaxForTimeInput((getRow(event).rowIndex * 2) + 1) }
+            }
+        }
+
+        td {
+            button(type = ButtonType.button) {
                 +"Add"
                 id = Ids.Row.BUTTON_ADD
                 onClickFunction = { event ->
                     inputTable.insert(getRow(event).rowIndex + 1) { inputRow() }
-                    ensureRemoveButtonDisabledOnlyForLastEntry()
+                    updateRemoveButtonDisabledStateForFirstRow()
                 }
             }
-        }
-        td {
-            button {
+            button(type = ButtonType.button) {
                 +"Remove"
                 id = Ids.Row.BUTTON_REMOVE
                 onClickFunction = { event ->
                     inputTable.removeChild(getRow(event))
-                    ensureRemoveButtonDisabledOnlyForLastEntry()
+                    updateRemoveButtonDisabledStateForFirstRow()
                 }
             }
         }
     }
 }
 
-private fun ensureRemoveButtonDisabledOnlyForLastEntry() {
+private fun updateRemoveButtonDisabledStateForFirstRow() {
     val inputRows = inputTable.rows
     (inputRows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = inputRows.length == 1
 }
 
+private fun setMinMaxForTimeInput(index: Int) {
+    val timeInputs: List<HTMLInputElement> = inputTable.rows.asList().flatMap { row ->
+        listOf(
+            row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement,
+            row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
+        )
+    }
+    val timeInput = timeInputs[index]
+    val timeEntries = timeInputs.map(HTMLInputElement::value)
+    timeInput.min = timeEntries
+        .dropLast(timeInputs.size - index)
+        .findLast(String::isNotEmpty)
+        .orEmpty()
+    timeInput.max = timeEntries
+        .drop(index + 1)
+        .find(String::isNotEmpty)
+        ?: currentTimeString()
+}
+
 private fun parseEntries() {
-    val entries = try {
-        inputTable.rows.asList().map { row ->
-            val startTime = (row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).value
-            val endTime = (row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value
+    val entries = inputTable.rows.asList().map { row ->
+        val startTime = (row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).value
+        val endTime = (row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value
 
-            require(startTime.isNotEmpty() && endTime.isNotEmpty())
+        require(startTime.isNotEmpty() && endTime.isNotEmpty())
 
-            Entry(
-                startTime = Date(startTime),
-                endTime = Date(endTime)
-            )
-        }
-    } catch (e: IllegalArgumentException) {
-        window.alert("Please enter all the dates")
-        return
+        Entry(
+            startTime = Date(startTime),
+            endTime = Date(endTime)
+        )
     }
     try {
         handleEntries(entries)
