@@ -12,10 +12,8 @@ enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
 }
 
-class Duration(
+data class Duration(
     var type: DurationType,
-    var indices: MutableList<Int> = mutableListOf(),
-    timeInMilliseconds: Double
-) {
-    var days: Double = (timeInMilliseconds / 86400000).toDouble()
-}
+    var days: Double,
+    var indices: MutableList<Int> = mutableListOf()
+)

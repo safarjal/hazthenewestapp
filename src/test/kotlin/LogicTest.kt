@@ -28,7 +28,7 @@ class LogicTest {
         assertEquals(32.0,durations[0].days)
         val expectedDuration = Duration(
             DurationType.TUHREFAASID,
-            timeInMilliseconds = (86400000L*32).toDouble()
+            32.0
         )
         assertEquals(expectedDuration, durations[0])
 

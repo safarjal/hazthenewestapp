@@ -15,12 +15,12 @@ fun handleEntries(entries: List<Entry>) {
     val durations = times.zipWithNext { firstTime, secondTime ->
         val type = if (isDam) DurationType.DAM else DurationType.TUHR
         isDam = !isDam
-        Duration(type, timeInMilliseconds = secondTime - firstTime, indices = mutableListOf<Int>())
+        Duration(type, (secondTime - firstTime) / 86400000, mutableListOf<Int>())
     }
     for (duration in durations) {
         println("duration type = ${duration.type}, duration days = ${duration.days}")
     }
-    val fixedDurations = durations.toMutableList()
+    val fixedDurations = durations.map { it.copy() }.toMutableList()
     outputStr=""
     addIndicesToFixedDurations(fixedDurations)
     removeTuhrLessThan15(fixedDurations)
@@ -110,7 +110,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<Duration>, durations: Li
         }
         //if there is an added istihaza after, get that
         if(istihazaAfter!=0.0){
-            outputStr+="${fixedDurations[i].days} days tuhr + ${istihazaAfter} days istihaza = ${istihazaAfter+fixedDurations[i].days} days tuhr-e-faasid\n"
+            outputStr+="${fixedDurations[i].days-istihazaAfter} days tuhr + ${istihazaAfter} days istihaza = ${fixedDurations[i].days} days tuhr-e-faasid\n"
             istihazaAfter=0.0
         }
 
