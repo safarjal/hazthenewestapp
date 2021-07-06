@@ -1,5 +1,6 @@
 plugins {
     kotlin("js") version "1.5.10"
+//    id("kotlin2js") version "1.5.20"
 }
 
 group = "me.safar"
@@ -13,6 +14,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.2")
+    implementation(kotlin("stdlib-js"))
 }
 
 kotlin {

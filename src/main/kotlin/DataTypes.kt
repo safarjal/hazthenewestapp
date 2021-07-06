@@ -6,12 +6,16 @@ data class Entry(
 )
 
 enum class DurationType {
-    DAM, TUHR
+    DAM, TUHR, TUHREFAASID
+}
+enum class Soortain {
+    A_1, A_2, A_3, B_2, B_3
 }
 
-data class Duration(
-    val type: DurationType,
-    val timeInMilliseconds: Double
+class Duration(
+    var type: DurationType,
+    var indices: MutableList<Int> = mutableListOf(),
+    timeInMilliseconds: Double
 ) {
-    val days get() = timeInMilliseconds / 86400000
+    var days: Double = (timeInMilliseconds / 86400000).toDouble()
 }
