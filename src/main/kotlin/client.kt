@@ -121,14 +121,9 @@ private fun setMinMaxForTimeInput(index: Int) {
 
 private fun parseEntries() {
     val entries = inputTable.rows.asList().map { row ->
-        val startTime = (row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).value
-        val endTime = (row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value
-
-        require(startTime.isNotEmpty() && endTime.isNotEmpty())
-
         Entry(
-            startTime = Date(startTime),
-            endTime = Date(endTime)
+            startTime = Date((row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).value),
+            endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value)
         )
     }
     try {
