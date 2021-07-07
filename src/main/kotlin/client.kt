@@ -110,7 +110,7 @@ private fun setMinMaxForTimeInput(index: Int) {
     val timeInput = timeInputs[index]
     val timeEntries = timeInputs.map(HTMLInputElement::value)
     timeInput.min = timeEntries
-        .dropLast(timeInputs.size - index)
+        .take(index)
         .findLast(String::isNotEmpty)
         .orEmpty()
     timeInput.max = timeEntries
