@@ -44,3 +44,11 @@ fun currentTimeString() = Date()
                 currentDate.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
     }
     .toISOString().substring(0 until 16)
+
+val MILLISECONDS_IN_A_DAY = 86400000.0
+val TAB = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+
+fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
+    return Date(date.getTime() + timeInMilliseconds)
+}
+

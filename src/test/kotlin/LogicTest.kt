@@ -16,14 +16,14 @@ class LogicTest {
 
     @Test
     fun testRemoveDamLessThan3(){
-        val durations = mutableListOf<Duration>(
-            Duration(DurationType.TUHR, 15.0),
-            Duration(DurationType.DAM, 2.0),
-            Duration(DurationType.TUHR, 15.0)
+        val durations = mutableListOf(
+            FixedDuration(DurationType.TUHR, timeInMilliseconds=(86400000*15).toLong()),
+            FixedDuration(DurationType.DAM, timeInMilliseconds=(86400000*2).toLong()),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds=(86400000*15).toLong())
         )
         removeDamLessThan3(durations)
-        assertEquals(1, durations.size)
-        assertEquals(DurationType.TUHREFAASID, durations[0].type)
+        assertEquals(1,durations.size)
+        assertEquals(DurationType.TUHREFAASID,durations[0].type)
         assertEquals(32.0, durations[0].days)
     }
 }

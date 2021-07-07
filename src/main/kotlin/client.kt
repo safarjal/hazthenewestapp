@@ -20,6 +20,8 @@ object Ids {
     }
 
     const val BUTTON_CALCULATE = "button_calculate"
+
+    const val CONTENT = "content"
 }
 
 val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
@@ -44,6 +46,7 @@ fun Node.addInputLayout() {
             }
             onSubmitFunction = { parseEntries() }
         }
+        p { id = Ids.CONTENT }
     }
 }
 
@@ -126,10 +129,12 @@ private fun parseEntries() {
             endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value)
         )
     }
-    try {
+    val output = try {
         handleEntries(entries)
     } catch (e: IllegalArgumentException) {
         window.alert("Please enter the dates in order")
         return
     }
+
+    document.getElementById(Ids.CONTENT)!!.innerHTML = output.replace("\n", "<br>").replace("\t","${TAB}")
 }

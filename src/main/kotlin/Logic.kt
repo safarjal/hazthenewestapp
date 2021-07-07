@@ -1,34 +1,51 @@
 import kotlinx.browser.window
 import kotlin.js.Date
 
-var outputStr = ""
+//output line 1 is indices of all the things durations that make up the sum of this thingy.
+// we should only write it, if there is more than one index
+//output line 2 is printing if an istihaza after was added too. it contains amount of istihazaAfter
+//output line 3 is mp,gp, dm, hz, soorat, as well as istihazaBefore, Haiz, IstihazaAfter, and AadatHaiz/AaadatTuhr
+// at the end of it.
+//output line 3, can be used to generate the daur lines.
+//After this should come output in dates:
+//if we passed dateTime at the start of this thingy, we could use
+// istihazaBefore, Haiz, and IstihazaAfter to generate them
+// and generate daur too
+
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>) {
+fun handleEntries(entries: List<Entry>): String {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
-        .map { it.getTime() }
+        .map { it.getTime().toLong() }
     require(times == times.sorted())
     //step 1 - create an array of dam and tuhur durations in days
     var isDam = true
     val durations = times.zipWithNext { firstTime, secondTime ->
         val type = if (isDam) DurationType.DAM else DurationType.TUHR
         isDam = !isDam
-        Duration(type, (secondTime - firstTime) / 86400000, mutableListOf<Int>())
+        Duration(type, secondTime - firstTime)
     }
-    for (duration in durations) {
-        println("duration type = ${duration.type}, duration days = ${duration.days}")
-    }
-    val fixedDurations = durations.map { it.copy() }.toMutableList()
-    outputStr=""
+    val fixedDurations = durations
+        .map { duration ->
+            FixedDuration(duration.type, duration.timeInMilliseconds)
+        }
+        .toMutableList()
     addIndicesToFixedDurations(fixedDurations)
     removeTuhrLessThan15(fixedDurations)
     removeDamLessThan3(fixedDurations)
-    dealWithBiggerThan10Dam(fixedDurations, durations)
-    println(outputStr)
+    addStartDateToFixedDurations(fixedDurations)
+    return dealWithBiggerThan10Dam(fixedDurations, durations)
 }
-fun addIndicesToFixedDurations(fixedDurations: MutableList<Duration>){
+fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
+    var date:Date = firstStartTime
+    for (fixedDuration in fixedDurations){
+        fixedDuration.startDate = date
+        date = addTimeToDate(date,fixedDuration.timeInMilliseconds)
+    }
+}
+fun addIndicesToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     //this is so we can know the indics comparison between duration and fixed duration
     var i =0
     while(i<fixedDurations.size){
@@ -43,13 +60,13 @@ fun addIndicesToFixedDurations(fixedDurations: MutableList<Duration>){
 //          by dam. add all 3 duration values together, delete the originals, and set type as dam.
 //          We want to keep the original list. Perumably the unflattened one will remain.
 
-fun removeTuhrLessThan15 (fixedDurations: MutableList<Duration>){
+fun removeTuhrLessThan15 (fixedDurations: MutableList<FixedDuration>){
     var i=0
     while(i < fixedDurations.size){//iterate through durations
         //if there is a tuhr less than 15
         if(fixedDurations[i].days<15 && fixedDurations[i].type== DurationType.TUHR){
             //it must be surrounded by dams on either side. increase size of damBefore. delete tuhr and dam after
-            fixedDurations[i-1].days += fixedDurations[i].days + fixedDurations[i+1].days
+            fixedDurations[i-1].timeInMilliseconds += fixedDurations[i].timeInMilliseconds + fixedDurations[i+1].timeInMilliseconds
             fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
             fixedDurations.removeAt(i)
             fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
@@ -64,13 +81,13 @@ fun removeTuhrLessThan15 (fixedDurations: MutableList<Duration>){
 //          iterate through array. when we find a dam less than 3, check if
 //          there is a tuhur behind it. and in front of it. if there is then add all the 3 durations
 //          together. set type as a new type tuhr-e-faasid. delete the originals.
-fun removeDamLessThan3 (fixedDurations: MutableList<Duration>){
+fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
     var i=0
     while (i<fixedDurations.size-1){
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<3){
             if(i>0){//there is tuhur behind this and in front of it
                 fixedDurations[i-1].type = DurationType.TUHREFAASID
-                fixedDurations[i-1].days += fixedDurations[i].days + fixedDurations[i+1].days
+                fixedDurations[i-1].timeInMilliseconds += fixedDurations[i].timeInMilliseconds + fixedDurations[i+1].timeInMilliseconds
                 fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
                 fixedDurations.removeAt(i)
                 fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
@@ -86,33 +103,21 @@ fun removeDamLessThan3 (fixedDurations: MutableList<Duration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<Duration>, durations: List<Duration>){
-    var istihazaAfter:Double = 0.0
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>): String {
+    var outputStr = ""
     var aadatHaz:Double = -1.0
     var aadatTuhr:Double = -1.0
-    var i=0
-    while (i<fixedDurations.size){
+    for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
         //also, start writing output
             // line 1
-        outputStr += "${fixedDurations[i].days} days ${fixedDurations[i].type}\n"
+        outputStr += outputStringHeaderLine(fixedDurations, i)
         //line 2 get the sum of everything that made this up
-        if(fixedDurations[i].indices.size>1){
-            var sum:Double = 0.0
-            var str = ""
-            for (index in fixedDurations[i].indices){
-                sum+=durations[index].days
-                str += " + ${durations[index].days}"
-            }
-            str=str.removePrefix(" + ")
-            outputStr += "${str} = ${sum}\n"
-        }
+        outputStr+= outputStringSumOfIndicesLine(fixedDurations,durations,i)
+
         //if there is an added istihaza after, get that
-        if(istihazaAfter!=0.0){
-            outputStr+="${fixedDurations[i].days-istihazaAfter} days tuhr + ${istihazaAfter} days istihaza = ${fixedDurations[i].days} days tuhr-e-faasid\n"
-            istihazaAfter=0.0
-        }
+        outputStr+=outputStringIstihazaAfterLine(fixedDurations, i)
 
 
         //get aadat
@@ -125,7 +130,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<Duration>, durations: Li
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==-1.0 ||aadatTuhr==-1.0){
                 //give error message
-                window.alert("We need both aadaat to be able to solve this")//???
+                window.alert("We need both aadaat to be able to solve this")
                 break
             }else{
                 val mp = fixedDurations[i-1].days
@@ -140,64 +145,47 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<Duration>, durations: Li
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
                 }
-
-                //output hukm:
-                outputStr += "Rough work \n"
-                outputStr += "MP\tGP\tDm\tHz\tQism\n"
-                outputStr += "${mp}\t${gp}\t${dm}\t${hz}\t${output.soorat}\n"
-                outputStr += "Out of ${dm} days, the first ${output.istihazaBefore} days are istihaza, "
-                outputStr += "then the next ${output.haiz} days are haiz, "
+                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
+                fixedDurations[i].biggerThanTen=hall
+                outputStr+=outputStringBiggerThan10Hall(fixedDurations,i)
 
                 //if istihazaAfter is bigger than addatTuhr +3, run daur
                 if (output.istihazaAfter>=aadatTuhr+3){
                     //find quotient and remainder
                     val remainder = output.istihazaAfter%(aadatHaz+aadatTuhr)
-                    val quotient = ((output.istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
+//                    val quotient = ((output.istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
 
-                    for (j in 1 .. quotient){
-                        outputStr+="then the next ${aadatTuhr} days are istihaza, " +
-                                "then the next ${aadatHaz} days are haiz, "
-                    }
                     if (remainder<aadatTuhr + 3){//it ended in tuhr
-                        outputStr+="then the last ${remainder} days are istihaza.\n"
                         //add istihazaAfter to next Tuhur mark it as fasid
                         //if it exists
                         if(i<fixedDurations.size-1){//there is a tuhur after this
                             fixedDurations[i+1].type=DurationType.TUHREFAASID
-                            fixedDurations[i+1].days+=remainder
-                            fixedDurations[i].days-=remainder
-                            istihazaAfter = remainder
+                            fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
+                            fixedDurations[i].timeInMilliseconds-=(remainder*MILLISECONDS_IN_A_DAY).toLong()
+                            fixedDurations[i+i].istihazaAfter=remainder
                         }
 
                     }else{//it ended in haiz
-                        outputStr+="then the next ${aadatTuhr} days are tuhr, then the last ${remainder-aadatTuhr} days are haiz\n"
                         //change aadatHaiz
                         aadatHaz = remainder-aadatTuhr
 
                     }
 
                 }else{
-                    outputStr += "and the last ${output.istihazaAfter} days are istihaza.\n"
                     //else add istihazaAfter to next Tuhr, mark it as fasid
                         //if it exists
                     if(i<fixedDurations.size-1){
                         fixedDurations[i+1].type=DurationType.TUHREFAASID
-                        fixedDurations[i+1].days+=output.istihazaAfter
-                        fixedDurations[i].days-=output.istihazaAfter
-                        istihazaAfter = output.istihazaAfter
+                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
+                        fixedDurations[i].timeInMilliseconds-=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
+                        fixedDurations[i+1].istihazaAfter = output.istihazaAfter
                     }
 
                 }
-                //add aadat line
-                outputStr+="Aadat: ${aadatHaz}/${aadatTuhr}\n"
-                //output hukm in dates
-
-
             }
-
         }
-        i++
     }
+    return outputStr
 }
 
 class FiveSoortainOutput (
@@ -206,8 +194,8 @@ class FiveSoortainOutput (
     val haiz:Double,
     val istihazaAfter: Double,
     val aadatTuhrChanges:Boolean
+)
 
-        )
 fun fiveSoortain(mp: Double, gp: Double, dm: Double, hz:Double):FiveSoortainOutput{
     //This function will return an array called answer
     //answer[0] will be istihaza before, if any, answer[1] will be haiz, answer [2] will be istihaza after, if any. answer [3] can be soorat.
