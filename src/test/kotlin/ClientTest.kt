@@ -3,7 +3,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.get
 import kotlin.test.*
 
-class TestClient {
+class ClientTest {
     @Test
     fun testAddInputLayout_laysOutAllElements() {
         val container = document.createElement("div")
