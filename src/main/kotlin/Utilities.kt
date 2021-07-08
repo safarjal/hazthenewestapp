@@ -3,6 +3,7 @@ import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
 import org.w3c.dom.*
 import kotlin.js.Date
+import kotlin.math.round
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -51,4 +52,28 @@ val TAB = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
 }
+
+fun daysHoursMinutesDigital(numberOfDays:Double):String{
+    var totalMinutes = numberOfDays*24*60
+
+    var minutes=totalMinutes%60;
+    var remainingHours = (totalMinutes - minutes)/60
+    var hours = remainingHours % 24;
+    var days = (remainingHours - hours)/24;
+    minutes=round(minutes);
+    hours=round(hours)
+    days=round(days)
+    var strHours = hours.toString()
+    var strMinutes = minutes.toString()
+    var strDays = days.toString()
+    if(hours<10){
+        strHours = "0${hours}";
+    }
+    if(minutes<10){
+        strMinutes = "0${minutes}";
+    }
+    var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m";
+    return(returnStatement);
+}
+
 

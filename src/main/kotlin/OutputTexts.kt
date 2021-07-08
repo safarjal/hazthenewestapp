@@ -1,7 +1,7 @@
 import kotlin.js.Date
 
 fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index:Int):String{
-    return "<b>${fixedDurations[index].days} days ${fixedDurations[index].type}</b>\n"
+    return "<b>${daysHoursMinutesDigital(fixedDurations[index].days)} ${fixedDurations[index].type}</b>\n"
 }
 
 fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, durations:List<Duration>, index:Int):String{
@@ -10,10 +10,10 @@ fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, dur
         var str = ""
         for (index in fixedDurations[index].indices){
             sum+=durations[index].days
-            str += " + ${durations[index].days}"
+            str += " + ${daysHoursMinutesDigital(durations[index].days)}"
         }
         str=str.removePrefix(" + ")
-        return "\t${str} = ${sum}\n"
+        return "\t${str} = ${daysHoursMinutesDigital(sum)}\n"
     }else{
         return ""
     }
@@ -23,7 +23,9 @@ fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,ind
     val istihazaAfter = fixedDurations[index].istihazaAfter
     var str = ""
     if(istihazaAfter!=0.0){
-        str +="\t${fixedDurations[index].days-istihazaAfter} days tuhr + ${istihazaAfter} days istihaza = ${fixedDurations[index].days} days tuhr-e-faasid\n"
+        str +="\t${daysHoursMinutesDigital(fixedDurations[index].days-istihazaAfter)} " +
+                "tuhr + ${daysHoursMinutesDigital(istihazaAfter)} istihaza " +
+                "= ${daysHoursMinutesDigital(fixedDurations[index].days)} tuhr-e-faasid\n"
     }
 
     return str
@@ -46,10 +48,13 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
     var str =""
 //    var str = "Rough work \n"
 //    str += "MP\tGP\tDm\tHz\tQism\n"
-    str += "\t${mp}\t${gp}\t${dm}\t${hz}\t${qism}\n"
-    str+="\tAadat: ${aadatHaz}/${aadatTuhr}\n"
-    str += "\tOut of ${dm} days, the first ${istihazaBefore} days are istihaza, "
-    str += "then the next ${haiz} days are haiz, "
+    str += "\t${daysHoursMinutesDigital(mp)}\t${daysHoursMinutesDigital(gp)}\t${daysHoursMinutesDigital(dm)}\t${daysHoursMinutesDigital(hz)}\t${qism}\n"
+    str +="\tAadat: ${aadatHaz}/${aadatTuhr}\n"
+    str += "\tOut of ${daysHoursMinutesDigital(dm)}, the first "
+    if (istihazaBefore>0){
+        str += "${daysHoursMinutesDigital(istihazaBefore)} are istihaza, then the next "
+    }
+    str += "${daysHoursMinutesDigital(haiz)} are haiz, "
 
     //if istihazaAfter is bigger than addatTuhr +3, run daur
     if (istihazaAfter>=aadatTuhr+3){
@@ -59,31 +64,31 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
 
         if(remainder == 0.0){
             for (j in 1 until quotient){
-                str+="then the next ${aadatTuhr} days are istihaza, " +
-                        "then the next ${aadatHaz} days are haiz, "
+                str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
+                        "then the next ${daysHoursMinutesDigital(aadatHaz)} are haiz, "
             }
-            str+="then the next ${aadatTuhr} days are istihaza, " +
-                    "then the last ${aadatHaz} days are haiz. "
+            str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
+                    "then the last ${daysHoursMinutesDigital(aadatHaz)} are haiz. "
 
         }else{//remainder exists
             for (j in 1 .. quotient){
-                str+="then the next ${aadatTuhr} days are istihaza, " +
-                        "then the next ${aadatHaz} days are haiz, "
+                str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
+                        "then the next ${daysHoursMinutesDigital(aadatHaz)} are haiz, "
             }
             if (remainder<aadatTuhr + 3){//it ended in tuhr
-                str+="then the last ${remainder} days are istihaza.\n"
+                str+="then the last ${daysHoursMinutesDigital(remainder)} are istihaza.\n"
 
             }else{//it ended in haiz
                 str+="then the next ${aadatTuhr} days are tuhr, then the last ${remainder-aadatTuhr} days are haiz\n"
                 //change aadatHaiz
                 val newAadatHaz = remainder-aadatTuhr
                 //add aadat line
-                str+="\tAadat: ${newAadatHaz}/${aadatTuhr}\n"
+                str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
 
             }
         }
     }else{
-        str += "and the last ${istihazaAfter} days are istihaza.\n"
+        str += "and the last ${daysHoursMinutesDigital(istihazaAfter)} are istihaza.\n"
 
     }
     str+="\t\n"
