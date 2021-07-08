@@ -49,7 +49,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
 //    var str = "Rough work \n"
 //    str += "MP\tGP\tDm\tHz\tQism\n"
     str += "\t${daysHoursMinutesDigital(mp)}\t${daysHoursMinutesDigital(gp)}\t${daysHoursMinutesDigital(dm)}\t${daysHoursMinutesDigital(hz)}\t${qism}\n"
-    str +="\tAadat: ${aadatHaz}/${aadatTuhr}\n"
+    str +="\tAadat: ${daysHoursMinutesDigital(aadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
     str += "\tOut of ${daysHoursMinutesDigital(dm)}, the first "
     if (istihazaBefore>0){
         str += "${daysHoursMinutesDigital(istihazaBefore)} are istihaza, then the next "
@@ -79,7 +79,8 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
                 str+="then the last ${daysHoursMinutesDigital(remainder)} are istihaza.\n"
 
             }else{//it ended in haiz
-                str+="then the next ${aadatTuhr} days are tuhr, then the last ${remainder-aadatTuhr} days are haiz\n"
+                str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are tuhr, " +
+                        "then the last ${daysHoursMinutesDigital(remainder-aadatTuhr)} are haiz\n"
                 //change aadatHaiz
                 val newAadatHaz = remainder-aadatTuhr
                 //add aadat line
@@ -113,7 +114,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
             var aadatTuhrEndDate:Date
             var aadatHaizEndDate:Date
             for (j in 1 .. quotient){
-                aadatTuhrEndDate = addTimeToDate(istihazaAfterStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
+                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
                 aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
                 str+= "\tFrom ${aadatTuhrStartDate} to ${aadatTuhrEndDate} is istihaza, yaqeeni paki\n"
                 str+= "\tFrom ${aadatTuhrEndDate} to ${aadatHaizEndDate} is haiz\n"
@@ -123,14 +124,14 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
                 str+= "\tFrom ${aadatTuhrStartDate} to ${istihazaAfterEndDate} is istihaza, yaqeeni paki\n"
 
             }else{//it ended in haiz
-                aadatTuhrEndDate = addTimeToDate(istihazaAfterStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
+                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
                 str+= "\tFrom ${aadatTuhrStartDate} to ${aadatTuhrEndDate} is istihaza, yaqeeni paki\n"
                 str+= "\tFrom ${aadatTuhrEndDate} to ${istihazaAfterEndDate} is haiz\n"
 
                 //change aadatHaiz
                 val newAadatHaz = remainder-aadatTuhr
                 //add aadat line
-                str+="\tAadat: ${newAadatHaz}/${aadatTuhr}\n"
+                str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
 
             }
 
