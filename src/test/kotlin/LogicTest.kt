@@ -6,11 +6,12 @@ import kotlin.test.assertNotNull
 class LogicTest {
     @Test
     fun testHandleEntries() {
+        val istimrar = false
         val entries = listOf(
             Entry(Date(), Date()),
             Entry(Date(), Date())
         )
-        val result = handleEntries(entries)
+        val result = handleEntries(entries, istimrar)
         assertNotNull(result) // TODO: Replace this with actual test
     }
 
