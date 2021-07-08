@@ -15,8 +15,8 @@ object Ids {
     object Row {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
-        const val BUTTON_ADD = "button_add"
         const val BUTTON_REMOVE = "button_remove"
+        const val BUTTON_ADD_BEFORE_CONTAINER = "button_add_before"
     }
 
     const val BUTTON_CALCULATE = "button_calculate"
@@ -30,29 +30,29 @@ val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElem
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        updateRemoveButtonDisabledStateForFirstRow()
+        setStateForFirstRow()
     }
 }
 
 fun Node.addInputLayout() {
     append {
         h1{
-            this.text("Mashqi Sawal")
+            +"Mashqi Sawal"
         }
         p{
-            this.text("Please enter the start date-time for first dam in the first box, and the end date-time" +
-                    " for that dam in the second box. To add another period after that, press Add. If you need to" +
-                    " remove a period in the middle, click the remove button next to it. To add a spot, enter a period" +
-                    " where the start time and the end time are the same. If this masla ends with istimrar, make a period" +
-                    " that ends on today's date, then check the istimrar check box. Once all periods have been " +
-                    "added, click Calculate button, to get the solution.")
+            +("Please enter the start date-time for first dam in the first box, and the end date-time for that dam " +
+                    "in the second box. To add another period after that, press Add. If you need to remove a period " +
+                    "in the middle, click the remove button next to it. To add a spot, enter a period  where the " +
+                    "start time and the end time are the same. If this masla ends with istimrar, make a period that " +
+                    "ends on today's date, then check the istimrar check box. Once all periods have been added, " +
+                    "click Calculate button, to get the solution.")
         }
         form(action = "javascript:void(0);") {
             table {
                 id = Ids.INPUT_TABLE
                 inputRow()
             }
-            label{
+            label {
                 htmlFor = Ids.ISTIMRAR
                 +"Istimrar"
             }
@@ -71,10 +71,8 @@ fun Node.addInputLayout() {
     }
 }
 
-fun TagConsumer<HTMLElement>.inputRow() {
+private fun TagConsumer<HTMLElement>.inputRow() {
     tr {
-        fun getRow(event: Event) = (event.currentTarget as Element).parentNode!!.parentNode as HTMLTableRowElement
-
         td {
             label {
                 +"Start"
@@ -101,10 +99,9 @@ fun TagConsumer<HTMLElement>.inputRow() {
         td {
             button(type = ButtonType.button) {
                 +"Add"
-                id = Ids.Row.BUTTON_ADD
                 onClickFunction = { event ->
                     inputTable.insert(getRow(event).rowIndex + 1) { inputRow() }
-                    updateRemoveButtonDisabledStateForFirstRow()
+                    setStateForFirstRow()
                 }
             }
             button(type = ButtonType.button) {
@@ -112,16 +109,52 @@ fun TagConsumer<HTMLElement>.inputRow() {
                 id = Ids.Row.BUTTON_REMOVE
                 onClickFunction = { event ->
                     inputTable.removeChild(getRow(event))
-                    updateRemoveButtonDisabledStateForFirstRow()
+                    setStateForFirstRow()
                 }
             }
         }
     }
 }
 
+private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
+    td {
+        id = Ids.Row.BUTTON_ADD_BEFORE_CONTAINER
+        button(type = ButtonType.button) {
+            +"Add Before"
+            onClickFunction = { event ->
+                inputTable.insert(getRow(event).rowIndex) { inputRow() }
+                setStateForFirstRow()
+            }
+        }
+    }
+}
+
+// Get a reference to the row from any button's click listener event
+private fun getRow(event: Event) = (event.currentTarget as Element).parentNode!!.parentNode as HTMLTableRowElement
+
+private fun setStateForFirstRow() {
+    updateRemoveButtonDisabledStateForFirstRow()
+    ensureAddFirstButtonOnlyShownInFirstRow()
+}
+
 private fun updateRemoveButtonDisabledStateForFirstRow() {
     val inputRows = inputTable.rows
     (inputRows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = inputRows.length == 1
+}
+
+private fun ensureAddFirstButtonOnlyShownInFirstRow() {
+    for ((index, row) in inputTable.rows.asList().withIndex()) {
+        val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)
+        if (index == 0) {
+            if (addBeforeButtonContainer == null) {
+                row.append { addBeforeButtonTableData() }
+            }
+        } else {
+            if (addBeforeButtonContainer != null) {
+                row.removeChild(addBeforeButtonContainer)
+            }
+        }
+    }
 }
 
 private fun setMinMaxForTimeInput(index: Int) {
@@ -159,5 +192,7 @@ private fun parseEntries() {
         return
     }
 
-    document.getElementById(Ids.CONTENT)!!.innerHTML = output.replace("\n", "<br>").replace("\t","${TAB}")
+    document.getElementById(Ids.CONTENT)!!.innerHTML = output
+        .replace("\n", "<br>")
+        .replace("\t", TAB)
 }

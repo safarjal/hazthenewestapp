@@ -14,8 +14,8 @@ class ClientTest {
         val row = assertIs<Element>(rows[0])
         assertNotNull(row.getChildById(Ids.Row.INPUT_START_TIME))
         assertNotNull(row.getChildById(Ids.Row.INPUT_END_TIME))
-        assertNotNull(row.getChildById(Ids.Row.BUTTON_ADD))
         assertNotNull(row.getChildById(Ids.Row.BUTTON_REMOVE))
+        assertNotNull(row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER))
         assertNotNull(container.getChildById(Ids.BUTTON_CALCULATE))
     }
 }
