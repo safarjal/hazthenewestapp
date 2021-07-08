@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>): String {
+fun handleEntries(entries: List<Entry>, istimrar:Boolean): String {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -36,6 +36,11 @@ fun handleEntries(entries: List<Entry>): String {
     removeTuhrLessThan15(fixedDurations)
     removeDamLessThan3(fixedDurations)
     addStartDateToFixedDurations(fixedDurations)
+
+    if(istimrar==true){//make the last period an istimrar type
+        fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
+    }
+
     return dealWithBiggerThan10Dam(fixedDurations, durations)
 }
 fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
@@ -121,7 +126,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
         outputStr+=outputStringIstihazaAfterLine(fixedDurations, i)
 
 
-        //get aadat
+        //get aadat if dam is less than 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
             aadatHaz = fixedDurations[i].days
             if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
@@ -214,6 +219,37 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 }
             }
         }
+        if(fixedDurations[i].type==DurationType.ISTIMRAR) {//if the last period is an istimrar
+            //if we hit a dam bigger than 10, check to see if we have aadat
+            if (aadatHaz == -1.0 || aadatTuhr == -1.0) {
+                //give error message
+                window.alert("We need both aadaat to be able to solve this")
+                break
+            } else {
+                val dm = 1000.0
+                val mp = fixedDurations[i - 1].days
+                val gp = aadatTuhr
+                val hz = aadatHaz
+                val output: FiveSoortainOutput = threeSoortainIstimrar(mp, gp, hz)
+                //update aadats
+                aadatHaz = output.haiz.toDouble()
+                if(output.aadatTuhrChanges && fixedDurations[i-1].type!=DurationType.TUHREFAASID){
+                    //if mp is not tuhrefaasid
+                    aadatTuhr = mp;
+                }
+                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
+                fixedDurations[i].biggerThanTen=hall
+                //put it in haz list
+                val sd = addTimeToDate(fixedDurations[i].startDate!!,(output.istihazaBefore*MILLISECONDS_IN_A_DAY).toLong())
+                val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
+                hazDatesList += Entry(sd, ed)
+
+
+                outputStr+=outputStringBiggerThan10Hall(fixedDurations,i)
+
+
+            }
+        }
     }
     println(hazDatesList)
     return outputStr
@@ -227,11 +263,38 @@ class FiveSoortainOutput (
     val aadatTuhrChanges:Boolean
 )
 
+fun threeSoortainIstimrar(mp:Double, gp:Double, hz: Double):FiveSoortainOutput{
+    val soorat: Soortain;
+    val istihazaBefore:Double;
+    val haiz:Double;
+    val istihazaAfter:Double;
+    val aadatTuhrChanges:Boolean; // 0 for gp, 1 for mp (change)
+
+    if (mp <= gp) {    //Qism A (Always A-1 in istimrar)
+        soorat = Soortain.A_1;
+        istihazaBefore = gp-mp;
+        haiz = hz;
+        istihazaAfter = 1000.0;
+        aadatTuhrChanges = false;
+    }else {	// mp>gp qism B
+        if (hz - (mp - gp) >= 3) {							// soorat B-2
+            soorat = Soortain.B_2;
+            istihazaBefore = 0.0;
+            haiz = hz-(mp-gp);
+            istihazaAfter = 1000.0;
+            aadatTuhrChanges = true;
+        }else{ //if (hz - (mp - gp) < 3) {						// soorat B-3
+            soorat = Soortain.B_3;
+            istihazaBefore = 0.0;
+            haiz = hz;
+            istihazaAfter = 1000.0;
+            aadatTuhrChanges = true;
+        }
+    }
+    return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
+}
+
 fun fiveSoortain(mp: Double, gp: Double, dm: Double, hz:Double):FiveSoortainOutput{
-    //This function will return an array called answer
-    //answer[0] will be istihaza before, if any, answer[1] will be haiz, answer [2] will be istihaza after, if any. answer [3] can be soorat.
-    //I'm putting soorat A-1 as 1, A-2 as 2, A-3 as 3, B-2 as 5 and B-3 as 6. Yes, we are skipping numbers here, but I can remember this.
-    //I'm not adding aadat of haiz and tuhur in answer. aadat of haiz will always be answer[1]. aadat of tuhur depends, so will calculate aadat elsewhere.
     val soorat: Soortain;
     val istihazaBefore:Double;
     val haiz:Double;

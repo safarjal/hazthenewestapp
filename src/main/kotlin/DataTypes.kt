@@ -6,7 +6,7 @@ data class Entry(
 )
 
 enum class DurationType {
-    DAM, TUHR, TUHREFAASID
+    DAM, TUHR, TUHREFAASID, ISTIMRAR
 }
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
@@ -25,7 +25,7 @@ data class FixedDuration(
     var indices: MutableList<Int> = mutableListOf(),
     var istihazaAfter: Double = 0.0,
     var biggerThanTen: BiggerThanTenDm? = null,
-    var startDate: Date? = null
+    var startDate: Date? = null,
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY
 }
