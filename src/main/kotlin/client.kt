@@ -42,8 +42,10 @@ fun Node.addInputLayout() {
         p{
             this.text("Please enter the start date-time for first dam in the first box, and the end date-time" +
                     " for that dam in the second box. To add another period after that, press Add. If you need to" +
-                    " remove a period in the middle, click the remove button next to it. Once all periods have been " +
-                    "added, click Submit button, to get the solution.")
+                    " remove a period in the middle, click the remove button next to it. To add a spot, enter a period" +
+                    " where the start time and the end time are the same. If this masla ends with istimrar, make a period" +
+                    " that ends on today's date, then check the istimrar check box. Once all periods have been " +
+                    "added, click Calculate button, to get the solution.")
         }
         form(action = "javascript:void(0);") {
             table {
@@ -59,7 +61,7 @@ fun Node.addInputLayout() {
                 checked = false
             }
             br {  }
-            submitInput {
+            button {
                 +"Calculate"
                 id = Ids.BUTTON_CALCULATE
             }
