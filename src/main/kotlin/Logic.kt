@@ -244,6 +244,22 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
                 hazDatesList += Entry(sd, ed)
 
+                //for the moment, let's place 3 cycles in haz list in isitmrar
+                val quotient = 3
+
+                //put the right number of hazes in haz list
+                var aadatTuhrStartDate:Date = ed
+                var aadatHaizStartDate:Date = sd
+                var aadatHaizEndDate:Date = ed
+                for (j in 1 .. quotient){
+                    aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
+                    aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
+                    hazDatesList += Entry(aadatHaizStartDate,aadatHaizEndDate)
+
+                    aadatTuhrStartDate=aadatHaizEndDate
+                }
+
+
 
                 outputStr+=outputStringBiggerThan10Hall(fixedDurations,i)
 
