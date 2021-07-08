@@ -161,26 +161,25 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
             if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
                 str+= "\tFrom ${aadatTuhrStartDate} to ${istihazaAfterEndDate} is istihaza, yaqeeni paki\n"
 
-            }else{//it ended in haiz
+            }else{//it ended in haiz or remainder is 0
                 aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
                 str+= "\tFrom ${aadatTuhrStartDate} to ${aadatTuhrEndDate} is istihaza, yaqeeni paki\n"
                 str+= "\tFrom ${aadatTuhrEndDate} to ${istihazaAfterEndDate} is haiz\n"
 
-                //change aadatHaiz
-                val newAadatHaz = remainder-aadatTuhr
-                //add aadat line
-                str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
-
-            }
+                //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
+                if (remainder!=0.0){
+                    val newAadatHaz1 = remainder-aadatTuhr
+                    //add aadat line
+                    println("$remainder remiander")
+                    println("$aadatTuhr aadatTuhr")
+                    str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz1)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
+                }
+           }
 
         }else{//no duar
             str+="\tFrom ${istihazaAfterStartDate} to ${istihazaAfterEndDate} is istihaza, yaqeeni paki\n"
 
         }
     }
-
-
-
-    println(str)
-    return str
+   return str
 }

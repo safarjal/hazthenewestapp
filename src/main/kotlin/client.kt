@@ -22,6 +22,7 @@ object Ids {
     const val BUTTON_CALCULATE = "button_calculate"
 
     const val CONTENT = "content"
+    const val ISTIMRAR = "istimrar"
 }
 
 val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
@@ -35,11 +36,29 @@ fun main() {
 
 fun Node.addInputLayout() {
     append {
+        h1{
+            this.text("Mashqi Sawal")
+        }
+        p{
+            this.text("Please enter the start date-time for first dam in the first box, and the end date-time" +
+                    " for that dam in the second box. To add another period after that, press Add. If you need to" +
+                    " remove a period in the middle, click the remove button next to it. Once all periods have been " +
+                    "added, click Submit button, to get the solution.")
+        }
         form(action = "javascript:void(0);") {
             table {
                 id = Ids.INPUT_TABLE
                 inputRow()
             }
+            label{
+                htmlFor = Ids.ISTIMRAR
+                +"Istimrar"
+            }
+            checkBoxInput {
+                id = Ids.ISTIMRAR
+                checked = false
+            }
+            br {  }
             submitInput {
                 +"Calculate"
                 id = Ids.BUTTON_CALCULATE
@@ -129,8 +148,10 @@ private fun parseEntries() {
             endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value)
         )
     }
+
+    val istimrar: Boolean = (document.getElementById(Ids.ISTIMRAR) as HTMLInputElement).checked
     val output = try {
-        handleEntries(entries)
+        handleEntries(entries, istimrar)
     } catch (e: IllegalArgumentException) {
         window.alert("Please enter the dates in order")
         return
