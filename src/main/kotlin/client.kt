@@ -40,12 +40,14 @@ fun Node.addInputLayout() {
             +"Mashqi Sawal"
         }
         p{
-            +("Please enter the start date-time for first dam in the first box, and the end date-time for that dam " +
-                    "in the second box. To add another period after that, press Add. If you need to remove a period " +
-                    "in the middle, click the remove button next to it. To add a spot, enter a period  where the " +
-                    "start time and the end time are the same. If this masla ends with istimrar, make a period that " +
-                    "ends on today's date, then check the istimrar check box. Once all periods have been added, " +
-                    "click Calculate button, to get the solution.")
+            +"""
+                Please enter the start date-time for first dam in the first box, and the end date-time for that dam in
+                the second box. To add another period after that, press Add. If you need to remove a period in the
+                middle, click the remove button next to it. To add a spot, enter a period where the start time and the
+                end time are the same. If this masla ends with istimrar, make a period that ends on today's date, then
+                check the istimrar check box. Once all periods have been added, click Calculate button, to get the
+                solution.
+            """.trimIndent()
         }
         form(action = "javascript:void(0);") {
             table {
