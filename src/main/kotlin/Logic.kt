@@ -184,17 +184,18 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     }
 
 
-                    if (remainder<aadatTuhr + 3){//it ended in tuhr
+                    if (remainder<aadatTuhr + 3){//it ended in tuhr or right between haz and tuhr
                         //add istihazaAfter to next Tuhur mark it as fasid
                         //if it exists
-                        if(i<fixedDurations.size-1){//there is a tuhur after this
+                            //if remainder is not equal to zero
+                        if(i<fixedDurations.size-1 && remainder>0){//there is a tuhur after this
                             fixedDurations[i+1].type=DurationType.TUHREFAASID
                             fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
                             fixedDurations[i].timeInMilliseconds-=(remainder*MILLISECONDS_IN_A_DAY).toLong()
                             fixedDurations[i+i].istihazaAfter=remainder
                         }
 
-                    }else{//it ended in haiz
+                    }else{//it ended in less than haiz
                         //change aadatHaiz
                         aadatHaz = remainder-aadatTuhr
 
