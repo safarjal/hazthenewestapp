@@ -6,7 +6,6 @@ import kotlinx.html.form
 import kotlinx.html.js.*
 import kotlinx.html.tr
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import kotlin.js.Date
 
 object Ids {
@@ -122,10 +121,10 @@ private fun TagConsumer<HTMLElement>.inputRow() {
                 htmlFor = Ids.Row.INPUT_START_TIME
             }
 
-            dateTimeLocalInput {
+            dateTimeLocalInputWithFallbackGuidelines {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
-                onClickFunction = { event -> setMinMaxForTimeInput(getRow(event).rowIndex * 2) }
+                onRowElementClickFunction = { row -> setMinMaxForTimeInput(row.rowIndex * 2) }
             }
         }
         td {
@@ -133,26 +132,26 @@ private fun TagConsumer<HTMLElement>.inputRow() {
                 +"End"
                 htmlFor = Ids.Row.INPUT_END_TIME
             }
-            dateTimeLocalInput {
+            dateTimeLocalInputWithFallbackGuidelines {
                 id = Ids.Row.INPUT_END_TIME
                 required = true
-                onClickFunction = { event -> setMinMaxForTimeInput((getRow(event).rowIndex * 2) + 1) }
+                onRowElementClickFunction = { row -> setMinMaxForTimeInput((row.rowIndex * 2) + 1) }
             }
         }
 
         td {
             button(type = ButtonType.button) {
                 +"Add"
-                onClickFunction = { event ->
-                    inputTable.insert(getRow(event).rowIndex + 1) { inputRow() }
+                onRowElementClickFunction = { row ->
+                    inputTable.insert(row.rowIndex + 1) { inputRow() }
                     setStateForFirstRow()
                 }
             }
             button(type = ButtonType.button) {
                 +"Remove"
                 id = Ids.Row.BUTTON_REMOVE
-                onClickFunction = { event ->
-                    inputTable.removeChild(getRow(event))
+                onRowElementClickFunction = { row ->
+                    inputTable.removeChild(row)
                     setStateForFirstRow()
                 }
             }
@@ -165,16 +164,13 @@ private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
         id = Ids.Row.BUTTON_ADD_BEFORE_CONTAINER
         button(type = ButtonType.button) {
             +"Add Before"
-            onClickFunction = { event ->
-                inputTable.insert(getRow(event).rowIndex) { inputRow() }
+            onRowElementClickFunction = { row ->
+                inputTable.insert(row.rowIndex) { inputRow() }
                 setStateForFirstRow()
             }
         }
     }
 }
-
-// Get a reference to the row from any button's click listener event
-private fun getRow(event: Event) = (event.currentTarget as Element).parentNode!!.parentNode as HTMLTableRowElement
 
 private fun setStateForFirstRow() {
     updateRemoveButtonDisabledStateForFirstRow()
