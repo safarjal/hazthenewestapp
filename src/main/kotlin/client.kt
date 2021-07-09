@@ -16,8 +16,9 @@ object Ids {
     object Row {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
+        const val BUTTONS_CONTAINER = "button_add_before_container"
         const val BUTTON_REMOVE = "button_remove"
-        const val BUTTON_ADD_BEFORE_CONTAINER = "button_add_before_container"
+        const val BUTTON_ADD_BEFORE = "button_add_before"
     }
 
     const val CONTENT = "content"
@@ -165,6 +166,8 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean) {
         }
 
         td {
+            id = Ids.Row.BUTTONS_CONTAINER
+
             button(type = ButtonType.button) {
                 +"Add"
                 onRowElementClickFunction = { row ->
@@ -181,16 +184,13 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean) {
                 }
             }
         }
-        td {
-            id = Ids.Row.BUTTON_ADD_BEFORE_CONTAINER
-            // The 'Add Before' button will be added dynamically here for the first row only
-        }
     }
 }
 
 private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
     button(type = ButtonType.button) {
         +"Add Before"
+        id = Ids.Row.BUTTON_ADD_BEFORE
         onRowElementClickFunction = { row ->
             row.before { inputRow(isDateOnly) }
             setStateForFirstRow()
@@ -211,12 +211,11 @@ private fun updateRemoveButtonDisabledStateForFirstRow() {
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow() {
     for ((index, row) in inputDatesRows.withIndex()) {
-        val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)!!
-        val button = addBeforeButtonContainer.firstElementChild
+        val button = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE)
         if (index > 0) {
             button?.remove()
         } else if (button == null) {
-            addBeforeButtonContainer.append { addBeforeButtonTableData() }
+            row.getChildById(Ids.Row.BUTTONS_CONTAINER)!!.append { addBeforeButtonTableData() }
         }
     }
 }
