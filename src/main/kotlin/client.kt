@@ -220,19 +220,21 @@ fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
         val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
         val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 
-        fun convertDateInputValueToNewFormat(dateInput: HTMLInputElement): String {
+        fun convertValueToNewFormat(dateInput: HTMLInputElement): String {
             val inputDateInMilliseconds = dateInput.valueAsNumber
             if (inputDateInMilliseconds.isNaN()) return ""
             val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
             return Date(inputDateInMilliseconds).toISOString().takeWhile { it != letterToTrimFrom }
         }
 
-        val startDateNewValue = convertDateInputValueToNewFormat(startDateInput)
-        val endDateNewValue = convertDateInputValueToNewFormat(endDateInput)
+        val startDateNewValue = convertValueToNewFormat(startDateInput)
+        val endDateNewValue = convertValueToNewFormat(endDateInput)
 
         val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-        startDateInput.type = dateInputType.realValue
-        endDateInput.type = dateInputType.realValue
+        val dateInputTypeName = dateInputType.realValue
+
+        startDateInput.type = dateInputTypeName
+        endDateInput.type = dateInputTypeName
 
         startDateInput.value = startDateNewValue
         endDateInput.value = endDateNewValue
