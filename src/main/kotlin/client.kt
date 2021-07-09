@@ -29,8 +29,13 @@ object Ids {
     const val DATE_AND_OR_RADIO = "date_and_or_time"
 }
 
-private val inputDatesTableBody
-    get() = (document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement).tBodies[0] as HTMLTableSectionElement
+private val inputDatesRows: List<HTMLTableRowElement>
+    get() {
+        val inputDatesTable = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
+        val inputDatesTableBody = inputDatesTable.tBodies[0] as HTMLTableSectionElement
+        @Suppress("UNCHECKED_CAST")
+        return inputDatesTableBody.rows.asList() as List<HTMLTableRowElement>
+    }
 
 private val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 
@@ -148,7 +153,7 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
             button(type = ButtonType.button) {
                 +"Add"
                 onRowElementClickFunction = { row ->
-                    inputDatesTableBody.insert(row.rowIndexWithinTableBody + 1) { inputRow(isDateOnly) }
+                    row.after { inputRow(isDateOnly) }
                     setStateForFirstRow()
                 }
             }
@@ -156,7 +161,7 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
                 +"Remove"
                 id = Ids.Row.BUTTON_REMOVE
                 onRowElementClickFunction = { row ->
-                    inputDatesTableBody.removeChild(row)
+                    row.remove()
                     setStateForFirstRow()
                 }
             }
@@ -172,8 +177,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
     button(type = ButtonType.button) {
         +"Add Before"
         onRowElementClickFunction = { row ->
-            row.before()
-            inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow(isDateOnly) }
+            row.before { inputRow(isDateOnly) }
             setStateForFirstRow()
         }
     }
@@ -185,13 +189,13 @@ private fun setStateForFirstRow() {
 }
 
 private fun updateRemoveButtonDisabledStateForFirstRow() {
-    val inputRows = inputDatesTableBody.rows
-    (inputRows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = inputRows.length == 1
-    (inputRows[1]?.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement?)?.disabled = false
+    (inputDatesRows.first().getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled =
+        inputDatesRows.size == 1
+    (inputDatesRows.getOrNull(1)?.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement?)?.disabled = false
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow() {
-    for ((index, row) in inputDatesTableBody.rows.asList().withIndex()) {
+    for ((index, row) in inputDatesRows.withIndex()) {
         val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)!!
         val button = addBeforeButtonContainer.firstElementChild
         if (index > 0) {
@@ -203,7 +207,7 @@ private fun ensureAddFirstButtonOnlyShownInFirstRow() {
 }
 
 private fun setMinMaxForTimeInput(index: Int) {
-    val timeInputs: List<HTMLInputElement> = inputDatesTableBody.rows.asList().flatMap { row ->
+    val timeInputs: List<HTMLInputElement> = inputDatesRows.flatMap { row ->
         listOf(
             row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement,
             row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
@@ -222,7 +226,7 @@ private fun setMinMaxForTimeInput(index: Int) {
 }
 
 private fun onClickDateConfigurationRadioButton() {
-    for (row in inputDatesTableBody.rows.asList()) {
+    for (row in inputDatesRows) {
         val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
         val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 
@@ -247,7 +251,7 @@ private fun onClickDateConfigurationRadioButton() {
 }
 
 private fun parseEntries() {
-    val entries = inputDatesTableBody.rows.asList().map { row ->
+    val entries = inputDatesRows.map { row ->
         Entry(
             startTime = Date((row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).valueAsNumber),
             endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).valueAsNumber)
