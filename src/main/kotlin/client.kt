@@ -27,7 +27,8 @@ object Ids {
     const val DATE_AND_OR_RADIO = "date_and_or_time"
 }
 
-val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
+val inputDatesTableBody
+    get() = (document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement).tBodies[0] as HTMLTableSectionElement
 
 fun main() {
     window.onload = {
@@ -92,7 +93,15 @@ fun Node.addInputLayout() {
             }
             table {
                 id = Ids.INPUT_TABLE
-                inputRow()
+                thead {
+                    tr {
+                        th { +"Start Time" }
+                        th { +"End Time" }
+                    }
+                }
+                tbody {
+                    inputRow()
+                }
             }
             label {
                 htmlFor = Ids.ISTIMRAR
@@ -115,26 +124,21 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.inputRow() {
     tr {
         td {
-            label {
-                +"Start"
-                htmlFor = Ids.Row.INPUT_START_TIME
-            }
-
             dateTimeLocalInputWithFallbackGuidelines {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
-                onRowElementClickFunction = { row -> setMinMaxForTimeInput(row.rowIndex * 2) }
+                onRowElementClickFunction = { row ->
+                    setMinMaxForTimeInput(row.rowIndexWithinTableBody * 2)
+                }
             }
         }
         td {
-            label {
-                +"End"
-                htmlFor = Ids.Row.INPUT_END_TIME
-            }
             dateTimeLocalInputWithFallbackGuidelines {
                 id = Ids.Row.INPUT_END_TIME
                 required = true
-                onRowElementClickFunction = { row -> setMinMaxForTimeInput((row.rowIndex * 2) + 1) }
+                onRowElementClickFunction = { row ->
+                    setMinMaxForTimeInput((row.rowIndexWithinTableBody * 2) + 1)
+                }
             }
         }
 
@@ -142,7 +146,7 @@ private fun TagConsumer<HTMLElement>.inputRow() {
             button(type = ButtonType.button) {
                 +"Add"
                 onRowElementClickFunction = { row ->
-                    inputTable.insert(row.rowIndex + 1) { inputRow() }
+                    inputDatesTableBody.insert(row.rowIndexWithinTableBody + 1) { inputRow() }
                     setStateForFirstRow()
                 }
             }
@@ -150,7 +154,7 @@ private fun TagConsumer<HTMLElement>.inputRow() {
                 +"Remove"
                 id = Ids.Row.BUTTON_REMOVE
                 onRowElementClickFunction = { row ->
-                    inputTable.removeChild(row)
+                    inputDatesTableBody.removeChild(row)
                     setStateForFirstRow()
                 }
             }
@@ -164,7 +168,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
         button(type = ButtonType.button) {
             +"Add Before"
             onRowElementClickFunction = { row ->
-                inputTable.insert(row.rowIndex) { inputRow() }
+                inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow() }
                 setStateForFirstRow()
             }
         }
@@ -177,13 +181,13 @@ private fun setStateForFirstRow() {
 }
 
 private fun updateRemoveButtonDisabledStateForFirstRow() {
-    val inputRows = inputTable.rows
+    val inputRows = inputDatesTableBody.rows
     (inputRows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = inputRows.length == 1
     (inputRows[1]?.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement?)?.disabled = false
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow() {
-    for ((index, row) in inputTable.rows.asList().withIndex()) {
+    for ((index, row) in inputDatesTableBody.rows.asList().withIndex()) {
         val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)
         if (index == 0) {
             if (addBeforeButtonContainer == null) {
@@ -198,7 +202,7 @@ private fun ensureAddFirstButtonOnlyShownInFirstRow() {
 }
 
 private fun setMinMaxForTimeInput(index: Int) {
-    val timeInputs: List<HTMLInputElement> = inputTable.rows.asList().flatMap { row ->
+    val timeInputs: List<HTMLInputElement> = inputDatesTableBody.rows.asList().flatMap { row ->
         listOf(
             row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement,
             row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
@@ -217,7 +221,7 @@ private fun setMinMaxForTimeInput(index: Int) {
 }
 
 fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
-    for (row in inputTable.rows.asList()) {
+    for (row in inputDatesTableBody.rows.asList()) {
         val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
         val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 
@@ -243,7 +247,7 @@ fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
 }
 
 private fun parseEntries() {
-    val entries = inputTable.rows.asList().map { row ->
+    val entries = inputDatesTableBody.rows.asList().map { row ->
         Entry(
             startTime = Date((row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).valueAsNumber),
             endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).valueAsNumber)

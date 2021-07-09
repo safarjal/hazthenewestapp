@@ -55,6 +55,9 @@ var CommonAttributeGroupFacade.onRowElementClickFunction : (HTMLTableRowElement)
         }
     }
 
+val HTMLTableRowElement.rowIndexWithinTableBody get() =
+    (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
+
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
