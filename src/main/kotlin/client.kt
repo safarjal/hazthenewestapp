@@ -17,7 +17,7 @@ object Ids {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
         const val BUTTON_REMOVE = "button_remove"
-        const val BUTTON_ADD_BEFORE_CONTAINER = "button_add_before"
+        const val BUTTON_ADD_BEFORE_CONTAINER = "button_add_before_container"
     }
 
     const val CONTENT = "content"
@@ -161,18 +161,20 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
                 }
             }
         }
+        td {
+            id = Ids.Row.BUTTON_ADD_BEFORE_CONTAINER
+            // The 'Add Before' button will be added dynamically here for the first row only
+        }
     }
 }
 
 private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
-    td {
-        id = Ids.Row.BUTTON_ADD_BEFORE_CONTAINER
-        button(type = ButtonType.button) {
-            +"Add Before"
-            onRowElementClickFunction = { row ->
-                inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow(isDateOnly) }
-                setStateForFirstRow()
-            }
+    button(type = ButtonType.button) {
+        +"Add Before"
+        onRowElementClickFunction = { row ->
+            row.before()
+            inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow(isDateOnly) }
+            setStateForFirstRow()
         }
     }
 }
@@ -190,15 +192,12 @@ private fun updateRemoveButtonDisabledStateForFirstRow() {
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow() {
     for ((index, row) in inputDatesTableBody.rows.asList().withIndex()) {
-        val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)
-        if (index == 0) {
-            if (addBeforeButtonContainer == null) {
-                row.append { addBeforeButtonTableData() }
-            }
-        } else {
-            if (addBeforeButtonContainer != null) {
-                row.removeChild(addBeforeButtonContainer)
-            }
+        val addBeforeButtonContainer = row.getChildById(Ids.Row.BUTTON_ADD_BEFORE_CONTAINER)!!
+        val button = addBeforeButtonContainer.firstElementChild
+        if (index > 0) {
+            button?.remove()
+        } else if (button == null) {
+            addBeforeButtonContainer.append { addBeforeButtonTableData() }
         }
     }
 }

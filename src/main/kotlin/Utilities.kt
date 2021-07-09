@@ -130,5 +130,3 @@ fun daysHoursMinutesDigital(numberOfDays:Double):String{
     var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m";
     return(returnStatement);
 }
-
-
