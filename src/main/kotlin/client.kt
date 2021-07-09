@@ -29,10 +29,10 @@ object Ids {
     const val DATE_AND_OR_RADIO = "date_and_or_time"
 }
 
-val inputDatesTableBody
+private val inputDatesTableBody
     get() = (document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement).tBodies[0] as HTMLTableSectionElement
 
-val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 
 fun main() {
     window.onload = {
