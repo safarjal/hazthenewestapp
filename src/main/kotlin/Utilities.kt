@@ -37,7 +37,6 @@ fun Node.insert(index: Int, block: TagConsumer<HTMLElement>.() -> Unit): List<HT
 fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 
-// Get a reference to the row from any button's click listener event
 inline fun <reified T : Element> Element.getAncestor(): T? {
     var parent: Element? = parentElement
     while (true) {
@@ -61,8 +60,8 @@ val HTMLTableRowElement.rowIndexWithinTableBody get() =
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
-    classes : String? = null,
-    block : INPUT.() -> Unit = {}
+    classes: String? = null,
+    block: INPUT.() -> Unit = {}
 ) {
     dateTimeLocalInput(classes = classes) {
         placeholder = "YYYY-MM-DDThh:mm"
@@ -74,8 +73,8 @@ fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     isDateOnly: Boolean,
-    classes : String? = null,
-    block : INPUT.() -> Unit = {}
+    classes: String? = null,
+    block: INPUT.() -> Unit = {}
 ) {
     if (isDateOnly) {
         dateInput(classes = classes, block = block)
