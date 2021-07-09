@@ -27,6 +27,7 @@ object Ids {
     const val TUHR_AADAT = "tuhr_aadat"
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
+    const val DATE_AND_OR_RADIO = "date_and_or_time"
 }
 
 val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
@@ -58,7 +59,7 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_TIME_RADIO
                 value = "date_time"
-                name = "date_and_or_time"
+                name = Ids.DATE_AND_OR_RADIO
                 onClickFunction = { onClickDateTime()}
             }
             label {
@@ -68,7 +69,7 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_ONLY_RADIO
                 value = "date_only"
-                name = "date_and_or_time"
+                name = Ids.DATE_AND_OR_RADIO
                 onClickFunction = { onClickDateOnly() }
             }
             label {
@@ -120,6 +121,7 @@ private fun TagConsumer<HTMLElement>.inputRow() {
                 +"Start"
                 htmlFor = Ids.Row.INPUT_START_TIME
             }
+
             dateTimeLocalInput {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
@@ -242,10 +244,11 @@ private fun parseEntries() {
 }
 
 fun onClickDateTime(){
-    println("clicked it")
+    println("clicked date time")
  }
 
 fun onClickDateOnly(){
-    println("clicked it")
+    println("clicked date only")
 
 }
+
