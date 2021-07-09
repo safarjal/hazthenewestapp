@@ -32,6 +32,9 @@ val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElem
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
+        onClickDateConfigurationRadioButton(
+            isDateOnly = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+        )
         setStateForFirstRow()
     }
 }
@@ -52,10 +55,11 @@ fun Node.addInputLayout() {
             """.trimIndent()
         }
 
-        form {
+        form(action = "javascript:void(0);") {
             radioInput {
                 id = Ids.DATE_TIME_RADIO
                 name = Ids.DATE_AND_OR_RADIO
+                checked = true
                 onChangeFunction = { onClickDateConfigurationRadioButton(isDateOnly = false) }
             }
             label {
@@ -243,6 +247,7 @@ private fun parseEntries() {
         )
     }
 
+    val isDateOnly = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
     val istimrar: Boolean = (document.getElementById(Ids.ISTIMRAR) as HTMLInputElement).checked
     val inputtedAadatHaz:Double? = (document.getElementById(Ids.HAIZ_AADAT) as HTMLInputElement).value.toDoubleOrNull()
     val inputtedAadatTuhr:Double? = (document.getElementById(Ids.TUHR_AADAT) as HTMLInputElement).value.toDoubleOrNull()
