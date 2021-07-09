@@ -48,11 +48,28 @@ fun main() {
 
 fun Node.addInputLayout() {
     append {
-        h1{
-            +"Mashqi Sawal"
+        headers()
+
+        form(action = "javascript:void(0);") {
+            dateConfigurationRadioButtons()
+            br()
+            aadatInputs()
+            datesInputTable()
+            istimrarCheckBox()
+            br()
+            button { +"Calculate" }
+            onSubmitFunction = { parseEntries() }
         }
-        p{
-            +"""
+        p { id = Ids.CONTENT }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.headers() {
+    h1 {
+        +"Mashqi Sawal"
+    }
+    p {
+        +"""
                 Please enter the start date-time for first dam in the first box, and the end date-time for that dam in
                 the second box. To add another period after that, press Add. If you need to remove a period in the
                 middle, click the remove button next to it. To add a spot, enter a period where the start time and the
@@ -60,71 +77,72 @@ fun Node.addInputLayout() {
                 check the istimrar check box. Once all periods have been added, click Calculate button, to get the
                 solution.
             """.trimIndent()
-        }
+    }
+}
 
-        form(action = "javascript:void(0);") {
-            radioInput {
-                id = Ids.DATE_TIME_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
-                onChangeFunction = { onClickDateConfigurationRadioButton() }
+private fun FlowContent.dateConfigurationRadioButtons() {
+    radioInput {
+        id = Ids.DATE_TIME_RADIO
+        name = Ids.DATE_AND_OR_RADIO
+        checked = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
+        onChangeFunction = { onClickDateConfigurationRadioButton() }
+    }
+    label {
+        htmlFor = Ids.DATE_TIME_RADIO
+        +"Date and Time"
+    }
+    radioInput {
+        id = Ids.DATE_ONLY_RADIO
+        name = Ids.DATE_AND_OR_RADIO
+        checked = IS_DEFAULT_INPUT_MODE_DATE_ONLY
+        onChangeFunction = { onClickDateConfigurationRadioButton() }
+    }
+    label {
+        htmlFor = Ids.DATE_ONLY_RADIO
+        +"Date only"
+    }
+}
+
+private fun FlowContent.aadatInputs() {
+    label {
+        htmlFor = Ids.HAIZ_AADAT
+        +("Haiz Aadat: ")
+    }
+    textInput {
+        id = Ids.HAIZ_AADAT
+    }
+    label {
+        htmlFor = Ids.TUHR_AADAT
+        +"Tuhr Aadat: "
+    }
+    textInput {
+        id = Ids.TUHR_AADAT
+    }
+}
+
+private fun FlowContent.istimrarCheckBox() {
+    label {
+        htmlFor = Ids.ISTIMRAR
+        +"Istimrar"
+    }
+    checkBoxInput {
+        id = Ids.ISTIMRAR
+        checked = false
+    }
+}
+
+private fun TagConsumer<HTMLElement>.datesInputTable() {
+    table {
+        id = Ids.INPUT_TABLE
+        thead {
+            tr {
+                th { +"Start Time" }
+                th { +"End Time" }
             }
-            label {
-               htmlFor = Ids.DATE_TIME_RADIO
-                +"Date and Time"
-            }
-            radioInput {
-                id = Ids.DATE_ONLY_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = IS_DEFAULT_INPUT_MODE_DATE_ONLY
-                onChangeFunction = { onClickDateConfigurationRadioButton() }
-            }
-            label {
-                htmlFor = Ids.DATE_ONLY_RADIO
-                +"Date only"
-            }
-            br {}
-            label {
-                htmlFor = Ids.HAIZ_AADAT
-                +("Haiz Aadat: ")
-            }
-            textInput {
-                id = Ids.HAIZ_AADAT
-            }
-            label {
-                htmlFor = Ids.TUHR_AADAT
-                +"Tuhr Aadat: "
-            }
-            textInput {
-                id = Ids.TUHR_AADAT
-            }
-            table {
-                id = Ids.INPUT_TABLE
-                thead {
-                    tr {
-                        th { +"Start Time" }
-                        th { +"End Time" }
-                    }
-                }
-                tbody {
-                    inputRow(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
-                }
-            }
-            label {
-                htmlFor = Ids.ISTIMRAR
-                +"Istimrar"
-            }
-            checkBoxInput {
-                id = Ids.ISTIMRAR
-                checked = false
-            }
-            br {  }
-            button {
-                +"Calculate"
-            }
-            onSubmitFunction = { parseEntries() }
         }
-        p { id = Ids.CONTENT }
+        tbody {
+            inputRow(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+        }
     }
 }
 
