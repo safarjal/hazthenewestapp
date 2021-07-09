@@ -139,9 +139,7 @@ private fun TagConsumer<HTMLElement>.datesInputTable() {
                 th { +"End Time" }
             }
         }
-        tbody {
-            inputRow(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
-        }
+        tbody { inputRow(IS_DEFAULT_INPUT_MODE_DATE_ONLY) }
     }
 }
 
