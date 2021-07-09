@@ -89,6 +89,11 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 }
 
 
+fun Date.toDateInputString(isDateOnly: Boolean): String{
+    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
+    return toISOString().takeWhile { it != letterToTrimFrom }
+}
+
 /* Looks like the compiler argument for opting in to experimental features
  * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about it's
  * requirement here for now..
@@ -100,8 +105,7 @@ fun currentTimeString(isDateOnly: Boolean): String {
     val currentTime = Date()
     val localTimeSetInUtc = Date(currentTime.getTime() -
             currentTime.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
-    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    return localTimeSetInUtc.toISOString().takeWhile { it != letterToTrimFrom }
+    return localTimeSetInUtc.toDateInputString(isDateOnly)
 }
 
 

@@ -230,8 +230,7 @@ private fun onClickDateConfigurationRadioButton() {
         fun convertValueToNewFormat(dateInput: HTMLInputElement): String {
             val inputDateInMilliseconds = dateInput.valueAsNumber
             if (inputDateInMilliseconds.isNaN()) return ""
-            val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-            return Date(inputDateInMilliseconds).toISOString().takeWhile { it != letterToTrimFrom }
+            return Date(inputDateInMilliseconds).toDateInputString(isDateOnly)
         }
 
         val startDateNewValue = convertValueToNewFormat(startDateInput)
