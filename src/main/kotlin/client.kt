@@ -107,7 +107,7 @@ fun Node.addInputLayout() {
                     }
                 }
                 tbody {
-                    inputRow(isDateOnly = IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+                    inputRow(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
                 }
             }
             label {
@@ -128,10 +128,10 @@ fun Node.addInputLayout() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
+private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean) {
     tr {
         td {
-            customDateTimeInput(isDateOnly) {
+            customDateTimeInput(isDateOnlyLayout) {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
                 onRowElementClickFunction = { row ->
@@ -140,7 +140,7 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
             }
         }
         td {
-            customDateTimeInput(isDateOnly) {
+            customDateTimeInput(isDateOnlyLayout) {
                 id = Ids.Row.INPUT_END_TIME
                 required = true
                 onRowElementClickFunction = { row ->
