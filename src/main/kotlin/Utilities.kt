@@ -9,6 +9,10 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
+const val MILLISECONDS_IN_A_DAY = 86400000.0
+val TAB = "&nbsp;".repeat(8)
+
+
 private val Node.ownerDocumentExt: Document
     get() = when (this) {
         is Document -> this
@@ -80,8 +84,6 @@ fun currentTimeString() = Date()
     }
     .toISOString().dropLast(1)
 
-val MILLISECONDS_IN_A_DAY = 86400000.0
-val TAB = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
