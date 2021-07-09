@@ -59,7 +59,7 @@ fun Node.addInputLayout() {
                 id = Ids.DATE_TIME_RADIO
                 value = "date_time"
                 name = Ids.DATE_AND_OR_RADIO
-                onClickFunction = { onClickDateTime()}
+                onClickFunction = { onClickDateConfigurationRadioButton(isDateOnly = false) }
             }
             label {
                htmlFor = Ids.DATE_TIME_RADIO
@@ -69,7 +69,7 @@ fun Node.addInputLayout() {
                 id = Ids.DATE_ONLY_RADIO
                 value = "date_only"
                 name = Ids.DATE_AND_OR_RADIO
-                onClickFunction = { onClickDateOnly() }
+                onClickFunction = { onClickDateConfigurationRadioButton(isDateOnly = true) }
             }
             label {
                 htmlFor = Ids.DATE_ONLY_RADIO
@@ -216,6 +216,30 @@ private fun setMinMaxForTimeInput(index: Int) {
         ?: currentTimeString()
 }
 
+fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
+    for (row in inputTable.rows.asList()) {
+        val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
+        val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
+
+        fun convertDateInputValueToNewFormat(dateInput: HTMLInputElement): String {
+            val inputDateInMilliseconds = dateInput.valueAsNumber
+            if (inputDateInMilliseconds.isNaN()) return ""
+            val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
+            return Date(inputDateInMilliseconds).toISOString().takeWhile { it != letterToTrimFrom }
+        }
+
+        val startDateNewValue = convertDateInputValueToNewFormat(startDateInput)
+        val endDateNewValue = convertDateInputValueToNewFormat(endDateInput)
+
+        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+        startDateInput.type = dateInputType.realValue
+        endDateInput.type = dateInputType.realValue
+
+        startDateInput.value = startDateNewValue
+        endDateInput.value = endDateNewValue
+    }
+}
+
 private fun parseEntries() {
     val entries = inputTable.rows.asList().map { row ->
         Entry(
@@ -238,13 +262,3 @@ private fun parseEntries() {
         .replace("\n", "<br>")
         .replace("\t", TAB)
 }
-
-fun onClickDateTime(){
-    println("clicked date time")
- }
-
-fun onClickDateOnly(){
-    println("clicked date only")
-
-}
-
