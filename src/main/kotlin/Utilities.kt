@@ -61,15 +61,31 @@ val HTMLTableRowElement.rowIndexWithinTableBody get() =
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
-    formEncType : InputFormEncType? = null,
-    formMethod : InputFormMethod? = null,
-    name : String? = null,
     classes : String? = null,
     block : INPUT.() -> Unit = {}
-) : Unit = dateTimeLocalInput(formEncType, formMethod, name, classes) {
-    placeholder = "YYYY-MM-DDThh:mm"
-    pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
-    block()
+) {
+    dateTimeLocalInput(classes = classes) {
+        placeholder = "YYYY-MM-DDThh:mm"
+        pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+        block()
+    }
+}
+
+@HtmlTagMarker
+fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
+    isDateOnly: Boolean,
+    classes : String? = null,
+    block : INPUT.() -> Unit = {}
+) {
+    if (isDateOnly) {
+        dateInput(classes = classes, block = block)
+    } else {
+        dateTimeLocalInput(classes = classes) {
+            placeholder = "YYYY-MM-DDThh:mm"
+            pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+            block()
+        }
+    }
 }
 
 

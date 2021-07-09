@@ -8,6 +8,8 @@ import kotlinx.html.tr
 import org.w3c.dom.*
 import kotlin.js.Date
 
+const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = false
+
 object Ids {
     const val INPUT_TABLE = "input_table"
 
@@ -30,12 +32,12 @@ object Ids {
 val inputDatesTableBody
     get() = (document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement).tBodies[0] as HTMLTableSectionElement
 
+val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement?)?.checked
+    ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
+
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        onClickDateConfigurationRadioButton(
-            isDateOnly = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
-        )
         setStateForFirstRow()
     }
 }
@@ -60,8 +62,8 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_TIME_RADIO
                 name = Ids.DATE_AND_OR_RADIO
-                checked = true
-                onChangeFunction = { onClickDateConfigurationRadioButton(isDateOnly = false) }
+                checked = !isDateOnly
+                onChangeFunction = { onClickDateConfigurationRadioButton() }
             }
             label {
                htmlFor = Ids.DATE_TIME_RADIO
@@ -70,7 +72,8 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_ONLY_RADIO
                 name = Ids.DATE_AND_OR_RADIO
-                onChangeFunction = { onClickDateConfigurationRadioButton(isDateOnly = true) }
+                checked = isDateOnly
+                onChangeFunction = { onClickDateConfigurationRadioButton() }
             }
             label {
                 htmlFor = Ids.DATE_ONLY_RADIO
@@ -124,7 +127,7 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.inputRow() {
     tr {
         td {
-            dateTimeLocalInputWithFallbackGuidelines {
+            customDateTimeInput(isDateOnly) {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
                 onRowElementClickFunction = { row ->
@@ -133,7 +136,7 @@ private fun TagConsumer<HTMLElement>.inputRow() {
             }
         }
         td {
-            dateTimeLocalInputWithFallbackGuidelines {
+            customDateTimeInput(isDateOnly) {
                 id = Ids.Row.INPUT_END_TIME
                 required = true
                 onRowElementClickFunction = { row ->
@@ -220,7 +223,7 @@ private fun setMinMaxForTimeInput(index: Int) {
         ?: currentTimeString()
 }
 
-fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
+private fun onClickDateConfigurationRadioButton() {
     for (row in inputDatesTableBody.rows.asList()) {
         val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
         val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
@@ -254,7 +257,6 @@ private fun parseEntries() {
         )
     }
 
-    val isDateOnly = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
     val istimrar: Boolean = (document.getElementById(Ids.ISTIMRAR) as HTMLInputElement).checked
     val inputtedAadatHaz:Double? = (document.getElementById(Ids.HAIZ_AADAT) as HTMLInputElement).value.toDoubleOrNull()
     val inputtedAadatTuhr:Double? = (document.getElementById(Ids.TUHR_AADAT) as HTMLInputElement).value.toDoubleOrNull()
