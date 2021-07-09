@@ -15,6 +15,5 @@ class ClientTest {
         assertNotNull(row.getChildById(Ids.Row.INPUT_START_TIME))
         assertNotNull(row.getChildById(Ids.Row.INPUT_END_TIME))
         assertNotNull(row.getChildById(Ids.Row.BUTTON_REMOVE))
-        assertNotNull(container.getChildById(Ids.BUTTON_CALCULATE))
     }
 }

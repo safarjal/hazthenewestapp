@@ -18,8 +18,6 @@ object Ids {
         const val BUTTON_ADD_BEFORE_CONTAINER = "button_add_before"
     }
 
-    const val BUTTON_CALCULATE = "button_calculate"
-
     const val CONTENT = "content"
     const val ISTIMRAR = "istimrar"
     const val HAIZ_AADAT = "haiz_aadat"
@@ -54,12 +52,11 @@ fun Node.addInputLayout() {
             """.trimIndent()
         }
 
-        form(action = "javascript:void(0);") {
+        form {
             radioInput {
                 id = Ids.DATE_TIME_RADIO
-                value = "date_time"
                 name = Ids.DATE_AND_OR_RADIO
-                onClickFunction = { onClickDateConfigurationRadioButton(isDateOnly = false) }
+                onChangeFunction = { onClickDateConfigurationRadioButton(isDateOnly = false) }
             }
             label {
                htmlFor = Ids.DATE_TIME_RADIO
@@ -67,15 +64,14 @@ fun Node.addInputLayout() {
             }
             radioInput {
                 id = Ids.DATE_ONLY_RADIO
-                value = "date_only"
                 name = Ids.DATE_AND_OR_RADIO
-                onClickFunction = { onClickDateConfigurationRadioButton(isDateOnly = true) }
+                onChangeFunction = { onClickDateConfigurationRadioButton(isDateOnly = true) }
             }
             label {
                 htmlFor = Ids.DATE_ONLY_RADIO
                 +"Date only"
             }
-            br{}
+            br {}
             label {
                 htmlFor = Ids.HAIZ_AADAT
                 +("Haiz Aadat: ")
@@ -105,7 +101,6 @@ fun Node.addInputLayout() {
             br {  }
             button {
                 +"Calculate"
-                id = Ids.BUTTON_CALCULATE
             }
             onSubmitFunction = { parseEntries() }
         }
