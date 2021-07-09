@@ -23,6 +23,10 @@ object Ids {
 
     const val CONTENT = "content"
     const val ISTIMRAR = "istimrar"
+    const val HAIZ_AADAT = "haiz_aadat"
+    const val TUHR_AADAT = "tuhr_aadat"
+    const val DATE_ONLY_RADIO = "date_only_radio"
+    const val DATE_TIME_RADIO = "date_time_radio"
 }
 
 val inputTable get() = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
@@ -49,7 +53,43 @@ fun Node.addInputLayout() {
                 solution.
             """.trimIndent()
         }
+
         form(action = "javascript:void(0);") {
+            radioInput {
+                id = Ids.DATE_TIME_RADIO
+                value = "date_time"
+                name = "date_and_or_time"
+                onClickFunction = { onClickDateTime()}
+            }
+            label {
+               htmlFor = Ids.DATE_TIME_RADIO
+                +"Date and Time"
+            }
+            radioInput {
+                id = Ids.DATE_ONLY_RADIO
+                value = "date_only"
+                name = "date_and_or_time"
+                onClickFunction = { onClickDateOnly() }
+            }
+            label {
+                htmlFor = Ids.DATE_ONLY_RADIO
+                +"Date only"
+            }
+            br{}
+            label {
+                htmlFor = Ids.HAIZ_AADAT
+                +("Haiz Aadat: ")
+            }
+            textInput {
+                id = Ids.HAIZ_AADAT
+            }
+            label {
+                htmlFor = Ids.TUHR_AADAT
+                +"Tuhr Aadat: "
+            }
+            textInput {
+                id = Ids.TUHR_AADAT
+            }
             table {
                 id = Ids.INPUT_TABLE
                 inputRow()
@@ -187,8 +227,10 @@ private fun parseEntries() {
     }
 
     val istimrar: Boolean = (document.getElementById(Ids.ISTIMRAR) as HTMLInputElement).checked
+    val inputtedAadatHaz:Double? = (document.getElementById(Ids.HAIZ_AADAT) as HTMLInputElement).value.toDoubleOrNull()
+    val inputtedAadatTuhr:Double? = (document.getElementById(Ids.TUHR_AADAT) as HTMLInputElement).value.toDoubleOrNull()
     val output = try {
-        handleEntries(entries, istimrar)
+        handleEntries(entries, istimrar, inputtedAadatHaz,inputtedAadatTuhr)
     } catch (e: IllegalArgumentException) {
         window.alert("Please enter the dates in order")
         return
@@ -197,4 +239,13 @@ private fun parseEntries() {
     document.getElementById(Ids.CONTENT)!!.innerHTML = output
         .replace("\n", "<br>")
         .replace("\t", TAB)
+}
+
+fun onClickDateTime(){
+    println("clicked it")
+ }
+
+fun onClickDateOnly(){
+    println("clicked it")
+
 }

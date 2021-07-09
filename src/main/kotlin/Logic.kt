@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, istimrar:Boolean): String {
+fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?): String {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -41,7 +41,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean): String {
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
 
-    return dealWithBiggerThan10Dam(fixedDurations, durations)
+    return dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
 }
 fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     var date:Date = firstStartTime
@@ -108,11 +108,18 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>): String {
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?): String {
     var hazDatesList = mutableListOf<Entry>()
     var outputStr = ""
     var aadatHaz:Double = -1.0
     var aadatTuhr:Double = -1.0
+
+    if (inputtedAadatHaz != null && inputtedAadatHaz>=3 && inputtedAadatHaz<=10){
+        aadatHaz = inputtedAadatHaz
+    }
+    if (inputtedAadatTuhr!= null && inputtedAadatTuhr>=15){
+        aadatTuhr = inputtedAadatTuhr
+    }
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 

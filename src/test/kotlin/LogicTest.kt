@@ -4,16 +4,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class LogicTest {
-    @Test
-    fun testHandleEntries() {
-        val istimrar = false
-        val entries = listOf(
-            Entry(Date(), Date()),
-            Entry(Date(), Date())
-        )
-        val result = handleEntries(entries, istimrar)
-        assertNotNull(result) // TODO: Replace this with actual test
-    }
+//    @Test
+//    fun testHandleEntries() {
+//        val istimrar = false
+//        val entries = listOf(
+//            Entry(Date(), Date()),
+//            Entry(Date(), Date())
+//        )
+//        val result = handleEntries(entries, istimrar)
+//        assertNotNull(result) // TODO: Replace this with actual test
+//    }
 
     @Test
     fun testRemoveDamLessThan3(){
