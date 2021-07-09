@@ -179,6 +179,7 @@ private fun setStateForFirstRow() {
 private fun updateRemoveButtonDisabledStateForFirstRow() {
     val inputRows = inputTable.rows
     (inputRows[0]!!.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement).disabled = inputRows.length == 1
+    (inputRows[1]?.getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement?)?.disabled = false
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow() {
