@@ -242,8 +242,8 @@ fun onClickDateConfigurationRadioButton(isDateOnly: Boolean) {
 private fun parseEntries() {
     val entries = inputTable.rows.asList().map { row ->
         Entry(
-            startTime = Date((row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).value),
-            endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).value)
+            startTime = Date((row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement).valueAsNumber),
+            endTime = Date((row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement).valueAsNumber)
         )
     }
 
