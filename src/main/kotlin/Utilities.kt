@@ -96,12 +96,13 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalTime::class)
 // This is useful for setting the value (or min/max) of a datetime-local element.
-fun currentTimeString() = Date()
-    .let { currentDate ->
-        Date(currentDate.getTime() -
-                currentDate.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
-    }
-    .toISOString().dropLast(1)
+fun currentTimeString(isDateOnly: Boolean): String {
+    val currentTime = Date()
+    val localTimeSetInUtc = Date(currentTime.getTime() -
+            currentTime.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
+    return localTimeSetInUtc.toISOString().takeWhile { it != letterToTrimFrom }
+}
 
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{

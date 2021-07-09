@@ -32,8 +32,7 @@ object Ids {
 val inputDatesTableBody
     get() = (document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement).tBodies[0] as HTMLTableSectionElement
 
-val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement?)?.checked
-    ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
+val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 
 fun main() {
     window.onload = {
@@ -62,7 +61,7 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_TIME_RADIO
                 name = Ids.DATE_AND_OR_RADIO
-                checked = !isDateOnly
+                checked = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
                 onChangeFunction = { onClickDateConfigurationRadioButton() }
             }
             label {
@@ -72,7 +71,7 @@ fun Node.addInputLayout() {
             radioInput {
                 id = Ids.DATE_ONLY_RADIO
                 name = Ids.DATE_AND_OR_RADIO
-                checked = isDateOnly
+                checked = IS_DEFAULT_INPUT_MODE_DATE_ONLY
                 onChangeFunction = { onClickDateConfigurationRadioButton() }
             }
             label {
@@ -103,7 +102,7 @@ fun Node.addInputLayout() {
                     }
                 }
                 tbody {
-                    inputRow()
+                    inputRow(isDateOnly = IS_DEFAULT_INPUT_MODE_DATE_ONLY)
                 }
             }
             label {
@@ -124,7 +123,7 @@ fun Node.addInputLayout() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.inputRow() {
+private fun TagConsumer<HTMLElement>.inputRow(isDateOnly: Boolean) {
     tr {
         td {
             customDateTimeInput(isDateOnly) {
@@ -149,7 +148,7 @@ private fun TagConsumer<HTMLElement>.inputRow() {
             button(type = ButtonType.button) {
                 +"Add"
                 onRowElementClickFunction = { row ->
-                    inputDatesTableBody.insert(row.rowIndexWithinTableBody + 1) { inputRow() }
+                    inputDatesTableBody.insert(row.rowIndexWithinTableBody + 1) { inputRow(isDateOnly) }
                     setStateForFirstRow()
                 }
             }
@@ -171,7 +170,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButtonTableData() {
         button(type = ButtonType.button) {
             +"Add Before"
             onRowElementClickFunction = { row ->
-                inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow() }
+                inputDatesTableBody.insert(row.rowIndexWithinTableBody) { inputRow(isDateOnly) }
                 setStateForFirstRow()
             }
         }
@@ -220,7 +219,7 @@ private fun setMinMaxForTimeInput(index: Int) {
     timeInput.max = timeEntries
         .drop(index + 1)
         .find(String::isNotEmpty)
-        ?: currentTimeString()
+        ?: currentTimeString(isDateOnly)
 }
 
 private fun onClickDateConfigurationRadioButton() {
