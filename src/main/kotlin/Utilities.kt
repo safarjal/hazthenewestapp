@@ -80,11 +80,7 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     if (isDateOnly) {
         dateInput(classes = classes, block = block)
     } else {
-        dateTimeLocalInput(classes = classes) {
-            placeholder = "YYYY-MM-DDThh:mm"
-            pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
-            block()
-        }
+        dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
     }
 }
 
