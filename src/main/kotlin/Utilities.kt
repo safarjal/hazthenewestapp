@@ -125,6 +125,8 @@ fun daysHoursMinutesDigital(numberOfDays:Double):String{
     return(returnStatement);
 }
  fun parseDate(date: Date):String{
-     return "${addTimeToDate(date, -18000000L )}"
+
+     return (date.toUTCString()).removeSuffix(":00 GMT")
+
 
  }
