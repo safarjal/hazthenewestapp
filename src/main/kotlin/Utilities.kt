@@ -124,3 +124,7 @@ fun daysHoursMinutesDigital(numberOfDays:Double):String{
     var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m";
     return(returnStatement);
 }
+ fun parseDate(date: Date):String{
+     return "${addTimeToDate(date, -18000000L )}"
+
+ }

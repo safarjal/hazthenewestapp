@@ -132,9 +132,9 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
     val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter*MILLISECONDS_IN_A_DAY).toLong())
 
     if(istihazaBefore!=0.0){
-        str+="\tFrom ${istihazaBeforeStartDate} to ${haizStartDate} is istihaza, yaqeeni paki\n"
+        str+="\tFrom ${parseDate(istihazaBeforeStartDate)} to ${parseDate(haizStartDate)} is istihaza, yaqeeni paki\n"
     }
-    str+="\tFrom ${haizStartDate} to ${istihazaAfterStartDate} is haiz\n"
+    str+="\tFrom ${parseDate(haizStartDate)} to ${parseDate(istihazaAfterStartDate)} is haiz\n"
     if(istihazaAfter!=0.0){
         if (istihazaAfter>=aadatTuhr+3){
             //find quotient and remainder
@@ -154,17 +154,17 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
             for (j in 1 .. quotient){
                 aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
                 aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
-                str+= "\tFrom ${aadatTuhrStartDate} to ${aadatTuhrEndDate} is istihaza, yaqeeni paki\n"
-                str+= "\tFrom ${aadatTuhrEndDate} to ${aadatHaizEndDate} is haiz\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(aadatTuhrEndDate)} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrEndDate)} to ${parseDate(aadatHaizEndDate)} is haiz\n"
                 aadatTuhrStartDate=aadatHaizEndDate
             }
             if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
-                str+= "\tFrom ${aadatTuhrStartDate} to ${istihazaAfterEndDate} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(istihazaAfterEndDate)} is istihaza, yaqeeni paki\n"
 
             }else{//it ended in haiz or remainder is 0
                 aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-                str+= "\tFrom ${aadatTuhrStartDate} to ${aadatTuhrEndDate} is istihaza, yaqeeni paki\n"
-                str+= "\tFrom ${aadatTuhrEndDate} to ${istihazaAfterEndDate} is haiz\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(aadatTuhrEndDate)} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrEndDate)} to ${parseDate(istihazaAfterEndDate)} is haiz\n"
 
                 //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
                 if (remainder!=0.0){
@@ -177,7 +177,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
            }
 
         }else{//no duar
-            str+="\tFrom ${istihazaAfterStartDate} to ${istihazaAfterEndDate} is istihaza, yaqeeni paki\n"
+            str+="\tFrom ${parseDate(istihazaAfterStartDate)} to ${parseDate(istihazaAfterEndDate)} is istihaza, yaqeeni paki\n"
 
         }
     }
