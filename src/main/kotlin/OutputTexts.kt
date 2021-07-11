@@ -18,9 +18,9 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index:Int
     if(fixedDurations[index].type==DurationType.ISTIMRAR){
         return "<b>${fixedDurations[index].type}</b>\n"
     }else if((index +1)< fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
-        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days + fixedDurations[index+1].istihazaAfter)} ${fixedDurations[index].type}</b>\n"
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days + fixedDurations[index+1].istihazaAfter,isDateOnly)} ${fixedDurations[index].type}</b>\n"
     }else{
-        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days)} ${fixedDurations[index].type}</b>\n"
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days,isDateOnly)} ${fixedDurations[index].type}</b>\n"
 
     }
 }
@@ -31,14 +31,14 @@ fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, dur
         var str = ""
         for (index in fixedDurations[index].indices){
             sum+=durations[index].days
-            str += " + ${daysHoursMinutesDigital(durations[index].days)}"
+            str += " + ${daysHoursMinutesDigital(durations[index].days,isDateOnly)}"
         }
         str=str.removePrefix(" + ")
         if(fixedDurations[index].type==DurationType.ISTIMRAR){
             str+=" + istimrar"
             return "\t${str} = istimrar\n"
         }else{
-            return "\t${str} = ${daysHoursMinutesDigital(sum)}\n"
+            return "\t${str} = ${daysHoursMinutesDigital(sum,isDateOnly)}\n"
         }
     }else{
         return ""
@@ -49,9 +49,9 @@ fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,ind
     val istihazaAfter = fixedDurations[index].istihazaAfter
     var str = ""
     if(istihazaAfter!=0.0){
-        str +="\t${daysHoursMinutesDigital(fixedDurations[index].days-istihazaAfter)} " +
-                "tuhr + ${daysHoursMinutesDigital(istihazaAfter)} istihaza " +
-                "= ${daysHoursMinutesDigital(fixedDurations[index].days)} tuhr-e-faasid\n"
+        str +="\t${daysHoursMinutesDigital(fixedDurations[index].days-istihazaAfter,isDateOnly)} " +
+                "tuhr + ${daysHoursMinutesDigital(istihazaAfter,isDateOnly)} istihaza " +
+                "= ${daysHoursMinutesDigital(fixedDurations[index].days,isDateOnly)} tuhr-e-faasid\n"
     }
 
     return str
@@ -80,27 +80,29 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
 //    str += "MP\tGP\tDm\tHz\tQism\n"
 
     if (istimrar == true){
-        str += "\t${daysHoursMinutesDigital(mp)}\t${daysHoursMinutesDigital(gp)}\tIstimrar\t${daysHoursMinutesDigital(hz)}\t${qism}\n"
+        str += "\t${daysHoursMinutesDigital(mp,isDateOnly)}\t${daysHoursMinutesDigital(gp,isDateOnly)}\tIstimrar\t" +
+                "${daysHoursMinutesDigital(hz,isDateOnly)}\t${qism}\n"
     }else{
-        str += "\t${daysHoursMinutesDigital(mp)}\t${daysHoursMinutesDigital(gp)}\t${daysHoursMinutesDigital(dm)}\t${daysHoursMinutesDigital(hz)}\t${qism}\n"
+        str += "\t${daysHoursMinutesDigital(mp,isDateOnly)}\t${daysHoursMinutesDigital(gp,isDateOnly)}\t" +
+                "${daysHoursMinutesDigital(dm,isDateOnly)}\t${daysHoursMinutesDigital(hz,isDateOnly)}\t${qism}\n"
     }
 
-    str +="\tAadat: ${daysHoursMinutesDigital(aadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
+    str +="\tAadat: ${daysHoursMinutesDigital(aadatHaz,isDateOnly)}/${daysHoursMinutesDigital(aadatTuhr,isDateOnly)}\n"
 
     if(istimrar == true){
         str += "\tFrom the start of istimrar, the first "
     }else{
-        str += "\tOut of ${daysHoursMinutesDigital(dm)}, the first "
+        str += "\tOut of ${daysHoursMinutesDigital(dm,isDateOnly)}, the first "
     }
 
     if (istihazaBefore>0){
-        str += "${daysHoursMinutesDigital(istihazaBefore)} are istihaza, then the next "
+        str += "${daysHoursMinutesDigital(istihazaBefore,isDateOnly)} are istihaza, then the next "
     }
-    str += "${daysHoursMinutesDigital(haiz)} are haiz, "
+    str += "${daysHoursMinutesDigital(haiz,isDateOnly)} are haiz, "
 
     if (istimrar == true){
-        str += "then there will be a daur of ${daysHoursMinutesDigital(aadatTuhr)} tuhr, " +
-                "${daysHoursMinutesDigital(aadatHaz)} haiz"
+        str += "then there will be a daur of ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} tuhr, " +
+                "${daysHoursMinutesDigital(aadatHaz,isDateOnly)} haiz"
     }else{
         //if istihazaAfter is bigger than addatTuhr +3, run daur
         if (istihazaAfter>=aadatTuhr+3){
@@ -110,32 +112,32 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
 
             if(remainder == 0.0){
                 for (j in 1 until quotient){
-                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
-                            "then the next ${daysHoursMinutesDigital(aadatHaz)} are haiz, "
+                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} are istihaza, " +
+                            "then the next ${daysHoursMinutesDigital(aadatHaz,isDateOnly)} are haiz, "
                 }
-                str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
-                        "then the last ${daysHoursMinutesDigital(aadatHaz)} are haiz. "
+                str+="then the next ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} are istihaza, " +
+                        "then the last ${daysHoursMinutesDigital(aadatHaz,isDateOnly)} are haiz. "
 
             }else{//remainder exists
                 for (j in 1 .. quotient){
-                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are istihaza, " +
-                            "then the next ${daysHoursMinutesDigital(aadatHaz)} are haiz, "
+                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} are istihaza, " +
+                            "then the next ${daysHoursMinutesDigital(aadatHaz,isDateOnly)} are haiz, "
                 }
                 if (remainder<aadatTuhr + 3){//it ended in tuhr
-                    str+="then the last ${daysHoursMinutesDigital(remainder)} are istihaza.\n"
+                    str+="then the last ${daysHoursMinutesDigital(remainder,isDateOnly)} are istihaza.\n"
 
                 }else{//it ended in haiz
-                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr)} are tuhr, " +
-                            "then the last ${daysHoursMinutesDigital(remainder-aadatTuhr)} are haiz\n"
+                    str+="then the next ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} are tuhr, " +
+                            "then the last ${daysHoursMinutesDigital(remainder-aadatTuhr,isDateOnly)} are haiz\n"
                     //change aadatHaiz
                     val newAadatHaz = remainder-aadatTuhr
                     //add aadat line
-                    str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
+                    str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz,isDateOnly)}/${daysHoursMinutesDigital(aadatTuhr,isDateOnly)}\n"
 
                 }
             }
         }else{
-            str += "and the last ${daysHoursMinutesDigital(istihazaAfter)} are istihaza.\n"
+            str += "and the last ${daysHoursMinutesDigital(istihazaAfter,isDateOnly)} are istihaza.\n"
 
         }
     }
@@ -189,7 +191,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
                     //add aadat line
                     println("$remainder remiander")
                     println("$aadatTuhr aadatTuhr")
-                    str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz1)}/${daysHoursMinutesDigital(aadatTuhr)}\n"
+                    str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz1,isDateOnly)}/${daysHoursMinutesDigital(aadatTuhr,isDateOnly)}\n"
                 }
            }
 
