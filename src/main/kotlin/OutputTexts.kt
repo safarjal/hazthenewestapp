@@ -1,14 +1,31 @@
 import kotlin.js.Date
 
-fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index:Int):String{
-    return if(fixedDurations[index].type==DurationType.ISTIMRAR){
-        "<b>${fixedDurations[index].type}</b>\n"
+fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>, isDateOnly:Boolean):String{
+    var index = 0
+    var str = ""
+    while (index<fixedDurations.size){
+        str += outputStringHeaderLine(fixedDurations,index, isDateOnly)
+        str += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
+        str += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
+        str += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
+
+        index++
+    }
+    return str
+}
+
+fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index:Int, isDateOnly: Boolean):String{
+    if(fixedDurations[index].type==DurationType.ISTIMRAR){
+        return "<b>${fixedDurations[index].type}</b>\n"
+    }else if((index +1)< fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days + fixedDurations[index+1].istihazaAfter)} ${fixedDurations[index].type}</b>\n"
     }else{
-        "<b>${daysHoursMinutesDigital(fixedDurations[index].days)} ${fixedDurations[index].type}</b>\n"
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days)} ${fixedDurations[index].type}</b>\n"
+
     }
 }
 
-fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, durations:List<Duration>, index:Int):String{
+fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, durations:List<Duration>, index:Int, isDateOnly: Boolean):String{
     if(fixedDurations[index].indices.size>1){
         var sum:Double = 0.0
         var str = ""
@@ -28,7 +45,7 @@ fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, dur
     }
 }
 
-fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,index: Int):String{
+fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     val istihazaAfter = fixedDurations[index].istihazaAfter
     var str = ""
     if(istihazaAfter!=0.0){
@@ -40,7 +57,7 @@ fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,ind
     return str
 }
 
-fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,index:Int):String{
+fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,index:Int, isDateOnly: Boolean):String{
     val mp = fixedDurations[index].biggerThanTen?.mp ?: return ""
     val gp = fixedDurations[index].biggerThanTen?.gp ?: return ""
     val dm = fixedDurations[index].biggerThanTen?.dm ?: return ""
@@ -132,9 +149,9 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
     val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter*MILLISECONDS_IN_A_DAY).toLong())
 
     if(istihazaBefore!=0.0){
-        str+="\tFrom ${parseDate(istihazaBeforeStartDate)} to ${parseDate(haizStartDate)} is istihaza, yaqeeni paki\n"
+        str+="\tFrom ${parseDate(istihazaBeforeStartDate, isDateOnly)} to ${parseDate(haizStartDate, isDateOnly)} is istihaza, yaqeeni paki\n"
     }
-    str+="\tFrom ${parseDate(haizStartDate)} to ${parseDate(istihazaAfterStartDate)} is haiz\n"
+    str+="\tFrom ${parseDate(haizStartDate, isDateOnly)} to ${parseDate(istihazaAfterStartDate, isDateOnly)} is haiz\n"
     if(istihazaAfter!=0.0){
         if (istihazaAfter>=aadatTuhr+3){
             //find quotient and remainder
@@ -154,17 +171,17 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
             for (j in 1 .. quotient){
                 aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
                 aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
-                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(aadatTuhrEndDate)} is istihaza, yaqeeni paki\n"
-                str+= "\tFrom ${parseDate(aadatTuhrEndDate)} to ${parseDate(aadatHaizEndDate)} is haiz\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(aadatTuhrEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrEndDate, isDateOnly)} to ${parseDate(aadatHaizEndDate, isDateOnly)} is haiz\n"
                 aadatTuhrStartDate=aadatHaizEndDate
             }
             if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
-                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(istihazaAfterEndDate)} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(istihazaAfterEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
 
             }else{//it ended in haiz or remainder is 0
                 aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-                str+= "\tFrom ${parseDate(aadatTuhrStartDate)} to ${parseDate(aadatTuhrEndDate)} is istihaza, yaqeeni paki\n"
-                str+= "\tFrom ${parseDate(aadatTuhrEndDate)} to ${parseDate(istihazaAfterEndDate)} is haiz\n"
+                str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(aadatTuhrEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
+                str+= "\tFrom ${parseDate(aadatTuhrEndDate, isDateOnly)} to ${parseDate(istihazaAfterEndDate, isDateOnly)} is haiz\n"
 
                 //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
                 if (remainder!=0.0){
@@ -177,7 +194,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
            }
 
         }else{//no duar
-            str+="\tFrom ${parseDate(istihazaAfterStartDate)} to ${parseDate(istihazaAfterEndDate)} is istihaza, yaqeeni paki\n"
+            str+="\tFrom ${parseDate(istihazaAfterStartDate, isDateOnly)} to ${parseDate(istihazaAfterEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
 
         }
     }

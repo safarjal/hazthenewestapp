@@ -124,9 +124,34 @@ fun daysHoursMinutesDigital(numberOfDays:Double):String{
     var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m";
     return(returnStatement);
 }
- fun parseDate(date: Date):String{
+ fun parseDate(date: Date, isDateOnly: Boolean):String{
+  //   Sat, 05 Jun 2021 06:21:59 GMT
+     var dateStr = (date.toUTCString()).dropLast(13).drop(5)
+     println(dateStr)
+     var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
+     println(hours)
+     var minutesStr = (date.toUTCString()).dropLast(7).drop(20)
+     var hoursStr:String
+     var ampm = "am"
+     if (hours >=12){
+         hours-=12
+         ampm = "pm"
+     }
+     if(hours == 0){
+         hours = 12
+     }
+     if(hours<10){
+         hoursStr = "0${hours}"
+     }else{
+         hoursStr = hours.toString()
+     }
 
-     return (date.toUTCString()).removeSuffix(":00 GMT")
 
-
+     if(isDateOnly == true){
+        return dateStr
+        //05 Jun 2021
+    }else{
+        //05 Jun 2021 06:21
+        return "${hoursStr}:${minutesStr} ${ampm}, on ${dateStr}"
+    }
  }

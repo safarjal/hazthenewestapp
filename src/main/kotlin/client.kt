@@ -275,12 +275,7 @@ private fun parseEntries() {
     val istimrar: Boolean = (document.getElementById(Ids.ISTIMRAR) as HTMLInputElement).checked
     val inputtedAadatHaz:Double? = (document.getElementById(Ids.HAIZ_AADAT) as HTMLInputElement).value.toDoubleOrNull()
     val inputtedAadatTuhr:Double? = (document.getElementById(Ids.TUHR_AADAT) as HTMLInputElement).value.toDoubleOrNull()
-    val output = try {
-        handleEntries(entries, istimrar, inputtedAadatHaz,inputtedAadatTuhr)
-    } catch (e: IllegalArgumentException) {
-        window.alert("Please enter the dates in order")
-        return
-    }
+    val output = handleEntries(entries, istimrar, inputtedAadatHaz,inputtedAadatTuhr, isDateOnly)
 
     document.getElementById(Ids.CONTENT)!!.innerHTML = output
         .replace("\n", "<br>")

@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?): String {
+fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?, isDateOnly:Boolean): String {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -41,7 +41,9 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
 
-    return dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+    dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+    return generateOutputString(fixedDurations, durations, isDateOnly)
+
 }
 fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     var date:Date = firstStartTime
@@ -108,9 +110,8 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?): String {
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?){
     var hazDatesList = mutableListOf<Entry>()
-    var outputStr = ""
     var aadatHaz:Double = -1.0
     var aadatTuhr:Double = -1.0
 
@@ -122,16 +123,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
     }
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
-
-        //also, start writing output
-            // line 1
-        outputStr += outputStringHeaderLine(fixedDurations, i)
-        //line 2 get the sum of everything that made this up
-        outputStr+= outputStringSumOfIndicesLine(fixedDurations,durations,i)
-
-        //if there is an added istihaza after, get that
-        outputStr+=outputStringIstihazaAfterLine(fixedDurations, i)
-
 
         //get aadat if dam is less than 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
@@ -147,6 +138,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             if(aadatHaz==-1.0 ||aadatTuhr==-1.0){
                 //give error message
                 window.alert("We need both aadaat to be able to solve this")
+                break
+            }else if(i<1){
+                //give error message
+                window.alert("We need at least one more period before this to be able to solve this")
                 break
             }else{
                 val mp = fixedDurations[i-1].days
@@ -169,8 +164,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
                 hazDatesList += Entry(sd, ed)
 
-
-                outputStr+=outputStringBiggerThan10Hall(fixedDurations,i)
 
                 //if istihazaAfter is bigger than addatTuhr +3, run daur
                 if (output.istihazaAfter>=aadatTuhr+3){
@@ -267,16 +260,9 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     aadatTuhrStartDate=aadatHaizEndDate
                 }
 
-
-
-                outputStr+=outputStringBiggerThan10Hall(fixedDurations,i)
-
-
             }
         }
     }
-    println(hazDatesList)
-    return outputStr
 }
 
 class FiveSoortainOutput (
