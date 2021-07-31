@@ -129,6 +129,11 @@ fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String
     var strHours = "${hours.toString()} گھنٹے "
     var strMinutes = "${minutes.toString()} منٹ "
     var strDays = "${days.toString()} دن "
+
+    if(hours==1.0){
+        strHours = "${hours.toString()} گھنٹا "
+    }
+
     if(hours==0.0){
         strHours = ""
     }
@@ -145,8 +150,8 @@ fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String
 //        strMinutes = "0${minutes}";
 //    }
     var returnStatement = "${strDays}${strHours}${strMinutes}"
-    if(isDateOnly==true){
-        returnStatement = "${strDays}"
+    if(isDateOnly){
+        returnStatement = strDays
     }
     return(returnStatement);
 }
