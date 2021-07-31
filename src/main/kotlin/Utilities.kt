@@ -4,13 +4,28 @@ import kotlinx.html.dom.createTree
 import kotlinx.html.js.onClickFunction
 import org.w3c.dom.*
 import kotlin.js.Date
+import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.round
+import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 const val MILLISECONDS_IN_A_DAY = 86400000.0
 val TAB = "&nbsp;".repeat(8)
+
+object UnicodeChars {
+    const val RED_CIRCLE = "&#x1F534;"
+    const val WHITE_CIRCLE = "&#x26AA;"
+    const val YELLOW_CIRCLE = "&#x1F7E1;"
+    const val GREEN_CIRCLE = "&#x1F7E2;"
+    const val BLACK_SQUARE = "&#9642;"
+    const val FAT_DASH = "&#x2796;"
+    const val ROSE = "&#x1F339;"
+    const val RAINBOW = "&#x1F308;"
+
+}
 
 
 private fun ChildNode.insertSiblingRelative(
@@ -101,6 +116,40 @@ fun currentTimeString(isDateOnly: Boolean): String {
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
 }
+fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String{
+    var totalMinutes = numberOfDays*24*60
+
+    var minutes=totalMinutes%60;
+    var remainingHours = (totalMinutes - minutes)/60
+    var hours = remainingHours % 24;
+    var days = (remainingHours - hours)/24;
+    minutes=round(minutes);
+    hours=round(hours)
+    days=round(days)
+    var strHours = "${hours.toString()} گھنٹے "
+    var strMinutes = "${minutes.toString()} منٹ "
+    var strDays = "${days.toString()} دن "
+    if(hours==0.0){
+        strHours = ""
+    }
+    if(days==0.0){
+        strDays = ""
+    }
+    if(minutes == 0.0){
+        strMinutes = ""
+    }
+//    if(hours<10){
+//        strHours = "0${hours}";
+//    }
+//    if(minutes<10){
+//        strMinutes = "0${minutes}";
+//    }
+    var returnStatement = "${strDays}${strHours}${strMinutes}"
+    if(isDateOnly==true){
+        returnStatement = "${strDays}"
+    }
+    return(returnStatement);
+}
 
 fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
     var totalMinutes = numberOfDays*24*60
@@ -155,4 +204,82 @@ fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
         //05 Jun 2021 06:21
         return "${hoursStr}:${minutesStr} ${ampm}, on ${dateStr}"
     }
+ }
+fun difference(date1:Date,date2:Date):Int{
+
+    var diffInDays = (date2.getTime()-date1.getTime())/MILLISECONDS_IN_A_DAY
+    return diffInDays.toInt()
+
+}
+
+ fun urduDateFormat(date: Date, isDateOnly: Boolean):String{
+     var day = date.getUTCDate().toString()
+     var month = date.getUTCMonth()
+     var urduMonth = ""
+     if (month == 0){
+         urduMonth = "جنوری"
+     }else if (month == 1){
+         urduMonth = "فروری"
+     }else if (month == 2){
+         urduMonth = "مارچ"
+     }else if (month == 3){
+         urduMonth = "اپریل"
+     }else if (month == 4){
+         urduMonth = "مئی"
+     }else if (month == 5){
+         urduMonth = "جون"
+     }else if (month == 6){
+         urduMonth = "جولائ"
+     }else if (month == 7){
+         urduMonth = "اگست"
+     }else if (month == 8){
+         urduMonth = "ستمبر"
+     }else if (month == 9){
+         urduMonth = "اکتوبر"
+     }else if (month == 10){
+         urduMonth = "نومبر"
+     }else if (month == 11){
+         urduMonth = "دسمبر"
+     }
+     var urduDay = ""
+     if(day=="1"){
+         urduDay = "یکم"
+     }else{
+         urduDay  = "$day"
+     }
+     if(isDateOnly==true){
+         return ("${urduDay} ${urduMonth}")
+     }else{//has time too
+         var hours = date.getUTCHours()
+         var minutes = date.getUTCMinutes()
+         var strMinutes = ""
+         if(minutes <10){
+             strMinutes = "0${minutes}"
+         }else{
+             strMinutes = minutes.toString()
+         }
+         var ampm=""
+         if (hours == 0){
+             ampm = "رات"
+             hours = 12
+         }else if(hours > 0 && hours<4){//1-3
+             ampm = "رات"
+         }else if(hours>3 && hours<12){//4-11
+             ampm = "صبح"
+         }else if(hours>11&&hours<15){//12-2
+             ampm = "دوپہر"
+             hours -= 12
+             if(hours == 0){hours+=12}
+         }else if(hours>14&&hours<19){//3-6
+             ampm = "شام"
+             hours -= 12
+         }else{//7-11
+             ampm = "رات"
+             hours-=12
+         }
+         return ("${urduDay} ${urduMonth} ${ampm} ${hours}:${strMinutes} بجے")
+
+
+     }
+
  }

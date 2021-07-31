@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?, isDateOnly:Boolean): String {
+fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?, isDateOnly:Boolean): OutputTexts {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -40,8 +40,9 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
-
+    println(1)
     dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+    println(2)
     return generateOutputString(fixedDurations, durations, isDateOnly)
 
 }
@@ -114,6 +115,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
     var hazDatesList = mutableListOf<Entry>()
     var aadatHaz:Double = -1.0
     var aadatTuhr:Double = -1.0
+    println(3)
 
     if (inputtedAadatHaz != null && inputtedAadatHaz>=3 && inputtedAadatHaz<=10){
         aadatHaz = inputtedAadatHaz
@@ -121,8 +123,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
     if (inputtedAadatTuhr!= null && inputtedAadatTuhr>=15){
         aadatTuhr = inputtedAadatTuhr
     }
+
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
+        println("i $i")
 
         //get aadat if dam is less than 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
@@ -144,7 +148,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 window.alert("We need at least one more period before this to be able to solve this")
                 break
             }else{
-                val mp = fixedDurations[i-1].days
+                val mp = fixedDurations[i-1].days + fixedDurations[i-1].istihazaAfter
+                println("mp is $mp")
                 val gp = aadatTuhr
                 val dm = fixedDurations[i].days
                 val hz = aadatHaz
@@ -156,13 +161,15 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
                 }
-                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
+                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
+                    output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
                 fixedDurations[i].biggerThanTen=hall
 
                 //put it in haz list
                 val sd = addTimeToDate(fixedDurations[i].startDate!!,(output.istihazaBefore*MILLISECONDS_IN_A_DAY).toLong())
                 val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
                 hazDatesList += Entry(sd, ed)
+                println("made it this far")
 
 
                 //if istihazaAfter is bigger than addatTuhr +3, run daur
@@ -182,17 +189,20 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
                         aadatTuhrStartDate=aadatHaizEndDate
                     }
+                    println("daur happening")
 
 
                     if (remainder<aadatTuhr + 3){//it ended in tuhr or right between haz and tuhr
                         //add istihazaAfter to next Tuhur mark it as fasid
                         //if it exists
                             //if remainder is not equal to zero
+                        println("i is $i")
+                        println("fixedDurations.size is ${fixedDurations.size}")
                         if(i<fixedDurations.size-1 && remainder>0){//there is a tuhur after this
                             fixedDurations[i+1].type=DurationType.TUHREFAASID
-                            fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
-                            fixedDurations[i].timeInMilliseconds-=(remainder*MILLISECONDS_IN_A_DAY).toLong()
-                            fixedDurations[i+i].istihazaAfter=remainder
+//                            fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
+//                            fixedDurations[i].timeInMilliseconds-=(remainder*MILLISECONDS_IN_A_DAY).toLong()
+                            fixedDurations[i+1].istihazaAfter=remainder
                         }
 
                     }else{//it ended in less than haiz
@@ -211,9 +221,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     //else add istihazaAfter to next Tuhr, mark it as fasid
                         //if it exists
                     if(i<fixedDurations.size-1){
+                        println("this too happened")
                         fixedDurations[i+1].type=DurationType.TUHREFAASID
-                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
-                        fixedDurations[i].timeInMilliseconds-=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
+//                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
+ //                       fixedDurations[i].timeInMilliseconds-=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
                         fixedDurations[i+1].istihazaAfter = output.istihazaAfter
                     }
 
@@ -263,6 +274,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             }
         }
     }
+
 }
 
 class FiveSoortainOutput (

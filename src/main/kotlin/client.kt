@@ -22,6 +22,7 @@ object Ids {
     }
 
     const val CONTENT = "content"
+    const val CONTENT_URDU = "content_urdu"
     const val ISTIMRAR = "istimrar"
     const val HAIZ_AADAT = "haiz_aadat"
     const val TUHR_AADAT = "tuhr_aadat"
@@ -62,6 +63,11 @@ fun Node.addInputLayout() {
             onSubmitFunction = { parseEntries() }
         }
         p { id = Ids.CONTENT }
+        p {
+            id = Ids.CONTENT_URDU
+            dir = Dir.rtl
+//            style = "font-family: Helvetica"
+        }
     }
 }
 
@@ -277,7 +283,12 @@ private fun parseEntries() {
     val inputtedAadatTuhr:Double? = (document.getElementById(Ids.TUHR_AADAT) as HTMLInputElement).value.toDoubleOrNull()
     val output = handleEntries(entries, istimrar, inputtedAadatHaz,inputtedAadatTuhr, isDateOnly)
 
-    document.getElementById(Ids.CONTENT)!!.innerHTML = output
+    document.getElementById(Ids.CONTENT)!!.innerHTML = output.englishText
         .replace("\n", "<br>")
         .replace("\t", TAB)
+
+    document.getElementById(Ids.CONTENT_URDU)!!.innerHTML = output.urduText
+        .replace("\n", "<br>")
+        .replace("\t", TAB)
+
 }
