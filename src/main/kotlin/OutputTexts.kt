@@ -154,10 +154,10 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     }
 
     fun haizLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed).toDouble()), isDateOnly)} حیض کے ہیں\n\n"
+        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} حیض کے ہیں۔\n\n"
     }
     fun istihazaLineUrdu(sd:Date,ed:Date):String{
-        return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed).toDouble(), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
+        return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
     }
 
 
