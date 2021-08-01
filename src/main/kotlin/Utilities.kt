@@ -93,24 +93,36 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 }
 
 
-fun Date.toDateInputString(isDateOnly: Boolean): String{
-    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    return toISOString().takeWhile { it != letterToTrimFrom }
-}
-
 /* Looks like the compiler argument for opting in to experimental features
  * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about it's
  * requirement here for now..
  */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalTime::class)
-// This is useful for setting the value (or min/max) of a datetime-local element.
-fun currentTimeString(isDateOnly: Boolean): String {
-    val currentTime = Date()
-    val localTimeSetInUtc = Date(currentTime.getTime() -
-            currentTime.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
-    return localTimeSetInUtc.toDateInputString(isDateOnly)
+fun Date.offsetLocalTimeToUtc() =
+    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+
+fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
+    val date = Date(dateString)
+    return if (isDateOnly) {
+        date
+    } else {
+        date.offsetLocalTimeToUtc()
+    }
 }
+
+fun Date.toDateInputString(isDateOnly: Boolean): String {
+    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
+    return toISOString().takeWhile { it != letterToTrimFrom }
+}
+
+fun convertInputValue(value: String, isDateOnly: Boolean): String {
+    if (value.isEmpty()) return ""
+    return parseToLocalDate(value, !isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
+        .toDateInputString(isDateOnly)
+}
+
+fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
 
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{

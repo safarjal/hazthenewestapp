@@ -59,7 +59,12 @@ fun Node.addInputLayout() {
             datesInputTable()
             istimrarCheckBox()
             br()
-            button { +"Calculate" }
+            button {
+                +"Calculate"
+                onClickFunction = {
+                    setMaxToCurrentTimeForTimeInputs()
+                }
+            }
             onSubmitFunction = { parseEntries() }
         }
         p { id = Ids.CONTENT }
@@ -157,7 +162,7 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean) {
                 id = Ids.Row.INPUT_START_TIME
                 required = true
                 onRowElementClickFunction = { row ->
-                    setMinMaxForTimeInput(row.rowIndexWithinTableBody * 2)
+                    setMinMaxForTimeInputs(row.rowIndexWithinTableBody * 2)
                 }
             }
         }
@@ -166,7 +171,7 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean) {
                 id = Ids.Row.INPUT_END_TIME
                 required = true
                 onRowElementClickFunction = { row ->
-                    setMinMaxForTimeInput((row.rowIndexWithinTableBody * 2) + 1)
+                    setMinMaxForTimeInputs((row.rowIndexWithinTableBody * 2) + 1)
                 }
             }
         }
@@ -226,7 +231,21 @@ private fun ensureAddFirstButtonOnlyShownInFirstRow() {
     }
 }
 
-private fun setMinMaxForTimeInput(index: Int) {
+private fun setMaxToCurrentTimeForTimeInputs() {
+    val timeInputs: List<HTMLInputElement> = inputDatesRows.flatMap { row ->
+        listOf(
+            row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement,
+            row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
+        )
+    }
+    val lastEntryIndex = timeInputs.indexOfLast { it.value.isNotEmpty() }
+    val currentTimeString = currentTimeString(isDateOnly)
+    for (timeInput in timeInputs.drop(lastEntryIndex.coerceAtLeast(0))) {
+        timeInput.max = currentTimeString
+    }
+}
+
+private fun setMinMaxForTimeInputs(index: Int) {
     val timeInputs: List<HTMLInputElement> = inputDatesRows.flatMap { row ->
         listOf(
             row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement,
@@ -250,14 +269,12 @@ private fun onClickDateConfigurationRadioButton() {
         val startDateInput = row.getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
         val endDateInput = row.getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 
-        fun convertValueToNewFormat(dateInput: HTMLInputElement): String {
-            val inputDateInMilliseconds = dateInput.valueAsNumber
-            if (inputDateInMilliseconds.isNaN()) return ""
-            return Date(inputDateInMilliseconds).toDateInputString(isDateOnly)
-        }
-
-        val startDateNewValue = convertValueToNewFormat(startDateInput)
-        val endDateNewValue = convertValueToNewFormat(endDateInput)
+        val startDateNewValue = convertInputValue(startDateInput.value, isDateOnly)
+        val startDateNewMin = convertInputValue(startDateInput.min, isDateOnly)
+        val startDateNewMax = convertInputValue(startDateInput.max, isDateOnly)
+        val endDateNewValue = convertInputValue(endDateInput.value, isDateOnly)
+        val endDateNewMin = convertInputValue(endDateInput.min, isDateOnly)
+        val endDateNewMax = convertInputValue(endDateInput.max, isDateOnly)
 
         val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
         val dateInputTypeName = dateInputType.realValue
@@ -266,7 +283,11 @@ private fun onClickDateConfigurationRadioButton() {
         endDateInput.type = dateInputTypeName
 
         startDateInput.value = startDateNewValue
+        startDateInput.min = startDateNewMin
+        startDateInput.max = startDateNewMax
         endDateInput.value = endDateNewValue
+        endDateInput.min = endDateNewMin
+        endDateInput.max = endDateNewMax
     }
 }
 
