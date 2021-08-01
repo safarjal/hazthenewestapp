@@ -1,7 +1,6 @@
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
-import kotlinx.html.js.onClickFunction
 import org.w3c.dom.*
 import kotlin.js.Date
 import kotlin.math.abs
@@ -54,14 +53,6 @@ inline fun <reified T : Element> Element.getAncestor(): T? {
         parent = parent.parentElement
     }
 }
-
-var CommonAttributeGroupFacade.onRowElementClickFunction : (HTMLTableRowElement) -> Unit
-    get() = throw UnsupportedOperationException("You can't read variable onClick")
-    set(newValue) {
-        onClickFunction = { event ->
-            newValue((event.currentTarget as Element).getAncestor()!!)
-        }
-    }
 
 val HTMLTableRowElement.rowIndexWithinTableBody get() =
     (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
