@@ -61,7 +61,7 @@ private val timeInputs get() = inputDatesRows.flatMap { row -> listOf(row.startT
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        setInitialStateForInputTable()
+        setupRows()
     }
 }
 
@@ -232,6 +232,19 @@ private fun FlowContent.timeInput(
     }
 }
 
+private fun FlowContent.removeButton() {
+    button(type = ButtonType.button) {
+        +"Remove"
+        id = Ids.Row.BUTTON_REMOVE
+        onClickFunction = { event ->
+            val row = findRow(event)
+            updateMinMaxForTimeInputsBeforeRemovingRow(row.rowIndexWithinTableBody)
+            row.remove()
+            setupFirstRow()
+        }
+    }
+}
+
 private fun FlowContent.addButton() {
     button(type = ButtonType.button) {
         +"Add"
@@ -244,20 +257,7 @@ private fun FlowContent.addButton() {
                     maxTimeInput = row.endTimeInput.max
                 )
             }
-            setStateForFirstRow()
-        }
-    }
-}
-
-private fun FlowContent.removeButton() {
-    button(type = ButtonType.button) {
-        +"Remove"
-        id = Ids.Row.BUTTON_REMOVE
-        onClickFunction = { event ->
-            val row = findRow(event)
-            updateMinMaxForTimeInputsBeforeRemovingRow(row.rowIndexWithinTableBody)
-            row.remove()
-            setStateForFirstRow()
+            setupRows()
         }
     }
 }
@@ -275,19 +275,19 @@ private fun TagConsumer<HTMLElement>.addBeforeButton() {
                     maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
                 )
             }
-            setStateForFirstRow()
+            setupRows()
         }
     }
 }
 
 private fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
-private fun setInitialStateForInputTable() {
-    setStateForFirstRow()
+private fun setupRows() {
     setMaxToCurrentTimeForTimeInputs()
+    setupFirstRow()
 }
 
-private fun setStateForFirstRow() {
+private fun setupFirstRow() {
     updateRemoveButtonDisabledStateForFirstRow()
     ensureAddFirstButtonOnlyShownInFirstRow()
 }
