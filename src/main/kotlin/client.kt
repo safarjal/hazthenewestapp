@@ -79,11 +79,13 @@ fun Node.addInputLayout() {
             calculateButton()
             onSubmitFunction = { parseEntries() }
         }
-        p { id = Ids.CONTENT_ENG }
-        p {
+        content {
+            id = Ids.CONTENT_ENG
+        }
+        content {
             id = Ids.CONTENT_URDU
             dir = Dir.rtl
-//            style = "font-family: Helvetica"
+//            style += "font-family: Helvetica"
         }
     }
 }
@@ -160,6 +162,13 @@ private fun FlowContent.calculateButton() {
     button {
         +"Calculate"
         onClickFunction = { setMaxToCurrentTimeForTimeInputs() }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
+    p {
+        style = "white-space: pre-wrap;"
+        block()
     }
 }
 
@@ -375,13 +384,7 @@ private fun parseEntries() {
             endTime = Date(row.endTimeInput.valueAsNumber)
         )
     }
-
     val output = handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly)
-
     contentEnglishElement.innerHTML = output.englishText
-        .replace("\n", "<br>")
-        .replace("\t", TAB)
     contentUrduElement.innerHTML = output.urduText
-        .replace("\n", "<br>")
-        .replace("\t", TAB)
 }

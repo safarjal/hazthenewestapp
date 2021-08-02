@@ -12,7 +12,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 const val MILLISECONDS_IN_A_DAY = 86400000.0
-val TAB = "&nbsp;".repeat(8)
 
 object UnicodeChars {
     const val RED_CIRCLE = "&#x1F534;"
