@@ -103,7 +103,13 @@ fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
 
 fun Date.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    return toISOString().takeWhile { it != letterToTrimFrom }
+    val string = toISOString().takeWhile { it != letterToTrimFrom }
+    return if (isDateOnly) {
+        string
+    } else {
+        // Drop any precision below minutes (seconds, milliseconds, etc.)
+        string.take(16)
+    }
 }
 
 fun convertInputValue(value: String, isDateOnly: Boolean): String {

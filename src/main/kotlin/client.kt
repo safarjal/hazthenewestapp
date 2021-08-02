@@ -363,6 +363,7 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(rowIndex: Int) {
 }
 
 private fun onClickDateConfigurationRadioButton() {
+    val isDateOnly = isDateOnly
     for (timeInput in timeInputs) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
@@ -374,6 +375,9 @@ private fun onClickDateConfigurationRadioButton() {
         timeInput.value = newValue
         timeInput.min = newMin
         timeInput.max = newMax
+    }
+    if (!isDateOnly) {
+        setMaxToCurrentTimeForTimeInputs()
     }
 }
 
