@@ -1,3 +1,4 @@
+import kotlinx.browser.document
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
@@ -11,7 +12,12 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
+
 const val MILLISECONDS_IN_A_DAY = 86400000.0
+
+object Events {
+    const val VISIBILITY_CHANGE = "visibilitychange"
+}
 
 object UnicodeChars {
     const val RED_CIRCLE = "&#x1F534;"
@@ -24,6 +30,8 @@ object UnicodeChars {
     const val RAINBOW = "&#x1F308;"
 
 }
+
+val Document.isHidden get() = document["hidden"] as Boolean
 
 
 private fun ChildNode.insertSiblingRelative(

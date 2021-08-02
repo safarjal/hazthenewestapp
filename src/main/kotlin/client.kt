@@ -62,6 +62,11 @@ fun main() {
     window.onload = {
         document.body!!.addInputLayout()
         setupRows()
+        document.addEventListener(Events.VISIBILITY_CHANGE, {
+            if (!document.isHidden) {
+                setMaxToCurrentTimeForTimeInputs()
+            }
+        })
     }
 }
 
