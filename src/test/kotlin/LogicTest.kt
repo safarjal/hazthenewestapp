@@ -69,4 +69,17 @@ class LogicTest {
         assertEquals(1,fixedDurations[2].indices.size)
 
     }
+    @Test
+    fun testAddStartDateToFixedDurations(){
+        firstStartTime = Date(2020,7,31)
+        val fixedDurations = mutableListOf(
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*3).toLong())
+        )
+        assertEquals(Date(2020,7,31),fixedDurations[0].startDate)
+        assertEquals(Date(2020,8,2),fixedDurations[0].startDate)
+        assertEquals(Date(2020,8,5),fixedDurations[0].startDate)
+
+    }
 }
