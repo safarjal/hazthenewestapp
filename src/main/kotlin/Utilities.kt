@@ -1,7 +1,7 @@
+import kotlinx.browser.document
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
-import kotlinx.html.js.onClickFunction
 import org.w3c.dom.*
 import kotlin.js.Date
 import kotlin.math.abs
@@ -12,8 +12,12 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
+
 const val MILLISECONDS_IN_A_DAY = 86400000.0
-val TAB = "&nbsp;".repeat(8)
+
+object Events {
+    const val VISIBILITY_CHANGE = "visibilitychange"
+}
 
 object UnicodeChars {
     const val RED_CIRCLE = "&#x1F534;"
@@ -26,6 +30,8 @@ object UnicodeChars {
     const val RAINBOW = "&#x1F308;"
 
 }
+
+val Document.isHidden get() = document["hidden"] as Boolean
 
 
 private fun ChildNode.insertSiblingRelative(
@@ -54,14 +60,6 @@ inline fun <reified T : Element> Element.getAncestor(): T? {
         parent = parent.parentElement
     }
 }
-
-var CommonAttributeGroupFacade.onRowElementClickFunction : (HTMLTableRowElement) -> Unit
-    get() = throw UnsupportedOperationException("You can't read variable onClick")
-    set(newValue) {
-        onClickFunction = { event ->
-            newValue((event.currentTarget as Element).getAncestor()!!)
-        }
-    }
 
 val HTMLTableRowElement.rowIndexWithinTableBody get() =
     (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
@@ -93,24 +91,42 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 }
 
 
-fun Date.toDateInputString(isDateOnly: Boolean): String{
-    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    return toISOString().takeWhile { it != letterToTrimFrom }
-}
-
 /* Looks like the compiler argument for opting in to experimental features
  * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about it's
  * requirement here for now..
  */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalTime::class)
-// This is useful for setting the value (or min/max) of a datetime-local element.
-fun currentTimeString(isDateOnly: Boolean): String {
-    val currentTime = Date()
-    val localTimeSetInUtc = Date(currentTime.getTime() -
-            currentTime.getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
-    return localTimeSetInUtc.toDateInputString(isDateOnly)
+fun Date.offsetLocalTimeToUtc() =
+    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+
+fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
+    val date = Date(dateString)
+    return if (isDateOnly) {
+        date
+    } else {
+        date.offsetLocalTimeToUtc()
+    }
 }
+
+fun Date.toDateInputString(isDateOnly: Boolean): String {
+    val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
+    val string = toISOString().takeWhile { it != letterToTrimFrom }
+    return if (isDateOnly) {
+        string
+    } else {
+        // Drop any precision below minutes (seconds, milliseconds, etc.)
+        string.take(16)
+    }
+}
+
+fun convertInputValue(value: String, isDateOnly: Boolean): String {
+    if (value.isEmpty()) return ""
+    return parseToLocalDate(value, !isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
+        .toDateInputString(isDateOnly)
+}
+
+fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
 
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
