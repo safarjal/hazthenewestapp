@@ -94,7 +94,7 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
             //find remainder
             var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
             if (remainder < aadatTuhr+3){//it ended in istihaza
-                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -(remainder+MILLISECONDS_IN_A_DAY).toLong()) }
+                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -(remainder*MILLISECONDS_IN_A_DAY).toLong()) }
                 askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, (aadatTuhr*MILLISECONDS_IN_A_DAY).toLong()) }!!
             }else{//it ended in haiz
 
