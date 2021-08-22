@@ -160,11 +160,6 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
         return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
     }
 
-
-
-
-
-
     if((fixedDurations[index].days>10&&fixedDurations[index].type==DurationType.DAM)
         ||istimrar == true){
         strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
@@ -216,9 +211,7 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
                     if (remainder!=0.0){
                         val newAadatHaz1 = remainder-aadatTuhr
                         //add aadat line
-                        println("$remainder remiander")
-                        println("$aadatTuhr aadatTuhr")
-                        strUrdu+="\tAadat: ${(daysHoursMinutesDigitalUrdu(newAadatHaz1,isDateOnly))}/${daysHoursMinutesDigitalUrdu(aadatTuhr,isDateOnly)}\n"
+//                        strUrdu+="\tAadat: ${(daysHoursMinutesDigitalUrdu(newAadatHaz1,isDateOnly))}/${daysHoursMinutesDigitalUrdu(aadatTuhr,isDateOnly)}\n"
                     }
                 }
 
@@ -250,7 +243,7 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
         }else{
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
                 outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days,isDateOnly)} دن خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"
+                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days,isDateOnly)} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"
 
             }else{
                 outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
