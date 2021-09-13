@@ -101,8 +101,12 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
             }
 
         }else{//short istihazaAfter
-            var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()) }
-            askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr*MILLISECONDS_IN_A_DAY).toLong()) }!!
+            if(fixedDurations[index].biggerThanTen?.qism==Soortain.A_3){
+                //this can change to A2. gotta figure out when. set ask again to then.
+            }else{
+                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()) }
+                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr*MILLISECONDS_IN_A_DAY).toLong()) }!!
+            }
         }
         if(askAgainDate!=null){
             strUrdu = "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(askAgainDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
