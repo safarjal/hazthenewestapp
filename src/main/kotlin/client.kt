@@ -98,15 +98,8 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.headers() {
     h1 {
         +"Mashqi Sawal"
-        onClickFunction = {
-            if (secondaryInputsContainer?.remove() == null) {
-                primaryInputsContainer.after {
-                    inputFormDiv(inputContainerToCopyFrom = primaryInputsContainer) {
-                        id = Ids.INPUT_CONTAINER_SECONDARY
-                    }
-                }
-            }
-        }
+        // TODO: Add toggle button for Zallah to handle this
+        onClickFunction = { toggleSecondaryInputsContainer() }
     }
     p {
         +"""
@@ -117,6 +110,17 @@ private fun TagConsumer<HTMLElement>.headers() {
             check box. Once all periods have been added, click Calculate button, to get the solution.
         """.trimIndent()
     }
+}
+
+private fun toggleSecondaryInputsContainer() {
+    if (secondaryInputsContainer?.remove() != null) return
+
+    primaryInputsContainer.after {
+        inputFormDiv(inputContainerToCopyFrom = primaryInputsContainer) {
+            id = Ids.INPUT_CONTAINER_SECONDARY
+        }
+    }
+    setupRows(secondaryInputsContainer!!)
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(
