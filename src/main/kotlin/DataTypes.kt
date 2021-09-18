@@ -23,7 +23,7 @@ data class FixedDuration(
     var type: DurationType,
     var timeInMilliseconds: Long,
     var indices: MutableList<Int> = mutableListOf(),
-    var istihazaAfter: Double = 0.0,
+    var istihazaAfter: Long = 0,
     var biggerThanTen: BiggerThanTenDm? = null,
     var startDate: Date? = null,
 ) {
@@ -31,14 +31,14 @@ data class FixedDuration(
 }
 
 data class BiggerThanTenDm(
-    var mp: Double, //mawjooda paki
-    var gp: Double, //aadat of Tuhr before solving this
-    var dm: Double, //dam
-    var hz: Double, //aadat of haiz before solving this
+    var mp: Long, //mawjooda paki
+    var gp: Long, //aadat of Tuhr before solving this
+    var dm: Long, //dam
+    var hz: Long, //aadat of haiz before solving this
     var qism: Soortain, //name of that case A-1, A-2, A-3, B-2, B-3
-    var istihazaBefore: Double, //number of days of istihaza before haiz
-    var haiz:Double, //number of days of haiz
-    var istihazaAfter: Double, //number of days of istihaza after haiz
-    var aadatHaiz:Double, //aadat of haiz after solving this
-    var aadatTuhr:Double //aadat of tuhur after solving this
+    var istihazaBefore: Long, //number of days of istihaza before haiz
+    var haiz:Long, //number of days of haiz
+    var istihazaAfter: Long, //number of days of istihaza after haiz
+    var aadatHaiz:Long, //aadat of haiz after solving this
+    var aadatTuhr:Long //aadat of tuhur after solving this
 )

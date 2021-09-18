@@ -132,7 +132,8 @@ fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDat
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
 }
-fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String{
+fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
+    val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
     var totalMinutes = numberOfDays*24*60
 
     var minutes=totalMinutes%60;
@@ -180,7 +181,8 @@ fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String
     return(returnStatement);
 }
 
-fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
+fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
+    val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
     var totalMinutes = numberOfDays*24*60
 
     var minutes=totalMinutes%60;
@@ -243,10 +245,10 @@ fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
         return "${hoursStr}:${minutesStr} ${ampm}, on ${dateStr}"
     }
  }
-fun difference(date1:Date,date2:Date):Double{
+fun difference(date1:Date,date2:Date):Long{
 
-    var diffInDays = (date2.getTime()-date1.getTime())/MILLISECONDS_IN_A_DAY
-    return diffInDays
+    var diff = (date2.getTime()-date1.getTime()).toLong()
+    return diff
 
 }
 

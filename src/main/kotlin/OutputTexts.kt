@@ -2,17 +2,25 @@ import kotlin.js.Date
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean):OutputTexts{
+    println("Start of GenerateOutputString")
     var index = 0
     var englishStr = ""
     while (index<fixedDurations.size){
         englishStr += outputStringHeaderLine(fixedDurations,index, isDateOnly)
+        println("English header complete")
         englishStr += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
+        println("English sum of indices complete")
         englishStr += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
+        println("English istihaza after complete")
         englishStr += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
+        println("English bigger than 10 complete")
+
 
         index++
     }
+    println("English output complete")
     var urduStr = generateUrduOutputString(fixedDurations, isDateOnly)
+    println("Urdu output completed")
     return OutputTexts(englishStr,urduStr)
 }
 
@@ -57,16 +65,16 @@ fun outputStringUrduFilHaalLine(fixedDurations: MutableList<FixedDuration>, inde
     var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
     var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
     var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
-    if(istihazaAfter==0.0){//last halat is haiz
+    if(istihazaAfter==0L){//last halat is haiz
         strUrdu+=filHaalHaizStr
     }else if(istihazaAfter>=aadatTuhr+3){//last period is long istihaza, lets's figure out more
         //find remainder
         var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
 
-        if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
+        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
             strUrdu+=filHaalPakiStr
         }else{//it ended in haiz or remainder is 0
-             if (remainder!=0.0){//it ended in haiz
+             if (remainder!=0L){//it ended in haiz
                  strUrdu+=filHaalHaizStr
             }else{//it ended in tuhr
                 strUrdu+=filHaalPakiStr
@@ -87,15 +95,15 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
     var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
 
 
-    if(istihazaAfter!=0.0){//if there is an istihaza after
+    if(istihazaAfter!=0L){//if there is an istihaza after
         var endDateOfBleeding = fixedDurations[index].startDate?.let { addTimeToDate(it, fixedDurations[index].timeInMilliseconds) }
         var askAgainDate:Date? = null
         if(istihazaAfter>=aadatTuhr+3){//if istihazaAfter is long
             //find remainder
             var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
             if (remainder < aadatTuhr+3){//it ended in istihaza
-                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -(remainder*MILLISECONDS_IN_A_DAY).toLong()) }
-                askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, (aadatTuhr*MILLISECONDS_IN_A_DAY).toLong()) }!!
+                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -remainder) }
+                askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, aadatTuhr) }!!
             }else{//it ended in haiz
 
             }
@@ -104,8 +112,8 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
             if(fixedDurations[index].biggerThanTen?.qism==Soortain.A_3){
                 //this can change to A2. gotta figure out when. set ask again to then.
             }else{
-                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()) }
-                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr*MILLISECONDS_IN_A_DAY).toLong()) }!!
+                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter)) }
+                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr)) }!!
             }
         }
         if(askAgainDate!=null){
@@ -124,11 +132,11 @@ fun outputStringUrduAadatLine(fixedDurations: MutableList<FixedDuration>, index:
     if (istihazaAfter>=aadatTuhr+3) {//if we have a long istihaza after, there is a possibility that aadat changed
         //find remainder
         var remainder = istihazaAfter % (aadatHaiz + aadatTuhr)
-        if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr, so aadat doesn't change
+        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr, so aadat doesn't change
 
         }else{//it ended in haiz or remainder is 0 (which means ending in tuhr)
             //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
-            if (remainder!=0.0){
+            if (remainder!=0L){
                 val aadatHaiz = (remainder-aadatTuhr).toString()
             }
         }
@@ -171,48 +179,48 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
 
 
         val istihazaBeforeStartDate:Date = fixedDurations[index].startDate!!
-        val haizStartDate = addTimeToDate(istihazaBeforeStartDate, (istihazaBefore*MILLISECONDS_IN_A_DAY).toLong())
-        val istihazaAfterStartDate = addTimeToDate(haizStartDate, (haiz*MILLISECONDS_IN_A_DAY).toLong())
-        val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter*MILLISECONDS_IN_A_DAY).toLong())
+        val haizStartDate = addTimeToDate(istihazaBeforeStartDate, (istihazaBefore))
+        val istihazaAfterStartDate = addTimeToDate(haizStartDate, (haiz))
+        val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter))
 
-        if(istihazaBefore!=0.0){
+        if(istihazaBefore!=0L){
             strUrdu+= istihazaLineUrdu(istihazaBeforeStartDate,haizStartDate)
             strUrdu+= "${UnicodeChars.BLACK_SQUARE} اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔\n\n"
         }
         strUrdu+= haizLineUrdu(haizStartDate, istihazaAfterStartDate, isDateOnly)
-        if(istihazaAfter!=0.0){
+        if(istihazaAfter!=0L){
             if (istihazaAfter>=aadatTuhr+3){
                 //find quotient and remainder
                 var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-                var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
+                var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toLong()
 
                 if(istimrar == true){
                     strUrdu+= "\t\n"
                     strUrdu+= "\tThe first 3 cycles of daur are as follows:\n"
-                    remainder = 0.0
-                    quotient = 3
+                    remainder = 0L
+                    quotient = 3L
                 }
 
                 var aadatTuhrStartDate:Date = istihazaAfterStartDate
                 var aadatTuhrEndDate:Date
                 var aadatHaizEndDate:Date
                 for (j in 1 .. quotient){
-                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-                    aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
+                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                    aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz))
                     strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,aadatTuhrEndDate)
                     strUrdu+= haizLineUrdu(aadatTuhrEndDate,aadatHaizEndDate, isDateOnly)
                     aadatTuhrStartDate=aadatHaizEndDate
                 }
-                if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
+                if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
                     strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,istihazaAfterEndDate)
 
                 }else{//it ended in haiz or remainder is 0
-                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
+                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                     strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,aadatTuhrEndDate)
                     strUrdu+= haizLineUrdu(aadatTuhrEndDate,istihazaAfterEndDate, isDateOnly)
 
                     //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
-                    if (remainder!=0.0){
+                    if (remainder!=0L){
                         val newAadatHaz1 = remainder-aadatTuhr
                         //add aadat line
 //                        strUrdu+="\tAadat: ${(daysHoursMinutesDigitalUrdu(newAadatHaz1,isDateOnly))}/${daysHoursMinutesDigitalUrdu(aadatTuhr,isDateOnly)}\n"
@@ -239,30 +247,30 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
         var sd:Date = fixedDurations[index].startDate!!
         var et = addTimeToDate(fixedDurations[index].startDate!!,fixedDurations[index].timeInMilliseconds)
         if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
-            et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter.toLong())
+            et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
         }
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             outputString = "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days,isDateOnly)} حیض۔\n\n"
+                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} حیض۔\n\n"
         }else{
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
                 outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days,isDateOnly)} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"
+                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"
 
             }else{
                 outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days,isDateOnly)} خون۔\n\n"
+                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون۔\n\n"
             }
         }
 
     }else if (fixedDurations[index].type == DurationType.TUHR){
-        var days = fixedDurations[index].days
-        outputString =  "${daysHoursMinutesDigitalUrdu(days, isDateOnly)} پاکی۔\n\n"
+        var time = fixedDurations[index].timeInMilliseconds
+        outputString =  "${daysHoursMinutesDigitalUrdu(time, isDateOnly)} پاکی۔\n\n"
 
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID){
         outputString =  "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}" +
-                " استحاضہ + ${daysHoursMinutesDigitalUrdu(fixedDurations[index].days, isDateOnly)} پاکی =" +
-                " ${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].days), isDateOnly)} طہر فاسد۔\n\n"
+                " استحاضہ + ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)} پاکی =" +
+                " ${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)} طہر فاسد۔\n\n"
     }else{//istimrar
         var sd:Date = fixedDurations[index].startDate!!
         var et = addTimeToDate(fixedDurations[index].startDate!!,fixedDurations[index].timeInMilliseconds)
@@ -275,20 +283,20 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index:Int
     if(fixedDurations[index].type==DurationType.ISTIMRAR){
         return "<b>${fixedDurations[index].type}</b>\n"
     }else if((index +1)< fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
-        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days,isDateOnly)} ${fixedDurations[index].type}</b>\n"
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)} ${fixedDurations[index].type}</b>\n"
     }else{
-        return "<b>${daysHoursMinutesDigital(fixedDurations[index].days,isDateOnly)} ${fixedDurations[index].type}</b>\n"
+        return "<b>${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)} ${fixedDurations[index].type}</b>\n"
 
     }
 }
 
 fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, durations:List<Duration>, index:Int, isDateOnly: Boolean):String{
     if(fixedDurations[index].indices.size>1){
-        var sum:Double = 0.0
+        var sum:Long = 0L
         var str = ""
         for (index in fixedDurations[index].indices){
-            sum+=durations[index].days
-            str += " + ${daysHoursMinutesDigital(durations[index].days,isDateOnly)}"
+            sum+=durations[index].timeInMilliseconds
+            str += " + ${daysHoursMinutesDigital(durations[index].timeInMilliseconds,isDateOnly)}"
         }
         str=str.removePrefix(" + ")
         if(fixedDurations[index].type==DurationType.ISTIMRAR){
@@ -305,10 +313,10 @@ fun outputStringSumOfIndicesLine(fixedDurations: MutableList<FixedDuration>, dur
 fun outputStringIstihazaAfterLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     val istihazaAfter = fixedDurations[index].istihazaAfter
     var str = ""
-    if(istihazaAfter!=0.0){
-        str +="\t${daysHoursMinutesDigital(fixedDurations[index].days,isDateOnly)} " +
+    if(istihazaAfter!=0L){
+        str +="\t${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)} " +
                 "tuhr + ${daysHoursMinutesDigital(istihazaAfter,isDateOnly)} istihaza " +
-                "= ${daysHoursMinutesDigital((fixedDurations[index].days +
+                "= ${daysHoursMinutesDigital((fixedDurations[index].timeInMilliseconds +
                         fixedDurations[index].istihazaAfter),isDateOnly)} tuhr-e-faasid\n"
     }
 
@@ -366,9 +374,9 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
         if (istihazaAfter>=aadatTuhr+3){
             //find quotient and remainder
             val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-            val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
+            val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toLong()
 
-            if(remainder == 0.0){
+            if(remainder == 0L){
                 for (j in 1 until quotient){
                     str+="then the next ${daysHoursMinutesDigital(aadatTuhr,isDateOnly)} are istihaza, " +
                             "then the next ${daysHoursMinutesDigital(aadatHaz,isDateOnly)} are haiz, "
@@ -404,47 +412,47 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
 
     //output hukm in dates
     val istihazaBeforeStartDate:Date = fixedDurations[index].startDate!!
-    val haizStartDate = addTimeToDate(istihazaBeforeStartDate, (istihazaBefore*MILLISECONDS_IN_A_DAY).toLong())
-    val istihazaAfterStartDate = addTimeToDate(haizStartDate, (haiz*MILLISECONDS_IN_A_DAY).toLong())
-    val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter*MILLISECONDS_IN_A_DAY).toLong())
+    val haizStartDate = addTimeToDate(istihazaBeforeStartDate, istihazaBefore)
+    val istihazaAfterStartDate = addTimeToDate(haizStartDate, haiz)
+    val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, istihazaAfter)
 
-    if(istihazaBefore!=0.0){
+    if(istihazaBefore!=0L){
         str+="\tFrom ${parseDate(istihazaBeforeStartDate, isDateOnly)} to ${parseDate(haizStartDate, isDateOnly)} is istihaza, yaqeeni paki\n"
     }
     str+="\tFrom ${parseDate(haizStartDate, isDateOnly)} to ${parseDate(istihazaAfterStartDate, isDateOnly)} is haiz\n"
-    if(istihazaAfter!=0.0){
+    if(istihazaAfter!=0L){
         if (istihazaAfter>=aadatTuhr+3){
             //find quotient and remainder
             var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-            var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
+            var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toLong()
 
             if(istimrar == true){
                 str+= "\t\n"
                 str+= "\tThe first 3 cycles of daur are as follows:\n"
-                remainder = 0.0
-                quotient = 3
+                remainder = 0L
+                quotient = 3L
             }
 
             var aadatTuhrStartDate:Date = istihazaAfterStartDate
             var aadatTuhrEndDate:Date
             var aadatHaizEndDate:Date
             for (j in 1 .. quotient){
-                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-                aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
+                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,aadatTuhr)
+                aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,aadatHaz)
                 str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(aadatTuhrEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
                 str+= "\tFrom ${parseDate(aadatTuhrEndDate, isDateOnly)} to ${parseDate(aadatHaizEndDate, isDateOnly)} is haiz\n"
                 aadatTuhrStartDate=aadatHaizEndDate
             }
-            if (remainder<aadatTuhr + 3 && remainder!=0.0){//it ended in tuhr
+            if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
                 str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(istihazaAfterEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
 
             }else{//it ended in haiz or remainder is 0
-                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
+                aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,aadatTuhr)
                 str+= "\tFrom ${parseDate(aadatTuhrStartDate, isDateOnly)} to ${parseDate(aadatTuhrEndDate, isDateOnly)} is istihaza, yaqeeni paki\n"
                 str+= "\tFrom ${parseDate(aadatTuhrEndDate, isDateOnly)} to ${parseDate(istihazaAfterEndDate, isDateOnly)} is haiz\n"
 
                 //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
-                if (remainder!=0.0){
+                if (remainder!=0L){
                     val newAadatHaz1 = remainder-aadatTuhr
                     //add aadat line
                     str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz1,isDateOnly)}/${daysHoursMinutesDigital(aadatTuhr,isDateOnly)}\n"

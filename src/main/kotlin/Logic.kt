@@ -45,7 +45,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
     dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-    println("After dealing with bigger than 10: ${fixedDurations}")
+    println("After dealing with bigger than 10D: ${fixedDurations}")
     return generateOutputString(fixedDurations, durations, isDateOnly)
 
 }
@@ -115,31 +115,33 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 
 fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?){
     var hazDatesList = mutableListOf<Entry>()
-    var aadatHaz:Double = -1.0
-    var aadatTuhr:Double = -1.0
+    var aadatHaz:Long = -1
+    var aadatTuhr:Long = -1
 
     if (inputtedAadatHaz != null && inputtedAadatHaz>=3 && inputtedAadatHaz<=10){
-        aadatHaz = inputtedAadatHaz
+        aadatHaz = (inputtedAadatHaz * MILLISECONDS_IN_A_DAY).toLong()
     }
     if (inputtedAadatTuhr!= null && inputtedAadatTuhr>=15){
-        aadatTuhr = inputtedAadatTuhr
+        aadatTuhr = (inputtedAadatTuhr * MILLISECONDS_IN_A_DAY).toLong()
     }
+
+    //now the aadaat are in milliseconds
 
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
         //get aadat if dam is less than 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
-            aadatHaz = fixedDurations[i].days
+            aadatHaz = fixedDurations[i].timeInMilliseconds
             if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
-                aadatTuhr = fixedDurations[i-1].days
+                aadatTuhr = fixedDurations[i-1].timeInMilliseconds
             }
             //put it in haz lis
             hazDatesList += Entry(fixedDurations[i].startDate!!, addTimeToDate(fixedDurations[i].startDate!!, fixedDurations[i].timeInMilliseconds))
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
-            if(aadatHaz==-1.0 ||aadatTuhr==-1.0){
+            if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                 //give error message
                 window.alert("We need both aadaat to be able to solve this")
                 break
@@ -148,10 +150,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 window.alert("We need at least one more period before this to be able to solve this")
                 break
             }else{
-                val mp = fixedDurations[i-1].days + fixedDurations[i-1].istihazaAfter
-                val gp = aadatTuhr
-                val dm = fixedDurations[i].days
-                val hz = aadatHaz
+                val mp:Long = fixedDurations[i-1].timeInMilliseconds + fixedDurations[i-1].istihazaAfter
+                val gp:Long = aadatTuhr
+                val dm:Long = fixedDurations[i].timeInMilliseconds
+                val hz:Long = aadatHaz
                 val output:FiveSoortainOutput = fiveSoortain(mp, gp, dm, hz)
                 println("MP is ${mp}")
                 println("GP is ${gp}")
@@ -162,7 +164,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
                 //deal with output
                 //update aadats
-                aadatHaz = output.haiz.toDouble()
+                aadatHaz = output.haiz.toLong()
                 if(output.aadatTuhrChanges && fixedDurations[i-1].type!=DurationType.TUHREFAASID){
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
@@ -190,8 +192,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     var aadatHaizStartDate:Date = sd
                     var aadatHaizEndDate:Date = ed
                     for (j in 1 .. quotient){
-                        aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-                        aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
+                        aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr).toLong())
+                        aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz).toLong())
                         hazDatesList += Entry(aadatHaizStartDate,aadatHaizEndDate)
 
                         aadatTuhrStartDate=aadatHaizEndDate
@@ -239,18 +241,19 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
         }
         if(fixedDurations[i].type==DurationType.ISTIMRAR) {//if the last period is an istimrar
             //if we hit a dam bigger than 10, check to see if we have aadat
-            if (aadatHaz == -1.0 || aadatTuhr == -1.0) {
+            if (aadatHaz == (-1).toLong() || aadatTuhr == (-1).toLong()) {
                 //give error message
                 window.alert("We need both aadaat to be able to solve this")
                 break
             } else {
-                val dm = 1000.0
-                val mp = fixedDurations[i - 1].days
+                val veryBigArbitraryNumber = 1000;
+                val dm:Long = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong()
+                val mp = fixedDurations[i - 1].timeInMilliseconds
                 val gp = aadatTuhr
                 val hz = aadatHaz
                 val output: FiveSoortainOutput = threeSoortainIstimrar(mp, gp, hz)
                 //update aadats
-                aadatHaz = output.haiz.toDouble()
+                aadatHaz = output.haiz.toLong()
                 if(output.aadatTuhrChanges && fixedDurations[i-1].type!=DurationType.TUHREFAASID){
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
@@ -285,48 +288,49 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
 class FiveSoortainOutput (
     val soorat: Soortain,
-    val istihazaBefore: Double,
-    val haiz:Double,
-    val istihazaAfter: Double,
+    val istihazaBefore: Long,
+    val haiz:Long,
+    val istihazaAfter: Long,
     val aadatTuhrChanges:Boolean
 )
 
-fun threeSoortainIstimrar(mp:Double, gp:Double, hz: Double):FiveSoortainOutput{
+fun threeSoortainIstimrar(mp:Long, gp:Long, hz: Long):FiveSoortainOutput{
     val soorat: Soortain;
-    val istihazaBefore:Double;
-    val haiz:Double;
-    val istihazaAfter:Double;
+    val istihazaBefore:Long;
+    val haiz:Long;
+    val istihazaAfter:Long;
     val aadatTuhrChanges:Boolean; // 0 for gp, 1 for mp (change)
+    val veryBigArbitraryNumber = 1000;
 
     if (mp <= gp) {    //Qism A (Always A-1 in istimrar)
         soorat = Soortain.A_1;
         istihazaBefore = gp-mp;
         haiz = hz;
-        istihazaAfter = 1000.0;
+        istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
         aadatTuhrChanges = false;
     }else {	// mp>gp qism B
-        if (hz - (mp - gp) >= 3) {							// soorat B-2
+        if (hz - (mp - gp) >= 3*MILLISECONDS_IN_A_DAY) {							// soorat B-2
             soorat = Soortain.B_2;
-            istihazaBefore = 0.0;
+            istihazaBefore = 0;
             haiz = hz-(mp-gp);
-            istihazaAfter = 1000.0;
+            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
             aadatTuhrChanges = true;
         }else{ //if (hz - (mp - gp) < 3) {						// soorat B-3
             soorat = Soortain.B_3;
-            istihazaBefore = 0.0;
+            istihazaBefore = 0;
             haiz = hz;
-            istihazaAfter = 1000.0;
+            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
             aadatTuhrChanges = true;
         }
     }
     return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
 }
 
-fun fiveSoortain(mp: Double, gp: Double, dm: Double, hz:Double):FiveSoortainOutput{
+fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
     val soorat: Soortain;
-    val istihazaBefore:Double;
-    val haiz:Double;
-    val istihazaAfter:Double;
+    val istihazaBefore:Long;
+    val haiz:Long;
+    val istihazaAfter:Long;
     val aadatTuhrChanges:Boolean; // 0 for gp, 1 for mp (change)
 
     if (mp <= gp) {    //Qism A
@@ -339,30 +343,30 @@ fun fiveSoortain(mp: Double, gp: Double, dm: Double, hz:Double):FiveSoortainOutp
             istihazaAfter = dm-(gp-mp)-hz;
             aadatTuhrChanges = false;
         }
-        else if (3 <= dm-(gp-mp) && dm-(gp-mp) < hz) {  // soorat A-2
+        else if (3*MILLISECONDS_IN_A_DAY <= dm-(gp-mp) && dm-(gp-mp) < hz) {  // soorat A-2
             soorat = Soortain.A_2;
             istihazaBefore = gp-mp;
             haiz = dm-(gp-mp);
-            istihazaAfter = 0.0;
+            istihazaAfter = 0;
             aadatTuhrChanges = false;
         }
-        else{ //if (dm - (gp - mp) < 3) {                  // soorat A-3
+        else{ //if (dm - (gp - mp) < 3*MILLISECONDS_IN_A_DAY) {                  // soorat A-3
             soorat = Soortain.A_3;
-            istihazaBefore = 0.0;
+            istihazaBefore = 0;
             haiz = hz;
             istihazaAfter = dm-hz;
             aadatTuhrChanges = true;
         }
     }else {	// mp>gp qism B
-        if (hz - (mp - gp) >= 3) {							// soorat B-2
+        if (hz - (mp - gp) >= 3*MILLISECONDS_IN_A_DAY) {							// soorat B-2
             soorat = Soortain.B_2;
-            istihazaBefore = 0.0;
+            istihazaBefore = 0;
             haiz = hz-(mp-gp);
             istihazaAfter = dm-(hz-(mp-gp));
             aadatTuhrChanges = true;
-        }else{ //if (hz - (mp - gp) < 3) {						// soorat B-3
+        }else{ //if (hz - (mp - gp) < 3*MILLISECONDS_IN_A_DAY) {						// soorat B-3
             soorat = Soortain.B_3;
-            istihazaBefore = 0.0;
+            istihazaBefore = 0;
             haiz = hz;
             istihazaAfter = dm-hz;
             aadatTuhrChanges = true;
