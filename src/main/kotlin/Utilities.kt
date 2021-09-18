@@ -52,11 +52,11 @@ fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertSiblingR
 fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 
-inline fun <reified T : Element> Element.getAncestor(): T? {
+inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boolean = { true }): T? {
     var parent: Element? = parentElement
     while (true) {
         if (parent == null) return null
-        if (parent is T) return parent
+        if (parent is T && predicate(parent)) return parent
         parent = parent.parentElement
     }
 }

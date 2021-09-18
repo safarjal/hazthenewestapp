@@ -9,7 +9,7 @@ import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import kotlin.js.Date
 
-const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = false
+private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = false
 
 object Ids {
     const val INPUT_TABLE = "input_table"
@@ -24,9 +24,12 @@ object Ids {
 
     const val CONTENT_ENG = "content_eng"
     const val CONTENT_URDU = "content_urdu"
+    const val INPUT_CONTAINER_PREFIX = "input_container"
+    const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
+    const val INPUT_CONTAINER_SECONDARY = "${INPUT_CONTAINER_PREFIX}_secondary"
     const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
-    const val HAIZ_AADAT_INPUT = "haiz_aadat_input"
-    const val TUHR_AADAT_INPUT = "tuhr_aadat_input"
+    const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
+    const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
     const val DATE_AND_OR_RADIO = "date_and_or_time"
@@ -35,16 +38,19 @@ object Ids {
 private val contentEnglishElement get() = document.getElementById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val contentUrduElement get() = document.getElementById(Ids.CONTENT_URDU) as HTMLParagraphElement
 
-private val isDateOnly get() = (document.getElementById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
-private val isIstimrar get() = (document.getElementById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
-private val aadatHaz get() = (document.getElementById(Ids.HAIZ_AADAT_INPUT) as HTMLInputElement).value
-    .takeUnless(String::isEmpty)?.toDouble()
-private val aadatTuhr get() = (document.getElementById(Ids.TUHR_AADAT_INPUT) as HTMLInputElement).value
-    .takeUnless(String::isEmpty)?.toDouble()
+private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_PRIMARY) as HTMLElement
+private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_SECONDARY) as HTMLElement?
 
-private val inputDatesRows: List<HTMLTableRowElement>
+private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.aadatHazString get() = (getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement).value
+private val HTMLElement.aadatTuhrString get() = (getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement).value
+private val HTMLElement.aadatHaz get() = aadatHazString.takeUnless(String::isEmpty)?.toDouble()
+private val HTMLElement.aadatTuhr get() = aadatTuhrString.takeUnless(String::isEmpty)?.toDouble()
+
+private val HTMLElement.inputDatesRows: List<HTMLTableRowElement>
     get() {
-        val inputDatesTable = document.getElementById(Ids.INPUT_TABLE) as HTMLTableElement
+        val inputDatesTable = getChildById(Ids.INPUT_TABLE) as HTMLTableElement
         val inputDatesTableBody = inputDatesTable.tBodies[0] as HTMLTableSectionElement
         @Suppress("UNCHECKED_CAST")
         return inputDatesTableBody.rows.asList() as List<HTMLTableRowElement>
@@ -56,15 +62,15 @@ private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BU
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
 
-private val timeInputs get() = inputDatesRows.flatMap { row -> listOf(row.startTimeInput, row.endTimeInput) }
+private val HTMLElement.timeInputs get() = inputDatesRows.flatMap { row -> listOf(row.startTimeInput, row.endTimeInput) }
 
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        setupRows()
+        setupRows(primaryInputsContainer)
         document.addEventListener(Events.VISIBILITY_CHANGE, {
             if (!document.isHidden) {
-                setMaxToCurrentTimeForTimeInputs()
+                setMaxToCurrentTimeForTimeInputs(primaryInputsContainer)
             }
         })
     }
@@ -73,16 +79,10 @@ fun main() {
 fun Node.addInputLayout() {
     append {
         headers()
-
-        form(action = "javascript:void(0);") {
-            dateConfigurationRadioButtons()
-            br()
-            aadatInputs()
-            datesInputTable()
-            istimrarCheckBox()
-            br()
-            calculateButton()
-            onSubmitFunction = { parseEntries() }
+        div {
+            inputFormDiv {
+                id = Ids.INPUT_CONTAINER_PRIMARY
+            }
         }
         content {
             id = Ids.CONTENT_ENG
@@ -98,6 +98,15 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.headers() {
     h1 {
         +"Mashqi Sawal"
+        onClickFunction = {
+            if (secondaryInputsContainer?.remove() == null) {
+                primaryInputsContainer.after {
+                    inputFormDiv(inputContainerToCopyFrom = primaryInputsContainer) {
+                        id = Ids.INPUT_CONTAINER_SECONDARY
+                    }
+                }
+            }
+        }
     }
     p {
         +"""
@@ -110,12 +119,37 @@ private fun TagConsumer<HTMLElement>.headers() {
     }
 }
 
-private fun FlowContent.dateConfigurationRadioButtons() {
+private fun TagConsumer<HTMLElement>.inputFormDiv(
+    inputContainerToCopyFrom: HTMLElement? = null,
+    block : DIV.() -> Unit = {}
+) {
+    div {
+        style = "width:50%; float: left;"
+        inputForm(inputContainerToCopyFrom)
+        block()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
+    form(action = "javascript:void(0);") {
+        dateConfigurationRadioButtons(inputContainerToCopyFrom)
+        br()
+        aadatInputs(inputContainerToCopyFrom)
+        datesInputTable(inputContainerToCopyFrom)
+        istimrarCheckBox(inputContainerToCopyFrom)
+        br()
+        calculateButton()
+        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
+    }
+}
+
+private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
+    val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     radioInput {
         id = Ids.DATE_TIME_RADIO
         name = Ids.DATE_AND_OR_RADIO
-        checked = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
-        onChangeFunction = { onClickDateConfigurationRadioButton() }
+        checked = !isDateOnly
+        onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
     }
     label {
         htmlFor = Ids.DATE_TIME_RADIO
@@ -124,8 +158,8 @@ private fun FlowContent.dateConfigurationRadioButtons() {
     radioInput {
         id = Ids.DATE_ONLY_RADIO
         name = Ids.DATE_AND_OR_RADIO
-        checked = IS_DEFAULT_INPUT_MODE_DATE_ONLY
-        onChangeFunction = { onClickDateConfigurationRadioButton() }
+        checked = isDateOnly
+        onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
     }
     label {
         htmlFor = Ids.DATE_ONLY_RADIO
@@ -133,40 +167,42 @@ private fun FlowContent.dateConfigurationRadioButtons() {
     }
 }
 
-private fun FlowContent.aadatInputs() {
+private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     label {
-        htmlFor = Ids.HAIZ_AADAT_INPUT
+        htmlFor = Ids.AADAT_HAIZ_INPUT
         +("Haiz Aadat: ")
     }
     numberInput {
-        id = Ids.HAIZ_AADAT_INPUT
+        id = Ids.AADAT_HAIZ_INPUT
         step = "any"
+        value = inputContainerToCopyFrom?.aadatHazString.orEmpty()
     }
     label {
-        htmlFor = Ids.TUHR_AADAT_INPUT
+        htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
     }
     numberInput {
-        id = Ids.TUHR_AADAT_INPUT
+        id = Ids.AADAT_TUHR_INPUT
         step = "any"
+        value = inputContainerToCopyFrom?.aadatTuhrString.orEmpty()
     }
 }
 
-private fun FlowContent.istimrarCheckBox() {
+private fun FlowContent.istimrarCheckBox(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.ISTIMRAR_CHECKBOX
         +"Istimrar"
     }
     checkBoxInput {
         id = Ids.ISTIMRAR_CHECKBOX
-        checked = false
+        checked = inputContainerToCopyFrom?.isIstimrar == true
     }
 }
 
 private fun FlowContent.calculateButton() {
     button {
         +"Calculate"
-        onClickFunction = { setMaxToCurrentTimeForTimeInputs() }
+        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
 }
 
@@ -177,7 +213,7 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
     }
 }
 
-private fun TagConsumer<HTMLElement>.datesInputTable() {
+private fun TagConsumer<HTMLElement>.datesInputTable(inputContainerToCopyFrom: HTMLElement?) {
     table {
         id = Ids.INPUT_TABLE
         thead {
@@ -187,11 +223,18 @@ private fun TagConsumer<HTMLElement>.datesInputTable() {
             }
         }
         tbody {
-            inputRow(
-                isDateOnlyLayout = IS_DEFAULT_INPUT_MODE_DATE_ONLY,
-                minTimeInput = "",
-                maxTimeInput = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
-            )
+            if (inputContainerToCopyFrom != null) {
+                val isDateOnly = inputContainerToCopyFrom.isDateOnly
+                for (inputDateRow in inputContainerToCopyFrom.inputDatesRows) {
+                    inputRow(isDateOnly, inputDateRow.startTimeInput, inputDateRow.endTimeInput)
+                }
+            } else {
+                inputRow(
+                    isDateOnlyLayout = IS_DEFAULT_INPUT_MODE_DATE_ONLY,
+                    minTimeInput = "",
+                    maxTimeInput = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+                )
+            }
         }
     }
 }
@@ -208,11 +251,35 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
                 id = Ids.Row.INPUT_END_TIME
             }
         }
+        addRemoveButtonsTableData()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.inputRow(
+    isDateOnlyLayout: Boolean,
+    startTimeInputToCopyFrom: HTMLInputElement,
+    endTimeInputToCopyFrom: HTMLInputElement
+) {
+    tr {
         td {
-            id = Ids.Row.BUTTONS_CONTAINER
-            addButton()
-            removeButton()
+            timeInput(isDateOnlyLayout, startTimeInputToCopyFrom, indexWithinRow = 0) {
+                id = Ids.Row.INPUT_START_TIME
+            }
         }
+        td {
+            timeInput(isDateOnlyLayout, endTimeInputToCopyFrom, indexWithinRow = 1) {
+                id = Ids.Row.INPUT_END_TIME
+            }
+        }
+        addRemoveButtonsTableData()
+    }
+}
+
+private fun TR.addRemoveButtonsTableData() {
+    td {
+        id = Ids.Row.BUTTONS_CONTAINER
+        addButton()
+        removeButton()
     }
 }
 
@@ -223,15 +290,42 @@ private fun FlowContent.timeInput(
     indexWithinRow: Int,
     block: INPUT.() -> Unit = {}
 ) {
-    customDateTimeInput(isDateOnlyLayout) {
-        required = true
+    timeInput(isDateOnlyLayout, indexWithinRow) {
         min = minTimeInput
         max = maxTimeInput
-        onClickFunction = {
-            setMaxToCurrentTimeForTimeInputs()
+        block()
+    }
+}
+
+private fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    timeInputToCopyFrom: HTMLInputElement,
+    indexWithinRow: Int,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(isDateOnlyLayout, indexWithinRow) {
+        value = timeInputToCopyFrom.value
+        min = timeInputToCopyFrom.min
+        max = timeInputToCopyFrom.max
+        block()
+    }
+}
+
+private fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    indexWithinRow: Int,
+    block: INPUT.() -> Unit = {}
+) {
+    customDateTimeInput(isDateOnlyLayout) {
+        required = true
+        onClickFunction = { event ->
+            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
         onChangeFunction = { event ->
-            setMinMaxForTimeInputsOnInput((findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow)
+            setMinMaxForTimeInputsOnInput(
+                findInputContainer(event),
+                (findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow
+            )
         }
         block()
     }
@@ -243,9 +337,10 @@ private fun FlowContent.removeButton() {
         id = Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
-            updateMinMaxForTimeInputsBeforeRemovingRow(row.rowIndexWithinTableBody)
+            val inputContainer = findInputContainer(event)
+            updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer, row.rowIndexWithinTableBody)
             row.remove()
-            setupFirstRow()
+            setupFirstRow(inputContainer)
         }
     }
 }
@@ -255,14 +350,15 @@ private fun FlowContent.addButton() {
         +"Add"
         onClickFunction = { event ->
             val row = findRow(event)
+            val inputContainer = findInputContainer(event)
             row.after {
                 inputRow(
-                    isDateOnly,
+                    inputContainer.isDateOnly,
                     minTimeInput = row.endTimeInput.run { value.takeUnless(String::isEmpty) ?: min },
                     maxTimeInput = row.endTimeInput.max
                 )
             }
-            setupRows()
+            setupRows(inputContainer)
         }
     }
 }
@@ -273,37 +369,41 @@ private fun TagConsumer<HTMLElement>.addBeforeButton() {
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val row = findRow(event)
+            val inputContainer = findInputContainer(event)
             row.before {
                 inputRow(
-                    isDateOnly,
+                    inputContainer.isDateOnly,
                     minTimeInput = row.startTimeInput.min,
                     maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
                 )
             }
-            setupRows()
+            setupRows(inputContainer)
         }
     }
 }
 
+private fun findInputContainer(event: Event) =
+    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER_PREFIX)}!!
 private fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
-private fun setupRows() {
-    setMaxToCurrentTimeForTimeInputs()
-    setupFirstRow()
+private fun setupRows(inputContainer: HTMLElement) {
+    setMaxToCurrentTimeForTimeInputs(inputContainer)
+    setupFirstRow(inputContainer)
 }
 
-private fun setupFirstRow() {
-    updateRemoveButtonDisabledStateForFirstRow()
-    ensureAddFirstButtonOnlyShownInFirstRow()
+private fun setupFirstRow(inputContainer: HTMLElement) {
+    updateRemoveButtonDisabledStateForFirstRow(inputContainer)
+    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
 }
 
-private fun updateRemoveButtonDisabledStateForFirstRow() {
+private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
+    val inputDatesRows = inputContainer.inputDatesRows
     inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
     inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
 }
 
-private fun ensureAddFirstButtonOnlyShownInFirstRow() {
-    for ((index, row) in inputDatesRows.withIndex()) {
+private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
+    for ((index, row) in inputContainer.inputDatesRows.withIndex()) {
         if (index > 0) {
             row.addBeforeButton?.remove()
         } else if (row.addBeforeButton == null) {
@@ -312,16 +412,16 @@ private fun ensureAddFirstButtonOnlyShownInFirstRow() {
     }
 }
 
-private fun setMaxToCurrentTimeForTimeInputs() {
-    val currentTime = currentTimeString(isDateOnly)
-    for (timeInput in timeInputs.asReversed()) {
+private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
+    val currentTime = currentTimeString(inputContainer.isDateOnly)
+    for (timeInput in inputContainer.timeInputs.asReversed()) {
         timeInput.max = currentTime
         if (timeInput.value.isNotEmpty()) break
     }
 }
 
-private fun setMinMaxForTimeInputsOnInput(index: Int) {
-    val timeInputs = timeInputs
+private fun setMinMaxForTimeInputsOnInput(inputContainer: HTMLElement, index: Int) {
+    val timeInputs = inputContainer.timeInputs
     val timeInput = timeInputs[index]
     val min: String
     val max: String
@@ -349,8 +449,8 @@ private fun setMinMaxForTimeInputsOnInput(index: Int) {
     }
 }
 
-private fun updateMinMaxForTimeInputsBeforeRemovingRow(rowIndex: Int) {
-    val timeInputs = timeInputs
+private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLElement, rowIndex: Int) {
+    val timeInputs = inputContainer.timeInputs
     val startDateIndex = rowIndex * 2
     val endDateIndex = startDateIndex + 1
     val min = timeInputs[startDateIndex].min
@@ -367,9 +467,9 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(rowIndex: Int) {
     }
 }
 
-private fun onClickDateConfigurationRadioButton() {
-    val isDateOnly = isDateOnly
-    for (timeInput in timeInputs) {
+private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
+    val isDateOnly = inputContainer.isDateOnly
+    for (timeInput in inputContainer.timeInputs) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
         val newMax = convertInputValue(timeInput.max, isDateOnly)
@@ -382,19 +482,19 @@ private fun onClickDateConfigurationRadioButton() {
         timeInput.max = newMax
     }
     if (!isDateOnly) {
-        setMaxToCurrentTimeForTimeInputs()
+        setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
 }
 
-private fun parseEntries() {
+private fun parseEntries(inputContainer: HTMLElement) {
     println("Calculate button was clicked")
-    val entries = inputDatesRows.map { row ->
+    val entries = inputContainer.inputDatesRows.map { row ->
         Entry(
             startTime = Date(row.startTimeInput.valueAsNumber),
             endTime = Date(row.endTimeInput.valueAsNumber)
         )
     }
-    val output = handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly)
+    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly) }
     contentEnglishElement.innerHTML = output.englishText
     contentUrduElement.innerHTML = output.urduText
 }
