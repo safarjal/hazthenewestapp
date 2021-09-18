@@ -142,6 +142,14 @@ fun daysHoursMinutesDigitalUrdu(numberOfDays:Double, isDateOnly: Boolean):String
     minutes=round(minutes);
     hours=round(hours)
     days=round(days)
+    if(minutes == 60.0){
+        minutes = 0.0
+        hours+=1.0
+    }
+    if(hours==24.0){
+        hours = 0.0
+        days += 1.0
+    }
     var strHours = "${hours.toString()} گھنٹے "
     var strMinutes = "${minutes.toString()} منٹ "
     var strDays = "${days.toString()} دن "
@@ -182,6 +190,15 @@ fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
     minutes=round(minutes);
     hours=round(hours)
     days=round(days)
+    if(minutes == 60.0){
+        minutes = 0.0
+        hours+=1.0
+    }
+    if(hours==24.0){
+        hours = 0.0
+        days += 1.0
+    }
+
     var strHours = hours.toString()
     var strMinutes = minutes.toString()
     var strDays = days.toString()
