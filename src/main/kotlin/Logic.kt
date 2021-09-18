@@ -33,16 +33,19 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         }
         .toMutableList()
     addIndicesToFixedDurations(fixedDurations)
+    println("This is the raw fixedDurations after adding indices: ${fixedDurations}")
     removeTuhrLessThan15(fixedDurations)
+    println("This is fixedDurations after removing less than 15T: ${fixedDurations}")
     removeDamLessThan3(fixedDurations)
+    println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
     addStartDateToFixedDurations(fixedDurations)
+    println("Now we add start date: ${fixedDurations}")
 
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
-    println(1)
     dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-    println(2)
+    println("After dealing with bigger than 10: ${fixedDurations}")
     return generateOutputString(fixedDurations, durations, isDateOnly)
 
 }
@@ -58,7 +61,6 @@ fun addIndicesToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     var i =0
     while(i<fixedDurations.size){
         fixedDurations[i].indices.add(i)
-//        println(fixedDurations[i].indices)
         i++
     }
 }
@@ -115,7 +117,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
     var hazDatesList = mutableListOf<Entry>()
     var aadatHaz:Double = -1.0
     var aadatTuhr:Double = -1.0
-    println(3)
 
     if (inputtedAadatHaz != null && inputtedAadatHaz>=3 && inputtedAadatHaz<=10){
         aadatHaz = inputtedAadatHaz
@@ -126,7 +127,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
-        println("i $i")
 
         //get aadat if dam is less than 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
@@ -149,11 +149,17 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 break
             }else{
                 val mp = fixedDurations[i-1].days + fixedDurations[i-1].istihazaAfter
-                println("mp is $mp")
                 val gp = aadatTuhr
                 val dm = fixedDurations[i].days
                 val hz = aadatHaz
                 val output:FiveSoortainOutput = fiveSoortain(mp, gp, dm, hz)
+                println("MP is ${mp}")
+                println("GP is ${gp}")
+                println("Dm is ${dm}")
+                println("Hz is ${hz}")
+                println("Soorat is ${output.soorat}")
+                println("istihazaBefore is ${output.istihazaBefore}, haiz is ${output.haiz} and istihazaAfter is ${output.istihazaAfter}")
+
                 //deal with output
                 //update aadats
                 aadatHaz = output.haiz.toDouble()
@@ -161,6 +167,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
                 }
+                println("Aadat after this should be ${aadatTuhr}/${aadatHaz}")
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
                     output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
                 fixedDurations[i].biggerThanTen=hall
@@ -169,11 +176,11 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val sd = addTimeToDate(fixedDurations[i].startDate!!,(output.istihazaBefore*MILLISECONDS_IN_A_DAY).toLong())
                 val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
                 hazDatesList += Entry(sd, ed)
-                println("made it this far")
 
 
                 //if istihazaAfter is bigger than addatTuhr +3, run daur
                 if (output.istihazaAfter>=aadatTuhr+3){
+                    println("Istihaza After is bigger than aadatTuhr+3, running daur")
                     //find quotient and remainder
                     val remainder = output.istihazaAfter%(aadatHaz+aadatTuhr)
                     val quotient = ((output.istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
@@ -189,15 +196,12 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
                         aadatTuhrStartDate=aadatHaizEndDate
                     }
-                    println("daur happening")
 
 
                     if (remainder<aadatTuhr + 3){//it ended in tuhr or right between haz and tuhr
                         //add istihazaAfter to next Tuhur mark it as fasid
                         //if it exists
                             //if remainder is not equal to zero
-                        println("i is $i")
-                        println("fixedDurations.size is ${fixedDurations.size}")
                         if(i<fixedDurations.size-1 && remainder>0){//there is a tuhur after this
                             fixedDurations[i+1].type=DurationType.TUHREFAASID
 //                            fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
@@ -218,10 +222,12 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     }
 
                 }else{
+                    println("Istihaza After is smaller than aadatTuhr+3, not running daur")
+
                     //else add istihazaAfter to next Tuhr, mark it as fasid
                         //if it exists
-                    if(i<fixedDurations.size-1){
-                        println("this too happened")
+                    if(i<fixedDurations.size-1 && fixedDurations[i].istihazaAfter > 0.0){
+                        println("marking next tuhr as fasid, because there is istihaza at the end of this dam")
                         fixedDurations[i+1].type=DurationType.TUHREFAASID
 //                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
  //                       fixedDurations[i].timeInMilliseconds-=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()

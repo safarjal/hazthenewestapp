@@ -447,8 +447,6 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
                 if (remainder!=0.0){
                     val newAadatHaz1 = remainder-aadatTuhr
                     //add aadat line
-                    println("$remainder remiander")
-                    println("$aadatTuhr aadatTuhr")
                     str+="\tAadat: ${daysHoursMinutesDigital(newAadatHaz1,isDateOnly)}/${daysHoursMinutesDigital(aadatTuhr,isDateOnly)}\n"
                 }
            }

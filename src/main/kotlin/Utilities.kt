@@ -244,7 +244,6 @@ fun daysHoursMinutesDigital(numberOfDays:Double, isDateOnly: Boolean):String{
     }
  }
 fun difference(date1:Date,date2:Date):Double{
-    println(date2.getTime())
 
     var diffInDays = (date2.getTime()-date1.getTime())/MILLISECONDS_IN_A_DAY
     return diffInDays

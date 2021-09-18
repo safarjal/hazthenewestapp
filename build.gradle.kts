@@ -1,6 +1,7 @@
 plugins {
     kotlin("js") version "1.5.10"
 //    id("kotlin2js") version "1.5.20"
+//    id("kotlin2js") version "1.5.30"
 }
 
 group = "me.safar"

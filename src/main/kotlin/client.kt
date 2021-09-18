@@ -387,6 +387,7 @@ private fun onClickDateConfigurationRadioButton() {
 }
 
 private fun parseEntries() {
+    println("Calculate button was clicked")
     val entries = inputDatesRows.map { row ->
         Entry(
             startTime = Date(row.startTimeInput.valueAsNumber),
