@@ -498,7 +498,12 @@ private fun parseEntries(inputContainer: HTMLElement) {
             endTime = Date(row.endTimeInput.valueAsNumber)
         )
     }
-    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly) }
+
+    //these are arbitrary values. we must form proper inputs.
+    val isPregnancy = false
+    val pregnancy = Pregnancy(Date(2020,3,1),Date(2020,11,13), 31, true)
+
+    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, pregnancy) }
     contentEnglishElement.innerHTML = output.englishText
     contentUrduElement.innerHTML = output.urduText
 }

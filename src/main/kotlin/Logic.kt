@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?, isDateOnly:Boolean): OutputTexts {
+fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Double?, inputtedAadatTuhr:Double?, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy): OutputTexts {
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -34,21 +34,116 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         .toMutableList()
     addIndicesToFixedDurations(fixedDurations)
     println("This is the raw fixedDurations after adding indices: ${fixedDurations}")
-    removeTuhrLessThan15(fixedDurations)
-    println("This is fixedDurations after removing less than 15T: ${fixedDurations}")
-    removeDamLessThan3(fixedDurations)
-    println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
-    addStartDateToFixedDurations(fixedDurations)
-    println("Now we add start date: ${fixedDurations}")
 
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
-    dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-    println("After dealing with bigger than 10D: ${fixedDurations}")
+
+    if(isPregnancy==true){
+        addStartDateToFixedDurations(fixedDurations)
+        println("Now we add start date: ${fixedDurations}")
+        markAllTuhrsInPregnancyAsHaml(fixedDurations, pregnancy)
+
+        if(pregnancy.mustabeenUlKhilqat==false){
+            //if it's not mustabeen ulkhilqat, deal with it like haiz
+            removeTuhrLessThan15(fixedDurations)
+            println("This is fixedDurations after removing less than 15T: ${fixedDurations}")
+            removeDamLessThan3(fixedDurations)
+            println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
+            addStartDateToFixedDurations(fixedDurations)
+            println("Now we add start date again: ${fixedDurations}")
+            dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            println("After dealing with bigger than 10D: ${fixedDurations}")
+            return generateOutputString(fixedDurations, durations, isDateOnly)
+        }else{         //it is mustabeen ul khilqat
+            //mark all dam in pregnancy as isithaza.
+            markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
+
+        }
+
+    }else{
+        removeTuhrLessThan15(fixedDurations)
+        println("This is fixedDurations after removing less than 15T: ${fixedDurations}")
+        removeDamLessThan3(fixedDurations)
+        println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
+        addStartDateToFixedDurations(fixedDurations)
+        println("Now we add start date: ${fixedDurations}")
+        dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+        println("After dealing with bigger than 10D: ${fixedDurations}")
+        return generateOutputString(fixedDurations, durations, isDateOnly)
+    }
+
     return generateOutputString(fixedDurations, durations, isDateOnly)
 
+
+
 }
+fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
+    var i =0
+    while(i<fixedDurations.size){
+        var endDateOfFixedDuration = fixedDurations[i].startDate?.let { addTimeToDate(it, fixedDurations[i].timeInMilliseconds) }
+        if(fixedDurations[i].type == DurationType.TUHR &&
+            fixedDurations[i].startDate!!.getTime() < pregnancy.birthTime.getTime() &&
+                endDateOfFixedDuration!!.getTime() > pregnancy.pregStartTime.getTime()){
+            fixedDurations[i].type = DurationType.TUHR_IN_HAML
+        }
+        i++
+    }
+}
+fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
+    var i =0
+    val startDateOfHaml = pregnancy.pregStartTime.getTime().toLong()
+    val endDateOfHaml = pregnancy.birthTime.getTime().toLong()
+
+    while(i<fixedDurations.size){
+        var endDateOfFixedDuration = fixedDurations[i].startDate?.let { addTimeToDate(it, fixedDurations[i].timeInMilliseconds) }
+
+        //this dam started before pregnancy, ends in the middle of pregnancy
+        if(fixedDurations[i].type == DurationType.DAM &&
+                fixedDurations[i].startDate!!.getTime()<startDateOfHaml &&
+                endDateOfFixedDuration!!.getTime()>startDateOfHaml &&
+                endDateOfFixedDuration.getTime()<=endDateOfHaml){
+            //mark the portion in pregnancy as dam in haml. we're gonna have to make more dam???
+            //or, we could just shorten it to prepregnancy stae, and leave it as is. who cares about dam in haml?
+            //we can even put it in istihazaAfter.
+            //maybe that's a bad idea, as it could trigger daur...
+            //for now, we are just shortening it.
+            var newDuration = startDateOfHaml - fixedDurations[i].startDate!!.getTime().toLong()
+            var timeInHaml = fixedDurations[i].timeInMilliseconds-newDuration
+            fixedDurations[i].timeInMilliseconds = newDuration
+            //maybe we really should leave an istihaz after here????
+            //we gotta figure out what to do with indices here
+            var newFixedDuration:FixedDuration = FixedDuration(DurationType.DAM_IN_HAML,timeInHaml)
+            fixedDurations.add(i+1, newFixedDuration)
+        }
+        //this started in the middle, ended in the middle of it
+        if(fixedDurations[i].type == DurationType.DAM &&
+                    endDateOfFixedDuration!!.getTime() < endDateOfHaml &&
+                    fixedDurations[i].startDate!!.getTime() > startDateOfHaml
+            ){
+            //mark it as dam in haml, aka, istihaza.
+            fixedDurations[i].type = DurationType.DAM_IN_HAML
+        }
+        //this starts in the middle of pregnancy, ends after it.
+        if(fixedDurations[i].type == DurationType.DAM &&
+                    fixedDurations[i].startDate!!.getTime()<endDateOfHaml &&
+                    fixedDurations[i].startDate!!.getTime()>=startDateOfHaml &&
+                    endDateOfFixedDuration!!.getTime()>endDateOfHaml
+                ){//make 1 at the start, one at the end, and 1 in the middle
+
+        }
+        //this started before pregnancy began, ends after pregnancy ended
+        if(fixedDurations[i].type == DurationType.DAM &&
+                fixedDurations[i].startDate!!.getTime()<startDateOfHaml &&
+                endDateOfFixedDuration!!.getTime()>endDateOfHaml){
+
+        }
+
+        i++
+    }
+}
+
+
 fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     var date:Date = firstStartTime
     for (fixedDuration in fixedDurations){
@@ -228,7 +323,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
                     //else add istihazaAfter to next Tuhr, mark it as fasid
                         //if it exists
-                    if(i<fixedDurations.size-1 && fixedDurations[i].istihazaAfter > 0.0){
+                    if(i<fixedDurations.size-1){
                         println("marking next tuhr as fasid, because there is istihaza at the end of this dam")
                         fixedDurations[i+1].type=DurationType.TUHREFAASID
 //                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()

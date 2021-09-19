@@ -5,8 +5,15 @@ data class Entry(
     val endTime: Date
 )
 
+data class Pregnancy(
+    val pregStartTime:Date,
+    val birthTime:Date,
+    val aadatNifas:Int,
+    val mustabeenUlKhilqat:Boolean
+)
+
 enum class DurationType {
-    DAM, TUHR, TUHREFAASID, ISTIMRAR
+    DAM, TUHR, TUHREFAASID, ISTIMRAR, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML
 }
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
@@ -16,7 +23,7 @@ data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long
 ) {
-    val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY
+    val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
 }
 
 data class FixedDuration(
@@ -27,7 +34,7 @@ data class FixedDuration(
     var biggerThanTen: BiggerThanTenDm? = null,
     var startDate: Date? = null,
 ) {
-    val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY
+    val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
 }
 
 data class BiggerThanTenDm(

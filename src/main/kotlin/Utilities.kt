@@ -13,7 +13,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 
-const val MILLISECONDS_IN_A_DAY = 86400000.0
+const val MILLISECONDS_IN_A_DAY:Long = 86400000
 
 object Events {
     const val VISIBILITY_CHANGE = "visibilitychange"
@@ -136,7 +136,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
     var totalMinutes = numberOfDays*24*60
 
-    var minutes=totalMinutes%60;
+    var minutes=(totalMinutes%60).toDouble();
     var remainingHours = (totalMinutes - minutes)/60
     var hours = remainingHours % 24;
     var days = (remainingHours - hours)/24;
@@ -145,7 +145,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     days=round(days)
     if(minutes == 60.0){
         minutes = 0.0
-        hours+=1.0
+        hours+=1
     }
     if(hours==24.0){
         hours = 0.0
@@ -185,7 +185,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):Stri
     val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
     var totalMinutes = numberOfDays*24*60
 
-    var minutes=totalMinutes%60;
+    var minutes=(totalMinutes%60).toDouble();
     var remainingHours = (totalMinutes - minutes)/60
     var hours = remainingHours % 24;
     var days = (remainingHours - hours)/24;
