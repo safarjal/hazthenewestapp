@@ -1,4 +1,10 @@
 import kotlin.js.Date
+fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
+                         isDateOnly:Boolean, pregnancy: Pregnancy):OutputTexts{
+    var englishStr = ""
+    var urduStr = ""
+    return OutputTexts(englishStr,urduStr)
+}
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean):OutputTexts{

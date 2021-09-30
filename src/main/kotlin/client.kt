@@ -28,8 +28,13 @@ object Ids {
     const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
     const val INPUT_CONTAINER_SECONDARY = "${INPUT_CONTAINER_PREFIX}_secondary"
     const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
+    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
+    const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
+    const val PREG_START_TIME_INPUT = "preg_start_time_input"
+    const val PREG_END_TIME_INPUT = "preg_end_time_input"
     const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
     const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
+    const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
     const val DATE_AND_OR_RADIO = "date_and_or_time"
@@ -43,10 +48,16 @@ private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_C
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.pregStartTime get() = (getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement).valueAsDate
+private val HTMLElement.pregEndTime get() = (getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement).valueAsDate
 private val HTMLElement.aadatHazString get() = (getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatTuhrString get() = (getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement).value
+private val HTMLElement.aadatNifasString get() = (getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatHaz get() = aadatHazString.takeUnless(String::isEmpty)?.toDouble()
 private val HTMLElement.aadatTuhr get() = aadatTuhrString.takeUnless(String::isEmpty)?.toDouble()
+private val HTMLElement.aadatNifas get() = aadatNifasString.takeUnless(String::isEmpty)?.toDouble()
 
 private val HTMLElement.inputDatesRows: List<HTMLTableRowElement>
     get() {
@@ -139,6 +150,12 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         dateConfigurationRadioButtons(inputContainerToCopyFrom)
         br()
         aadatInputs(inputContainerToCopyFrom)
+        br()
+        pregnancyCheckBox(inputContainerToCopyFrom)
+        mustabeenCheckBox(inputContainerToCopyFrom)
+        pregnancyStartTimeInput(inputContainerToCopyFrom)
+        pregnancyEndTimeInput(inputContainerToCopyFrom)
+        br()
         datesInputTable(inputContainerToCopyFrom)
         istimrarCheckBox(inputContainerToCopyFrom)
         br()
@@ -181,6 +198,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         step = "any"
         value = inputContainerToCopyFrom?.aadatHazString.orEmpty()
     }
+    br {  }
     label {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
@@ -189,6 +207,60 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         id = Ids.AADAT_TUHR_INPUT
         step = "any"
         value = inputContainerToCopyFrom?.aadatTuhrString.orEmpty()
+    }
+    br {  }
+
+    label {
+        htmlFor = Ids.AADAT_NIFAS_INPUT
+        +"Nifas Aadat: "
+    }
+    numberInput {
+        id = Ids.AADAT_NIFAS_INPUT
+        step = "any"
+        value = inputContainerToCopyFrom?.aadatNifasString.orEmpty()
+    }
+
+}
+
+private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
+    label {
+        htmlFor = Ids.PREGNANCY_CHECKBOX
+        +"Pregnancy"
+    }
+    checkBoxInput {
+        id = Ids.PREGNANCY_CHECKBOX
+        checked = inputContainerToCopyFrom?.isPregnancy == true
+    }
+}
+
+private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
+    label {
+        htmlFor = Ids.MUSTABEEN_CHECKBOX
+        +"Mustabeen ul Khilqah"
+    }
+    checkBoxInput {
+        id = Ids.MUSTABEEN_CHECKBOX
+        checked = inputContainerToCopyFrom?.mustabeen == true
+    }
+}
+
+private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
+    label {
+        htmlFor = Ids.PREG_START_TIME_INPUT
+        +"Pregnancy Start Time"
+    }
+    dateInput {
+        id = Ids.PREG_START_TIME_INPUT
+    }
+}
+
+private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
+    label {
+        htmlFor = Ids.PREG_END_TIME_INPUT
+        +"Pregnancy End Time (Birth or Isqat time)"
+    }
+    dateInput {
+        id = Ids.PREG_END_TIME_INPUT
     }
 }
 
@@ -499,11 +571,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
     }
 
-    //these are arbitrary values. we must form proper inputs.
-    val isPregnancy = false
-    val pregnancy = Pregnancy(Date(2020,3,1),Date(2020,11,13), 31, true)
-
-    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, pregnancy) }
+    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, Pregnancy(pregStartTime,pregEndTime, aadatNifas, mustabeen)) }
     contentEnglishElement.innerHTML = output.englishText
     contentUrduElement.innerHTML = output.urduText
 }
