@@ -3,6 +3,8 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,dur
                          isDateOnly:Boolean, pregnancy: Pregnancy):OutputTexts{
     var englishStr = ""
     var urduStr = ""
+    urduStr+=generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy)
+
     return OutputTexts(englishStr,urduStr)
 }
 
@@ -34,6 +36,59 @@ class OutputTexts (
     var englishText:String,
     var urduText: String
 )
+fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy):String{
+    var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
+    var birthTime = pregnancy.birthTime
+
+    var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
+    if(fixedDurations[0].startDate.getTime()<startTimeOfPregnancy){//if there was a period prior to pregnancy
+        str += "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
+    }
+    var index = 0
+    //before pregnancy
+    while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
+        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+        str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+        index++
+    }
+    str += "\n<b>حمل</b>\n"
+    str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+    if(index>=fixedDurations.size){//if this os the last index
+        str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+    }
+
+    //if there is a period after pregnancy
+    if(index<fixedDurations.size){
+        str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
+    }
+    while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+        }
+        index++
+    }
+    //add nifas line
+    while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+        str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+        }
+        index ++
+    }
+
+    //solve after nifas
+    while (index<fixedDurations.size){
+        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+        str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+        }
+        index ++
+    }
+
+    return str
+}
 
 fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean):String{
     var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
@@ -49,6 +104,7 @@ fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateO
     }
     return str
 }
+
 fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean):String{
     var strUrdu = ""
     strUrdu+=outputStringUrduAadatLine(fixedDurations, index, isDateOnly)
@@ -246,12 +302,86 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
 
     return strUrdu
 }
+fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+    var strUrdu = ""
+    val nifas = fixedDurations[index].biggerThanForty?.nifas ?: return ""
+    val istihazaAfter = fixedDurations[index].biggerThanForty?.istihazaAfter ?: return ""
+    val aadatTuhr = fixedDurations[index].biggerThanForty?.aadatTuhr ?: return ""
+    val aadatHaz = fixedDurations[index].biggerThanForty?.aadatHaiz ?: return ""
+
+    fun nifasLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} نفاس کے ہیں۔\n\n"
+    }
+    fun haizLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} حیض کے ہیں۔\n\n"
+    }
+    fun istihazaLineUrdu(sd:Date,ed:Date):String{
+        return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
+    }
+
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+        strUrdu += "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n"
+
+
+        val nifasStartDate:Date = fixedDurations[index].startDate
+        val istihazaAfterStartDate = addTimeToDate(nifasStartDate, (nifas))
+        val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter))
+
+        //nifas line
+        strUrdu+= nifasLineUrdu(nifasStartDate, istihazaAfterStartDate, isDateOnly)
+
+        if(istihazaAfter!=0L){
+            if (istihazaAfter>=aadatTuhr+3){
+                //find quotient and remainder
+                var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
+                var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toLong()
+
+                var aadatTuhrStartDate:Date = istihazaAfterStartDate
+                var aadatTuhrEndDate:Date
+                var aadatHaizEndDate:Date
+                for (j in 1 .. quotient){
+                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                    aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz))
+                    strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,aadatTuhrEndDate)
+                    strUrdu+= haizLineUrdu(aadatTuhrEndDate,aadatHaizEndDate, isDateOnly)
+                    aadatTuhrStartDate=aadatHaizEndDate
+                }
+                if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
+                    strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,istihazaAfterEndDate)
+
+                }else{//it ended in haiz or remainder is 0
+                    aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                    strUrdu+= istihazaLineUrdu(aadatTuhrStartDate,aadatTuhrEndDate)
+                    strUrdu+= haizLineUrdu(aadatTuhrEndDate,istihazaAfterEndDate, isDateOnly)
+
+                    //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
+                    if (remainder!=0L){
+                        val newAadatHaz1 = remainder-aadatTuhr
+                        //add aadat line
+//                        strUrdu+="\tAadat: ${(daysHoursMinutesDigitalUrdu(newAadatHaz1,isDateOnly))}/${daysHoursMinutesDigitalUrdu(aadatTuhr,isDateOnly)}\n"
+                    }
+                }
+
+            }else{//no duar
+                strUrdu+= istihazaLineUrdu(istihazaAfterStartDate,istihazaAfterEndDate)
+                strUrdu+= "${UnicodeChars.BLACK_SQUARE} ${urduDateFormat(istihazaAfterStartDate,isDateOnly)} کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n"
+                strUrdu+= "${UnicodeChars.BLACK_SQUARE} اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔\n\n"
+
+            }
+        }
+
+        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+    }
+
+    return strUrdu
+}
 
 fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     var outputString = ""
     if (fixedDurations[index].type==DurationType.DAM){
-        var sd:Date = fixedDurations[index].startDate!!
-        var et = addTimeToDate(fixedDurations[index].startDate!!,fixedDurations[index].timeInMilliseconds)
+        var sd:Date = fixedDurations[index].startDate
+        var et = fixedDurations[index].endDate
         if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
             et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
         }
@@ -277,9 +407,23 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
         outputString =  "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}" +
                 " استحاضہ + ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)} پاکی =" +
                 " ${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)} طہر فاسد۔\n\n"
-    }else{//istimrar
-        var sd:Date = fixedDurations[index].startDate!!
-        var et = addTimeToDate(fixedDurations[index].startDate!!,fixedDurations[index].timeInMilliseconds)
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
+        var sd = fixedDurations[index].startDate
+        var et = fixedDurations[index].endDate
+        if(fixedDurations[index].days<=40){
+            outputString = "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
+                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} نفاس۔\n\n"
+        }else{//more than 40
+            outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
+                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون۔\n\n"
+        }
+    }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.ISTIMRAR){//istimrar
+        var sd:Date = fixedDurations[index].startDate
+        var et = addTimeToDate(fixedDurations[index].startDate,fixedDurations[index].timeInMilliseconds)
         outputString =  "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)} تا حال خون جاری ہے۔\n\n"
     }
     return outputString

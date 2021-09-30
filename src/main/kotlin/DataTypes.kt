@@ -33,6 +33,7 @@ data class FixedDuration(
     var indices: MutableList<Int> = mutableListOf(),
     var istihazaAfter: Long = 0,
     var biggerThanTen: BiggerThanTenDm? = null,
+    var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Date = Date(1,1,1),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
@@ -50,4 +51,10 @@ data class BiggerThanTenDm(
     var istihazaAfter: Long, //number of days of istihaza after haiz
     var aadatHaiz:Long, //aadat of haiz after solving this
     var aadatTuhr:Long //aadat of tuhur after solving this
+)
+data class BiggerThanFortyNifas(
+    var nifas: Long, //muddate nifas
+    var istihazaAfter: Long, //number of days of istihaza after nifas
+    var aadatHaiz:Long?, //aadat of haiz before solving this
+    var aadatTuhr:Long?, //aadat of tuhur before solving this
 )

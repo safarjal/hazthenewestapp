@@ -50,7 +50,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputString(fixedDurations, durations, isDateOnly)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
             markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
@@ -61,7 +61,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputString(fixedDurations, durations, isDateOnly)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }
     }else{//is not pregnancy
         removeTuhrLessThan15(fixedDurations)
@@ -87,10 +87,15 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                 if(pregnancy.aadatNifas==null){
                     pregnancy.aadatNifas==40.0
                 }
-                var secondDuration = (fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!*MILLISECONDS_IN_A_DAY).toLong()
-                var newFixedDuration = FixedDuration(DurationType.DAM,secondDuration, startDate = addTimeToDate(fixedDurations[i].startDate, pregnancy.aadatNifas.toLong()))
-                fixedDurations[i].timeInMilliseconds=pregnancy.aadatNifas.toLong()*MILLISECONDS_IN_A_DAY
-                fixedDurations.add(i+1,newFixedDuration)
+                var istihazaAfter = (fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!*MILLISECONDS_IN_A_DAY).toLong()
+                var nifasInfo = BiggerThanFortyNifas(pregnancy.aadatNifas.toLong()*MILLISECONDS_IN_A_DAY, istihazaAfter,null, null)
+                fixedDurations[i].biggerThanForty=nifasInfo
+
+//
+//                var secondDuration = (fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!*MILLISECONDS_IN_A_DAY).toLong()
+//                var newFixedDuration = FixedDuration(DurationType.DAM,secondDuration, startDate = addTimeToDate(fixedDurations[i].startDate, pregnancy.aadatNifas.toLong()))
+//                fixedDurations[i].timeInMilliseconds=pregnancy.aadatNifas.toLong()*MILLISECONDS_IN_A_DAY
+//                fixedDurations.add(i+1,newFixedDuration)
 
                 //break it up into dam and tuhr?
                 //maybe do that later in bigger than 10
@@ -342,6 +347,15 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             //put it in haz lis
             hazDatesList += Entry(fixedDurations[i].startDate, addTimeToDate(fixedDurations[i].startDate, fixedDurations[i].timeInMilliseconds))
 
+        }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
+            var istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
+            var aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
+            var sd = addTimeToDate(fixedDurations[i].startDate,aadatNifas)
+            var nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter,aadatHaz, aadatTuhr)
+            fixedDurations[i].biggerThanForty=nifasInfo
+
+            aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,hazDatesList,fixedDurations, i,sdOfIstihazaAfter = sd)
+
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
@@ -352,12 +366,14 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 //give error message
                 window.alert("We need at least one more period before this to be able to solve this")
                 break
-            }else if(i>0 && fixedDurations[i-1].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-                //we gotta do this here, because this is the only way we have aadat.
-                //so we begin with aadat-e tuhr, then haiz...
-                aadatHaz = dealWithIstihazaAfter(fixedDurations[i].timeInMilliseconds,aadatHaz,aadatTuhr,hazDatesList,fixedDurations,i,fixedDurations[i].startDate!!)
-
-            }else{
+            }
+//            else if(i>0 && fixedDurations[i-1].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+//                //we gotta do this here, because this is the only way we have aadat.
+//                //so we begin with aadat-e tuhr, then haiz...
+//                aadatHaz = dealWithIstihazaAfter(fixedDurations[i].timeInMilliseconds,aadatHaz,aadatTuhr,hazDatesList,fixedDurations,i,fixedDurations[i].startDate!!)
+//
+//            }
+            else{
                 val mp:Long = fixedDurations[i-1].timeInMilliseconds + fixedDurations[i-1].istihazaAfter
                 val gp:Long = aadatTuhr
                 val dm:Long = fixedDurations[i].timeInMilliseconds
