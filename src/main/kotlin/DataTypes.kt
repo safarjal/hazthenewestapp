@@ -8,7 +8,7 @@ data class Entry(
 data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,
-    val aadatNifas:Double? = 40.0,
+    var aadatNifas:Double? = 40.0,
     val mustabeenUlKhilqat:Boolean
 )
 

@@ -85,10 +85,10 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
             if(fixedDurations[i].timeInMilliseconds > 40*MILLISECONDS_IN_A_DAY){
                 //if nifas exceeded 40
                 if(pregnancy.aadatNifas==null){
-                    pregnancy.aadatNifas==40.0
+                    pregnancy.aadatNifas=40.0
                 }
                 var istihazaAfter = (fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!*MILLISECONDS_IN_A_DAY).toLong()
-                var nifasInfo = BiggerThanFortyNifas(pregnancy.aadatNifas.toLong()*MILLISECONDS_IN_A_DAY, istihazaAfter,null, null)
+                var nifasInfo = BiggerThanFortyNifas(pregnancy.aadatNifas!!.toLong()*MILLISECONDS_IN_A_DAY, istihazaAfter,null, null)
                 fixedDurations[i].biggerThanForty=nifasInfo
 
 //
@@ -147,13 +147,13 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
 fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
     println("In marking Tuhrs as Tuhr in pregnancy")
     for (i in fixedDurations.indices){
-        println("1")
+  //      println("1")
         var endDateOfFixedDuration = fixedDurations[i].endDate
-        println("2")
-        println("type is ${fixedDurations[i].type}")
-        println("startDate is ${fixedDurations[i].startDate}")
-        println("endDate is ${endDateOfFixedDuration}")
-        println("birthtime is ${pregnancy.birthTime}")
+  //      println("2")
+//        println("type is ${fixedDurations[i].type}")
+//        println("startDate is ${fixedDurations[i].startDate}")
+//        println("endDate is ${endDateOfFixedDuration}")
+//        println("birthtime is ${pregnancy.birthTime}")
 
         if(fixedDurations[i].type == DurationType.TUHR &&
             fixedDurations[i].startDate.getTime() < pregnancy.birthTime.getTime() &&

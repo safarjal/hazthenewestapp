@@ -257,7 +257,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.PREG_END_TIME_INPUT
-        +"Pregnancy End Time (Birth or Isqat time)"
+        +"Birth/Miscarriage time"
     }
     dateInput {
         id = Ids.PREG_END_TIME_INPUT

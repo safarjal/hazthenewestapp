@@ -1,6 +1,8 @@
 import kotlin.js.Date
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean, pregnancy: Pregnancy):OutputTexts{
+    println(fixedDurations)
+    println("last period is ${fixedDurations[fixedDurations.size-1]}")
     var englishStr = ""
     var urduStr = ""
     urduStr+=generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy)
@@ -49,20 +51,24 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
         str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += "\n<b>حمل</b>\n"
+            str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+
+        }
         index++
-    }
-    str += "\n<b>حمل</b>\n"
-    str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
-    if(index>=fixedDurations.size){//if this os the last index
-        str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
     }
 
     //if there is a period after pregnancy
     if(index<fixedDurations.size){
+        str += "\n<b>حمل</b>\n"
+        str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
         str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
     }
     while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
-        if(index==fixedDurations.size-1){//if this os the last index
+        if(index>=fixedDurations.size-1){//if this os the last index
+            index = fixedDurations.size-1
             str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
         }
         index++
@@ -71,7 +77,8 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
         str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
-        if(index==fixedDurations.size-1){//if this os the last index
+        if(index>=fixedDurations.size-1){//if this os the last index
+            index = fixedDurations.size-1
             str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
         }
         index ++
@@ -81,7 +88,8 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     while (index<fixedDurations.size){
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
         str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-        if(index==fixedDurations.size-1){//if this os the last index
+        if(index>=fixedDurations.size-1){//if this os the last index
+            index = fixedDurations.size-1
             str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
         }
         index ++
@@ -106,10 +114,17 @@ fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateO
 }
 
 fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean):String{
+    println("Started outputStringUrduFinalLines")
+    println("FIxedDurations is ${fixedDurations}")
+    println("Index is ${index}")
+
     var strUrdu = ""
     strUrdu+=outputStringUrduAadatLine(fixedDurations, index, isDateOnly)
+    println("Aadat line added $strUrdu")
     strUrdu+=outputStringUrduFilHaalLine(fixedDurations, index)
+    println("FilHaal line added $strUrdu")
     strUrdu+=outputStringUrduAskAgainLine(fixedDurations,index, isDateOnly)
+    println("Ask Again Line Added $strUrdu")
 
     //plis note down line
     strUrdu+="جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n"
@@ -318,10 +333,13 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
     fun istihazaLineUrdu(sd:Date,ed:Date):String{
         return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
     }
+    println("biggerthan40 output string generation")
 
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        println("Inside the if")
         strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
         strUrdu += "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n"
+        println(strUrdu)
 
 
         val nifasStartDate:Date = fixedDurations[index].startDate
@@ -330,6 +348,7 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
 
         //nifas line
         strUrdu+= nifasLineUrdu(nifasStartDate, istihazaAfterStartDate, isDateOnly)
+        println(strUrdu)
 
         if(istihazaAfter!=0L){
             if (istihazaAfter>=aadatTuhr+3){
