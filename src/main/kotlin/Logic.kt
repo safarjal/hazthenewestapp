@@ -103,6 +103,7 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                 break;
             }else{//it is 40 or less
                 //do nothing to this. don't even bother to update aadat.
+                //maybe update aadat? if it's working, why fix?
             }
         }
 
@@ -134,6 +135,11 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
                 fixedDurations[i].startDate=pregnancy.birthTime
                 fixedDurations[i].timeInMilliseconds += newDuration
                 fixedDurations[i].type = DurationType.DAM_IN_NIFAAS_PERIOD
+                //since we added time to this one, we gotta subtract it from the one before.
+                //if it exists
+                if(i>0){
+                    fixedDurations[i-1].timeInMilliseconds-=newDuration
+                }
             }
         }
         if(fixedDurations[i].startDate.getTime()>fortyPlusBD){
