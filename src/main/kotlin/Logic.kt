@@ -354,6 +354,14 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             hazDatesList += Entry(fixedDurations[i].startDate, addTimeToDate(fixedDurations[i].startDate, fixedDurations[i].timeInMilliseconds))
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
+            //check if we have aadaat.
+            //we don't need mawjoodah paki
+            if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
+                //give error message
+                window.alert("We need both aadaat to be able to solve this")
+                break
+            }
+
             var istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
             var aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             var sd = addTimeToDate(fixedDurations[i].startDate,aadatNifas)
