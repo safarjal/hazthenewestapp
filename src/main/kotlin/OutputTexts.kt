@@ -39,66 +39,130 @@ class OutputTexts (
     var urduText: String
 )
 fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy):String{
+    var mustabeen = pregnancy.mustabeenUlKhilqat
     var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
     var birthTime = pregnancy.birthTime
-
     var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
-    if(fixedDurations[0].startDate.getTime()<startTimeOfPregnancy){//if there was a period prior to pregnancy
-        str += "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
-    }
-    var index = 0
-    //before pregnancy
-    while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
-        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-        str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-        if(index==fixedDurations.size-1){//if this os the last index
-            str += "\n<b>حمل</b>\n"
-            str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
-            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
 
+    if(mustabeen==true){
+        if(fixedDurations[0].startDate.getTime()<startTimeOfPregnancy){//if there was a period prior to pregnancy
+            str += "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
         }
-        index++
-    }
-    var birth = pregnancy.birthTime
-    while(index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birth.getTime()){
-        index ++
-    }
-    str += "\n<b>حمل</b>\n"
-    str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+        var index = 0
+        //before pregnancy
+        while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(index==fixedDurations.size-1){//if this os the last index
+                str += "\n<b>حمل</b>\n"
+                str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+
+            }
+            index++
+        }
+        while(index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){
+            index ++
+        }
+        str += "\n<b>حمل</b>\n"
+        str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
 
 
-    //if there is a period after pregnancy
-    if(index<fixedDurations.size && fixedDurations[index].endDate.getTime()>birth.getTime()){
-        str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
-    }
-    while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
-        if(index>=fixedDurations.size-1){//if this os the last index
-            index = fixedDurations.size-1
-            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+        //if there is a period after pregnancy
+        if(index<fixedDurations.size && fixedDurations[index].endDate.getTime()>birthTime.getTime()){
+            str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
         }
-        index++
-    }
-    //add nifas line
-    while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-        str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
-        if(index>=fixedDurations.size-1){//if this os the last index
-            index = fixedDurations.size-1
-            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+        while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index++
         }
-        index ++
+        //add nifas line
+        while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index ++
+        }
+
+        //solve after nifas
+        while (index<fixedDurations.size){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index ++
+        }
+
+    }else{//if it is ghair mustabeenulkhilqat
+        str += "اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
+
+        var index = 0
+        //before pregnancy
+        while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(index==fixedDurations.size-1){//if this os the last index
+                                     str += "\n<b>حمل</b>\n"
+                str += "\n<b>${urduDateFormat(birthTime, isDateOnly)} کو اسقاط ہوا (غیر مستبین الخلقہ)</b>\n"
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+
+            }
+            index++
+        }
+        str += "\n<b>حمل</b>\n"
+        while(index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){
+            //during pregnancy
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
+                var time = fixedDurations[index].timeInMilliseconds
+                str += "${daysHoursMinutesDigitalUrdu(time, isDateOnly)} پاکی۔\n\n"
+            }
+
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            index ++
+        }
+        str += "\n<b>${urduDateFormat(birthTime, isDateOnly)} کو اسقاط ہوا (غیر مستبین الخلقہ)</b>\n"
+
+
+        while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index++
+        }
+        //add nifas line
+        while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index ++
+        }
+
+        //solve after nifas
+        while (index<fixedDurations.size){
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(index>=fixedDurations.size-1){//if this os the last index
+                index = fixedDurations.size-1
+                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            }
+            index ++
+        }
+
     }
 
-    //solve after nifas
-    while (index<fixedDurations.size){
-        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-        str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-        if(index>=fixedDurations.size-1){//if this os the last index
-            index = fixedDurations.size-1
-            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
-        }
-        index ++
-    }
 
     return str
 }

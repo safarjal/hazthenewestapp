@@ -47,6 +47,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         if(pregnancy.mustabeenUlKhilqat==false){
             //if it's not mustabeen ulkhilqat, deal with it like haiz
             removeTuhrLessThan15(fixedDurations)
+            removeTuhrLessThan15InPregnancy(fixedDurations)
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
@@ -272,10 +273,29 @@ fun addIndicesToFixedDurations(fixedDurations: MutableList<FixedDuration>){
     }
 }
 
+fun removeTuhrLessThan15InPregnancy (fixedDurations: MutableList<FixedDuration>){
+    var i=0
+    while(i < fixedDurations.size){//iterate through durations
+        //if there is a tuhr less than 15
+        if(fixedDurations[i].days<15 && fixedDurations[i].type== DurationType.TUHR_IN_HAML){
+            //it must be surrounded by dams on either side. increase size of damBefore. delete tuhr and dam after
+            fixedDurations[i-1].timeInMilliseconds += fixedDurations[i].timeInMilliseconds + fixedDurations[i+1].timeInMilliseconds
+            fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
+            fixedDurations.removeAt(i)
+            fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
+            fixedDurations.removeAt(i)
+        } else {
+            i++
+        }
+    }
+}
+
+
 //step 2 - Remove tuhr-e-naaqis (less than 15 days):
 //          iterate through array. if we find a tuhur less than 15, it must be surrounded
 //          by dam. add all 3 duration values together, delete the originals, and set type as dam.
 //          We want to keep the original list. Perumably the unflattened one will remain.
+
 
 fun removeTuhrLessThan15 (fixedDurations: MutableList<FixedDuration>){
     var i=0
