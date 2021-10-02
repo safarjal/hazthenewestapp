@@ -401,7 +401,11 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
     if (fixedDurations[index].type==DurationType.DAM){
         var sd:Date = fixedDurations[index].startDate
         var et = fixedDurations[index].endDate
-        if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){
+        println("Index is $index")
+        println("StartDate is $sd")
+        println("EndDate is $et")
+        println("EndDate2 is ${Date(sd.getTime().toLong()+fixedDurations[index].timeInMilliseconds)}")
+        if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){//if there is a period after it, and is has an istihaza after
             et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
         }
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz

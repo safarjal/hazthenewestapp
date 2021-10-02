@@ -183,7 +183,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
         var endDateOfFixedDuration = fixedDurations[i].endDate
 
         //this dam started before pregnancy, ends in the middle of pregnancy
-        //  ---pregnancy---  birth
+        //  ---(pregnancy---  birth)
         if(fixedDurations[i].type == DurationType.DAM &&
                 fixedDurations[i].startDate.getTime()<startDateOfHaml &&
                 endDateOfFixedDuration.getTime()>startDateOfHaml &&

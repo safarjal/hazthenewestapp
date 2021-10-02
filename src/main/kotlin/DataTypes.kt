@@ -37,7 +37,7 @@ data class FixedDuration(
     var startDate: Date = Date(1,1,1),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date = Date(startDate.getTime().toLong() + (timeInMilliseconds))
+    val endDate: Date get() = Date(startDate.getTime().toLong() + (timeInMilliseconds))
 }
 
 data class BiggerThanTenDm(
