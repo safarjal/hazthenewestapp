@@ -59,11 +59,16 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
         }
         index++
     }
+    var birth = pregnancy.birthTime
+    while(index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birth.getTime()){
+        index ++
+    }
+    str += "\n<b>حمل</b>\n"
+    str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+
 
     //if there is a period after pregnancy
-    if(index<fixedDurations.size){
-        str += "\n<b>حمل</b>\n"
-        str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+    if(index<fixedDurations.size && fixedDurations[index].endDate.getTime()>birth.getTime()){
         str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
     }
     while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy

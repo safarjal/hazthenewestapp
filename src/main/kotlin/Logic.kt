@@ -203,7 +203,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
             fixedDurations.add(i+1, newFixedDuration)
         }
         //this started in the middle, ended in the middle of it
-        //  pregnancy ---- birth
+        //  (pregnancy ---- birth)
         if(fixedDurations[i].type == DurationType.DAM &&
                     endDateOfFixedDuration.getTime() <= endDateOfHaml &&
                     fixedDurations[i].startDate.getTime() >= startDateOfHaml
@@ -214,7 +214,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
             fixedDurations[i].type = DurationType.DAM_IN_HAML
         }
         //this starts in the middle of pregnancy, ends after it.
-        // pregnancy   ---birth---
+        // (pregnancy   ---birth)---
         if(fixedDurations[i].type == DurationType.DAM &&
                     fixedDurations[i].startDate.getTime()<endDateOfHaml &&
                     fixedDurations[i].startDate.getTime()>=startDateOfHaml &&
@@ -233,7 +233,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
 
         }
         //this started before pregnancy began, ends after pregnancy ended
-        //  ---pregnancy----birth---
+        //  ---(pregnancy----birth)---
         if(fixedDurations[i].type == DurationType.DAM &&
                 fixedDurations[i].startDate.getTime()<startDateOfHaml &&
                 endDateOfFixedDuration.getTime()>endDateOfHaml){
@@ -446,7 +446,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
                 fixedDurations[i].biggerThanTen=hall
                 //put it in haz list
-                val sd = addTimeToDate(fixedDurations[i].startDate!!,(output.istihazaBefore*MILLISECONDS_IN_A_DAY))
+                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore*MILLISECONDS_IN_A_DAY))
                 val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY))
                 hazDatesList += Entry(sd, ed)
 
