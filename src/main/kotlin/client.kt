@@ -12,7 +12,7 @@ import kotlin.js.Date
 private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 
 object Ids {
-    const val INPUT_TABLE = "input_table"
+    const val HAIZ_INPUT_TABLE = "haiz_input_table"
 
     object Row {
         const val INPUT_START_TIME = "input_start_time"
@@ -68,9 +68,9 @@ private val HTMLElement.pregnancyElements get() = Ids.pregnancyElementIds.map { 
     getChildById(id) as HTMLInputElement
 }
 
-private val HTMLElement.inputDatesRows: List<HTMLTableRowElement>
+private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
     get() {
-        val inputDatesTable = getChildById(Ids.INPUT_TABLE) as HTMLTableElement
+        val inputDatesTable = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
         val inputDatesTableBody = inputDatesTable.tBodies[0] as HTMLTableSectionElement
         @Suppress("UNCHECKED_CAST")
         return inputDatesTableBody.rows.asList() as List<HTMLTableRowElement>
@@ -82,7 +82,11 @@ private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BU
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
 
-private val HTMLElement.timeInputs get() = inputDatesRows.flatMap { row -> listOf(row.startTimeInput, row.endTimeInput) }
+private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
+    listOf(row.startTimeInput, row.endTimeInput)
+}
+
+private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
 
 fun main() {
     window.onload = {
@@ -175,7 +179,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         br()
         pregnancyEndTimeInput(inputContainerToCopyFrom)
         br()
-        datesInputTable(inputContainerToCopyFrom)
+        haizDatesInputTable(inputContainerToCopyFrom)
         istimrarCheckBox(inputContainerToCopyFrom)
         br()
         calculateButton()
@@ -289,11 +293,11 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
         htmlFor = Ids.PREG_START_TIME_INPUT
         +"Pregnancy Start Time"
     }
-    dateInput {
+    pregnancyTimeInput(inputContainerToCopyFrom) {
         id = Ids.PREG_START_TIME_INPUT
-        required = true
-        disabled = true
-        value = inputContainerToCopyFrom?.pregStartTime?.value.orEmpty()
+        onChangeFunction = { event ->
+            findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
+        }
     }
 }
 
@@ -302,11 +306,26 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
         htmlFor = Ids.PREG_END_TIME_INPUT
         +"Birth/Miscarriage time"
     }
-    dateInput {
+    pregnancyTimeInput(inputContainerToCopyFrom) {
         id = Ids.PREG_END_TIME_INPUT
-        required = true
-        disabled = true
-        value = inputContainerToCopyFrom?.pregEndTime?.value.orEmpty()
+        onChangeFunction = { event ->
+            findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
+        }
+    }
+}
+
+private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
+    if (inputContainerToCopyFrom != null) {
+        timeInput(inputContainerToCopyFrom.isDateOnly, inputContainerToCopyFrom.pregStartTime) {
+            disabled = true
+            block()
+        }
+    } else {
+        timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
+            disabled = true
+            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+            block()
+        }
     }
 }
 
@@ -335,9 +354,9 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
     }
 }
 
-private fun TagConsumer<HTMLElement>.datesInputTable(inputContainerToCopyFrom: HTMLElement?) {
+private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFrom: HTMLElement?) {
     table {
-        id = Ids.INPUT_TABLE
+        id = Ids.HAIZ_INPUT_TABLE
         thead {
             tr {
                 th { +"Start Time" }
@@ -347,7 +366,7 @@ private fun TagConsumer<HTMLElement>.datesInputTable(inputContainerToCopyFrom: H
         tbody {
             if (inputContainerToCopyFrom != null) {
                 val isDateOnly = inputContainerToCopyFrom.isDateOnly
-                for (inputDateRow in inputContainerToCopyFrom.inputDatesRows) {
+                for (inputDateRow in inputContainerToCopyFrom.haizInputDatesRows) {
                     inputRow(isDateOnly, inputDateRow.startTimeInput, inputDateRow.endTimeInput)
                 }
             } else {
@@ -412,9 +431,8 @@ private fun FlowContent.timeInput(
     indexWithinRow: Int,
     block: INPUT.() -> Unit = {}
 ) {
-    timeInput(isDateOnlyLayout, indexWithinRow) {
-        min = minTimeInput
-        max = maxTimeInput
+    timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput) {
+        onChangeFunction = { event -> setMinMaxForTimeInputsOnInput(event, indexWithinRow) }
         block()
     }
 }
@@ -425,7 +443,31 @@ private fun FlowContent.timeInput(
     indexWithinRow: Int,
     block: INPUT.() -> Unit = {}
 ) {
-    timeInput(isDateOnlyLayout, indexWithinRow) {
+    timeInput(isDateOnlyLayout, timeInputToCopyFrom) {
+        onChangeFunction = { event -> setMinMaxForTimeInputsOnInput(event, indexWithinRow) }
+        block()
+    }
+}
+
+private fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    minTimeInput: String,
+    maxTimeInput: String,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(isDateOnlyLayout) {
+        min = minTimeInput
+        max = maxTimeInput
+        block()
+    }
+}
+
+private fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    timeInputToCopyFrom: HTMLInputElement,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(isDateOnlyLayout) {
         value = timeInputToCopyFrom.value
         min = timeInputToCopyFrom.min
         max = timeInputToCopyFrom.max
@@ -435,19 +477,12 @@ private fun FlowContent.timeInput(
 
 private fun FlowContent.timeInput(
     isDateOnlyLayout: Boolean,
-    indexWithinRow: Int,
     block: INPUT.() -> Unit = {}
 ) {
     customDateTimeInput(isDateOnlyLayout) {
         required = true
         onClickFunction = { event ->
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-        }
-        onChangeFunction = { event ->
-            setMinMaxForTimeInputsOnInput(
-                findInputContainer(event),
-                (findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow
-            )
         }
         block()
     }
@@ -519,13 +554,13 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
 }
 
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
-    val inputDatesRows = inputContainer.inputDatesRows
+    val inputDatesRows = inputContainer.haizInputDatesRows
     inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
     inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
-    for ((index, row) in inputContainer.inputDatesRows.withIndex()) {
+    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
         if (index > 0) {
             row.addBeforeButton?.remove()
         } else if (row.addBeforeButton == null) {
@@ -536,14 +571,23 @@ private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement)
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
     val currentTime = currentTimeString(inputContainer.isDateOnly)
-    for (timeInput in inputContainer.timeInputs.asReversed()) {
-        timeInput.max = currentTime
-        if (timeInput.value.isNotEmpty()) break
+    for (timeInputsGroup in inputContainer.timeInputsGroups) {
+        for (timeInput in timeInputsGroup.asReversed()) {
+            timeInput.max = currentTime
+            if (timeInput.value.isNotEmpty()) break
+        }
     }
 }
 
+private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
+    setMinMaxForTimeInputsOnInput(
+        findInputContainer(event),
+        (findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow
+    )
+}
+
 private fun setMinMaxForTimeInputsOnInput(inputContainer: HTMLElement, index: Int) {
-    val timeInputs = inputContainer.timeInputs
+    val timeInputs = inputContainer.haizTimeInputs
     val timeInput = timeInputs[index]
     val min: String
     val max: String
@@ -572,7 +616,7 @@ private fun setMinMaxForTimeInputsOnInput(inputContainer: HTMLElement, index: In
 }
 
 private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLElement, rowIndex: Int) {
-    val timeInputs = inputContainer.timeInputs
+    val timeInputs = inputContainer.haizTimeInputs
     val startDateIndex = rowIndex * 2
     val endDateIndex = startDateIndex + 1
     val min = timeInputs[startDateIndex].min
@@ -591,7 +635,7 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
 
 private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     val isDateOnly = inputContainer.isDateOnly
-    for (timeInput in inputContainer.timeInputs) {
+    for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
         val newMax = convertInputValue(timeInput.max, isDateOnly)
@@ -610,7 +654,7 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
 
 private fun parseEntries(inputContainer: HTMLElement) {
     println("Calculate button was clicked")
-    val entries = inputContainer.inputDatesRows.map { row ->
+    val entries = inputContainer.haizInputDatesRows.map { row ->
         Entry(
             startTime = Date(row.startTimeInput.valueAsNumber),
             endTime = Date(row.endTimeInput.valueAsNumber)
