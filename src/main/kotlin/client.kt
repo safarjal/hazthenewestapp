@@ -210,11 +210,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     input {
         id = Ids.AADAT_HAIZ_INPUT
         value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
-        onInputFunction = { event ->
-            with(event.currentTarget as HTMLInputElement) {
-                setCustomValidity(if (value.isEmpty() || parseAadatHaiz(value) != null) "" else "Aadat is incorrect")
-            }
-        }
+        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
     }
     br()
     label {
@@ -224,11 +220,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     input {
         id = Ids.AADAT_TUHR_INPUT
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
-        onInputFunction = { event ->
-            with(event.currentTarget as HTMLInputElement) {
-                setCustomValidity(if (value.isEmpty() || parseAadatTuhr(value) != null) "" else "Aadat is incorrect")
-            }
-        }
+        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
     br()
     label {
@@ -241,12 +233,20 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         required = true
         disabled = true
         value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
-        onInputFunction = { event ->
-            with(event.currentTarget as HTMLInputElement) {
-                setCustomValidity(if (value.isEmpty() || parseAadatNifas(value) != null) "" else "Aadat is incorrect")
-            }
-        }
+        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
     }
+}
+
+private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+    value = value.replace("[^0-9:]".toRegex(), "")
+    val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
+    setCustomValidity(try {
+        val days = parseDays(value)
+        require(days == null || days in doubleValidityRange) { "Aadat is incorrect" }
+        ""
+    } catch (e: IllegalArgumentException) {
+        e.message ?: "Aadat is incorrect"
+    })
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
@@ -603,27 +603,6 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 }
 
-fun parseAadatHaiz(aadatString: String): Double? {
-    val days = aadatString.toIntOrNull()
-        ?.takeIf { days -> days in 3..10 }
-    if (days != null) return days.toDouble()
-    return null
-}
-
-fun parseAadatTuhr(aadatString: String): Double? {
-    val days = aadatString.toIntOrNull()
-        ?.takeIf { days -> days in 15..6*30 }
-    if (days != null) return days.toDouble()
-    return null
-}
-
-fun parseAadatNifas(aadatString: String): Double? {
-    val days = aadatString.toIntOrNull()
-        ?.takeIf { days -> days in 1..40 }
-    if (days != null) return days.toDouble()
-    return null
-}
-
 private fun parseEntries(inputContainer: HTMLElement) {
     println("Calculate button was clicked")
     val entries = inputContainer.inputDatesRows.map { row ->
@@ -638,14 +617,14 @@ private fun parseEntries(inputContainer: HTMLElement) {
         val output = handleEntries(
             entries,
             isIstimrar,
-            parseAadatHaiz(aadatHaz.value),
-            parseAadatTuhr(aadatTuhr.value),
+            parseDays(aadatHaz.value),
+            parseDays(aadatTuhr.value),
             isDateOnly,
             isPregnancy,
             Pregnancy(
                 pregStartTime.valueAsDate,
                 pregEndTime.valueAsDate,
-                parseAadatHaiz(aadatNifas.value),
+                parseDays(aadatNifas.value),
                 mustabeen
             )
         )

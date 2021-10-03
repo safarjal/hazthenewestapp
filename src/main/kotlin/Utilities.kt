@@ -132,6 +132,23 @@ fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDat
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
 }
+
+fun parseDays(input: String): Double? {
+    if (input.isEmpty()) return null
+    val sections = input.split(':')
+    var days = sections[0].toInt().toDouble()
+    val hours = sections.getOrNull(1)?.toInt() ?: return days
+    require(hours in 0 until 24) { "Invalid hours value" }
+    days += hours / 24.toDouble()
+    val minutes = sections.getOrNull(2)?.toInt() ?: return days
+    require(minutes in 0 until 60) { "Invalid minutes value" }
+    days += minutes / (24 * 60).toDouble()
+    val seconds = sections.getOrNull(3)?.toInt() ?: return days
+    require(seconds in 0 until 60) { "Invalid seconds value" }
+    days += seconds / (24 * 60 * 60).toDouble()
+    return days
+}
+
 fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
     val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
     var totalMinutes = numberOfDays*24*60
