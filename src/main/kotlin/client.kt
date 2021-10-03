@@ -40,9 +40,6 @@ object Ids {
     const val DATE_AND_OR_RADIO = "date_and_or_time"
 }
 
-private val contentEnglishElement get() = document.getElementById(Ids.CONTENT_ENG) as HTMLParagraphElement
-private val contentUrduElement get() = document.getElementById(Ids.CONTENT_URDU) as HTMLParagraphElement
-
 private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_PRIMARY) as HTMLElement
 private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_SECONDARY) as HTMLElement?
 
@@ -50,14 +47,16 @@ private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-private val HTMLElement.pregStartTime get() = (getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement)
-private val HTMLElement.pregEndTime get() = (getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement)
+private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
+private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.aadatHazString get() = (getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatTuhrString get() = (getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatNifasString get() = (getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatHaz get() = aadatHazString.takeUnless(String::isEmpty)?.toDouble()
 private val HTMLElement.aadatTuhr get() = aadatTuhrString.takeUnless(String::isEmpty)?.toDouble()
 private val HTMLElement.aadatNifas get() = aadatNifasString.takeUnless(String::isEmpty)?.toDouble()
+private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
+private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 
 private val HTMLElement.inputDatesRows: List<HTMLTableRowElement>
     get() {
@@ -94,14 +93,6 @@ fun Node.addInputLayout() {
             inputFormDiv {
                 id = Ids.INPUT_CONTAINER_PRIMARY
             }
-        }
-        content {
-            id = Ids.CONTENT_ENG
-        }
-        content {
-            id = Ids.CONTENT_URDU
-            dir = Dir.rtl
-//            style += "font-family: Helvetica"
         }
     }
 }
@@ -141,7 +132,19 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(
     div {
         style = "width:50%; float: left;"
         inputForm(inputContainerToCopyFrom)
+        content()
         block()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.content() {
+    content {
+        id = Ids.CONTENT_ENG
+    }
+    content {
+        id = Ids.CONTENT_URDU
+        dir = Dir.rtl
+//            style += "font-family: Helvetica"
     }
 }
 
@@ -262,6 +265,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
     }
     dateInput {
         id = Ids.PREG_END_TIME_INPUT
+        value = inputContainerToCopyFrom?.pregEndTime?.value.orEmpty()
     }
 }
 
@@ -572,7 +576,12 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
     }
 
-    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, Pregnancy(pregStartTime.valueAsDate,pregEndTime.valueAsDate, aadatNifas, mustabeen)) }
-    contentEnglishElement.innerHTML = output.englishText
-    contentUrduElement.innerHTML = output.urduText
+    with(inputContainer) {
+        val output = handleEntries(
+            entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy,
+            Pregnancy(pregStartTime.valueAsDate, pregEndTime.valueAsDate, aadatNifas, mustabeen)
+        )
+        contentEnglishElement.innerHTML = output.englishText
+        contentUrduElement.innerHTML = output.urduText
+    }
 }
