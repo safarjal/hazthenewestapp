@@ -58,3 +58,8 @@ data class BiggerThanFortyNifas(
     var aadatHaiz:Long?, //aadat of haiz before solving this
     var aadatTuhr:Long?, //aadat of tuhur before solving this
 )
+
+data class IstihazaAfterOutput(
+    var aadatHaiz: Long,
+    var haizDatesEntries: MutableList<Entry>
+)

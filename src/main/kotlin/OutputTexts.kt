@@ -1,17 +1,18 @@
 import kotlin.js.Date
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
-                         isDateOnly:Boolean, pregnancy: Pregnancy):OutputTexts{
+                         isDateOnly:Boolean, pregnancy: Pregnancy, hazDatesList: MutableList<Entry>):OutputTexts{
     println(fixedDurations)
     println("last period is ${fixedDurations[fixedDurations.size-1]}")
     var englishStr = ""
     var urduStr = ""
     urduStr+=generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy)
+    var hazDatesStr = generateHazDatesStr(hazDatesList)
 
-    return OutputTexts(englishStr,urduStr)
+    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList)
 }
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
-                         isDateOnly:Boolean):OutputTexts{
+                         isDateOnly:Boolean, hazDatesList: MutableList<Entry>):OutputTexts{
     println("Start of GenerateOutputString")
     var index = 0
     var englishStr = ""
@@ -31,12 +32,23 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
     println("English output complete")
     var urduStr = generateUrduOutputString(fixedDurations, isDateOnly)
     println("Urdu output completed")
-    return OutputTexts(englishStr,urduStr)
+    var hazDatesStr = generateHazDatesStr(hazDatesList)
+    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList)
+}
+
+fun generateHazDatesStr(hazDatesList: MutableList<Entry>):String{
+    var str = ""
+    for(entry in hazDatesList){
+        str+="From ${entry.startTime} to ${entry.endTime}<br>"
+    }
+    return str
 }
 
 class OutputTexts (
     var englishText:String,
-    var urduText: String
+    var urduText: String,
+    var haizDatesText:String,
+    var hazDatesList: MutableList<Entry>
 )
 fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy):String{
     var mustabeen = pregnancy.mustabeenUlKhilqat

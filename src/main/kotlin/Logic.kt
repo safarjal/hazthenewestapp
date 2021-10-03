@@ -38,7 +38,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
-
+    var hazDatesList = mutableListOf<Entry>()
     if(isPregnancy==true){
         addStartDateToFixedDurations(fixedDurations)
 
@@ -50,8 +50,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeTuhrLessThan15InPregnancy(fixedDurations)
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
-            dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
+            hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, hazDatesList)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
             markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
@@ -61,8 +61,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             dealWithDamInMuddateNifas(fixedDurations,pregnancy)
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
-            dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
+            hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, hazDatesList)
         }
     }else{//is not pregnancy
         removeTuhrLessThan15(fixedDurations)
@@ -71,12 +71,12 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
         addStartDateToFixedDurations(fixedDurations)
         println("Now we add start date: ${fixedDurations}")
-        dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+        hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
         println("After dealing with bigger than 10D: ${fixedDurations}")
-        return generateOutputString(fixedDurations, durations, isDateOnly)
+        return generateOutputString(fixedDurations, durations, isDateOnly, hazDatesList)
     }
 
-    return generateOutputString(fixedDurations, durations, isDateOnly)
+    return generateOutputString(fixedDurations, durations, isDateOnly, hazDatesList)
 
 }
 fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy){
@@ -347,7 +347,7 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?){
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?):MutableList<Entry>{
     var hazDatesList = mutableListOf<Entry>()
     var aadatHaz:Long = -1
     var aadatTuhr:Long = -1
@@ -371,7 +371,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 aadatTuhr = fixedDurations[i-1].timeInMilliseconds
             }
             //put it in haz lis
-            hazDatesList += Entry(fixedDurations[i].startDate, addTimeToDate(fixedDurations[i].startDate, fixedDurations[i].timeInMilliseconds))
+            hazDatesList += Entry(fixedDurations[i].startDate, fixedDurations[i].endDate)
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
             //check if we have aadaat.
@@ -388,7 +388,15 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             var nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter,aadatHaz, aadatTuhr)
             fixedDurations[i].biggerThanForty=nifasInfo
 
-            aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,hazDatesList,fixedDurations, i,sdOfIstihazaAfter = sd)
+            //add nifas to hazDatesList
+            hazDatesList += Entry(fixedDurations[i].startDate, addTimeToDate(fixedDurations[i].startDate, aadatNifas))
+
+            var istihazaAfterOutput = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i,sdOfIstihazaAfter = sd)
+            aadatHaz = istihazaAfterOutput.aadatHaiz
+            var newEntries =istihazaAfterOutput.haizDatesEntries
+            for(entry in newEntries){
+                hazDatesList+=entry
+            }
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
@@ -438,10 +446,12 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 hazDatesList += Entry(sd, ed)
 
 
-                aadatHaz = dealWithIstihazaAfter(output.istihazaAfter,aadatHaz,aadatTuhr,hazDatesList,fixedDurations, i, sd)
-
-
-
+                var istihazaAfterOutput = dealWithIstihazaAfter(output.istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i, sd)
+                aadatHaz = istihazaAfterOutput.aadatHaiz
+                var newEntries =istihazaAfterOutput.haizDatesEntries
+                for(entry in newEntries){
+                    hazDatesList+=entry
+                }
             }
         }
         if(fixedDurations[i].type==DurationType.ISTIMRAR) {//if the last period is an istimrar
@@ -488,10 +498,11 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             }
         }
     }
-
+    return hazDatesList
 }
 
-fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, hazDatesList: MutableList<Entry>, fixedDurations: MutableList<FixedDuration>, i: Int, sdOfIstihazaAfter:Date):Long {
+fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, fixedDurations: MutableList<FixedDuration>, i: Int, sdOfIstihazaAfter:Date):IstihazaAfterOutput {
+    var hazDatesList = mutableListOf<Entry>()
     //if istihazaAfter is bigger than addatTuhr +3, run daur
     var returnAadatHaiz = aadatHaz
     if (istihazaAfter>=aadatTuhr+3 && fixedDurations[i].type==DurationType.DAM){
@@ -550,7 +561,7 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         }
 
     }
-    return returnAadatHaiz
+    return IstihazaAfterOutput(returnAadatHaiz,hazDatesList)
 }
 
 class FiveSoortainOutput (

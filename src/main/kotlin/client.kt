@@ -24,6 +24,7 @@ object Ids {
 
     const val CONTENT_ENG = "content_eng"
     const val CONTENT_URDU = "content_urdu"
+    const val CONTENT_DATES = "content_dates"
     const val INPUT_CONTAINER_PREFIX = "input_container"
     const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
     const val INPUT_CONTAINER_SECONDARY = "${INPUT_CONTAINER_PREFIX}_secondary"
@@ -61,6 +62,7 @@ private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as 
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
+private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 
 private val HTMLElement.pregnancyElements get() = Ids.pregnancyElementIds.map { id ->
     getChildById(id) as HTMLInputElement
@@ -153,6 +155,9 @@ private fun TagConsumer<HTMLElement>.content() {
         id = Ids.CONTENT_URDU
         dir = Dir.rtl
 //            style += "font-family: Helvetica"
+    }
+    content {
+        id = Ids.CONTENT_DATES
     }
 }
 
@@ -630,5 +635,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
+        contentDatesElement.innerHTML = output.haizDatesText
+        var haizDatesList = output.hazDatesList
     }
 }
