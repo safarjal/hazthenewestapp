@@ -38,6 +38,13 @@ object Ids {
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
     const val DATE_AND_OR_RADIO = "date_and_or_time"
+
+    val pregnancyElementIds = listOf(
+        PREG_START_TIME_INPUT,
+        PREG_END_TIME_INPUT,
+        MUSTABEEN_CHECKBOX,
+        AADAT_NIFAS_INPUT
+    )
 }
 
 private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_PRIMARY) as HTMLElement
@@ -57,6 +64,10 @@ private val HTMLElement.aadatTuhr get() = aadatTuhrString.takeUnless(String::isE
 private val HTMLElement.aadatNifas get() = aadatNifasString.takeUnless(String::isEmpty)?.toDouble()
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
+
+private val HTMLElement.pregnancyElements get() = Ids.pregnancyElementIds.map { id ->
+    getChildById(id) as HTMLInputElement
+}
 
 private val HTMLElement.inputDatesRows: List<HTMLTableRowElement>
     get() {
@@ -220,6 +231,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     numberInput {
         id = Ids.AADAT_NIFAS_INPUT
         step = "any"
+        disabled = true
         value = inputContainerToCopyFrom?.aadatNifasString.orEmpty()
     }
 
@@ -233,6 +245,12 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
     checkBoxInput {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
+        onChangeFunction = { event ->
+            val isChecked = (event.currentTarget as HTMLInputElement).checked
+            for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                pregnancyElement.disabled = !isChecked
+            }
+        }
     }
 }
 
@@ -244,6 +262,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
     checkBoxInput {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
+        disabled = true
     }
 }
 
@@ -254,6 +273,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
     }
     dateInput {
         id = Ids.PREG_START_TIME_INPUT
+        disabled = true
         value = inputContainerToCopyFrom?.pregStartTime?.value.orEmpty()
     }
 }
@@ -265,6 +285,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
     }
     dateInput {
         id = Ids.PREG_END_TIME_INPUT
+        disabled = true
         value = inputContainerToCopyFrom?.pregEndTime?.value.orEmpty()
     }
 }
