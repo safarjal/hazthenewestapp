@@ -56,12 +56,9 @@ private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
-private val HTMLElement.aadatHazString get() = (getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement).value
-private val HTMLElement.aadatTuhrString get() = (getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement).value
-private val HTMLElement.aadatNifasString get() = (getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement).value
-private val HTMLElement.aadatHaz get() = aadatHazString.takeUnless(String::isEmpty)?.toDouble()
-private val HTMLElement.aadatTuhr get() = aadatTuhrString.takeUnless(String::isEmpty)?.toDouble()
-private val HTMLElement.aadatNifas get() = aadatNifasString.takeUnless(String::isEmpty)?.toDouble()
+private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
+private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
+private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 
@@ -207,35 +204,46 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         htmlFor = Ids.AADAT_HAIZ_INPUT
         +("Haiz Aadat: ")
     }
-    numberInput {
+    input {
         id = Ids.AADAT_HAIZ_INPUT
-        step = "any"
-        value = inputContainerToCopyFrom?.aadatHazString.orEmpty()
+        value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
+        onInputFunction = { event ->
+            with(event.currentTarget as HTMLInputElement) {
+                setCustomValidity(if (value.isEmpty() || parseAadatHaiz(value) != null) "" else "Aadat is incorrect")
+            }
+        }
     }
-    br {  }
+    br()
     label {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
     }
-    numberInput {
+    input {
         id = Ids.AADAT_TUHR_INPUT
-        step = "any"
-        value = inputContainerToCopyFrom?.aadatTuhrString.orEmpty()
+        value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
+        onInputFunction = { event ->
+            with(event.currentTarget as HTMLInputElement) {
+                setCustomValidity(if (value.isEmpty() || parseAadatTuhr(value) != null) "" else "Aadat is incorrect")
+            }
+        }
     }
-    br {  }
-
+    br()
     label {
         htmlFor = Ids.AADAT_NIFAS_INPUT
         +"Nifas Aadat: "
     }
-    numberInput {
+    input {
         id = Ids.AADAT_NIFAS_INPUT
         step = "any"
         required = true
         disabled = true
-        value = inputContainerToCopyFrom?.aadatNifasString.orEmpty()
+        value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
+        onInputFunction = { event ->
+            with(event.currentTarget as HTMLInputElement) {
+                setCustomValidity(if (value.isEmpty() || parseAadatNifas(value) != null) "" else "Aadat is incorrect")
+            }
+        }
     }
-
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
@@ -592,6 +600,27 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 }
 
+fun parseAadatHaiz(aadatString: String): Double? {
+    val days = aadatString.toIntOrNull()
+        ?.takeIf { days -> days in 3..10 }
+    if (days != null) return days.toDouble()
+    return null
+}
+
+fun parseAadatTuhr(aadatString: String): Double? {
+    val days = aadatString.toIntOrNull()
+        ?.takeIf { days -> days in 15..6*30 }
+    if (days != null) return days.toDouble()
+    return null
+}
+
+fun parseAadatNifas(aadatString: String): Double? {
+    val days = aadatString.toIntOrNull()
+        ?.takeIf { days -> days in 1..40 }
+    if (days != null) return days.toDouble()
+    return null
+}
+
 private fun parseEntries(inputContainer: HTMLElement) {
     println("Calculate button was clicked")
     val entries = inputContainer.inputDatesRows.map { row ->
@@ -604,8 +633,18 @@ private fun parseEntries(inputContainer: HTMLElement) {
     with(inputContainer) {
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
-            entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy,
-            Pregnancy(pregStartTime.valueAsDate, pregEndTime.valueAsDate, aadatNifas, mustabeen)
+            entries,
+            isIstimrar,
+            parseAadatHaiz(aadatHaz.value),
+            parseAadatTuhr(aadatTuhr.value),
+            isDateOnly,
+            isPregnancy,
+            Pregnancy(
+                pregStartTime.valueAsDate,
+                pregEndTime.valueAsDate,
+                parseAadatHaiz(aadatNifas.value),
+                mustabeen
+            )
         )
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
