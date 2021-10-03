@@ -476,8 +476,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
                 fixedDurations[i].biggerThanTen=hall
                 //put it in haz list
-                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore*MILLISECONDS_IN_A_DAY))
-                val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY))
+                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore))
+                val ed = addTimeToDate(sd,(output.haiz))
                 hazDatesList += Entry(sd, ed)
 
                 //for the moment, let's place 3 cycles in haz list in isitmrar
@@ -488,8 +488,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 var aadatHaizStartDate:Date = sd
                 var aadatHaizEndDate:Date = ed
                 for (j in 1 .. quotient){
-                    aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr*MILLISECONDS_IN_A_DAY))
-                    aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz*MILLISECONDS_IN_A_DAY))
+                    aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                    aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz))
                     hazDatesList += Entry(aadatHaizStartDate,aadatHaizEndDate)
 
                     aadatTuhrStartDate=aadatHaizEndDate
@@ -541,8 +541,8 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
 
             //add to haz list
             val lastHzEndTime = hazDatesList[hazDatesList.lastIndex].endTime
-            val strTime = addTimeToDate(lastHzEndTime,(aadatTuhr*MILLISECONDS_IN_A_DAY).toLong())
-            val endTime = addTimeToDate(strTime,(aadatHaz*MILLISECONDS_IN_A_DAY).toLong())
+            val strTime = addTimeToDate(lastHzEndTime,(aadatTuhr))
+            val endTime = addTimeToDate(strTime,(aadatHaz))
             hazDatesList += Entry(strTime,endTime)
 
         }
