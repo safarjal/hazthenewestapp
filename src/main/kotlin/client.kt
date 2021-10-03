@@ -132,7 +132,7 @@ private fun toggleSecondaryInputsContainer() {
             id = Ids.INPUT_CONTAINER_SECONDARY
         }
     }
-    setupRows(secondaryInputsContainer!!)
+    setupFirstRow(secondaryInputsContainer!!)
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(
