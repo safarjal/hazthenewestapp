@@ -9,7 +9,7 @@ import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import kotlin.js.Date
 
-private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = false
+private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 
 object Ids {
     const val INPUT_TABLE = "input_table"
@@ -50,8 +50,8 @@ private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-private val HTMLElement.pregStartTime get() = (getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement).valueAsDate
-private val HTMLElement.pregEndTime get() = (getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement).valueAsDate
+private val HTMLElement.pregStartTime get() = (getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement)
+private val HTMLElement.pregEndTime get() = (getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement)
 private val HTMLElement.aadatHazString get() = (getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatTuhrString get() = (getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement).value
 private val HTMLElement.aadatNifasString get() = (getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement).value
@@ -251,6 +251,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
     }
     dateInput {
         id = Ids.PREG_START_TIME_INPUT
+        value = inputContainerToCopyFrom?.pregStartTime?.value.orEmpty()
     }
 }
 
@@ -571,7 +572,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
     }
 
-    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, Pregnancy(pregStartTime,pregEndTime, aadatNifas, mustabeen)) }
+    val output = with(inputContainer) { handleEntries(entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy, Pregnancy(pregStartTime.valueAsDate,pregEndTime.valueAsDate, aadatNifas, mustabeen)) }
     contentEnglishElement.innerHTML = output.englishText
     contentUrduElement.innerHTML = output.urduText
 }

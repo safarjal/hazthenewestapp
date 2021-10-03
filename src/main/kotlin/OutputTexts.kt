@@ -139,27 +139,6 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
             }
             index++
         }
-        //add nifas line
-        while(index<fixedDurations.size && fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-            str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
-            if(index>=fixedDurations.size-1){//if this os the last index
-                index = fixedDurations.size-1
-                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
-            }
-            index ++
-        }
-
-        //solve after nifas
-        while (index<fixedDurations.size){
-            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-            if(index>=fixedDurations.size-1){//if this os the last index
-                index = fixedDurations.size-1
-                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
-            }
-            index ++
-        }
 
     }
 
