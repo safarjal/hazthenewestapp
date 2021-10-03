@@ -10,7 +10,7 @@ class ClientTest {
     fun testAddInputLayout_laysOutAllElements() {
         val container = document.createElement("div")
         container.addInputLayout()
-        val inputDatesTable = assertIs<HTMLTableElement>(container.getChildById(Ids.INPUT_TABLE))
+        val inputDatesTable = assertIs<HTMLTableElement>(container.getChildById(Ids.HAIZ_INPUT_TABLE))
         assertEquals(1, inputDatesTable.tBodies.length)
         val inputDatesTableBody = assertIs< HTMLTableSectionElement>(inputDatesTable.tBodies[0])
         assertEquals(1, inputDatesTableBody.rows.length)
