@@ -430,7 +430,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
 
                 //deal with output
                 //update aadats
-                aadatHaz = output.haiz.toLong()
+                aadatHaz = output.haiz
                 if(output.aadatTuhrChanges && fixedDurations[i-1].type==DurationType.TUHR){
                     //if mp is not tuhrefaasid or tuhr in haml
                     aadatTuhr = mp;
@@ -441,8 +441,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 fixedDurations[i].biggerThanTen=hall
 
                 //put it in haz list
-                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore*MILLISECONDS_IN_A_DAY))
-                val ed = addTimeToDate(sd,(output.haiz*MILLISECONDS_IN_A_DAY).toLong())
+                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore))
+                val ed = addTimeToDate(sd,(output.haiz))
                 hazDatesList += Entry(sd, ed)
 
 
