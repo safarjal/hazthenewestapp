@@ -579,7 +579,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
     with(inputContainer) {
         val output = handleEntries(
             entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy,
-            Pregnancy(pregStartTime.valueAsDate, pregEndTime.valueAsDate, aadatNifas, mustabeen)
+            Pregnancy(pregStartTime.valueAsDate as Date, pregEndTime.valueAsDate as Date, aadatNifas, mustabeen)
         )
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
