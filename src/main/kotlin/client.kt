@@ -231,6 +231,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     numberInput {
         id = Ids.AADAT_NIFAS_INPUT
         step = "any"
+        required = true
         disabled = true
         value = inputContainerToCopyFrom?.aadatNifasString.orEmpty()
     }
@@ -262,6 +263,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
     checkBoxInput {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
+        required = true
         disabled = true
     }
 }
@@ -273,6 +275,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
     }
     dateInput {
         id = Ids.PREG_START_TIME_INPUT
+        required = true
         disabled = true
         value = inputContainerToCopyFrom?.pregStartTime?.value.orEmpty()
     }
@@ -285,6 +288,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
     }
     dateInput {
         id = Ids.PREG_END_TIME_INPUT
+        required = true
         disabled = true
         value = inputContainerToCopyFrom?.pregEndTime?.value.orEmpty()
     }
@@ -598,9 +602,10 @@ private fun parseEntries(inputContainer: HTMLElement) {
     }
 
     with(inputContainer) {
+        @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries, isIstimrar, aadatHaz, aadatTuhr, isDateOnly, isPregnancy,
-            Pregnancy(pregStartTime.valueAsDate as Date, pregEndTime.valueAsDate as Date, aadatNifas, mustabeen)
+            Pregnancy(pregStartTime.valueAsDate, pregEndTime.valueAsDate, aadatNifas, mustabeen)
         )
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
