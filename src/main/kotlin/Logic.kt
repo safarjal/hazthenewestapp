@@ -38,7 +38,6 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
     }
-    var hazDatesList = mutableListOf<Entry>()
     if(isPregnancy==true){
         addStartDateToFixedDurations(fixedDurations)
 
@@ -50,7 +49,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeTuhrLessThan15InPregnancy(fixedDurations)
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
-            hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            addDurationsToDams(fixedDurations)
             return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
@@ -61,7 +61,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             dealWithDamInMuddateNifas(fixedDurations,pregnancy)
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
-            hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+            addDurationsToDams(fixedDurations)
             return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }
     }else{//is not pregnancy
@@ -71,8 +72,9 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
         addStartDateToFixedDurations(fixedDurations)
         println("Now we add start date: ${fixedDurations}")
-        hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
+        dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
         println("After dealing with bigger than 10D: ${fixedDurations}")
+        addDurationsToDams(fixedDurations)
         return generateOutputString(fixedDurations, durations, isDateOnly)
     }
 
@@ -89,7 +91,8 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                     pregnancy.aadatNifas=40.0
                 }
                 var istihazaAfter = (fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!*MILLISECONDS_IN_A_DAY).toLong()
-                var nifasInfo = BiggerThanFortyNifas(pregnancy.aadatNifas!!.toLong()*MILLISECONDS_IN_A_DAY, istihazaAfter,null, null)
+                var nifasInfo = BiggerThanFortyNifas(pregnancy.aadatNifas!!.toLong()*MILLISECONDS_IN_A_DAY, istihazaAfter,-1, -1,
+                    mutableListOf<Duration>())
                 fixedDurations[i].biggerThanForty=nifasInfo
 
 //
@@ -347,8 +350,7 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?):MutableList<Entry>{
-    var hazDatesList = mutableListOf<Entry>()
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, durations: List<Duration>,inputtedAadatHaz: Double?,inputtedAadatTuhr: Double?){
     var aadatHaz:Long = -1
     var aadatTuhr:Long = -1
 
@@ -370,8 +372,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
                 aadatTuhr = fixedDurations[i-1].timeInMilliseconds
             }
-            //put it in haz lis
-            hazDatesList += Entry(fixedDurations[i].startDate, fixedDurations[i].endDate)
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
             //check if we have aadaat.
@@ -385,18 +385,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
             var istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
             var aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             var sd = addTimeToDate(fixedDurations[i].startDate,aadatNifas)
-            var nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter,aadatHaz, aadatTuhr)
+            var nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter,aadatHaz, aadatTuhr, mutableListOf<Duration>())
             fixedDurations[i].biggerThanForty=nifasInfo
 
-            //add nifas to hazDatesList
-            hazDatesList += Entry(fixedDurations[i].startDate, addTimeToDate(fixedDurations[i].startDate, aadatNifas))
-
-            var istihazaAfterOutput = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i,sdOfIstihazaAfter = sd)
-            aadatHaz = istihazaAfterOutput.aadatHaiz
-            var newEntries =istihazaAfterOutput.haizDatesEntries
-            for(entry in newEntries){
-                hazDatesList+=entry
-            }
+            aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i,sdOfIstihazaAfter = sd)
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
@@ -409,12 +401,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 window.alert("We need at least one more period before this to be able to solve this")
                 break
             }
-//            else if(i>0 && fixedDurations[i-1].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-//                //we gotta do this here, because this is the only way we have aadat.
-//                //so we begin with aadat-e tuhr, then haiz...
-//                aadatHaz = dealWithIstihazaAfter(fixedDurations[i].timeInMilliseconds,aadatHaz,aadatTuhr,hazDatesList,fixedDurations,i,fixedDurations[i].startDate!!)
-//
-//            }
             else{
                 val mp:Long = fixedDurations[i-1].timeInMilliseconds + fixedDurations[i-1].istihazaAfter
                 val gp:Long = aadatTuhr
@@ -437,21 +423,12 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 }
                 println("Aadat after this should be ${aadatTuhr}/${aadatHaz}")
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
-                    output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
+                    output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr, mutableListOf<Duration>())
                 fixedDurations[i].biggerThanTen=hall
 
-                //put it in haz list
-                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore))
-                val ed = addTimeToDate(sd,(output.haiz))
-                hazDatesList += Entry(sd, ed)
+                var sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore+output.haiz))
 
-
-                var istihazaAfterOutput = dealWithIstihazaAfter(output.istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i, sd)
-                aadatHaz = istihazaAfterOutput.aadatHaiz
-                var newEntries =istihazaAfterOutput.haizDatesEntries
-                for(entry in newEntries){
-                    hazDatesList+=entry
-                }
+                aadatHaz = dealWithIstihazaAfter(output.istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i, sd)
             }
         }
         if(fixedDurations[i].type==DurationType.ISTIMRAR) {//if the last period is an istimrar
@@ -473,62 +450,20 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
                 }
-                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr)
+                val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr, mutableListOf<Duration>())
                 fixedDurations[i].biggerThanTen=hall
-                //put it in haz list
-                val sd = addTimeToDate(fixedDurations[i].startDate,(output.istihazaBefore))
-                val ed = addTimeToDate(sd,(output.haiz))
-                hazDatesList += Entry(sd, ed)
-
-                //for the moment, let's place 3 cycles in haz list in isitmrar
-                val quotient = 3
-
-                //put the right number of hazes in haz list
-                var aadatTuhrStartDate:Date = ed
-                var aadatHaizStartDate:Date = sd
-                var aadatHaizEndDate:Date = ed
-                for (j in 1 .. quotient){
-                    aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
-                    aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz))
-                    hazDatesList += Entry(aadatHaizStartDate,aadatHaizEndDate)
-
-                    aadatTuhrStartDate=aadatHaizEndDate
-                }
-
             }
         }
     }
-    return hazDatesList
 }
 
-fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, fixedDurations: MutableList<FixedDuration>, i: Int, sdOfIstihazaAfter:Date):IstihazaAfterOutput {
-    var hazDatesList = mutableListOf<Entry>()
+fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, fixedDurations: MutableList<FixedDuration>, i: Int, sdOfIstihazaAfter:Date):Long {
     //if istihazaAfter is bigger than addatTuhr +3, run daur
     var returnAadatHaiz = aadatHaz
     if (istihazaAfter>=aadatTuhr+(3*MILLISECONDS_IN_A_DAY) && fixedDurations[i].type==DurationType.DAM){
-        println("Istihaza After is bigger than aadatTuhr+3, running daur")
-        //find quotient and remainder
-        println("Aadat haiz is ${aadatHaz/MILLISECONDS_IN_A_DAY}")
-        println("Aadat tuhr is ${aadatTuhr/MILLISECONDS_IN_A_DAY}")
-        println("istihazaAfter is ${istihazaAfter/MILLISECONDS_IN_A_DAY}")
+        //find  remainder
 
         val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-        println("remainder is ${remainder/MILLISECONDS_IN_A_DAY}")
-        val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
-        println("quotient is ${quotient}")
-
-        //put the right number of hazes in haz list
-        var aadatTuhrStartDate:Date = sdOfIstihazaAfter
-        var aadatHaizStartDate:Date = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
-        var aadatHaizEndDate:Date = addTimeToDate(aadatHaizStartDate,(aadatHaz))
-        for (j in 1 .. quotient){
-            aadatHaizStartDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
-            aadatHaizEndDate = addTimeToDate(aadatHaizStartDate,(aadatHaz))
-            hazDatesList += Entry(aadatHaizStartDate,aadatHaizEndDate)
-
-            aadatTuhrStartDate=aadatHaizEndDate
-        }
-
 
         if (remainder<aadatTuhr + (3*MILLISECONDS_IN_A_DAY)){//it ended in tuhr or right between haz and tuhr
             //add istihazaAfter to next Tuhur mark it as fasid
@@ -545,12 +480,6 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
             //change aadatHaiz
             returnAadatHaiz = remainder-aadatTuhr
 
-            //add to haz list
-            val lastHzEndTime = hazDatesList[hazDatesList.lastIndex].endTime
-            val strTime = addTimeToDate(lastHzEndTime,(aadatTuhr))
-            val endTime = addTimeToDate(strTime,(aadatHaz))
-            hazDatesList += Entry(strTime,endTime)
-
         }
 
     }else{
@@ -561,13 +490,11 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         if(i<fixedDurations.size-1){
             println("marking next tuhr as fasid, because there is istihaza at the end of this dam")
             fixedDurations[i+1].type=DurationType.TUHREFAASID
-//                        fixedDurations[i+1].timeInMilliseconds+=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
-            //                       fixedDurations[i].timeInMilliseconds-=(output.istihazaAfter*MILLISECONDS_IN_A_DAY).toLong()
             fixedDurations[i+1].istihazaAfter = istihazaAfter
         }
 
     }
-    return IstihazaAfterOutput(returnAadatHaiz,hazDatesList)
+    return returnAadatHaiz
 }
 
 class FiveSoortainOutput (
@@ -657,4 +584,151 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
         }
     }
   return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
+}
+fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
+    //currently, this doesn't handle istimrar
+    for (i in fixedDurations.indices){
+        if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
+            //bigger than 10
+            val istihazaBefore = fixedDurations[i].biggerThanTen!!.istihazaBefore
+            val istihazaBeforeStartDate:Date = fixedDurations[i].startDate
+
+            if (istihazaBefore>0){
+                fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,istihazaBefore,istihazaBeforeStartDate)
+            }
+            val haizStartDate = addTimeToDate(istihazaBeforeStartDate, (istihazaBefore))
+            val haiz = fixedDurations[i].biggerThanTen!!.haiz
+            fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.HAIZ,haiz,haizStartDate)
+
+            val istihazaAfterStartDate = addTimeToDate(haizStartDate, (haiz))
+            val istihazaAfter = fixedDurations[i].biggerThanTen!!.istihazaAfter
+            val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter))
+            val aadatTuhr = fixedDurations[i].biggerThanTen!!.aadatTuhr
+            val aadatHaz = fixedDurations[i].biggerThanTen!!.aadatHaiz
+
+            if(istihazaAfter>0){
+                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                    //daur
+                    //find quotient and remainder
+                    var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
+                    var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr))
+                    var aadatTuhrStartDate:Date = istihazaAfterStartDate
+                    var aadatTuhrEndDate:Date
+                    var aadatHaizEndDate:Date
+
+                    for(j in 1 .. quotient){
+                        //add a quotient number of tuhr/hazes
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz))
+
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.HAIZ,aadatHaz,aadatTuhrEndDate)
+                        aadatTuhrStartDate=aadatHaizEndDate
+                    }
+                    //now deal with remiander
+                    if(remainder==0L){
+                        //there is nothing more to be added
+                    }else if(remainder<=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                        //it ends in tuhr
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
+                    }else{
+                        //there is full tuhur, followed by a partial haiz
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        var lastHaiz = remainder-aadatTuhr
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.HAIZ,lastHaiz,aadatTuhrEndDate)
+                    }
+
+                }else{
+                    //no daur
+                    fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,istihazaAfter,istihazaAfterStartDate)
+
+                }
+            }
+
+        }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD&&fixedDurations[i].days>40){
+            //bigger than 40 nifas
+            var aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
+            //make nifas period
+            fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.NIFAAS,aadatNifas,fixedDurations[i].startDate)
+            //now deal with istihaza after
+            //I'm copy/pasting from above, with minor changes
+
+            val istihazaAfterStartDate = addTimeToDate(fixedDurations[i].startDate, (aadatNifas))
+            val istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
+            val istihazaAfterEndDate = addTimeToDate(istihazaAfterStartDate, (istihazaAfter))
+            val aadatTuhr = fixedDurations[i].biggerThanForty!!.aadatTuhr
+            val aadatHaz = fixedDurations[i].biggerThanForty!!.aadatHaiz
+
+            if(istihazaAfter>0){
+                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                    //daur
+                    //find quotient and remainder
+                    var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
+                    var quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr))
+                    var aadatTuhrStartDate:Date = istihazaAfterStartDate
+                    var aadatTuhrEndDate:Date
+                    var aadatHaizEndDate:Date
+
+                    for(j in 1 .. quotient){
+                        //add a quotient number of tuhr/hazes
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        aadatHaizEndDate = addTimeToDate(aadatTuhrEndDate,(aadatHaz))
+
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.HAIZ,aadatHaz,aadatTuhrEndDate)
+                        aadatTuhrStartDate=aadatHaizEndDate
+                    }
+                    //now deal with remiander
+                    if(remainder==0L){
+                        //there is nothing more to be added
+                    }else if(remainder<=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                        //it ends in tuhr
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
+                    }else{
+                        //there is full tuhur, followed by a partial haiz
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        var lastHaiz = remainder-aadatTuhr
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.HAIZ,lastHaiz,aadatTuhrEndDate)
+                    }
+
+                }else{
+                    //no daur
+                    fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,istihazaAfter,istihazaAfterStartDate)
+
+                }
+            }
+
+        }
+    }
+
+}
+
+fun getHaizDatesList(fixedDurations: MutableList<FixedDuration>):MutableList<Entry>{
+    var hazDatesList = mutableListOf<Entry>()
+
+    for(fixedDuration in fixedDurations){
+        if(fixedDuration.type==DurationType.DAM && fixedDuration.days <=10){
+            //less than 3 were eliminated earlier
+            hazDatesList+=Entry(fixedDuration.startDate,fixedDuration.endDate)
+        }else if(fixedDuration.type==DurationType.DAM && fixedDuration.days>10){
+            for(duration in fixedDuration.biggerThanTen!!.durationsList){
+                if(duration.type==DurationType.HAIZ){
+                    hazDatesList+=Entry(duration.startTime,duration.endDate)
+                }
+            }
+        }else if(fixedDuration.type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDuration.days<=40){
+            hazDatesList+=Entry(fixedDuration.startDate,fixedDuration.endDate)
+        }else if(fixedDuration.type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDuration.days>40){
+            for(duration in fixedDuration.biggerThanForty!!.durationsList){
+                if(duration.type==DurationType.HAIZ||duration.type == DurationType.NIFAAS){
+                    hazDatesList+=Entry(duration.startTime,duration.endDate)
+                }
+            }
+        }
+    }
+
+    return hazDatesList
+
 }

@@ -13,7 +13,7 @@ data class Pregnancy(
 )
 
 enum class DurationType {
-    DAM, TUHR, TUHREFAASID, ISTIMRAR, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD
+    DAM, TUHR, TUHREFAASID, ISTIMRAR, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD, ISTIHAZA_BEFORE,ISTIHAZA_AFTER,HAIZ
 }
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
@@ -25,6 +25,8 @@ data class Duration(
     val startTime: Date
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
+    val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))
+
 }
 
 data class FixedDuration(
@@ -50,13 +52,16 @@ data class BiggerThanTenDm(
     var haiz:Long, //number of days of haiz
     var istihazaAfter: Long, //number of days of istihaza after haiz
     var aadatHaiz:Long, //aadat of haiz after solving this
-    var aadatTuhr:Long //aadat of tuhur after solving this
+    var aadatTuhr:Long, //aadat of tuhur after solving this
+    var durationsList: MutableList<Duration>
+
 )
 data class BiggerThanFortyNifas(
     var nifas: Long, //muddate nifas
     var istihazaAfter: Long, //number of days of istihaza after nifas
-    var aadatHaiz:Long?, //aadat of haiz before solving this
-    var aadatTuhr:Long?, //aadat of tuhur before solving this
+    var aadatHaiz:Long, //aadat of haiz before solving this
+    var aadatTuhr:Long, //aadat of tuhur before solving this
+    var durationsList: MutableList<Duration>
 )
 
 data class IstihazaAfterOutput(
