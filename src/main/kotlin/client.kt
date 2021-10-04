@@ -287,8 +287,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
     checkBoxInput {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
-        required = true
-        disabled = true
+        disabled = inputContainerToCopyFrom?.mustabeen == true
     }
 }
 

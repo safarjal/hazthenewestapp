@@ -51,7 +51,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
             hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, hazDatesList)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
             markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
@@ -62,7 +62,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
             hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, hazDatesList)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }
     }else{//is not pregnancy
         removeTuhrLessThan15(fixedDurations)
@@ -73,10 +73,10 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         println("Now we add start date: ${fixedDurations}")
         hazDatesList = dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
         println("After dealing with bigger than 10D: ${fixedDurations}")
-        return generateOutputString(fixedDurations, durations, isDateOnly, hazDatesList)
+        return generateOutputString(fixedDurations, durations, isDateOnly)
     }
 
-    return generateOutputString(fixedDurations, durations, isDateOnly, hazDatesList)
+    return generateOutputString(fixedDurations, durations, isDateOnly)
 
 }
 fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy){
