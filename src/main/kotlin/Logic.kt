@@ -505,11 +505,17 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
     var hazDatesList = mutableListOf<Entry>()
     //if istihazaAfter is bigger than addatTuhr +3, run daur
     var returnAadatHaiz = aadatHaz
-    if (istihazaAfter>=aadatTuhr+3 && fixedDurations[i].type==DurationType.DAM){
+    if (istihazaAfter>=aadatTuhr+(3*MILLISECONDS_IN_A_DAY) && fixedDurations[i].type==DurationType.DAM){
         println("Istihaza After is bigger than aadatTuhr+3, running daur")
         //find quotient and remainder
+        println("Aadat haiz is ${aadatHaz/MILLISECONDS_IN_A_DAY}")
+        println("Aadat tuhr is ${aadatTuhr/MILLISECONDS_IN_A_DAY}")
+        println("istihazaAfter is ${istihazaAfter/MILLISECONDS_IN_A_DAY}")
+
         val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
+        println("remainder is ${remainder/MILLISECONDS_IN_A_DAY}")
         val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr)).toInt()
+        println("quotient is ${quotient}")
 
         //put the right number of hazes in haz list
         var aadatTuhrStartDate:Date = sdOfIstihazaAfter
@@ -524,7 +530,7 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         }
 
 
-        if (remainder<aadatTuhr + 3){//it ended in tuhr or right between haz and tuhr
+        if (remainder<aadatTuhr + (3*MILLISECONDS_IN_A_DAY)){//it ended in tuhr or right between haz and tuhr
             //add istihazaAfter to next Tuhur mark it as fasid
             //if it exists
             //if remainder is not equal to zero

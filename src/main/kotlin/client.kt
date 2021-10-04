@@ -693,7 +693,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
 private fun compareResults():String {
     val primaryHaizDatesList = primaryInputsContainer.haizDatesList!!
     val secondaryHaizDatesList = secondaryInputsContainer!!.haizDatesList!!
-    // TODO: perform the comparison
     //step 1: merge them into one list
     var dateTypeList = mutableListOf<DateTypeList>()
     for(date in primaryHaizDatesList){
