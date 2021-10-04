@@ -64,6 +64,10 @@ private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_E
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 
+private var HTMLElement.haizDatesList: List<Entry>?
+    get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
+    set(value) { contentDatesElement.asDynamic().haizDatesList = value }
+
 private val HTMLElement.pregnancyElements get() = Ids.pregnancyElementIds.map { id ->
     getChildById(id) as HTMLInputElement
 }
@@ -680,6 +684,14 @@ private fun parseEntries(inputContainer: HTMLElement) {
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
         contentDatesElement.innerHTML = output.haizDatesText
-        var haizDatesList = output.hazDatesList
+        haizDatesList = output.hazDatesList
     }
+}
+
+// TODO: Call this from the compare button once implemented. We're assuming that the compare button will only be
+//  available once both date lists are available, so we're doing a non-null assertion (!!) on them here.
+private fun compareResults() {
+    val primaryHaizDatesList = primaryInputsContainer.haizDatesList!!
+    val secondaryHaizDatesList = secondaryInputsContainer!!.haizDatesList!!
+    // TODO: perform the comparison
 }
