@@ -86,40 +86,21 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     }else{//if it is ghair mustabeenulkhilqat
         str += "اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
 
-        var index = 0
-        //before pregnancy
-        while (index<fixedDurations.size && fixedDurations[index].startDate.getTime()<startTimeOfPregnancy){
+        for(index in fixedDurations.indices){
             str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
             str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-            if(index==fixedDurations.size-1){//if this os the last index
-                                     str += "\n<b>حمل</b>\n"
+            if(fixedDurations[index].type==DurationType.HAML){
+                str += "\n<b>حمل</b>\n"
+            }
+            if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
                 str += "\n<b>${urduDateFormat(birthTime, isDateOnly)} کو اسقاط ہوا (غیر مستبین الخلقہ)</b>\n"
-                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
-
+                if(index<fixedDurations.size-2){//if there is something after wiladat
+                    str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
+                }
             }
-            index++
-        }
-        str += "\n<b>حمل</b>\n"
-        while(index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){
-            //during pregnancy
-            str+= outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-            if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
-                var time = fixedDurations[index].timeInMilliseconds
-                str += "${daysHoursMinutesDigitalUrdu(time, isDateOnly)} پاکی۔\n\n"
-            }
-            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-            index ++
-        }
-        str += "\n<b>${urduDateFormat(birthTime, isDateOnly)} کو اسقاط ہوا (غیر مستبین الخلقہ)</b>\n"
 
-
-        while (index<fixedDurations.size && fixedDurations[index].endDate.getTime()<birthTime.getTime()){//move index ahead to after pregnancy
-            if(index>=fixedDurations.size-1){//if this os the last index
-                index = fixedDurations.size-1
-                str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
-            }
-            index++
         }
+        str += outputStringUrduFinalLines(fixedDurations,fixedDurations.size-1, isDateOnly)
 
     }
 
