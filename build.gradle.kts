@@ -1,5 +1,5 @@
 plugins {
-    kotlin("js") version "1.5.10"
+    kotlin("js") version "1.5.31"
 //    id("kotlin2js") version "1.5.20"
 //    id("kotlin2js") version "1.5.30"
 }
