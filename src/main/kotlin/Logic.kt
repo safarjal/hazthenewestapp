@@ -42,6 +42,7 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         addStartDateToFixedDurations(fixedDurations)
 
         markAllTuhrsInPregnancyAsHaml(fixedDurations, pregnancy)
+        //the above also added start of pregnancy
 
         if(pregnancy.mustabeenUlKhilqat==false){
             //if it's not mustabeen ulkhilqat, deal with it like haiz
@@ -51,18 +52,22 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
             addDurationsToDams(fixedDurations)
+            addWiladat(fixedDurations, pregnancy)
+            addStartOfPregnancy(fixedDurations, pregnancy)
             return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
             markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
             removeTuhrLessThan15(fixedDurations)//do this before the next, cuz why not, mkes thigns simpler in joining dams
             addStartDateToFixedDurations(fixedDurations)//cuz the last shoulda messed it up
-            makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,pregnancy)//also, marking them as Dam in nifaas
+            makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,pregnancy) //also, marking them as Dam in
             dealWithDamInMuddateNifas(fixedDurations,pregnancy)
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
             addDurationsToDams(fixedDurations)
+            addWiladat(fixedDurations, pregnancy)
+            addStartOfPregnancy(fixedDurations, pregnancy)
             return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
         }
     }else{//is not pregnancy
@@ -730,5 +735,36 @@ fun getHaizDatesList(fixedDurations: MutableList<FixedDuration>):MutableList<Ent
     }
 
     return hazDatesList
+
+}
+fun addWiladat(fixedDurations: MutableList<FixedDuration>, pregnancy: Pregnancy){
+    for(i in fixedDurations.indices){
+        if(fixedDurations[i].endDate.getTime()>pregnancy.birthTime.getTime()||
+                fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+            var newFixedDuration = FixedDuration(DurationType.WILADAT_ISQAT, 0L, mutableListOf(),startDate = pregnancy.birthTime)
+            fixedDurations.add(i,newFixedDuration)
+            break
+        }
+        if(i==fixedDurations.size-1){
+            //if we got to the last one without anything happening, just add it anyway
+            var newFixedDuration = FixedDuration(DurationType.WILADAT_ISQAT, 0L, mutableListOf(),startDate = pregnancy.birthTime)
+            fixedDurations.add(i,newFixedDuration)
+        }
+    }
+}
+fun addStartOfPregnancy(fixedDurations: MutableList<FixedDuration>,pregnancy: Pregnancy){
+    //add start of pregnancy in fixed periods
+    for(i in fixedDurations.indices){
+        if(fixedDurations[i].endDate.getTime()>pregnancy.pregStartTime.getTime()){
+            var newFixedDuration= FixedDuration(DurationType.HAML,0L, mutableListOf(), startDate = pregnancy.pregStartTime)
+            fixedDurations.add(i,newFixedDuration)
+            break
+        }
+        if(i==fixedDurations.size-1){
+            //if we got to the last one without anything happening, just add it anyway
+            var newFixedDuration= FixedDuration(DurationType.HAML,0L, mutableListOf(), startDate = pregnancy.pregStartTime)
+            fixedDurations.add(i,newFixedDuration)
+        }
+    }
 
 }
