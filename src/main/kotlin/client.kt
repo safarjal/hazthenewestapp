@@ -129,6 +129,7 @@ private fun TagConsumer<HTMLElement>.headers() {
             same. If this masla ends with istimrar, make a period that ends on today's date, then check the istimrar
             check box. Once all periods have been added, click Calculate button, to get the solution.
         """.trimIndent()
+        onClickFunction = {compareResults()}
     }
 }
 
@@ -738,7 +739,9 @@ private fun compareResults():String {
         else if (outputList[i].type==DateTypes.AYYAAM_E_SHAKK){type = "ayyaam-e-shakk"}
 
         str += "From ${startTime} to ${endTime} is ${type}<br>"
+        i++
     }
+    println(str)
     return str
 
 }
