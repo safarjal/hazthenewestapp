@@ -462,13 +462,13 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 break
             } else {
                 val veryBigArbitraryNumber = 1000;
-                val dm:Long = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong()
+                val dm:Long = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
                 val mp = fixedDurations[i - 1].timeInMilliseconds
                 val gp = aadatTuhr
                 val hz = aadatHaz
                 val output: FiveSoortainOutput = threeSoortainIstimrar(mp, gp, hz)
                 //update aadats
-                aadatHaz = output.haiz.toLong()
+                aadatHaz = output.haiz
                 if(output.aadatTuhrChanges && fixedDurations[i-1].type!=DurationType.TUHREFAASID){
                     //if mp is not tuhrefaasid
                     aadatTuhr = mp;
@@ -584,20 +584,20 @@ fun threeSoortainIstimrar(mp:Long, gp:Long, hz: Long):FiveSoortainOutput{
         soorat = Soortain.A_1;
         istihazaBefore = gp-mp;
         haiz = hz;
-        istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
+        istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
         aadatTuhrChanges = false;
     }else {	// mp>gp qism B
         if (hz - (mp - gp) >= 3*MILLISECONDS_IN_A_DAY) {							// soorat B-2
             soorat = Soortain.B_2;
             istihazaBefore = 0;
             haiz = hz-(mp-gp);
-            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
+            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
             aadatTuhrChanges = true;
         }else{ //if (hz - (mp - gp) < 3) {						// soorat B-3
             soorat = Soortain.B_3;
             istihazaBefore = 0;
             haiz = hz;
-            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY).toLong();
+            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
             aadatTuhrChanges = true;
         }
     }
