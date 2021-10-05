@@ -722,74 +722,13 @@ private fun parseEntries(inputContainer: HTMLElement) {
     appendCompareButtonIfNeeded()
 }
 
-private fun compareResults(): String {
+private fun compareResults() {
     val primaryHaizDatesList = primaryInputsContainer.haizDatesList!!
     val secondaryHaizDatesList = secondaryInputsContainer!!.haizDatesList!!
-    //step 1: merge them into one list
-    var dateTypeList = mutableListOf<DateTypeList>()
-    for(date in primaryHaizDatesList){
-        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
-        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
-    }
-    for(date in secondaryHaizDatesList){
-        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
-        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
-    }
-    //step 2: order list by date
-    dateTypeList.sortBy { it.date.getTime() }
-
-    //step 3: create a counter
-    var counter = 0
-
-    //step 4: step through the list, create an output list
-    var outputList = mutableListOf<DateTypeList>()
-    for(dateType in dateTypeList){
-        //plus 1 for every start time, -1 for every end time
-        if(dateType.type==DateTypes.START){
-            counter++
-        }else{//the type is end
-            counter--
-        }
-
-        if(counter == 0){
-            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
-        }else if(counter == 1){
-            outputList += DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK)
-        }else{//counter is 2
-            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
-        }
-    }
-
-    //create a people-friendly version of output list
-    var str = ""
-    var i=0
-    while (i<outputList.size-1){
-        var startTime = outputList[i].date
-        var endTime = outputList[i+1].date
-        var type = ""
-        if (outputList[i].type==DateTypes.YAQEENI_PAKI){type = "yaqeeni paki"}
-        else if (outputList[i].type==DateTypes.YAQEENI_NA_PAKI){type = "yaqeeni na paki"}
-        else if (outputList[i].type==DateTypes.AYYAAM_E_SHAKK){type = "ayyaam-e-shakk"}
-
-        if(startTime.getTime()!=endTime.getTime()){
-            str += "From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}<br>\n\n"
-        }
-
-        i++
-    }
-    println(str)
+    var listOfLists = mutableListOf<List<Entry>>()
+    listOfLists+=primaryHaizDatesList
+    listOfLists+=secondaryHaizDatesList
+    var str = getDifferenceFromMultiple(listOfLists)
+//    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
-    return str
-
 }
-class DateTypeList (
-    val date:Date,
-    val type: DateTypes
-)
-enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK}
-
-class DurationTypes (
-    val startTime: Date,
-    val endTime: Date,
-    val type: DateTypes
-        )

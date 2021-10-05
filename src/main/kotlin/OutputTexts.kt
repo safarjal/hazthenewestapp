@@ -565,3 +565,24 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,inde
     }
    return str
 }
+fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String{
+    var str = ""
+    for( durationType in durationTypes){
+        var type = ""
+        if (durationType.type==DateTypes.YAQEENI_PAKI){type="yaqeeni paki"}
+        else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){type="yaqeeni na paki"}
+        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK){type="ayyaam-e-shakk"}
+        var startTime=durationType.startTime
+        var endTime = durationType.endTime
+
+        if(durationType.type==DateTypes.AYYAAM_E_SHAKK){
+            str += "${UnicodeChars.YELLOW_CIRCLE} <b><em>From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}</em></b>\n\n"
+        }else if (durationType.type==DateTypes.YAQEENI_PAKI){
+            str += "${UnicodeChars.WHITE_CIRCLE} From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}\n\n"
+        }else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){
+            str += "${UnicodeChars.RED_CIRCLE} From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}\n\n"
+        }
+
+    }
+    return str
+}

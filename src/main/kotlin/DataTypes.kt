@@ -15,6 +15,19 @@ data class Pregnancy(
 enum class DurationType {
     DAM, TUHR, TUHREFAASID, ISTIMRAR, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD, ISTIHAZA_BEFORE,ISTIHAZA_AFTER,HAIZ, LESS_THAN_3_HAIZ, HAML,WILADAT_ISQAT
 }
+
+class DateTypeList (
+    val date:Date,
+    val type: DateTypes
+)
+enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK}
+
+class DurationTypes (
+    val startTime: Date,
+    val endTime: Date,
+    val type: DateTypes
+)
+
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
 }

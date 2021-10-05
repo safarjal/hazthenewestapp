@@ -802,3 +802,138 @@ fun addStartOfPregnancy(fixedDurations: MutableList<FixedDuration>,pregnancy: Pr
     }
 
 }
+fun getDifference (primaryHaizDatesList:List<Entry>, secondaryHaizDatesList:List<Entry>):String{
+    //step 1: merge them into one list
+    var dateTypeList = mutableListOf<DateTypeList>()
+    for(date in primaryHaizDatesList){
+        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
+        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
+    }
+    for(date in secondaryHaizDatesList){
+        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
+        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
+    }
+    //step 2: order list by date
+    dateTypeList.sortBy { it.date.getTime() }
+
+    //step 3: create a counter
+    var counter = 0
+
+    //step 4: step through the list, create an output list
+    var outputList = mutableListOf<DateTypeList>()
+    for(dateType in dateTypeList){
+        //plus 1 for every start time, -1 for every end time
+        if(dateType.type==DateTypes.START){
+            counter++
+        }else{//the type is end
+            counter--
+        }
+
+        if(counter == 0){
+            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
+        }else if(counter == 1){
+            outputList += DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK)
+        }else{//counter is 2
+            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
+        }
+    }
+
+    //create a people-friendly version of output list
+    var str = ""
+    var durationTypes = mutableListOf<DurationTypes>()
+    var i=0
+    while (i<outputList.size-1){
+        var startTime = outputList[i].date
+        var endTime = outputList[i+1].date
+
+        if(startTime.getTime()!=endTime.getTime()){
+            durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
+        }
+
+        i++
+    }
+    str += generateGetDifferenceString(durationTypes)
+    println(str)
+
+    return str
+}
+fun getDifferenceFromMultiple (listOfLists:MutableList<List<Entry>>):String{
+    //find out number of lists
+    var numberOfLists = listOfLists.size
+
+    //step 1: merge them into one list
+    var dateTypeList = mutableListOf<DateTypeList>()
+
+    for (list in listOfLists){
+        for(date in list){
+            dateTypeList += DateTypeList(date.startTime,DateTypes.START)
+            dateTypeList += DateTypeList(date.endTime,DateTypes.END)
+        }
+    }
+
+    //step 2: order list by date
+    dateTypeList.sortBy { it.date.getTime() }
+
+    //step 3: create a counter
+    var counter = 0
+
+    //step 4: step through the list, create an output list
+    var counterMin = 0 //at counter min, it is yaqeeni paki
+    var counterMax = numberOfLists //at counter max, it is yaqeeni na-paki
+    //all other counter values are ayyam-e-shakk
+
+    var outputList = mutableListOf<DateTypeList>()
+    for(dateType in dateTypeList){
+        //plus 1 for every start time, -1 for every end time
+        if(dateType.type==DateTypes.START){
+            counter++
+        }else{//the type is end
+            counter--
+        }
+
+        if(counter == counterMin){
+            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
+        }else if(counter == counterMax){//
+            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
+        }else{
+            outputList += DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK)
+        }
+    }
+
+    //create a people-friendly version of output list
+    println("starting peoplefriendly")
+    var str = ""
+    var durationTypes = mutableListOf<DurationTypes>()
+    var i=0
+
+    while (i<outputList.size-1){
+        var startTime = outputList[i].date
+        var endTime = outputList[i+1].date
+        if(startTime.getTime()!=endTime.getTime()){//to prevent 0 duration
+            //in more than 1, there will be repeated ayyam-e-shakk. this is to prevent that
+            if(outputList[i].type!=DateTypes.AYYAAM_E_SHAKK){
+                durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
+            }else{//It is ayyame shakk
+                //check all next ones to until there is a non aayam-e-shakk
+                var j = i
+                while(j<outputList.size-1){
+                    if(outputList[j+1].type!=DateTypes.AYYAAM_E_SHAKK){
+                        break
+                    }
+                    j++
+                }
+                endTime = outputList[j+1].date
+                durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
+            }
+        }
+
+        i++
+    }
+    println("after a while")
+    println(durationTypes)
+
+    str += generateGetDifferenceString(durationTypes)
+    println(str)
+
+    return str
+}
