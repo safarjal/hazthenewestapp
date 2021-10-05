@@ -114,7 +114,6 @@ fun Node.addInputLayout() {
         headers()
         div {
             id = Ids.INPUT_CONTAINERS_CONTAINER
-
             inputFormDiv {
                 id = Ids.INPUT_CONTAINER_PRIMARY
             }
