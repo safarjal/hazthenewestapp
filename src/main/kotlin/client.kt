@@ -277,7 +277,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         id = Ids.AADAT_NIFAS_INPUT
         step = "any"
         required = true
-        disabled = true
+        disabled = inputContainerToCopyFrom?.isPregnancy != true
         value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
     }
@@ -320,7 +320,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
     checkBoxInput {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
-        disabled = inputContainerToCopyFrom?.mustabeen == true
+        disabled = inputContainerToCopyFrom?.isPregnancy != true
     }
 }
 
@@ -352,8 +352,8 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
 
 private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
     if (inputContainerToCopyFrom != null) {
-        timeInput(inputContainerToCopyFrom.isDateOnly, inputContainerToCopyFrom.pregStartTime) {
-            disabled = true
+        timeInput(inputContainerToCopyFrom) {
+            disabled = !inputContainerToCopyFrom.isPregnancy
             block()
         }
     } else {
@@ -401,9 +401,8 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
         }
         tbody {
             if (inputContainerToCopyFrom != null) {
-                val isDateOnly = inputContainerToCopyFrom.isDateOnly
                 for (inputDateRow in inputContainerToCopyFrom.haizInputDatesRows) {
-                    inputRow(isDateOnly, inputDateRow.startTimeInput, inputDateRow.endTimeInput)
+                    inputRow(inputContainerToCopyFrom, inputDateRow.startTimeInput, inputDateRow.endTimeInput)
                 }
             } else {
                 inputRow(
@@ -433,18 +432,18 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
 }
 
 private fun TagConsumer<HTMLElement>.inputRow(
-    isDateOnlyLayout: Boolean,
+    inputContainerToCopyFrom: HTMLElement,
     startTimeInputToCopyFrom: HTMLInputElement,
     endTimeInputToCopyFrom: HTMLInputElement
 ) {
     tr {
         td {
-            timeInput(isDateOnlyLayout, startTimeInputToCopyFrom, indexWithinRow = 0) {
+            timeInput(inputContainerToCopyFrom, startTimeInputToCopyFrom, indexWithinRow = 0) {
                 id = Ids.Row.INPUT_START_TIME
             }
         }
         td {
-            timeInput(isDateOnlyLayout, endTimeInputToCopyFrom, indexWithinRow = 1) {
+            timeInput(inputContainerToCopyFrom, endTimeInputToCopyFrom, indexWithinRow = 1) {
                 id = Ids.Row.INPUT_END_TIME
             }
         }
@@ -474,12 +473,12 @@ private fun FlowContent.timeInput(
 }
 
 private fun FlowContent.timeInput(
-    isDateOnlyLayout: Boolean,
+    inputContainerToCopyFrom: HTMLElement,
     timeInputToCopyFrom: HTMLInputElement,
     indexWithinRow: Int,
     block: INPUT.() -> Unit = {}
 ) {
-    timeInput(isDateOnlyLayout, timeInputToCopyFrom) {
+    timeInput(inputContainerToCopyFrom, timeInputToCopyFrom) {
         onChangeFunction = { event -> setMinMaxForTimeInputsOnInput(event, indexWithinRow) }
         block()
     }
@@ -499,15 +498,17 @@ private fun FlowContent.timeInput(
 }
 
 private fun FlowContent.timeInput(
-    isDateOnlyLayout: Boolean,
-    timeInputToCopyFrom: HTMLInputElement,
+    inputContainerToCopyFrom: HTMLElement,
+    timeInputToCopyFrom: HTMLInputElement? = null,
     block: INPUT.() -> Unit = {}
 ) {
-    timeInput(isDateOnlyLayout) {
+    timeInput(inputContainerToCopyFrom.isDateOnly) {
+        block()
+        @Suppress("NAME_SHADOWING")
+        val timeInputToCopyFrom = timeInputToCopyFrom ?: inputContainerToCopyFrom.getChildById(id) as HTMLInputElement
         value = timeInputToCopyFrom.value
         min = timeInputToCopyFrom.min
         max = timeInputToCopyFrom.max
-        block()
     }
 }
 
