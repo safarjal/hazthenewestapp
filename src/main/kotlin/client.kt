@@ -25,9 +25,11 @@ object Ids {
     const val CONTENT_ENG = "content_eng"
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_DATES = "content_dates"
+    const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER_PREFIX = "input_container"
     const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
     const val INPUT_CONTAINER_SECONDARY = "${INPUT_CONTAINER_PREFIX}_secondary"
+    const val COMPARISON_CONTAINER = "comparison_container"
     const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
@@ -48,8 +50,11 @@ object Ids {
     )
 }
 
+private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_PRIMARY) as HTMLElement
 private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_SECONDARY) as HTMLElement?
+
+private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
@@ -108,6 +113,8 @@ fun Node.addInputLayout() {
     append {
         headers()
         div {
+            id = Ids.INPUT_CONTAINERS_CONTAINER
+
             inputFormDiv {
                 id = Ids.INPUT_CONTAINER_PRIMARY
             }
@@ -129,12 +136,14 @@ private fun TagConsumer<HTMLElement>.headers() {
             same. If this masla ends with istimrar, make a period that ends on today's date, then check the istimrar
             check box. Once all periods have been added, click Calculate button, to get the solution.
         """.trimIndent()
-        onClickFunction = {compareResults()}
     }
 }
 
 private fun toggleSecondaryInputsContainer() {
-    if (secondaryInputsContainer?.remove() != null) return
+    if (secondaryInputsContainer?.remove() != null) {
+        comparisonContainer!!.remove()
+        return
+    }
 
     primaryInputsContainer.after {
         inputFormDiv(inputContainerToCopyFrom = primaryInputsContainer) {
@@ -142,6 +151,24 @@ private fun toggleSecondaryInputsContainer() {
         }
     }
     setupFirstRow(secondaryInputsContainer!!)
+}
+
+private fun appendCompareButtonIfNeeded() {
+    if (comparisonContainer != null ||
+        primaryInputsContainer.haizDatesList == null ||
+        secondaryInputsContainer?.haizDatesList == null
+    ) return
+
+    inputsContainersContainer.after {
+        div {
+            id = Ids.COMPARISON_CONTAINER
+            button(type = ButtonType.button) {
+                +"Calculate difference"
+                style = "margin: 0 auto; display: block;"
+                onClickFunction = { compareResults() }
+            }
+        }
+    }
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(
@@ -686,11 +713,10 @@ private fun parseEntries(inputContainer: HTMLElement) {
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
+    appendCompareButtonIfNeeded()
 }
 
-// TODO: Call this from the compare button once implemented. We're assuming that the compare button will only be
-//  available once both date lists are available, so we're doing a non-null assertion (!!) on them here.
-private fun compareResults():String {
+private fun compareResults(): String {
     val primaryHaizDatesList = primaryInputsContainer.haizDatesList!!
     val secondaryHaizDatesList = secondaryInputsContainer!!.haizDatesList!!
     //step 1: merge them into one list
