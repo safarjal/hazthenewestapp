@@ -56,6 +56,8 @@ private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CON
 private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_SECONDARY) as HTMLElement?
 
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
+private val contentDatesDifferenceElement get() =
+    document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
@@ -69,7 +71,6 @@ private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) a
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
-private val HTMLElement.contentDatesDifferenceElement get() = getChildById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -166,11 +167,11 @@ private fun appendCompareButtonIfNeeded() {
             button(type = ButtonType.button) {
                 +"Calculate difference"
                 style = "margin: 0 auto; display: block;"
-                onClickFunction = {  compareResults()  }
+                onClickFunction = { compareResults() }
             }
-        }
-        content {
-            id = Ids.CONTENT_DATES_DIFFERENCE
+            content {
+                id = Ids.CONTENT_DATES_DIFFERENCE
+            }
         }
     }
 }
@@ -718,7 +719,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
         haizDatesList = output.hazDatesList
     }
     appendCompareButtonIfNeeded()
-
 }
 
 private fun compareResults(): String {
@@ -777,7 +777,7 @@ private fun compareResults(): String {
         i++
     }
     println(str)
-
+    contentDatesDifferenceElement!!.innerHTML = str
     return str
 
 }
