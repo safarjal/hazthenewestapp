@@ -684,14 +684,14 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
 
 private fun parseEntries(inputContainer: HTMLElement) {
     println("Calculate button was clicked")
-    val entries = inputContainer.haizInputDatesRows.map { row ->
-        Entry(
-            startTime = Date(row.startTimeInput.valueAsNumber),
-            endTime = Date(row.endTimeInput.valueAsNumber)
-        )
-    }
 
     with(inputContainer) {
+        val entries = haizInputDatesRows.map { row ->
+            Entry(
+                startTime = Date(row.startTimeInput.valueAsNumber),
+                endTime = Date(row.endTimeInput.valueAsNumber)
+            )
+        }
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries,
