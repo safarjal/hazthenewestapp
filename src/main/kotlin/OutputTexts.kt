@@ -8,7 +8,7 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,dur
     var hazDatesList = getHaizDatesList(fixedDurations)
     urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy)
 
-    var hazDatesStr = generateHazDatesStr(hazDatesList)
+    var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
     return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList)
 }
@@ -36,14 +36,14 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
     println("English output complete")
     var urduStr = generateUrduOutputString(fixedDurations, isDateOnly)
     println("Urdu output completed")
-    var hazDatesStr = generateHazDatesStr(hazDatesList)
+    var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
     return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList)
 }
 
-fun generateHazDatesStr(hazDatesList: MutableList<Entry>):String{
+fun generateHazDatesStr(hazDatesList: MutableList<Entry>,isDateOnly: Boolean):String{
     var str = ""
     for(entry in hazDatesList){
-        str+="From ${entry.startTime} to ${entry.endTime}<br>"
+        str+="From ${parseDate(entry.startTime,isDateOnly)} to ${parseDate(entry.endTime,isDateOnly)}<br>"
     }
     return str
 }

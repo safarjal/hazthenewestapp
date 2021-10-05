@@ -25,6 +25,7 @@ object Ids {
     const val CONTENT_ENG = "content_eng"
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_DATES = "content_dates"
+    const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER_PREFIX = "input_container"
     const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
@@ -68,6 +69,7 @@ private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) a
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
+private val HTMLElement.contentDatesDifferenceElement get() = getChildById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -164,8 +166,11 @@ private fun appendCompareButtonIfNeeded() {
             button(type = ButtonType.button) {
                 +"Calculate difference"
                 style = "margin: 0 auto; display: block;"
-                onClickFunction = { compareResults() }
+                onClickFunction = {  compareResults()  }
             }
+        }
+        content {
+            id = Ids.CONTENT_DATES_DIFFERENCE
         }
     }
 }
@@ -713,6 +718,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         haizDatesList = output.hazDatesList
     }
     appendCompareButtonIfNeeded()
+
 }
 
 private fun compareResults(): String {
@@ -752,6 +758,7 @@ private fun compareResults(): String {
             outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
         }
     }
+
     //create a people-friendly version of output list
     var str = ""
     var i=0
@@ -763,10 +770,14 @@ private fun compareResults(): String {
         else if (outputList[i].type==DateTypes.YAQEENI_NA_PAKI){type = "yaqeeni na paki"}
         else if (outputList[i].type==DateTypes.AYYAAM_E_SHAKK){type = "ayyaam-e-shakk"}
 
-        str += "From ${startTime} to ${endTime} is ${type}<br>"
+        if(startTime.getTime()!=endTime.getTime()){
+            str += "From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}<br>\n\n"
+        }
+
         i++
     }
     println(str)
+
     return str
 
 }
@@ -775,3 +786,9 @@ class DateTypeList (
     val type: DateTypes
 )
 enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK}
+
+class DurationTypes (
+    val startTime: Date,
+    val endTime: Date,
+    val type: DateTypes
+        )
