@@ -592,9 +592,12 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
 }
 fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
     //currently, this doesn't handle istimrar
+
+    println("Start add durations")
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //bigger than 10
+            println("found a bigger than 10 dam")
             val istihazaBefore = fixedDurations[i].biggerThanTen!!.istihazaBefore
             val istihazaBeforeStartDate:Date = fixedDurations[i].startDate
 
@@ -612,7 +615,11 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
             val aadatHaz = fixedDurations[i].biggerThanTen!!.aadatHaiz
 
             if(istihazaAfter>0){
-                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                println("istihazaAfter is bigger tnan 0")
+                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
+                    (istihazaAfter>aadatTuhr &&
+                            istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
+                            i == fixedDurations.size-1)){
                     //daur
                     //find quotient and remainder
                     var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
@@ -631,9 +638,23 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                         aadatTuhrStartDate=aadatHaizEndDate
                     }
                     //now deal with remiander
+                    println("remainder is ${remainder/MILLISECONDS_IN_A_DAY}" )
+                    println("aadatTuhr is ${aadatTuhr/MILLISECONDS_IN_A_DAY}" )
+                    println("i is ${i}" )
+                    println("fixedurations.size-1 is ${fixedDurations.size-1}" )
+
+
                     if(remainder==0L){
                         //there is nothing more to be added
-                    }else if(remainder<=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                    }else if(remainder>aadatTuhr
+                        && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
+                        && i==fixedDurations.size-1){//it is the last period, and ends in less than 3 haiz
+                        println("JUST LOOK AT THIS!!!")
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        var lastHaiz = remainder-aadatTuhr
+                        fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.LESS_THAN_3_HAIZ,lastHaiz,aadatTuhrEndDate)
+                    }else if(remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY){
                         //it ends in tuhr
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
                     }else{
@@ -666,7 +687,10 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
             val aadatHaz = fixedDurations[i].biggerThanForty!!.aadatHaiz
 
             if(istihazaAfter>0){
-                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
+                if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
+                    (istihazaAfter>aadatTuhr &&
+                            istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
+                            i == fixedDurations.size-1)){
                     //daur
                     //find quotient and remainder
                     var remainder = istihazaAfter%(aadatHaz+aadatTuhr)
@@ -687,6 +711,13 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                     //now deal with remiander
                     if(remainder==0L){
                         //there is nothing more to be added
+                    }else if(remainder>aadatTuhr
+                        && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
+                        && i==fixedDurations.size-1){//it is the last period, and ends in less than 3 haiz
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
+                        aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
+                        var lastHaiz = remainder-aadatTuhr
+                        fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.LESS_THAN_3_HAIZ,lastHaiz,aadatTuhrEndDate)
                     }else if(remainder<=aadatTuhr+3*MILLISECONDS_IN_A_DAY){
                         //it ends in tuhr
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
@@ -719,7 +750,8 @@ fun getHaizDatesList(fixedDurations: MutableList<FixedDuration>):MutableList<Ent
             hazDatesList+=Entry(fixedDuration.startDate,fixedDuration.endDate)
         }else if(fixedDuration.type==DurationType.DAM && fixedDuration.days>10){
             for(duration in fixedDuration.biggerThanTen!!.durationsList){
-                if(duration.type==DurationType.HAIZ){
+                if(duration.type==DurationType.HAIZ
+                    ||duration.type == DurationType.LESS_THAN_3_HAIZ){
                     hazDatesList+=Entry(duration.startTime,duration.endDate)
                 }
             }
@@ -727,7 +759,9 @@ fun getHaizDatesList(fixedDurations: MutableList<FixedDuration>):MutableList<Ent
             hazDatesList+=Entry(fixedDuration.startDate,fixedDuration.endDate)
         }else if(fixedDuration.type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDuration.days>40){
             for(duration in fixedDuration.biggerThanForty!!.durationsList){
-                if(duration.type==DurationType.HAIZ||duration.type == DurationType.NIFAAS){
+                if(duration.type==DurationType.HAIZ
+                    ||duration.type == DurationType.NIFAAS
+                    ||duration.type == DurationType.LESS_THAN_3_HAIZ){
                     hazDatesList+=Entry(duration.startTime,duration.endDate)
                 }
             }

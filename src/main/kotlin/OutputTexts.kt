@@ -267,6 +267,9 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
                 strUrdu+= "${UnicodeChars.BLACK_SQUARE} ${urduDateFormat(duration.startTime,isDateOnly)} کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n"
                 strUrdu+= "${UnicodeChars.BLACK_SQUARE} اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔\n\n"
 
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strUrdu+= haizLineUrdu(duration.startTime,duration.endDate,isDateOnly)
+                //maybe we'll wanna add something about itibaar bil khawateem
             }
         }
 
@@ -308,6 +311,9 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
             }else if(duration.type==DurationType.HAIZ){
                 strUrdu+= haizLineUrdu(duration.startTime,duration.endDate, isDateOnly)
 
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strUrdu+= haizLineUrdu(duration.startTime,duration.endDate,isDateOnly)
+                //maybe we'll wanna add something about itibaar bil khawateem
             }
         }
         strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
