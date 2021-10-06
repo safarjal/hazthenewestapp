@@ -84,6 +84,31 @@ class LogicTest {
 //        assertEquals(Date(2020,8,5),fixedDurations[0].startDate)
 //
 //    }
+@Test
+fun realWorldLogicTest(){
+    var entries = listOf<Entry>()
+    entries+=//14 jun - 20 Jun
+        Entry(Date(2020,5,14), Date(2020,5,20))
+    entries+=//20 Jul - 27 Jul
+        Entry(Date(2020,6,20), Date(2020,6,27))
+    entries+=//30 Aug - 1 Oct
+        Entry(Date(2020,7,30), Date(2020,9,1))
+    println(entries)
+
+    val output = handleEntries(entries,false,null,null,true,false,Pregnancy(Date(1,1,1),Date(1,1,1),null,false))
+    val haizDateList = output.hazDatesList
+    var expectedHaizDatesList = listOf<Entry>()
+    expectedHaizDatesList += Entry(Date(2020,5,14), Date(2020,5,20))
+    expectedHaizDatesList += Entry(Date(2020,6,20), Date(2020,6,27))
+    expectedHaizDatesList += Entry(Date(2020,7,30), Date(2020,8,2))
+
+    for(i in haizDateList.indices){
+        assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+        assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+    }
+
 }
+}
+
 
 
