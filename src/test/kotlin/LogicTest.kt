@@ -145,6 +145,46 @@ class LogicTest {
         }
 
     }
+    @Test
+    fun realWorldLogicTest2(){
+        //23 Apr - 28 APr
+        //15 may - 21 May
+        //pregnancy
+        //isqat ghair mustabeen
+        //25 Jul - 14 Sept
+        //14 sept - 21 sept
+        //6 oct - 6 Oct
+        var entries = listOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(Date(2021,3,23), Date(2021,3,28))
+        entries+=
+            Entry(Date(2021,4,15), Date(2021,4,21))
+        entries+=//30 Aug - 1 Oct
+            Entry(Date(2021,6,25), Date(2021,8,14))
+        entries+=//30 Aug - 1 Oct
+            Entry(Date(2021,8,14), Date(2021,8,21))
+        entries+=//30 Aug - 1 Oct
+            Entry(Date(2021,9,6), Date(2021,9,6))
+        println(entries)
+
+        val output = handleEntries(entries,false,null,null,true,true,Pregnancy(Date(2021,4,21),Date(2021,6,25),25.0,mustabeenUlKhilqat = false))
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList += Entry(Date(2021,3,23), Date(2021,3,28))
+        expectedHaizDatesList += Entry(Date(2021,4,15), Date(2021,4,21))
+        expectedHaizDatesList += Entry(Date(2021,6,25), Date(2021,6,31))
+        expectedHaizDatesList += Entry(Date(2021,7,17), Date(2021,7,23))
+        expectedHaizDatesList += Entry(Date(2021,8,9), Date(2021,8,15))
+        expectedHaizDatesList += Entry(Date(2021,9,6), Date(2021,9,6))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+    }
 
 }
 
