@@ -948,3 +948,122 @@ fun getDifferenceFromMultiple (listOfLists:MutableList<List<Entry>>):String{
 
     return str
 }
+fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>){
+    var filHaalPaki = calculateFilHaal(fixedDurations)
+    var aadaat = finalAadats(fixedDurations)
+    var futureDates = futureDatesOfInterest(fixedDurations)
+}
+fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):Date?{
+    var i = fixedDurations.size-1 //last period
+
+    //TODO:Provide an ask again for A-3 changing to A-2 or A-1
+    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
+        if(fixedDurations[i].biggerThanTen!!.qism==Soortain.A_3){
+            //A-3 is when bleeding begins well before aadat.
+            //A-2 is when bleeding is 3 days or more into aadat.
+            //But we must ask again at start of aadat, not A-2.
+            var mp = fixedDurations[i].biggerThanTen!!.mp
+            var gp = fixedDurations[i].biggerThanTen!!.gp
+            //when dm becomes equal to or more than gp-mp
+            //dm is duration
+            var date = addTimeToDate(fixedDurations[i].startDate, gp-mp)
+        }
+    }
+
+    //TODO: In case of a last haiz less than aadat of haiz, we should provide last date of aadat of haiz.
+    //with insructions for ihtiyati ghusl
+    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
+        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.HAIZ||
+            fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
+            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList[j].startTime,fixedDurations[i].biggerThanTen!!.aadatHaiz)
+        }
+    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.HAIZ||
+            fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
+            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList[j].startTime,fixedDurations[i].biggerThanForty!!.aadatHaiz)
+        }
+    }
+
+
+    //if there is a daur situation, and person is currently in a state of paki
+
+    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
+        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList[j].startTime, fixedDurations[i].biggerThanTen!!.aadatTuhr)
+            //if bigger than 10, ended in istihaza
+            return date
+        }
+
+    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList[j].startTime, fixedDurations[i].biggerThanForty!!.aadatTuhr)
+            //if bigger than 40, ended in istihaza
+            return date
+        }
+
+    }
+
+
+    return null
+}
+fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?{
+    //we only provide an aadat in a bigger than 10 situation
+    var i = fixedDurations.size-1
+    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
+        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            //if it ended in paki, no tension
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.aadatHaiz,fixedDurations[i].biggerThanTen!!.aadatTuhr)
+        }else if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
+            //it ended in a haiz less than 3, no tension
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.aadatHaiz,fixedDurations[i].biggerThanTen!!.aadatTuhr)
+        }else{
+            //it ended in a hiaz more than 3. We are going to give that haiz as aadat
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,fixedDurations[i].biggerThanTen!!.aadatTuhr)
+        }
+
+    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            //if it ended in paki, no tension
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanForty!!.aadatHaiz,fixedDurations[i].biggerThanForty!!.aadatTuhr)
+        }else if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
+            //it ended in a haiz less than 3, no tension
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanForty!!.aadatHaiz,fixedDurations[i].biggerThanForty!!.aadatTuhr)
+        }else{
+            //it ended in a hiaz more than 3. We are going to give that haiz as aadat
+            return AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanForty!!.durationsList[j].timeInMilliseconds,fixedDurations[i].biggerThanForty!!.aadatTuhr)
+        }
+    }
+    return null
+}
+
+fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
+    //calculate filHaal status
+    var filHaalPaki:Boolean = false
+    var i = fixedDurations.size-1
+
+    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM){
+        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            filHaalPaki=true
+        }else{
+            filHaalPaki=false
+        }
+
+    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
+        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
+            filHaalPaki=true
+        }else{
+            filHaalPaki=false
+        }
+    }else{
+        filHaalPaki = false
+    }
+    return filHaalPaki
+}

@@ -1,8 +1,8 @@
 import kotlin.js.Date
 
 data class Entry(
-    val startTime: Date,
-    val endTime: Date
+    var startTime: Date,
+    var endTime: Date
 )
 
 data class Pregnancy(
@@ -80,4 +80,9 @@ data class BiggerThanFortyNifas(
 data class IstihazaAfterOutput(
     var aadatHaiz: Long,
     var haizDatesEntries: MutableList<Entry>
+)
+
+data class AadatsOfHaizAndTuhr(
+    var aadatHaiz: Long,
+    var aadatTuhr: Long
 )

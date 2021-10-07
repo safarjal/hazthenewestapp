@@ -172,6 +172,7 @@ private fun appendCompareButtonIfNeeded() {
             content {
                 id = Ids.CONTENT_DATES_DIFFERENCE
             }
+
         }
     }
 }
@@ -731,4 +732,23 @@ private fun compareResults() {
     var str = getDifferenceFromMultiple(listOfLists)
 //    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
+}
+
+private fun compareTable(listOfLists: MutableList<List<Entry>>) {
+    var firstLast = Entry(listOfLists[0][0].startTime, listOfLists[0].last().endTime)
+    for (list in listOfLists) {
+        if (list[0].startTime.getTime() < firstLast.startTime.getTime())
+            firstLast.startTime = list[0].startTime;
+        if (list[0].endTime.getTime() > firstLast.endTime.getTime())
+            firstLast.endTime = list[0].endTime;
+    }
+    var d0 = firstLast.startTime.getDate()
+    var d1 = firstLast.endTime.getDate()
+    var m0 = firstLast.startTime.getMonth()
+    var m1 = firstLast.endTime.getMonth()
+    var y0 = firstLast.startTime.getFullYear()
+    var y1 = firstLast.endTime.getFullYear()
+    var ndays = Date(y0, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
+    ndays = ndays / MILLISECONDS_IN_A_DAY
+
 }
