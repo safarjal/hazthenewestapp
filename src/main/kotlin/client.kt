@@ -27,9 +27,7 @@ object Ids {
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
-    const val INPUT_CONTAINER_PREFIX = "input_container"
-    const val INPUT_CONTAINER_PRIMARY = "${INPUT_CONTAINER_PREFIX}_primary"
-    const val INPUT_CONTAINER_SECONDARY = "${INPUT_CONTAINER_PREFIX}_secondary"
+    const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
     const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
@@ -52,8 +50,7 @@ object Ids {
 }
 
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
-private val primaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_PRIMARY) as HTMLElement
-private val secondaryInputsContainer get() = document.getElementById(Ids.INPUT_CONTAINER_SECONDARY) as HTMLElement?
+private val primaryInputsContainer get() = inputsContainersContainer.firstElementChild as HTMLElement
 
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 private val contentDatesDifferenceElement get() =
@@ -117,9 +114,7 @@ fun Node.addInputLayout() {
         headers()
         div {
             id = Ids.INPUT_CONTAINERS_CONTAINER
-            inputFormDiv {
-                id = Ids.INPUT_CONTAINER_PRIMARY
-            }
+            inputFormDiv()
         }
     }
 }
@@ -127,8 +122,7 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.headers() {
     h1 {
         +"Mashqi Sawal"
-        // TODO: Add toggle button for Zallah to handle this
-        onClickFunction = { toggleSecondaryInputsContainer() }
+
     }
     p {
         +"""
@@ -141,26 +135,34 @@ private fun TagConsumer<HTMLElement>.headers() {
     }
 }
 
-private fun toggleSecondaryInputsContainer() {
-    if (secondaryInputsContainer?.remove() != null) {
+private fun removeInputsContainer(currentInputsContainer: HTMLElement) {
+    if(inputsContainersContainer.children.asList().size>1){
+        //only remove if there are more than 1
+        currentInputsContainer.remove()
+    }
+    if(inputsContainersContainer.children.asList().size==1&&comparisonContainer!=null){
+        //if there is only 1, remove comparison
         comparisonContainer!!.remove()
-        return
+    }
+}
+
+private fun cloneInputsContainer(currentInputsContainer:HTMLElement) {
+
+    if(comparisonContainer!=null){
+        comparisonContainer!!.remove()
     }
 
-    primaryInputsContainer.after {
-        inputFormDiv(inputContainerToCopyFrom = primaryInputsContainer) {
-            id = Ids.INPUT_CONTAINER_SECONDARY
-        }
+    currentInputsContainer.after {
+        inputFormDiv(inputContainerToCopyFrom = currentInputsContainer)
     }
-    setupFirstRow(secondaryInputsContainer!!)
+    setupFirstRow(inputsContainersContainer.lastElementChild as HTMLElement)
 }
 
 private fun appendCompareButtonIfNeeded() {
     if (comparisonContainer != null ||
-        primaryInputsContainer.haizDatesList == null ||
-        secondaryInputsContainer?.haizDatesList == null
-    ) return
-
+        inputsContainersContainer.children.asList().any() { (it as HTMLElement).haizDatesList != null  }){
+        return
+    }
     inputsContainersContainer.after {
         div {
             id = Ids.COMPARISON_CONTAINER
@@ -177,15 +179,29 @@ private fun appendCompareButtonIfNeeded() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.inputFormDiv(
-    inputContainerToCopyFrom: HTMLElement? = null,
-    block : DIV.() -> Unit = {}
-) {
+private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
+        id = Ids.INPUT_CONTAINER
         style = "width:50%; float: left;"
+        button(type = ButtonType.button) {
+            + "Clone"
+            style = "float: right"
+
+            onClickFunction = { event ->
+                cloneInputsContainer(findInputContainer(event))
+            }
+        }
+        button(type = ButtonType.button) {
+            + "X"
+            style = "float: right"
+            onClickFunction = { event ->
+                removeInputsContainer(findInputContainer(event))
+            }
+        }
+
+
         inputForm(inputContainerToCopyFrom)
         content()
-        block()
     }
 }
 
@@ -578,7 +594,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton() {
 }
 
 private fun findInputContainer(event: Event) =
-    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER_PREFIX)}!!
+    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER)}!!
 private fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
 private fun setupRows(inputContainer: HTMLElement) {
@@ -724,29 +740,26 @@ private fun parseEntries(inputContainer: HTMLElement) {
 }
 
 private fun compareResults() {
-    val primaryHaizDatesList = primaryInputsContainer.haizDatesList!!
-    val secondaryHaizDatesList = secondaryInputsContainer!!.haizDatesList!!
-    var listOfLists = mutableListOf<List<Entry>>()
-    listOfLists+=primaryHaizDatesList
-    listOfLists+=secondaryHaizDatesList
-    var str = getDifferenceFromMultiple(listOfLists)
+
+    val listOfLists = inputsContainersContainer.children.asList().map { (it as HTMLElement).haizDatesList!! }
+    val str = getDifferenceFromMultiple(listOfLists)
 //    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
 }
 
 private fun compareTable(listOfLists: MutableList<List<Entry>>) {
-    var firstLast = Entry(listOfLists[0][0].startTime, listOfLists[0].last().endTime)
+    val firstLast = Entry(listOfLists[0][0].startTime, listOfLists[0].last().endTime)
     for (list in listOfLists) {
         if (list[0].startTime.getTime() < firstLast.startTime.getTime())
             firstLast.startTime = list[0].startTime;
         if (list[0].endTime.getTime() > firstLast.endTime.getTime())
             firstLast.endTime = list[0].endTime;
     }
-    var d0 = firstLast.startTime.getDate()
-    var d1 = firstLast.endTime.getDate()
-    var m0 = firstLast.startTime.getMonth()
-    var m1 = firstLast.endTime.getMonth()
-    var y0 = firstLast.startTime.getFullYear()
+    val d0 = firstLast.startTime.getDate()
+    val d1 = firstLast.endTime.getDate()
+    val m0 = firstLast.startTime.getMonth()
+    val m1 = firstLast.endTime.getMonth()
+    val y0 = firstLast.startTime.getFullYear()
     var y1 = firstLast.endTime.getFullYear()
     var ndays = Date(y0, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
     ndays = ndays / MILLISECONDS_IN_A_DAY

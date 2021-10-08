@@ -868,7 +868,7 @@ fun getDifference (primaryHaizDatesList:List<Entry>, secondaryHaizDatesList:List
 
     return str
 }
-fun getDifferenceFromMultiple (listOfLists:MutableList<List<Entry>>):String{
+fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     //find out number of lists
     var numberOfLists = listOfLists.size
 
@@ -953,6 +953,7 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>){
     var aadaat = finalAadats(fixedDurations)
     var futureDates = futureDatesOfInterest(fixedDurations)
 }
+
 fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):Date?{
     var i = fixedDurations.size-1 //last period
 
@@ -1006,7 +1007,6 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):Date?{
         }
 
     }
-
 
     return null
 }

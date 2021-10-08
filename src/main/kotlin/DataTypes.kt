@@ -4,6 +4,12 @@ data class Entry(
     var startTime: Date,
     var endTime: Date
 )
+enum class TypesOfFutureDates { A3_CHANGING_TO_A2, END_OF_AADAT_HAIZ, END_OF_AADAT_TUHR }
+
+class FutureDateType(
+    val date:Date,
+    val futureDates:TypesOfFutureDates
+)
 
 data class Pregnancy(
     val pregStartTime:Date,
