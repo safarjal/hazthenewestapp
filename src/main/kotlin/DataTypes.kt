@@ -1,8 +1,8 @@
 import kotlin.js.Date
 
 data class Entry(
-    var startTime: Date,
-    var endTime: Date
+    val startTime: Date,
+    val endTime: Date
 )
 enum class TypesOfFutureDates { A3_CHANGING_TO_A2, END_OF_AADAT_HAIZ, END_OF_AADAT_TUHR }
 

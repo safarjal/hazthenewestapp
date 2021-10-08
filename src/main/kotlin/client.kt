@@ -754,13 +754,16 @@ private fun compareResults() {
 }
 
 private fun compareTable(listOfLists: MutableList<List<Entry>>) {
-    val firstLast = Entry(listOfLists[0][0].startTime, listOfLists[0].last().endTime)
+    var earliestStartTime = listOfLists[0][0].startTime
+    var latestEndTime=listOfLists[0].last().endTime
     for (list in listOfLists) {
-        if (list[0].startTime.getTime() < firstLast.startTime.getTime())
-            firstLast.startTime = list[0].startTime;
-        if (list[0].endTime.getTime() > firstLast.endTime.getTime())
-            firstLast.endTime = list[0].endTime;
+        if (list[0].startTime.getTime() <earliestStartTime.getTime())
+            earliestStartTime = list[0].startTime;
+        if (list[0].endTime.getTime() > latestEndTime.getTime())
+            latestEndTime = list[0].endTime;
     }
+    val firstLast = Entry(earliestStartTime, latestEndTime)
+
     val d0 = firstLast.startTime.getDate()
     val d1 = firstLast.endTime.getDate()
     val m0 = firstLast.startTime.getMonth()
@@ -770,4 +773,38 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     var ndays = Date(y0, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
     ndays = ndays / MILLISECONDS_IN_A_DAY
 
+
+    var listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
+    for (list in listOfLists){//in the lists
+        var colorsOfDaysList = mutableListOf<Int>()
+
+        for(day in 0..ndays.toInt()){//go through each day
+            var dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
+            //check if this date is in between a startTime and an endtime
+            for(entry in list) {//check the list to see if it is a haiz day
+                if (dateOfDay.getTime() >= entry.startTime.getTime() && dateOfDay.getTime() <= entry.endTime.getTime()) {
+                    //that date is a haiz
+                    colorsOfDaysList +=1
+                    break
+                }else if (dateOfDay.getTime() <= entry.startTime.getTime()) {
+                    //that date is a tuhur
+                    colorsOfDaysList +=0
+                    break
+                }else{
+                    //that date is a tuhur
+                    colorsOfDaysList +=0
+                }
+            }
+        }
+        listOfColorsOfDaysList +=colorsOfDaysList
+
+        drawCompareTable(listOfColorsOfDaysList)
+    }
+
+
+
+
+}
+fun drawCompareTable(listOfColorsOfDaysList:MutableList<MutableList<Int>>){
+    datesDifferenceTableElement
 }
