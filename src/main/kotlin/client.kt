@@ -41,6 +41,8 @@ object Ids {
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
     const val DATE_AND_OR_RADIO = "date_and_or_time"
+    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+    const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 
     val pregnancyElementIds = listOf(
         PREG_START_TIME_INPUT,
@@ -51,7 +53,8 @@ object Ids {
 }
 
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
-private val primaryInputsContainer get() = inputsContainersContainer.firstElementChild as HTMLElement
+@Suppress("UNCHECKED_CAST")
+private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
@@ -69,6 +72,10 @@ private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) a
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
+private val HTMLElement.inputsContainerCloneButton get() =
+    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
+private val HTMLElement.inputsContainerRemoveButton get() =
+    getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -101,10 +108,10 @@ private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pr
 fun main() {
     window.onload = {
         document.body!!.addInputLayout()
-        setupRows(primaryInputsContainer)
+        setupRows(inputsContainers.first())
         document.addEventListener(Events.VISIBILITY_CHANGE, {
             if (!document.isHidden) {
-                setMaxToCurrentTimeForTimeInputs(primaryInputsContainer)
+                setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
             }
         })
     }
@@ -123,7 +130,6 @@ fun Node.addInputLayout() {
 private fun TagConsumer<HTMLElement>.headers() {
     h1 {
         +"Mashqi Sawal"
-
     }
     p {
         +"""
@@ -136,43 +142,41 @@ private fun TagConsumer<HTMLElement>.headers() {
     }
 }
 
-private fun removeInputsContainer(currentInputsContainer: HTMLElement) {
-    if(inputsContainersContainer.children.asList().size>1){
-        //only remove if there are more than 1
-        currentInputsContainer.remove()
-    }
-    if(inputsContainersContainer.children.asList().size==1&&comparisonContainer!=null){
-        //if there is only 1, remove comparison
-        comparisonContainer!!.remove()
-    }
+private fun removeInputsContainer(inputsContainer: HTMLElement) {
+    inputsContainer.remove()
+    comparisonContainer?.remove()
+    inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
 }
 
-private fun cloneInputsContainer(currentInputsContainer:HTMLElement) {
-
-    if(comparisonContainer!=null){
-        comparisonContainer!!.remove()
-    }
-
-    currentInputsContainer.after {
-        inputFormDiv(inputContainerToCopyFrom = currentInputsContainer)
-    }
-    setupFirstRow(inputsContainersContainer.lastElementChild as HTMLElement)
-}
-
-private fun appendCompareButtonIfNeeded() {
-    println(comparisonContainer)
-//    println((inputsContainersContainer.children.asList() as HTMLElement).haizDatesList)
-    if (comparisonContainer != null){
-        return
-    }
-    for(inputContainer in inputsContainersContainer.children.asList()){
-        if((inputContainer as HTMLElement).haizDatesList==null){
-            println("inside the comparison container if")
-            return
+private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
+    comparisonContainer?.remove()
+    val clonedInputsContainer = inputsContainerToCopyFrom.after {
+        inputFormDiv(inputsContainerToCopyFrom)
+    }.single()
+    if (inputsContainers.size == 2) {
+        for (inputContainer in inputsContainers) {
+            addRemoveInputsContainerButton(inputContainer)
         }
     }
+    setupFirstRow(clonedInputsContainer)
+}
 
-    println("did not go in comparison container if")
+private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
+    inputContainer.inputsContainerCloneButton.before {
+        button(type = ButtonType.button) {
+            +"X"
+            id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
+            style = "float: right"
+            onClickFunction = { event ->
+                removeInputsContainer(findInputContainer(event))
+            }
+        }
+    }
+}
+
+private fun addCompareButtonIfNeeded() {
+    if (comparisonContainer != null || inputsContainers.any { it.haizDatesList == null }) return
+
     inputsContainersContainer.after {
         div {
             id = Ids.COMPARISON_CONTAINER
@@ -184,11 +188,9 @@ private fun appendCompareButtonIfNeeded() {
             content {
                 id = Ids.CONTENT_DATES_DIFFERENCE
             }
-
-            table{
+            table {
                 id = Ids.DATES_DIFFERENCE_TABLE
             }
-
         }
     }
 }
@@ -196,24 +198,15 @@ private fun appendCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "width:50%; float: left;"
+        style = "width:48%; float: left; border:1px; padding:1%;"
         button(type = ButtonType.button) {
-            + "Clone"
+            +"Clone"
+            id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
             style = "float: right"
-
             onClickFunction = { event ->
                 cloneInputsContainer(findInputContainer(event))
             }
         }
-        button(type = ButtonType.button) {
-            + "X"
-            style = "float: right"
-            onClickFunction = { event ->
-                removeInputsContainer(findInputContainer(event))
-            }
-        }
-
-
         inputForm(inputContainerToCopyFrom)
         content()
     }
@@ -750,12 +743,11 @@ private fun parseEntries(inputContainer: HTMLElement) {
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
-    appendCompareButtonIfNeeded()
+    addCompareButtonIfNeeded()
 }
 
 private fun compareResults() {
-
-    val listOfLists = inputsContainersContainer.children.asList().map { (it as HTMLElement).haizDatesList!! }
+    val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val str = getDifferenceFromMultiple(listOfLists)
 //    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
