@@ -191,17 +191,6 @@ private fun addCompareButtonIfNeeded() {
             }
             table {
                 id = Ids.DATES_DIFFERENCE_TABLE
-                thead {
-                    tr {
-                        th { +" " }
-                    }
-                }
-                tbody{
-                    tr{
-                        td{br}
-                    }
-                }
-
             }
         }
     }
@@ -843,78 +832,59 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     drawCompareTable(headerList,listOfColorsOfDaysList)
 
 }
-fun clearTable(){
-    val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
-    (datesDifferenceTableElement as HTMLTableElement).deleteTHead()
-    ((datesDifferenceTableElement as HTMLTableElement).tBodies[0] as HTMLTableSectionElement)
-    for(row in tableHead.rows.asList()){
-        tableHead.deleteRow(0)
-    }
 
-    val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
-    datesDifferenceTableElement!!.removeChild(tableBody)
-//    for(row in tableBody.rows.asList()){
-//        tableBody.deleteRow(0)
-//    }
-}
-fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
-    clearTable()
-    val table = datesDifferenceTableElement!! as HTMLTableElement
-    table.style.width="${32*headerList.size}px"
-    val tableHead = (table).createTHead() as HTMLTableSectionElement
+fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>){
+    val datesDifferenceTableElement = datesDifferenceTableElement!!
+    datesDifferenceTableElement.replaceChildren()
+    datesDifferenceTableElement.style.width = "${32*headerList.size}px"
+    datesDifferenceTableElement.appendChild {
+        thead {
+            tr {
+                for ((headerIndex, header) in headerList.withIndex()) {
+                    var counter = 0
+                    for (listOfColorsOfDays in listOfColorsOfDaysList) {
+                        val cellValue = listOfColorsOfDays[headerIndex]
+                        counter += cellValue
+                    }
 
-    val headingRow0 = tableHead.insertRow(0) as HTMLTableRowElement
-    val headingRow1 = tableHead.insertRow(1) as HTMLTableRowElement
-    for (headerIndex in headerList.indices){
-        val cell0 = headingRow0.insertCell(headerIndex) as HTMLTableCellElement
-        val cell1 = headingRow1.insertCell(headerIndex) as HTMLTableCellElement
-        val cell1Value = headerList[headerIndex].getDate().toString()
-        if(cell1Value.toInt() == 1){
-            val month = MonthNames[headerList[headerIndex].getMonth()]
-            cell0.innerHTML = month
-            cell0.colSpan=2
-        }
-        cell1.innerHTML= cell1Value
-        cell1.style.textAlign = "center"
-        cell1.style.width = "30px"
-        cell1.style.height = "30px"
-
-    }
-    for(i in headerList.indices){
-        var counter = 0
-        for(j in listOfColorsOfDaysList.indices){
-            var cellValue = listOfColorsOfDaysList[j][i]
-            counter += cellValue
-        }
-        if(counter==listOfColorsOfDaysList.size){
-            //yaqeeni napaki
-            (headingRow1.cells.asList()[i] as HTMLTableCellElement).style.backgroundColor= "red"
-        }else if(counter>0){
-            //ayyaam e shakk
-            (headingRow1.cells.asList()[i] as HTMLTableCellElement).style.backgroundColor= "pink"
-
-        }else if(counter == 0){
-            //yaqeeni paki
-        }
-    }
-
-    val tableBody = (datesDifferenceTableElement!! as HTMLTableElement).createTBody() as HTMLTableSectionElement
-    for(i in listOfColorsOfDaysList.indices){
-        val row = tableBody.insertRow(i) as HTMLTableRowElement
-        for(j in listOfColorsOfDaysList[i].indices){
-            val cell = row.insertCell(j)
-            val cellValue = listOfColorsOfDaysList[i][j]
-//            cell.innerHTML="${cellValue}"
-            cell.style.outline = "solid"
-            cell.style.width = "30px"
-            cell.style.height = "30px"
-            if(cellValue==1){
-                cell.style.backgroundColor = "red"
+                    val date = header.getDate().toString().toInt()
+                    td {
+                        if (date == 1) {
+                            +MonthNames[header.getMonth()]
+                            colSpan = "2"
+                            when {
+                                //yaqeeni napaki
+                                counter == listOfColorsOfDaysList.size -> style = "background-color: red"
+                                //ayyaam e shakk
+                                counter > 0 -> style = "background-color: pink"
+                                //yaqeeni paki
+                                counter == 0 -> {}
+                            }
+                        }
+                    }
+                }
             }
-
+            tr {
+                for (header in headerList) {
+                    val date = header.getDate().toString()
+                    td {
+                        +date
+                        style = "textAlign: center; width: 30px; height: 30px"
+                    }
+                }
+            }
         }
-
+        tbody {
+            for (listOfColorsOfDays in listOfColorsOfDaysList) {
+                tr {
+                    for (cellValue in listOfColorsOfDays) {
+                        td {
+                            style = "outline: solid; width: 30px; height: 30px" +
+                                    (if (cellValue == 1) "; background-color: red" else "")
+                        }
+                    }
+                }
+            }
+        }
     }
-
 }
-

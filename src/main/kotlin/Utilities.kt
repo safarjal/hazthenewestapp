@@ -15,7 +15,7 @@ import kotlin.time.toDuration
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
 
-val  MonthNames = arrayOf ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+val MonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
@@ -35,10 +35,22 @@ object UnicodeChars {
 
 }
 
-val Document.isHidden get() = document["hidden"] as Boolean
+val Document.isHidden get() = this["hidden"] as Boolean
 
 
-private fun ChildNode.insertSiblingRelative(
+private fun Node.insertRelative(
+    block: TagConsumer<HTMLElement>.() -> Unit,
+    insert: (Node) -> Unit
+): List<HTMLElement> = ArrayList<HTMLElement>().also { result ->
+    ownerDocument!!.createTree().onFinalize { child, partial ->
+        if (!partial) {
+            result.add(child)
+            insert(child)
+        }
+    }.block()
+}
+
+private fun ChildNode.insertRelative(
     block: TagConsumer<HTMLElement>.() -> Unit,
     insert: (ChildNode) -> Unit
 ): List<HTMLElement> = ArrayList<HTMLElement>().also { result ->
@@ -50,10 +62,18 @@ private fun ChildNode.insertSiblingRelative(
     }.block()
 }
 
-fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertSiblingRelative(block) { node -> before(node) }
-fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertSiblingRelative(block) { node -> after(node) }
+fun Node.appendChild(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> appendChild(node) }
+fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> before(node) }
+fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> after(node) }
 
 fun ParentNode.getChildById(id: String) = querySelector("#$id")
+
+
+fun Element.replaceChildren(vararg nodes: Node) {
+    // This is currently working only for clearing children if no parameters are provided.
+    // TODO: Make it work properly when actual nodes are passed as parameters as well.
+    asDynamic().replaceChildren(nodes)
+}
 
 
 inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boolean = { true }): T? {
