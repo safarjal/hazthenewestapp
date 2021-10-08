@@ -806,16 +806,16 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     val m1 = firstLast.endTime.getMonth()
     val y0 = firstLast.startTime.getFullYear()
     var y1 = firstLast.endTime.getFullYear()
-    var ndays = Date(y0, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
+    var ndays = Date(y1, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
     ndays = ndays / MILLISECONDS_IN_A_DAY
 
-    var headerList = mutableListOf<Date>()
-    var listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
+    val headerList = mutableListOf<Date>()
+    val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
-        var colorsOfDaysList = mutableListOf<Int>()
+        val colorsOfDaysList = mutableListOf<Int>()
 
         for(day in 0..(ndays-1).toInt()){//go through each day
-            var dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
+            val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
             if(headerList.size<ndays){
                 headerList+=dateOfDay
             }
@@ -846,20 +846,32 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 
 
 }
-fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
+fun clearTable(){
     val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
-    val headingRow0 = tableHead.rows[0] as HTMLTableRowElement
+    for(row in tableHead.rows.asList()){
+        tableHead.deleteRow(0)
+    }
+
+    val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
+    for(row in tableBody.rows.asList()){
+        tableBody.deleteRow(0)
+    }
+}
+fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
+    clearTable()
+    val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
+    val headingRow0 = tableHead.insertRow(0) as HTMLTableRowElement
     val headingRow1 = tableHead.insertRow(1) as HTMLTableRowElement
     for (headerIndex in headerList.indices){
-        var cell0 = headingRow0.insertCell(headerIndex) as HTMLTableCellElement
-        var cell1 = headingRow1.insertCell(headerIndex) as HTMLTableCellElement
-        var cell1Value = headerList[headerIndex].getDate().toString()
+        val cell0 = headingRow0.insertCell(headerIndex) as HTMLTableCellElement
+        val cell1 = headingRow1.insertCell(headerIndex) as HTMLTableCellElement
+        val cell1Value = headerList[headerIndex].getDate().toString()
         if(cell1Value.toInt() == 1){
             val month = MonthNames[headerList[headerIndex].getMonth()]
-            cell0.innerHTML = "${month}"
+            cell0.innerHTML = month
             cell0.colSpan=2
         }
-        cell1.innerHTML="${cell1Value}"
+        cell1.innerHTML= cell1Value
         cell1.style.alignContent = "center"
         cell1.style.width = "30px"
         cell1.style.height = "30px"
