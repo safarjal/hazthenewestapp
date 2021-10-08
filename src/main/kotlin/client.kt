@@ -26,6 +26,7 @@ object Ids {
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
+    const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
@@ -53,8 +54,8 @@ private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_
 private val primaryInputsContainer get() = inputsContainersContainer.firstElementChild as HTMLElement
 
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
-private val contentDatesDifferenceElement get() =
-    document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
+private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
+private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLTableElement?
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
@@ -159,10 +160,19 @@ private fun cloneInputsContainer(currentInputsContainer:HTMLElement) {
 }
 
 private fun appendCompareButtonIfNeeded() {
-    if (comparisonContainer != null ||
-        inputsContainersContainer.children.asList().any() { (it as HTMLElement).haizDatesList != null  }){
+    println(comparisonContainer)
+//    println((inputsContainersContainer.children.asList() as HTMLElement).haizDatesList)
+    if (comparisonContainer != null){
         return
     }
+    for(inputContainer in inputsContainersContainer.children.asList()){
+        if((inputContainer as HTMLElement).haizDatesList==null){
+            println("inside the comparison container if")
+            return
+        }
+    }
+
+    println("did not go in comparison container if")
     inputsContainersContainer.after {
         div {
             id = Ids.COMPARISON_CONTAINER
@@ -173,6 +183,10 @@ private fun appendCompareButtonIfNeeded() {
             }
             content {
                 id = Ids.CONTENT_DATES_DIFFERENCE
+            }
+
+            table{
+                id = Ids.DATES_DIFFERENCE_TABLE
             }
 
         }
