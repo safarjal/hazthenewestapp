@@ -150,14 +150,12 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     comparisonContainer?.remove()
+    if (inputsContainers.size == 1) {
+        addRemoveInputsContainerButton(inputsContainerToCopyFrom)
+    }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-    if (inputsContainers.size == 2) {
-        for (inputContainer in inputsContainers) {
-            addRemoveInputsContainerButton(inputContainer)
-        }
-    }
     setupFirstRow(clonedInputsContainer)
 }
 
@@ -213,16 +211,39 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
     div {
         id = Ids.INPUT_CONTAINER
         style = "width:48%; float: left; border:1px; padding:1%;"
-        button(type = ButtonType.button) {
-            +"Clone"
-            id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
-            style = "float: right"
-            onClickFunction = { event ->
-                cloneInputsContainer(findInputContainer(event))
-            }
+        if (inputContainerToCopyFrom != null) {
+            removeInputsContainerButton()
         }
+        addInputsContainerButton()
         inputForm(inputContainerToCopyFrom)
         content()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
+    inputsContainerAddRemoveButton {
+        +"Clone"
+        id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
+        onClickFunction = { event ->
+            cloneInputsContainer(findInputContainer(event))
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
+    inputsContainerAddRemoveButton {
+        +"X"
+        id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
+        onClickFunction = { event ->
+            removeInputsContainer(findInputContainer(event))
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTTON.() -> Unit = {}) {
+    button(type = ButtonType.button) {
+        style = "float: right"
+        block()
     }
 }
 
