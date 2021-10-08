@@ -193,6 +193,17 @@ private fun addCompareButtonIfNeeded() {
             }
             table {
                 id = Ids.DATES_DIFFERENCE_TABLE
+                thead {
+                    tr {
+                        th { +" " }
+                    }
+                }
+                tbody{
+                    tr{
+                        td{br}
+                    }
+                }
+
             }
         }
     }
@@ -754,6 +765,7 @@ private fun compareResults() {
     val str = getDifferenceFromMultiple(listOfLists)
 //    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
+    compareTable(listOfLists.toMutableList())
 }
 
 private fun compareTable(listOfLists: MutableList<List<Entry>>) {
@@ -776,13 +788,16 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     var ndays = Date(y0, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
     ndays = ndays / MILLISECONDS_IN_A_DAY
 
-
+    var headerList = mutableListOf<Date>()
     var listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
         var colorsOfDaysList = mutableListOf<Int>()
 
         for(day in 0..ndays.toInt()){//go through each day
             var dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
+            if(headerList.size<ndays){
+                headerList+=dateOfDay
+            }
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
                 if (dateOfDay.getTime() >= entry.startTime.getTime() && dateOfDay.getTime() <= entry.endTime.getTime()) {
@@ -801,13 +816,29 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
         }
         listOfColorsOfDaysList +=colorsOfDaysList
 
-        drawCompareTable(listOfColorsOfDaysList)
     }
 
 
+    drawCompareTable(headerList,listOfColorsOfDaysList)
+
+
 
 
 }
-fun drawCompareTable(listOfColorsOfDaysList:MutableList<MutableList<Int>>){
-    datesDifferenceTableElement
+fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
+    val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
+    val headingRow = tableHead.rows[0] as HTMLTableRowElement
+    headingRow.insertCell(0,td)
+
+    val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
+    val rows = tableBody.rows.asList() as List<HTMLTableRowElement>
+    for(i in listOfColorsOfDaysList.indices){
+        val cells = rows[i].cells
+        for(j in listOfColorsOfDaysList[i].indices){
+            cells[j]!!.innerHTML = "${listOfColorsOfDaysList[i][j]}"
+        }
+
+    }
+
 }
+
