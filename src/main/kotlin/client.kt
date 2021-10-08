@@ -175,7 +175,10 @@ private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
 }
 
 private fun addCompareButtonIfNeeded() {
-    if (comparisonContainer != null || inputsContainers.any { it.haizDatesList == null }) return
+    if (comparisonContainer != null ||
+        inputsContainers.size < 2 ||
+        inputsContainers.any { it.haizDatesList == null }
+    ) return
 
     inputsContainersContainer.after {
         div {
