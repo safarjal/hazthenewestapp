@@ -848,18 +848,22 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 }
 fun clearTable(){
     val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
+    (datesDifferenceTableElement as HTMLTableElement).deleteTHead()
+    ((datesDifferenceTableElement as HTMLTableElement).tBodies[0] as HTMLTableSectionElement)
     for(row in tableHead.rows.asList()){
         tableHead.deleteRow(0)
     }
 
     val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
-    for(row in tableBody.rows.asList()){
-        tableBody.deleteRow(0)
-    }
+    datesDifferenceTableElement!!.removeChild(tableBody)
+//    for(row in tableBody.rows.asList()){
+//        tableBody.deleteRow(0)
+//    }
 }
 fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
     clearTable()
-    val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
+    val tableHead = (datesDifferenceTableElement!! as HTMLTableElement).createTHead() as HTMLTableSectionElement
+
     val headingRow0 = tableHead.insertRow(0) as HTMLTableRowElement
     val headingRow1 = tableHead.insertRow(1) as HTMLTableRowElement
     for (headerIndex in headerList.indices){
@@ -878,7 +882,7 @@ fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<Mu
 
     }
 
-    val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
+    val tableBody = (datesDifferenceTableElement!! as HTMLTableElement).createTBody() as HTMLTableSectionElement
     for(i in listOfColorsOfDaysList.indices){
         val row = tableBody.insertRow(i) as HTMLTableRowElement
         for(j in listOfColorsOfDaysList[i].indices){
