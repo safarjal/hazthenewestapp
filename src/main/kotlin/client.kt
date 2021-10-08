@@ -848,10 +848,22 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 }
 fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
     val tableHead = datesDifferenceTableElement!!.tHead as HTMLTableSectionElement
-    val headingRow = tableHead.rows[0] as HTMLTableRowElement
+    val headingRow0 = tableHead.rows[0] as HTMLTableRowElement
+    val headingRow1 = tableHead.insertRow(1) as HTMLTableRowElement
     for (headerIndex in headerList.indices){
-        var cell = headingRow.insertCell(headerIndex) as HTMLTableCellElement
-        cell.innerHTML="${headerList[headerIndex].getDate()}"
+        var cell0 = headingRow0.insertCell(headerIndex) as HTMLTableCellElement
+        var cell1 = headingRow1.insertCell(headerIndex) as HTMLTableCellElement
+        var cell1Value = headerList[headerIndex].getDate().toString()
+        if(cell1Value.toInt() == 1){
+            val month = MonthNames[headerList[headerIndex].getMonth()]
+            cell0.innerHTML = "${month}"
+            cell0.colSpan=2
+        }
+        cell1.innerHTML="${cell1Value}"
+        cell1.style.alignContent = "center"
+        cell1.style.width = "30px"
+        cell1.style.height = "30px"
+
     }
 
     val tableBody = datesDifferenceTableElement!!.tBodies[0] as HTMLTableSectionElement
@@ -859,7 +871,15 @@ fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<Mu
         val row = tableBody.insertRow(i) as HTMLTableRowElement
         for(j in listOfColorsOfDaysList[i].indices){
             val cell = row.insertCell(j)
-            cell.innerHTML="${listOfColorsOfDaysList[i][j]}"
+            val cellValue = listOfColorsOfDaysList[i][j]
+//            cell.innerHTML="${cellValue}"
+            cell.style.outline = "solid"
+            cell.style.width = "30px"
+            cell.style.height = "30px"
+            if(cellValue==1){
+                cell.style.backgroundColor = "red"
+            }
+
         }
 
     }

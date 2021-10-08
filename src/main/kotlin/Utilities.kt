@@ -15,6 +15,10 @@ import kotlin.time.toDuration
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
 
+val  MonthNames = arrayOf ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
 object Events {
     const val VISIBILITY_CHANGE = "visibilitychange"
 }
