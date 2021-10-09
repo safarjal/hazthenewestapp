@@ -146,6 +146,7 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
+    inputsContainersContainer.style.width = "${481*inputsContainers.size}px"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -157,6 +158,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
+    inputsContainersContainer.style.width = "${481*inputsContainers.size}px"
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
@@ -199,7 +201,7 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "width:48%; float: left; border:1px; padding:1%;"
+        style = "width:464.06px; float: left; border:1px; padding:8px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
