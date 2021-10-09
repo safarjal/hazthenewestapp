@@ -822,15 +822,15 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
             var dateToCheck = addTimeToDate(header, MILLISECONDS_IN_A_DAY/2)
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
-                if (header.getTime() >= entry.startTime.getTime() && header.getTime() <= entry.endTime.getTime()) {
+                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
                     //that date is a haiz
                     colorsOfDaysList +=1
                     break
-                }else if (header.getTime() <= entry.startTime.getTime()) {
+                }else if (header.getTime() < entry.startTime.getTime()) {
                     //that date is a tuhur
                     colorsOfDaysList +=0
                     break
-                }else if(header.getTime()>list.last().endTime.getTime()){
+                }else if(header.getTime()>=list.last().endTime.getTime()){
                     colorsOfDaysList +=0
                     break
                 }
@@ -845,7 +845,6 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 
 fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>){
     val datesDifferenceTableElement = datesDifferenceTableElement!!
-//    datesDifferenceTableElement.style.width = "${32*headerList.size}px"
     datesDifferenceTableElement.style.width = "${headerList.size*30 +15}px"
     datesDifferenceTableElement.replaceChildren {
         div { id = "tHead"
@@ -872,7 +871,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     var header = headerList[i]
 //                    var counter = 0
                     for (listOfColorsOfDays in listOfColorsOfDaysList) {
-                        val cellValue = listOfColorsOfDays[i]
+//                          val cellValue = listOfColorsOfDays[i]
 //                        counter += cellValue
                    }
 
@@ -890,16 +889,20 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
 //                            else /*counter == 0*/ -> null
 //                            }
                     }
+                    println("Still Alive!!!")
                 }
             }
         }
         div{
             style = Styles.NEW_ROW
         }
+        //it is dead over here
+        println("not alive!!!!!!!")
         div { id = "tBody"
             style = Styles.TABLE_BODY_STYLE
+
             for (j in listOfColorsOfDaysList.indices) {
-                var listOfColorsOfDays = listOfColorsOfDaysList[j]
+                var colorsOfDaysList = listOfColorsOfDaysList[j]
                 div{
                     style = Styles.NEW_ROW
                 }
@@ -909,12 +912,12 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                         style = Styles.HALF_CELL
                     }
 
-                    for (i in listOfColorsOfDays.indices) {
-                        var cellValue = listOfColorsOfDays[i]
+                    for (k in colorsOfDaysList.indices) {
+                        var cellValue = colorsOfDaysList[k]
                         div { id = "cello"
                             style = Styles.TABLE_CELL_BORDER_STYLE +
                                     (if (cellValue == 1) "; background-color: red" else "")
-                            +"${i+1}"
+                            +"${k+1}"
                         }
                     }
                 }
