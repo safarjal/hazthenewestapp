@@ -794,17 +794,17 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     }
     val firstLast = Entry(earliestStartTime, latestEndTime)
 
-    val d0 = firstLast.startTime.getDate()
-    val d1 = firstLast.endTime.getDate()
-    val m0 = firstLast.startTime.getMonth()
-    val m1 = firstLast.endTime.getMonth()
-    val y0 = firstLast.startTime.getFullYear()
-    var y1 = firstLast.endTime.getFullYear()
-    var ndays = Date(y1, m1-1, d1).getTime() - Date(y0, m0-1, d0).getTime()
-    ndays = ndays / MILLISECONDS_IN_A_DAY
+//    val d0 = firstLast.startTime.getDate()
+//    val d1 = firstLast.endTime.getDate()
+//    val m0 = firstLast.startTime.getMonth()
+//    val m1 = firstLast.endTime.getMonth()
+//    val y0 = firstLast.startTime.getFullYear()
+//    var y1 = firstLast.endTime.getFullYear()
+    val ndays = ((latestEndTime.getTime()-earliestStartTime.getTime())/MILLISECONDS_IN_A_DAY).toInt()
+    println("ndays is ${ndays}")
 
     val headerList = mutableListOf<Date>()
-    for(day in 0..(ndays).toInt()){
+    for(day in 0..(ndays)){//header list is one longer than ndays
         val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
         if(headerList.size<ndays+1){
             headerList+=dateOfDay
@@ -817,7 +817,9 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
         val colorsOfDaysList = mutableListOf<Int>()
         println("list of lists is ${listOfLists}")
 
-        for(header in headerList){//go through each day
+        for(i in 0..(ndays-1)){//go through each day
+            var header = headerList[i]
+            var dateToCheck = addTimeToDate(header, MILLISECONDS_IN_A_DAY/2)
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
                 if (header.getTime() >= entry.startTime.getTime() && header.getTime() <= entry.endTime.getTime()) {
