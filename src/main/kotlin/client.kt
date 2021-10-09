@@ -835,9 +835,8 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 
 fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>){
     val datesDifferenceTableElement = datesDifferenceTableElement!!
-    datesDifferenceTableElement.replaceChildren()
     datesDifferenceTableElement.style.width = "${32*headerList.size}px"
-    datesDifferenceTableElement.appendChild {
+    datesDifferenceTableElement.replaceChildren {
         thead {
             tr {
                 for (header in headerList) {

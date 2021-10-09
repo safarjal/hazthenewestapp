@@ -38,11 +38,12 @@ object UnicodeChars {
 val Document.isHidden get() = this["hidden"] as Boolean
 
 
-private fun Node.insertRelative(
+private fun insertRelative(
+    ownerDocument: Document,
     block: TagConsumer<HTMLElement>.() -> Unit,
-    insert: (Node) -> Unit
+    insert: (Element) -> Unit
 ): List<HTMLElement> = ArrayList<HTMLElement>().also { result ->
-    ownerDocument!!.createTree().onFinalize { child, partial ->
+    ownerDocument.createTree().onFinalize { child, partial ->
         if (!partial) {
             result.add(child)
             insert(child)
@@ -50,19 +51,17 @@ private fun Node.insertRelative(
     }.block()
 }
 
-private fun ChildNode.insertRelative(
-    block: TagConsumer<HTMLElement>.() -> Unit,
-    insert: (ChildNode) -> Unit
-): List<HTMLElement> = ArrayList<HTMLElement>().also { result ->
-    (this as Node).ownerDocument!!.createTree().onFinalize { child, partial ->
-        if (!partial) {
-            result.add(child)
-            insert(child)
-        }
-    }.block()
-}
+private fun Element.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (Element) -> Unit) =
+    insertRelative(ownerDocument!!, block, insert)
+private fun Node.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (Node) -> Unit) =
+    insertRelative(ownerDocument!!, block, insert)
+private fun ChildNode.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (ChildNode) -> Unit) =
+    insertRelative((this as Node).ownerDocument!!, block, insert)
 
 fun Node.appendChild(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> appendChild(node) }
+@Suppress("MoveLambdaOutsideParentheses", "RedundantLambdaArrow")
+fun Element.replaceChildren(block: TagConsumer<HTMLElement>.() -> Unit) =
+    replaceChildren(*insertRelative(block, { _: Element -> }).toTypedArray())
 fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> before(node) }
 fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> after(node) }
 
@@ -70,9 +69,7 @@ fun ParentNode.getChildById(id: String) = querySelector("#$id")
 
 
 fun Element.replaceChildren(vararg nodes: Node) {
-    // This is currently working only for clearing children if no parameters are provided.
-    // TODO: Make it work properly when actual nodes are passed as parameters as well.
-    asDynamic().replaceChildren(nodes)
+    asDynamic().replaceChildren.apply(this, nodes)
 }
 
 
