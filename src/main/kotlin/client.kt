@@ -810,28 +810,28 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     ndays = ndays / MILLISECONDS_IN_A_DAY
 
     val headerList = mutableListOf<Date>()
+    for(day in 0..(ndays-1).toInt()){
+        val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
+        if(headerList.size<ndays){
+            headerList+=dateOfDay
+        }
+    }
+
     val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
         val colorsOfDaysList = mutableListOf<Int>()
 
-        for(day in 0..(ndays-1).toInt()){//go through each day
-            val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
-            if(headerList.size<ndays){
-                headerList+=dateOfDay
-            }
+        for(header in headerList){//go through each day
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
-                if (dateOfDay.getTime() >= entry.startTime.getTime() && dateOfDay.getTime() <= entry.endTime.getTime()) {
+                if (header.getTime() >= entry.startTime.getTime() && header.getTime() <= entry.endTime.getTime()) {
                     //that date is a haiz
                     colorsOfDaysList +=1
                     break
-                }else if (dateOfDay.getTime() <= entry.startTime.getTime()) {
+                }else if (header.getTime() <= entry.startTime.getTime()) {
                     //that date is a tuhur
                     colorsOfDaysList +=0
                     break
-                }else{
-                    //that date is a tuhur
-                    colorsOfDaysList +=0
                 }
             }
         }
