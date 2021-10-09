@@ -815,11 +815,12 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
         val colorsOfDaysList = mutableListOf<Int>()
+        println("list of lists is ${listOfLists}")
 
         for(header in headerList){//go through each day
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
-                if (header.getTime() >= entry.startTime.getTime() && header.getTime() <= entry.endTime.getTime()) {
+                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
                     //that date is a haiz
                     colorsOfDaysList +=1
                     break
@@ -835,6 +836,7 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
         }
         listOfColorsOfDaysList +=colorsOfDaysList
     }
+    println("List of colors of Day List is ${listOfColorsOfDaysList}")
     drawCompareTable(headerList,listOfColorsOfDaysList)
 
 }
