@@ -124,6 +124,9 @@ fun Node.addInputLayout() {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
         }
+        div {
+            style = Styles.NEW_ROW
+        }
     }
 }
 
