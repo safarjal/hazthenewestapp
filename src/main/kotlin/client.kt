@@ -58,7 +58,7 @@ private val inputsContainers get() = inputsContainersContainer.children.asList()
 
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
-private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLTableElement?
+private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
@@ -799,12 +799,13 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
     ndays = ndays / MILLISECONDS_IN_A_DAY
 
     val headerList = mutableListOf<Date>()
-    for(day in 0..(ndays-1).toInt()){
+    for(day in 0..(ndays).toInt()){
         val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
-        if(headerList.size<ndays){
+        if(headerList.size<ndays+1){
             headerList+=dateOfDay
         }
     }
+    println("Header list is ${headerList}")
 
     val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
@@ -835,52 +836,76 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
 
 fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>){
     val datesDifferenceTableElement = datesDifferenceTableElement!!
-    datesDifferenceTableElement.style.width = "${32*headerList.size}px"
+//    datesDifferenceTableElement.style.width = "${32*headerList.size}px"
+    datesDifferenceTableElement.style.width = "${headerList.size*30 +15}px"
     datesDifferenceTableElement.replaceChildren {
-        thead {
-            tr {
+        div { id = "tHead"
+            style = Styles.TABLE_HEAD_STYLE
+            div { id = "monthRow"
+                style =Styles.TABLE_ROW_STYLE
                 for (header in headerList) {
-                    val date = header.getDate().toString().toInt()
-                    td {
+                    val date = header.getDate()
+                    div { id = "cello"
+                        style = Styles.TABLE_CELL_STYLE
                         if (date == 1) {
                             +MonthNames[header.getMonth()]
-                            colSpan = "2"
                         }
                     }
                 }
             }
-            tr {
-                for ((headerIndex, header) in headerList.withIndex()) {
-                    var counter = 0
+            div{
+                style = Styles.NEW_ROW
+            }
+            div { id = "datesRow"
+                style = Styles.TABLE_ROW_STYLE
+                println("Header list is ${headerList}")
+                for (i in headerList.indices) {
+                    var header = headerList[i]
+//                    var counter = 0
                     for (listOfColorsOfDays in listOfColorsOfDaysList) {
-                        val cellValue = listOfColorsOfDays[headerIndex]
-                        counter += cellValue
-                    }
+                        val cellValue = listOfColorsOfDays[i]
+//                        counter += cellValue
+                   }
 
                     val date = header.getDate().toString()
 
-                    td {
+                    div { id = "cello"
+                        style =Styles.TABLE_CELL_STYLE
                         +date
-                        style = "textAlign: center; width: 30px; height: 30px"
-                        style += when {
-                            //yaqeeni napaki
-                            counter == listOfColorsOfDaysList.size -> "; background-color: red"
-                            //ayyaam e shakk
-                            counter > 0 -> "; background-color: pink"
-                            //yaqeeni paki
-                            else /*counter == 0*/ -> null
-                        }
+//                        style += when {
+//                            //yaqeeni napaki
+//                            counter == listOfColorsOfDaysList.size -> "; background-color: red"
+//                            //ayyaam e shakk
+//                            counter > 0 -> "; background-color: pink"
+//                            //yaqeeni paki
+//                            else /*counter == 0*/ -> null
+//                            }
                     }
                 }
             }
         }
-        tbody {
-            for (listOfColorsOfDays in listOfColorsOfDaysList) {
-                tr {
-                    for (cellValue in listOfColorsOfDays) {
-                        td {
-                            style = "outline: solid; width: 30px; height: 30px" +
+        div{
+            style = Styles.NEW_ROW
+        }
+        div { id = "tBody"
+            style = Styles.TABLE_BODY_STYLE
+            for (j in listOfColorsOfDaysList.indices) {
+                var listOfColorsOfDays = listOfColorsOfDaysList[j]
+                div{
+                    style = Styles.NEW_ROW
+                }
+                div { id = "sit${j+1}"
+                    Styles.TABLE_ROW_STYLE
+                    div { id="half_cell"
+                        style = Styles.HALF_CELL
+                    }
+
+                    for (i in listOfColorsOfDays.indices) {
+                        var cellValue = listOfColorsOfDays[i]
+                        div { id = "cello"
+                            style = Styles.TABLE_CELL_BORDER_STYLE +
                                     (if (cellValue == 1) "; background-color: red" else "")
+                            +"${i+1}"
                         }
                     }
                 }

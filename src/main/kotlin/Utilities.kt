@@ -35,6 +35,17 @@ object UnicodeChars {
 
 }
 
+object Styles {
+    const val TABLE_ROW_STYLE = "float: left;"
+    const val TABLE_CELL_STYLE = "float: left; width:30px; height:24px; text-align:center; padding: 6px 0 0 0"
+    const val TABLE_CELL_BORDER_STYLE = "float: left; width:28px; height:22px; text-align:center; padding: 6px 0 0 0; border: 1px solid black"
+    const val TABLE_HEAD_STYLE = "float:left"
+    const val TABLE_BODY_STYLE = "float:left"
+    const val NEW_ROW = "clear:both"
+    const val HALF_CELL = "float: left; width:15px; height:30px; text-align:center"
+
+}
+
 val Document.isHidden get() = this["hidden"] as Boolean
 
 
