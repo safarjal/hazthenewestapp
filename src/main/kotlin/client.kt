@@ -820,7 +820,7 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
         for(header in headerList){//go through each day
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
-                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
+                if (header.getTime() >= entry.startTime.getTime() && header.getTime() <= entry.endTime.getTime()) {
                     //that date is a haiz
                     colorsOfDaysList +=1
                     break
