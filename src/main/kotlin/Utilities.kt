@@ -51,7 +51,7 @@ private fun insertRelative(
     }.block()
 }
 
-private fun Element.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (Element) -> Unit) =
+private fun Element.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (Element) -> Unit = {}) =
     insertRelative(ownerDocument!!, block, insert)
 private fun Node.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit, insert: (Node) -> Unit) =
     insertRelative(ownerDocument!!, block, insert)
@@ -61,7 +61,7 @@ private fun ChildNode.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit,
 fun Node.appendChild(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> appendChild(node) }
 @Suppress("MoveLambdaOutsideParentheses", "RedundantLambdaArrow")
 fun Element.replaceChildren(block: TagConsumer<HTMLElement>.() -> Unit) =
-    replaceChildren(*insertRelative(block, { _: Element -> }).toTypedArray())
+    replaceChildren(*insertRelative(block).toTypedArray())
 fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> before(node) }
 fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> after(node) }
 
