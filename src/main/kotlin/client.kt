@@ -840,6 +840,17 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
     datesDifferenceTableElement.appendChild {
         thead {
             tr {
+                for (header in headerList) {
+                    val date = header.getDate().toString().toInt()
+                    td {
+                        if (date == 1) {
+                            +MonthNames[header.getMonth()]
+                            colSpan = "2"
+                        }
+                    }
+                }
+            }
+            tr {
                 for ((headerIndex, header) in headerList.withIndex()) {
                     var counter = 0
                     for (listOfColorsOfDays in listOfColorsOfDaysList) {
@@ -847,29 +858,19 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                         counter += cellValue
                     }
 
-                    val date = header.getDate().toString().toInt()
-                    td {
-                        if (date == 1) {
-                            +MonthNames[header.getMonth()]
-                            colSpan = "2"
-                            when {
-                                //yaqeeni napaki
-                                counter == listOfColorsOfDaysList.size -> style = "background-color: red"
-                                //ayyaam e shakk
-                                counter > 0 -> style = "background-color: pink"
-                                //yaqeeni paki
-                                counter == 0 -> {}
-                            }
-                        }
-                    }
-                }
-            }
-            tr {
-                for (header in headerList) {
                     val date = header.getDate().toString()
+
                     td {
                         +date
                         style = "textAlign: center; width: 30px; height: 30px"
+                        style += when {
+                            //yaqeeni napaki
+                            counter == listOfColorsOfDaysList.size -> "; background-color: red"
+                            //ayyaam e shakk
+                            counter > 0 -> "; background-color: pink"
+                            //yaqeeni paki
+                            else /*counter == 0*/ -> null
+                        }
                     }
                 }
             }
