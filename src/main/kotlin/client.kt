@@ -832,18 +832,15 @@ private fun compareTable(listOfLists: MutableList<List<Entry>>) {
                     //that date is a tuhur
                     colorsOfDaysList +=0
                     break
+                }else if(header.getTime()>list.last().endTime.getTime()){
+                    colorsOfDaysList +=0
+                    break
                 }
             }
         }
         listOfColorsOfDaysList +=colorsOfDaysList
-
     }
-
-
     drawCompareTable(headerList,listOfColorsOfDaysList)
-
-
-
 
 }
 fun clearTable(){
@@ -862,7 +859,9 @@ fun clearTable(){
 }
 fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
     clearTable()
-    val tableHead = (datesDifferenceTableElement!! as HTMLTableElement).createTHead() as HTMLTableSectionElement
+    val table = datesDifferenceTableElement!! as HTMLTableElement
+    table.style.width="${30*headerList.size}px"
+    val tableHead = (table).createTHead() as HTMLTableSectionElement
 
     val headingRow0 = tableHead.insertRow(0) as HTMLTableRowElement
     val headingRow1 = tableHead.insertRow(1) as HTMLTableRowElement
