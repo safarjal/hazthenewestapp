@@ -860,7 +860,7 @@ fun clearTable(){
 fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<MutableList<Int>>){
     clearTable()
     val table = datesDifferenceTableElement!! as HTMLTableElement
-    table.style.width="${30*headerList.size}px"
+    table.style.width="${32*headerList.size}px"
     val tableHead = (table).createTHead() as HTMLTableSectionElement
 
     val headingRow0 = tableHead.insertRow(0) as HTMLTableRowElement
@@ -875,10 +875,27 @@ fun drawCompareTable(headerList:List<Date>,listOfColorsOfDaysList:MutableList<Mu
             cell0.colSpan=2
         }
         cell1.innerHTML= cell1Value
-        cell1.style.alignContent = "center"
+        cell1.style.textAlign = "center"
         cell1.style.width = "30px"
         cell1.style.height = "30px"
 
+    }
+    for(i in headerList.indices){
+        var counter = 0
+        for(j in listOfColorsOfDaysList.indices){
+            var cellValue = listOfColorsOfDaysList[j][i]
+            counter += cellValue
+        }
+        if(counter==listOfColorsOfDaysList.size){
+            //yaqeeni napaki
+            (headingRow1.cells.asList()[i] as HTMLTableCellElement).style.backgroundColor= "red"
+        }else if(counter>0){
+            //ayyaam e shakk
+            (headingRow1.cells.asList()[i] as HTMLTableCellElement).style.backgroundColor= "pink"
+
+        }else if(counter == 0){
+            //yaqeeni paki
+        }
     }
 
     val tableBody = (datesDifferenceTableElement!! as HTMLTableElement).createTBody() as HTMLTableSectionElement
