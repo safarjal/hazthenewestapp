@@ -216,6 +216,11 @@ class LogicTest {
             assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
             assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
         }
+        var expectedEndingOutputValues = EndingOutputValues(true, AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2021,2,15), TypesOfFutureDates.END_OF_AADAT_TUHR))
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
 
     }
     @Test

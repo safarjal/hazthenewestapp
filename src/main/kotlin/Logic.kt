@@ -54,7 +54,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, endingOutputValues)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
             markAllDamsInPregnancyAsHaml(fixedDurations, pregnancy)
@@ -68,7 +69,8 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+            return generateOutputStringPregnancy(fixedDurations, durations, isDateOnly, pregnancy, endingOutputValues)
         }
     }else{//is not pregnancy
         removeTuhrLessThan15(fixedDurations)
@@ -80,10 +82,12 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
         println("After dealing with bigger than 10D: ${fixedDurations}")
         addDurationsToDams(fixedDurations)
-        return generateOutputString(fixedDurations, durations, isDateOnly)
+        val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+        return generateOutputString(fixedDurations, durations, isDateOnly, endingOutputValues)
     }
+    val endingOutputValues = calculateEndingOutputValues(fixedDurations)
 
-    return generateOutputString(fixedDurations, durations, isDateOnly)
+    return generateOutputString(fixedDurations, durations, isDateOnly, endingOutputValues)
 
 }
 fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy){
@@ -971,62 +975,64 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
 
     return str
 }
-fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>){
+fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>):EndingOutputValues{
     var filHaalPaki = calculateFilHaal(fixedDurations)
     var aadaat = finalAadats(fixedDurations)
     var futureDates = futureDatesOfInterest(fixedDurations)
+    return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
-fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):Date?{
+fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDateType?{
     var i = fixedDurations.size-1 //last period
 
     //TODO:Provide an ask again for A-3 changing to A-2 or A-1
-    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
-        if(fixedDurations[i].biggerThanTen!!.qism==Soortain.A_3){
+    if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
+        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3){
             //A-3 is when bleeding begins well before aadat.
             //A-2 is when bleeding is 3 days or more into aadat.
             //But we must ask again at start of aadat, not A-2.
-            var mp = fixedDurations[i].biggerThanTen!!.mp
-            var gp = fixedDurations[i].biggerThanTen!!.gp
+            val mp = fixedDurations[i].biggerThanTen!!.mp
+            val gp = fixedDurations[i].biggerThanTen!!.gp
             //when dm becomes equal to or more than gp-mp
             //dm is duration
-            var date = addTimeToDate(fixedDurations[i].startDate, gp-mp)
+            val date = addTimeToDate(fixedDurations[i].startDate, gp-mp)
+            return FutureDateType(date,TypesOfFutureDates.A3_CHANGING_TO_A2)
+
         }
     }
 
-    //TODO: In case of a last haiz less than aadat of haiz, we should provide last date of aadat of haiz.
+    //TODO: In case of a last haiz less than aadat of haiz in daur, we should provide last date of aadat of haiz.
     //with insructions for ihtiyati ghusl
-    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
-        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
-        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.HAIZ||
-            fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
-            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList[j].startTime,fixedDurations[i].biggerThanTen!!.aadatHaiz)
+    if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
+        if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.HAIZ||
+            fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
+            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList.last().startTime,fixedDurations.last().biggerThanTen!!.aadatHaiz)
+            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+
         }
-    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
-        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.HAIZ||
-            fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.LESS_THAN_3_HAIZ){
-            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList[j].startTime,fixedDurations[i].biggerThanForty!!.aadatHaiz)
+    }else if(fixedDurations.last().days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.HAIZ||
+            fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
+            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList.last().startTime,fixedDurations.last().biggerThanForty!!.aadatHaiz)
+            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_HAIZ)
         }
     }
 
 
     //if there is a daur situation, and person is currently in a state of paki
 
-    if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
-        var j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
-        if(fixedDurations[i].biggerThanTen!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
-            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList[j].startTime, fixedDurations[i].biggerThanTen!!.aadatTuhr)
+    if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
+        if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
+            var date = addTimeToDate(fixedDurations[i].biggerThanTen!!.durationsList.last().startTime, fixedDurations.last().biggerThanTen!!.aadatTuhr)
             //if bigger than 10, ended in istihaza
-            return date
+            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
         }
 
-    }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        var j = fixedDurations[i].biggerThanForty!!.durationsList.size-1
-        if(fixedDurations[i].biggerThanForty!!.durationsList[j].type==DurationType.ISTIHAZA_AFTER){
-            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList[j].startTime, fixedDurations[i].biggerThanForty!!.aadatTuhr)
+    }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
+            var date = addTimeToDate(fixedDurations[i].biggerThanForty!!.durationsList.last().startTime, fixedDurations[i].biggerThanForty!!.aadatTuhr)
             //if bigger than 40, ended in istihaza
-            return date
+            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
         }
 
     }

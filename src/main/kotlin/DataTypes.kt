@@ -10,6 +10,19 @@ class FutureDateType(
     val date:Date,
     val futureDates:TypesOfFutureDates
 )
+class EndingOutputValues(
+    val filHaalPaki:Boolean,
+    val aadats:AadatsOfHaizAndTuhr?,
+    val futureDateType: FutureDateType?
+)
+class OutputTexts (
+    var englishText:String,
+    var urduText: String,
+    var haizDatesText:String,
+    var hazDatesList: MutableList<Entry>,
+    var endingOutputValues:EndingOutputValues
+)
+
 
 class InfoForCompareTable(
     val headerList: List<Date>,

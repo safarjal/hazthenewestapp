@@ -1,20 +1,20 @@
 import kotlin.js.Date
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
-                         isDateOnly:Boolean, pregnancy: Pregnancy):OutputTexts{
+                         isDateOnly:Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):OutputTexts{
     println(fixedDurations)
     println("last period is ${fixedDurations[fixedDurations.size-1]}")
     var englishStr = ""
     var urduStr = ""
     var hazDatesList = getHaizDatesList(fixedDurations)
-    urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy)
+    urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)
 
     var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
-    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList)
+    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList,endingOutputValues)
 }
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
-                         isDateOnly:Boolean):OutputTexts{
+                         isDateOnly:Boolean, endingOutputValues: EndingOutputValues):OutputTexts{
     println("Start of GenerateOutputString")
     var index = 0
     var englishStr = ""
@@ -34,10 +34,10 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
         index++
     }
     println("English output complete")
-    var urduStr = generateUrduOutputString(fixedDurations, isDateOnly)
+    var urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
     println("Urdu output completed")
     var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
-    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList)
+    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues)
 }
 
 fun generateHazDatesStr(hazDatesList: MutableList<Entry>,isDateOnly: Boolean):String{
@@ -48,13 +48,7 @@ fun generateHazDatesStr(hazDatesList: MutableList<Entry>,isDateOnly: Boolean):St
     return str
 }
 
-class OutputTexts (
-    var englishText:String,
-    var urduText: String,
-    var haizDatesText:String,
-    var hazDatesList: MutableList<Entry>
-)
-fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy):String{
+fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):String{
     var mustabeen = pregnancy.mustabeenUlKhilqat
     var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
     var birthTime = pregnancy.birthTime
@@ -79,7 +73,7 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
             }
 
         }
-        str += outputStringUrduFinalLines(fixedDurations,fixedDurations.size-1, isDateOnly)
+        str += outputStringUrduFinalLines(fixedDurations,fixedDurations.size-1, isDateOnly, endingOutputValues)
 
 
 
@@ -100,7 +94,7 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
             }
 
         }
-        str += outputStringUrduFinalLines(fixedDurations,fixedDurations.size-1, isDateOnly)
+        str += outputStringUrduFinalLines(fixedDurations,fixedDurations.size-1, isDateOnly, endingOutputValues)
 
     }
 
@@ -108,7 +102,7 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     return str
 }
 
-fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean):String{
+fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
     var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
     str += "مندرجہ ذیل ترتیب سے دم و طہر آیا:\n\n"
     var index = 0
@@ -116,24 +110,27 @@ fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateO
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
         str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
         if(index==fixedDurations.size-1){//if this os the last index
-            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly)
+            str += outputStringUrduFinalLines(fixedDurations,index, isDateOnly, endingOutputValues)
         }
         index++
     }
     return str
 }
 
-fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean):String{
+fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
     println("Started outputStringUrduFinalLines")
     println("FIxedDurations is ${fixedDurations}")
     println("Index is ${index}")
 
     var strUrdu = ""
-    strUrdu+=outputStringUrduAadatLine(fixedDurations, index, isDateOnly)
+    val aadats = endingOutputValues.aadats
+    strUrdu+=outputStringUrduAadatLine(fixedDurations, index, isDateOnly, aadats)
     println("Aadat line added $strUrdu")
-    strUrdu+=outputStringUrduFilHaalLine(fixedDurations, index)
+    val filHaal = endingOutputValues.filHaalPaki
+    strUrdu+=outputStringUrduFilHaalLine(fixedDurations, index, filHaal)
     println("FilHaal line added $strUrdu")
-    strUrdu+=outputStringUrduAskAgainLine(fixedDurations,index, isDateOnly)
+    val futureDates = endingOutputValues.futureDateType
+    strUrdu+=outputStringUrduAskAgainLine(fixedDurations,index, isDateOnly, futureDates)
     println("Ask Again Line Added $strUrdu")
 
     //plis note down line
@@ -144,94 +141,123 @@ fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index
 
     return strUrdu
 }
-fun outputStringUrduFilHaalLine(fixedDurations: MutableList<FixedDuration>, index: Int):String{
-    var strUrdu = ""
+fun outputStringUrduFilHaalLine(fixedDurations: MutableList<FixedDuration>, index: Int, filHaalPaki:Boolean):String{
     var filHaalPakiStr = "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں ۔\n\n"
     var filHaalHaizStr = "فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑہیں ۔\n\n"
-    //right now, we are just going to check to see what last halat is
-    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
-    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
-    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
-    if(istihazaAfter==0L){//last halat is haiz
-        strUrdu+=filHaalHaizStr
-    }else if(istihazaAfter>=aadatTuhr+3){//last period is long istihaza, lets's figure out more
-        //find remainder
-        var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
-
-        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
-            strUrdu+=filHaalPakiStr
-        }else{//it ended in haiz or remainder is 0
-             if (remainder!=0L){//it ended in haiz
-                 strUrdu+=filHaalHaizStr
-            }else{//it ended in tuhr
-                strUrdu+=filHaalPakiStr
-            }
-        }
-    }else{//last halat is short istihaza
-        strUrdu+=filHaalPakiStr
+    if(filHaalPaki==true){
+        return filHaalPakiStr
+    }else{
+        return filHaalHaizStr
     }
+//    //right now, we are just going to check to see what last halat is
+//    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
+//    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
+//    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
+//    if(istihazaAfter==0L){//last halat is haiz
+//        strUrdu+=filHaalHaizStr
+//    }else if(istihazaAfter>=aadatTuhr+3){//last period is long istihaza, lets's figure out more
+//        //find remainder
+//        var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
+//
+//        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr
+//            strUrdu+=filHaalPakiStr
+//        }else{//it ended in haiz or remainder is 0
+//             if (remainder!=0L){//it ended in haiz
+//                 strUrdu+=filHaalHaizStr
+//            }else{//it ended in tuhr
+//                strUrdu+=filHaalPakiStr
+//            }
+//        }
+//    }else{//last halat is short istihaza
+//        strUrdu+=filHaalPakiStr
+//    }
 
-    return strUrdu
+//    return strUrdu
 }
 
-fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean, futureDateType: FutureDateType?):String{
     var strUrdu = ""
-    //my understanding is, that ask again line only gets generated if the fil haal is istihazaAfter
-    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
-    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
-    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
-
-
-    if(istihazaAfter!=0L){//if there is an istihaza after
-        var endDateOfBleeding = fixedDurations[index].startDate?.let { addTimeToDate(it, fixedDurations[index].timeInMilliseconds) }
-        var askAgainDate:Date? = null
-        if(istihazaAfter>=aadatTuhr+3){//if istihazaAfter is long
-            //find remainder
-            var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
-            if (remainder < aadatTuhr+3){//it ended in istihaza
-                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -remainder) }
-                askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, aadatTuhr) }!!
-            }else{//it ended in haiz
-
-            }
-
-        }else{//short istihazaAfter
-            if(fixedDurations[index].biggerThanTen?.qism==Soortain.A_3){
-                //this can change to A2. gotta figure out when. set ask again to then.
-            }else{
-                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter)) }
-                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr)) }!!
-            }
-        }
-        if(askAgainDate!=null){
-            strUrdu = "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(askAgainDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
-        }
+    if (futureDateType==null){
+        return ""
     }
+    val futureDate= futureDateType.date
+    val futureDatesType = futureDateType.futureDates
+    if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
 
+    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
+
+    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
+        strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
+
+    }
     return strUrdu
+
+//    //my understanding is, that ask again line only gets generated if the fil haal is istihazaAfter
+//    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
+//    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
+//    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
+//
+//
+//    if(istihazaAfter!=0L){//if there is an istihaza after
+//        var endDateOfBleeding = fixedDurations[index].startDate?.let { addTimeToDate(it, fixedDurations[index].timeInMilliseconds) }
+//        var askAgainDate:Date? = null
+//        if(istihazaAfter>=aadatTuhr+3){//if istihazaAfter is long
+//            //find remainder
+//            var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
+//            if (remainder < aadatTuhr+3){//it ended in istihaza
+//                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -remainder) }
+//                askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, aadatTuhr) }!!
+//            }else{//it ended in haiz
+//
+//            }
+//
+//        }else{//short istihazaAfter
+//            if(fixedDurations[index].biggerThanTen?.qism==Soortain.A_3){
+//                //this can change to A2. gotta figure out when. set ask again to then.
+//            }else{
+//                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter)) }
+//                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr)) }!!
+//            }
+//        }
+//        if(askAgainDate!=null){
+//            strUrdu = "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(askAgainDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
+//        }
+//    }
+//
+//    return strUrdu
 }
-fun outputStringUrduAadatLine(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean):String{
+fun outputStringUrduAadatLine(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):String{
     var strUrdu = ""
-    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
-    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
-    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
 
-    if (istihazaAfter>=aadatTuhr+3) {//if we have a long istihaza after, there is a possibility that aadat changed
-        //find remainder
-        var remainder = istihazaAfter % (aadatHaiz + aadatTuhr)
-        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr, so aadat doesn't change
-
-        }else{//it ended in haiz or remainder is 0 (which means ending in tuhr)
-            //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
-            if (remainder!=0L){
-                val aadatHaiz = (remainder-aadatTuhr).toString()
-            }
-        }
+    if(aadats==null){
+        return ""
+    }else{
+        val aadatTuhr = aadats.aadatTuhr
+        val aadatHaiz = aadats.aadatHaiz
+        strUrdu+="${UnicodeChars.GREEN_CIRCLE} <b>عادت:: حیض: ${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}، طہر: ${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}</b>\n\n"
+        return strUrdu
     }
 
-    strUrdu+="${UnicodeChars.GREEN_CIRCLE} <b>عادت:: حیض: ${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}، طہر: ${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}</b>\n\n"
-
-    return strUrdu
+//    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
+//    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
+//    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
+//
+//    if (istihazaAfter>=aadatTuhr+3) {//if we have a long istihaza after, there is a possibility that aadat changed
+//        //find remainder
+//        var remainder = istihazaAfter % (aadatHaiz + aadatTuhr)
+//        if (remainder<aadatTuhr + 3 && remainder!=0L){//it ended in tuhr, so aadat doesn't change
+//
+//        }else{//it ended in haiz or remainder is 0 (which means ending in tuhr)
+//            //change aadatHaiz if remainder is not zero (if it is zero, aadat doesn't change, so shouldn't be printed
+//            if (remainder!=0L){
+//                val aadatHaiz = (remainder-aadatTuhr).toString()
+//            }
+//        }
+//    }
+//
+//    strUrdu+="${UnicodeChars.GREEN_CIRCLE} <b>عادت:: حیض: ${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}، طہر: ${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}</b>\n\n"
+//
+//    return strUrdu
 }
 
 fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
