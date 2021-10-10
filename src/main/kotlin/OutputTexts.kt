@@ -183,10 +183,11 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
     val futureDate= futureDateType.date
     val futureDatesType = futureDateType.futureDates
     if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
-
+        strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} کو ضرور دوبارھ پوچھ لیں اس لیے کہ مسیلے کی صورت بدل جأیے گی۔</b>\n\n"
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
         strUrdu += "اگر خون اسی طرح جاری رہے تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے حیض کے دن ہونگے۔</b>\n\n"
         strUrdu += "اگر خون ${urduDateFormat(futureDate, isDateOnly)} سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا ${urduDateFormat(futureDate, isDateOnly)} کو بہی غسل کر لیجیے۔/n/n"
+        strUrdu += "اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي هوں، تب بھي ${urduDateFormat(futureDate, isDateOnly)} سے پهلے ازدواجي تعلق کي اجازت نهيں\n\n"
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
         strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
 
