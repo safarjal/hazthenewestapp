@@ -11,6 +11,13 @@ class FutureDateType(
     val futureDates:TypesOfFutureDates
 )
 
+class InfoForCompareTable(
+    val headerList: List<Date>,
+    val listOfColorsOfDaysList: List<List<Int>>,
+    val resultColors:List<Int>
+)
+
+
 data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,

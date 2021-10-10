@@ -813,61 +813,83 @@ fun addStartOfPregnancy(fixedDurations: MutableList<FixedDuration>,pregnancy: Pr
     }
 
 }
-fun getDifference (primaryHaizDatesList:List<Entry>, secondaryHaizDatesList:List<Entry>):String{
-    //step 1: merge them into one list
-    var dateTypeList = mutableListOf<DateTypeList>()
-    for(date in primaryHaizDatesList){
-        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
-        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
+
+
+fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCompareTable {
+    var earliestStartTime = listOfLists[0][0].startTime
+    var latestEndTime=listOfLists[0].last().endTime
+    for (list in listOfLists) {
+        if (list[0].startTime.getTime() <earliestStartTime.getTime())
+            earliestStartTime = list[0].startTime
+        if (list[list.lastIndex].endTime.getTime() > latestEndTime.getTime())
+            latestEndTime = list[0].endTime
     }
-    for(date in secondaryHaizDatesList){
-        dateTypeList += DateTypeList(date.startTime,DateTypes.START)
-        dateTypeList += DateTypeList(date.endTime,DateTypes.END)
-    }
-    //step 2: order list by date
-    dateTypeList.sortBy { it.date.getTime() }
+    val firstLast = Entry(earliestStartTime, latestEndTime)
 
-    //step 3: create a counter
-    var counter = 0
+    val ndays = ((latestEndTime.getTime()-earliestStartTime.getTime())/MILLISECONDS_IN_A_DAY).toInt()
+    println("ndays is ${ndays}")
 
-    //step 4: step through the list, create an output list
-    var outputList = mutableListOf<DateTypeList>()
-    for(dateType in dateTypeList){
-        //plus 1 for every start time, -1 for every end time
-        if(dateType.type==DateTypes.START){
-            counter++
-        }else{//the type is end
-            counter--
-        }
-
-        if(counter == 0){
-            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
-        }else if(counter == 1){
-            outputList += DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK)
-        }else{//counter is 2
-            outputList += DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
+    val headerList = mutableListOf<Date>()
+    for(day in 0..(ndays)){//header list is one longer than ndays
+        val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
+        if(headerList.size<ndays+1){
+            headerList+=dateOfDay
         }
     }
+    println("Header list is ${headerList}")
 
-    //create a people-friendly version of output list
-    var str = ""
-    var durationTypes = mutableListOf<DurationTypes>()
-    var i=0
-    while (i<outputList.size-1){
-        var startTime = outputList[i].date
-        var endTime = outputList[i+1].date
+    val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
+    for (list in listOfLists){//in the lists
+        val colorsOfDaysList = mutableListOf<Int>()
+        println("list of lists is ${listOfLists}")
 
-        if(startTime.getTime()!=endTime.getTime()){
-            durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
+        for(i in 0..(ndays-1)){//go through each day
+            var header = headerList[i]
+            var dateToCheck = addTimeToDate(header, MILLISECONDS_IN_A_DAY/2)
+            //check if this date is in between a startTime and an endtime
+            for(entry in list) {//check the list to see if it is a haiz day
+                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
+                    //that date is a haiz
+                    colorsOfDaysList +=1
+                    break
+                }else if (header.getTime() < entry.startTime.getTime()) {
+                    //that date is a tuhur
+                    colorsOfDaysList +=0
+                    break
+                }else if(header.getTime()>=list.last().endTime.getTime()){
+                    colorsOfDaysList +=0
+                    break
+                }
+            }
         }
-
-        i++
+        listOfColorsOfDaysList +=colorsOfDaysList
     }
-    str += generateGetDifferenceString(durationTypes)
-    println(str)
+    println("List of colors of Day List is ${listOfColorsOfDaysList}")
 
-    return str
+    //this bit describes which days are yaqeeni paki, yaqeeni napaki, or shakk
+    val resultColors = mutableListOf<Int>()
+    for(day in listOfColorsOfDaysList[0].indices){
+        //for each day
+        var compare = 0
+        for(list in listOfColorsOfDaysList){
+            var color = list[day]
+            compare +=color
+        }
+        val maxColor = listOfColorsOfDaysList.size
+        val minColor = 0
+        if(compare == minColor){
+            resultColors+=0 //yaqeeni paki
+        }else if(compare == maxColor){
+            resultColors+=2 //yaqeeni napaki
+        }else{
+            resultColors+=1//ayyam-e-shakk
+        }
+    }
+
+    return InfoForCompareTable(headerList,listOfColorsOfDaysList,resultColors)
+
 }
+
 fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     //find out number of lists
     var numberOfLists = listOfLists.size

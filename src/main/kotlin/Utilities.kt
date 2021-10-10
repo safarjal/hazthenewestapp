@@ -43,6 +43,10 @@ object Styles {
     const val TABLE_BODY_STYLE = "float:left"
     const val NEW_ROW = "clear:both"
     const val HALF_CELL = "float: left; width:15px; height:30px; text-align:center"
+    const val EMPTY_CELL_STYLE = "float: left; width:28px; height:15px; border-left:1px solid black; border-right:1px solid black"
+    const val EMPTY_HALF_CELL_STYLE = "float: left; width:15px; height:15px"
+    const val NA_PAKI = "; background-color: red"
+    const val AYYAAM_E_SHAKK = "; background-color: yellow"
 
 }
 

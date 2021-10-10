@@ -185,6 +185,69 @@ class LogicTest {
         }
 
     }
+    @Test
+    fun mashqiSawal1(){
+        var entries = listOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(Date(2020,11,25), Date(2020,11,30))
+        entries+=
+            Entry(Date(2021,0,20), Date(2021,0,22))
+        entries+=
+            Entry(Date(2021,0,25), Date(2021,0,26))
+        entries+=
+            Entry(Date(2021,1,13), Date(2021,1,20))
+        entries+=
+            Entry(Date(2021,2,3), Date(2021,2,3))
+        entries+=
+            Entry(Date(2021,2,6), Date(2021,2,9))
+
+        println(entries)
+
+        val output = handleEntries(entries,false,null,null,true,false,Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false))
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList += Entry(Date(2020,11,25), Date(2020,11,30))
+        expectedHaizDatesList += Entry(Date(2021,0,20), Date(2021,0,26))
+        expectedHaizDatesList += Entry(Date(2021,1,16), Date(2021,1,22))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+    }
+    @Test
+    fun mashqiSawal2(){
+        var entries = listOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(Date(2020,11,5), Date(2020,11,14))
+        entries+=
+            Entry(Date(2021,0,5), Date(2021,0,14))
+        entries+=
+            Entry(Date(2021,1,7), Date(2021,1,13))
+        entries+=
+            Entry(Date(2021,1,21), Date(2021,2,11))
+
+        println(entries)
+
+        val output = handleEntries(entries,false,null,null,true,false,Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false))
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList += Entry(Date(2020,11,5), Date(2020,11,14))
+        expectedHaizDatesList += Entry(Date(2021,0,5), Date(2021,0,14))
+        expectedHaizDatesList += Entry(Date(2021,1,7), Date(2021,1,14))
+        expectedHaizDatesList += Entry(Date(2021,2,10), Date(2021,2,11))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+    }
 
 }
 

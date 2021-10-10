@@ -778,72 +778,12 @@ private fun parseEntries(inputContainer: HTMLElement) {
 private fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val str = getDifferenceFromMultiple(listOfLists)
-//    var str = getDifference(primaryHaizDatesList,secondaryHaizDatesList)
     contentDatesDifferenceElement!!.innerHTML = str
-    compareTable(listOfLists.toMutableList())
+    val output = generatInfoForCompareTable(listOfLists.toMutableList())
+    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors)
 }
 
-private fun compareTable(listOfLists: MutableList<List<Entry>>) {
-    var earliestStartTime = listOfLists[0][0].startTime
-    var latestEndTime=listOfLists[0].last().endTime
-    for (list in listOfLists) {
-        if (list[0].startTime.getTime() <earliestStartTime.getTime())
-            earliestStartTime = list[0].startTime;
-        if (list[0].endTime.getTime() > latestEndTime.getTime())
-            latestEndTime = list[0].endTime;
-    }
-    val firstLast = Entry(earliestStartTime, latestEndTime)
-
-//    val d0 = firstLast.startTime.getDate()
-//    val d1 = firstLast.endTime.getDate()
-//    val m0 = firstLast.startTime.getMonth()
-//    val m1 = firstLast.endTime.getMonth()
-//    val y0 = firstLast.startTime.getFullYear()
-//    var y1 = firstLast.endTime.getFullYear()
-    val ndays = ((latestEndTime.getTime()-earliestStartTime.getTime())/MILLISECONDS_IN_A_DAY).toInt()
-    println("ndays is ${ndays}")
-
-    val headerList = mutableListOf<Date>()
-    for(day in 0..(ndays)){//header list is one longer than ndays
-        val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
-        if(headerList.size<ndays+1){
-            headerList+=dateOfDay
-        }
-    }
-    println("Header list is ${headerList}")
-
-    val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
-    for (list in listOfLists){//in the lists
-        val colorsOfDaysList = mutableListOf<Int>()
-        println("list of lists is ${listOfLists}")
-
-        for(i in 0..(ndays-1)){//go through each day
-            var header = headerList[i]
-            var dateToCheck = addTimeToDate(header, MILLISECONDS_IN_A_DAY/2)
-            //check if this date is in between a startTime and an endtime
-            for(entry in list) {//check the list to see if it is a haiz day
-                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
-                    //that date is a haiz
-                    colorsOfDaysList +=1
-                    break
-                }else if (header.getTime() < entry.startTime.getTime()) {
-                    //that date is a tuhur
-                    colorsOfDaysList +=0
-                    break
-                }else if(header.getTime()>=list.last().endTime.getTime()){
-                    colorsOfDaysList +=0
-                    break
-                }
-            }
-        }
-        listOfColorsOfDaysList +=colorsOfDaysList
-    }
-    println("List of colors of Day List is ${listOfColorsOfDaysList}")
-    drawCompareTable(headerList,listOfColorsOfDaysList)
-
-}
-
-fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>){
+fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>, resultColors: List<Int>){
     val datesDifferenceTableElement = datesDifferenceTableElement!!
     datesDifferenceTableElement.style.width = "${headerList.size*30 +15}px"
     datesDifferenceTableElement.replaceChildren {
@@ -868,41 +808,46 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                 style = Styles.TABLE_ROW_STYLE
                 println("Header list is ${headerList}")
                 for (i in headerList.indices) {
-                    var header = headerList[i]
-//                    var counter = 0
-                    for (listOfColorsOfDays in listOfColorsOfDaysList) {
-//                          val cellValue = listOfColorsOfDays[i]
-//                        counter += cellValue
-                   }
-
+                    val header = headerList[i]
                     val date = header.getDate().toString()
 
                     div { id = "cello"
                         style =Styles.TABLE_CELL_STYLE
                         +date
-//                        style += when {
-//                            //yaqeeni napaki
-//                            counter == listOfColorsOfDaysList.size -> "; background-color: red"
-//                            //ayyaam e shakk
-//                            counter > 0 -> "; background-color: pink"
-//                            //yaqeeni paki
-//                            else /*counter == 0*/ -> null
-//                            }
                     }
-                    println("Still Alive!!!")
                 }
             }
         }
         div{
             style = Styles.NEW_ROW
         }
-        //it is dead over here
-        println("not alive!!!!!!!")
         div { id = "tBody"
             style = Styles.TABLE_BODY_STYLE
+            div{
+                style = Styles.NEW_ROW
+            }
+            div { id = "emptyRow"
+                style=Styles.TABLE_ROW_STYLE
+                div{
+                    id = "emptyHalfCellTopRow"
+                    style = Styles.EMPTY_HALF_CELL_STYLE
+                }
+                for (day in resultColors){
+                    div{
+                        id = "emptyCellTopRow"
+                        style = Styles.EMPTY_CELL_STYLE
+
+                        if (day == 2) {
+                            style += Styles.NA_PAKI
+                        } else if(day == 1){
+                            style += Styles.AYYAAM_E_SHAKK
+                        }
+                    }
+                }
+            }
 
             for (j in listOfColorsOfDaysList.indices) {
-                var colorsOfDaysList = listOfColorsOfDaysList[j]
+                val colorsOfDaysList = listOfColorsOfDaysList[j]
                 div{
                     style = Styles.NEW_ROW
                 }
@@ -913,10 +858,10 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     }
 
                     for (k in colorsOfDaysList.indices) {
-                        var cellValue = colorsOfDaysList[k]
+                        val cellValue = colorsOfDaysList[k]
                         div { id = "cello"
                             style = Styles.TABLE_CELL_BORDER_STYLE +
-                                    (if (cellValue == 1) "; background-color: red" else "")
+                                    (if (cellValue == 1) Styles.NA_PAKI else "")
                             +"${k+1}"
                         }
                     }
