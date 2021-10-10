@@ -336,7 +336,74 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
         assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
     }
+    @Test
+    fun mashqiSawal5() {
+        var entries = listOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2020, 6, 2), Date(2020, 6, 4))
+        entries +=
+            Entry(Date(2020, 6, 8), Date(2020, 6, 10))
+        entries +=
+            Entry(Date(2020, 7, 1), Date(2020, 7, 3))
+        entries +=
+            Entry(Date(2020, 7, 7), Date(2020, 7, 9))
+        entries +=
+            Entry(Date(2020, 7, 31), Date(2020, 8, 4))
+        entries +=
+            Entry(Date(2020, 8, 7), Date(2020, 8, 10))
+        entries +=
+            Entry(Date(2020, 8, 29), Date(2020, 9, 4))
+        entries +=
+            Entry(Date(2020, 9, 7), Date(2020, 9, 8))
+        entries +=
+            Entry(Date(2020, 9, 21), Date(2020, 10, 2))
 
+        println(entries)
+
+        val output = handleEntries(
+            entries,
+            false,
+            null,
+            null,
+            true,
+            false,
+            Pregnancy(Date(1, 1, 1), Date(1, 1, 1), null, mustabeenUlKhilqat = false)
+        )
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList +=
+            Entry(Date(2020, 6, 2), Date(2020, 6, 10))
+        expectedHaizDatesList +=
+            Entry(Date(2020, 7, 1), Date(2020, 7, 9))
+        expectedHaizDatesList +=
+            Entry(Date(2020, 7, 31), Date(2020, 8, 10))
+        expectedHaizDatesList +=
+            Entry(Date(2020, 9, 2), Date(2020, 9, 12))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for (i in expectedHaizDatesList.indices) {
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+        var expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(10 * MILLISECONDS_IN_A_DAY, 22 * MILLISECONDS_IN_A_DAY),
+                FutureDateType(Date(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
+            )
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(
+            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+            output.endingOutputValues.futureDateType!!.date.getTime()
+        )
+        assertEquals(
+            expectedEndingOutputValues.futureDateType!!.futureDates,
+            output.endingOutputValues.futureDateType!!.futureDates
+        )
+    }
 
 }
 
