@@ -826,7 +826,7 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
         if (list[0].startTime.getTime() <earliestStartTime.getTime())
             earliestStartTime = list[0].startTime
         if (list[list.lastIndex].endTime.getTime() > latestEndTime.getTime())
-            latestEndTime = list[0].endTime
+            latestEndTime = list.last().endTime
     }
     val firstLast = Entry(earliestStartTime, latestEndTime)
 

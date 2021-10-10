@@ -248,24 +248,16 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
-    val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
-    var totalMinutes = numberOfDays*24*60
+    println("Number Of MilliseCONDS IS $numberOfMilliseconds")
+    val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
+    println(days)
+    var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
+    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)).toDouble())
+    println(hours)
+    milisecsleft-=hours*3600000
+    val minutes = kotlin.math.floor(milisecsleft/60000)
 
-    var minutes=(totalMinutes%60).toDouble();
-    var remainingHours = (totalMinutes - minutes)/60
-    var hours = remainingHours % 24;
-    var days = (remainingHours - hours)/24;
-    minutes=round(minutes);
-    hours=round(hours)
-    days=round(days)
-    if(minutes == 60.0){
-        minutes = 0.0
-        hours+=1.0
-    }
-    if(hours==24.0){
-        hours = 0.0
-        days += 1.0
-    }
+
 
     var strHours = hours.toString()
     var strMinutes = minutes.toString()
