@@ -296,6 +296,46 @@ class LogicTest {
 //        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
 //        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
     }
+    @Test
+    fun mashqiSawal4(){
+        var entries = listOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(Date(2020,3,16), Date(2020,3,24))
+        entries+=
+            Entry(Date(2020,4,23), Date(2020,5,1))
+        entries+=
+            Entry(Date(2020,7,2), Date(2020,7,17))
+        entries+=
+            Entry(Date(2020,8,5), Date(2020,8,28))
+
+        println(entries)
+
+        val output = handleEntries(entries,false,null,null,true,false,Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false))
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList +=
+            Entry(Date(2020,3,16), Date(2020,3,24))
+        expectedHaizDatesList +=
+            Entry(Date(2020,4,23), Date(2020,5,1))
+        expectedHaizDatesList +=
+            Entry(Date(2020,7,2), Date(2020,7,11))
+        expectedHaizDatesList +=
+            Entry(Date(2020,8,5), Date(2020,8,14))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+        var expectedEndingOutputValues =
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(9*MILLISECONDS_IN_A_DAY,62*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2))
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+    }
 
 
 }
