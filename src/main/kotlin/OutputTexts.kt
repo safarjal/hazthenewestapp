@@ -185,7 +185,8 @@ fun outputStringUrduAskAgainLine(fixedDurations: MutableList<FixedDuration>,inde
     if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
 
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
-
+        strUrdu += "اگر خون اسی طرح جاری رہے تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے حیض کے دن ہونگے۔</b>\n\n"
+        strUrdu += "اگر خون ${urduDateFormat(futureDate, isDateOnly)} سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا ${urduDateFormat(futureDate, isDateOnly)} کو بہی غسل کر لیجیے۔/n/n"
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
         strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
 
