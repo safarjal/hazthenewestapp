@@ -589,6 +589,67 @@ class LogicTest {
             output.endingOutputValues.futureDateType!!.futureDates
         )
     }
+    @Test
+    fun mashqiSawal9() {
+        var entries = listOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2020, 4, 4), Date(2020, 4, 12))
+        entries +=
+            Entry(Date(2020, 5, 2), Date(2020, 5, 10))
+        entries +=
+            Entry(Date(2021, 2, 5), Date(2021, 3, 4))
+        entries +=
+            Entry(Date(2021, 3, 14), Date(2021, 3, 18))
+        entries +=
+            Entry(Date(2021, 3, 23), Date(2021, 3, 23))
+
+        println(entries)
+
+        val output = handleEntries(
+            entries,
+            false,
+            null,
+            null,
+            true,
+            true,
+            Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40.0, mustabeenUlKhilqat = true)
+        )
+        val haizDateList = output.hazDatesList
+
+        var expectedHaizDatesList = listOf<Entry>()
+        expectedHaizDatesList +=
+            Entry(Date(2020, 4, 4), Date(2020, 4, 12))
+        expectedHaizDatesList +=
+            Entry(Date(2020, 5, 2), Date(2020, 5, 10))
+        expectedHaizDatesList +=
+            Entry(Date(2021, 2, 5), Date(2021, 3, 14))
+
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for (i in expectedHaizDatesList.indices) {
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+        var expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(3 * MILLISECONDS_IN_A_DAY, 19 * MILLISECONDS_IN_A_DAY),
+                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+            )
+//        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        //this answer doesn't provide aadat
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(
+            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+            output.endingOutputValues.futureDateType!!.date.getTime()
+        )
+        assertEquals(
+            expectedEndingOutputValues.futureDateType!!.futureDates,
+            output.endingOutputValues.futureDateType!!.futureDates
+        )
+    }
+
 
 }
 

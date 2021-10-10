@@ -186,30 +186,42 @@ fun parseDays(input: String): Double? {
 }
 
 fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
-    val numberOfDays = numberOfMilliseconds/MILLISECONDS_IN_A_DAY
-    var totalMinutes = numberOfDays*24*60
+    println("Number Of MilliseCONDS IS $numberOfMilliseconds")
+    val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
+    println(days)
+    var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
+    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)).toDouble())
+    println(hours)
+    milisecsleft-=hours*3600000
+    val minutes = kotlin.math.floor(milisecsleft/60000)
 
-    var minutes=(totalMinutes%60).toDouble();
-    var remainingHours = (totalMinutes - minutes)/60
-    var hours = remainingHours % 24;
-    var days = (remainingHours - hours)/24;
-    minutes=round(minutes);
-    hours=round(hours)
-    days=round(days)
-    if(minutes == 60.0){
-        minutes = 0.0
-        hours+=1
-    }
-    if(hours==24.0){
-        hours = 0.0
-        days += 1.0
-    }
-    var strHours = "${hours.toString()} گھنٹے "
-    var strMinutes = "${minutes.toString()} منٹ "
-    var strDays = "${days.toString()} دن "
+
+
+
+    println("Number Of days IS $days")
+    var totalMinutes:Double = days*24*60
+
+//    var minutes:Double=(totalMinutes%60).toDouble();
+    var remainingHours:Double = (totalMinutes - minutes)/60
+//    var hours:Double = remainingHours % 24;
+    //var days:Double = (remainingHours - hours)/24;
+//    minutes=round(minutes);
+//    hours=round(hours)
+//    days=round(days)
+//    if(minutes == 60.0){
+//        minutes = 0.0
+//        hours+=1
+//    }
+//    if(hours==24.0){
+//        hours = 0.0
+//        days += 1.0
+//    }
+    var strHours = "${hours} گھنٹے "
+    var strMinutes = "${minutes} منٹ "
+    var strDays = "${days} دن "
 
     if(hours==1.0){
-        strHours = "${hours.toString()} گھنٹا "
+        strHours = "${hours} گھنٹا "
     }
 
     if(hours==0.0){
@@ -228,6 +240,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //        strMinutes = "0${minutes}";
 //    }
     var returnStatement = "${strDays}${strHours}${strMinutes}"
+    println(returnStatement)
     if(isDateOnly){
         returnStatement = strDays
     }
