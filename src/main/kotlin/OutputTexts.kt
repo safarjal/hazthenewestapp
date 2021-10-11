@@ -599,16 +599,19 @@ fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String
         var type = ""
         if (durationType.type==DateTypes.YAQEENI_PAKI){type="yaqeeni paki"}
         else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){type="yaqeeni na paki"}
-        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK){type="ayyaam-e-shakk"}
+        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){type="shakk fil khurooj"}
+        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){type="shakk fil dukhool"}
         var startTime=durationType.startTime
         var endTime = durationType.endTime
 
-        if(durationType.type==DateTypes.AYYAAM_E_SHAKK){
+        if(durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){
             str += "${UnicodeChars.YELLOW_CIRCLE} <b><em>From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}</em></b>\n\n"
         }else if (durationType.type==DateTypes.YAQEENI_PAKI){
             str += "${UnicodeChars.WHITE_CIRCLE} From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}\n\n"
         }else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){
             str += "${UnicodeChars.RED_CIRCLE} From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}\n\n"
+        }else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){
+            str += "${UnicodeChars.GREEN_CIRCLE} <b><em>From ${parseDate(startTime,true)} to ${parseDate(endTime,true)} is ${type}</em></b>\n\n"
         }
 
     }

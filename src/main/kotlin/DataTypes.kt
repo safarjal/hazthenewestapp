@@ -46,7 +46,7 @@ class DateTypeList (
     val date:Date,
     val type: DateTypes
 )
-enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK}
+enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
 
 class DurationTypes (
     val startTime: Date,
