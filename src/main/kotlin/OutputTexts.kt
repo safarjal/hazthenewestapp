@@ -1,8 +1,6 @@
 import kotlin.js.Date
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):OutputTexts{
-    println(fixedDurations)
-    println("last period is ${fixedDurations[fixedDurations.size-1]}")
     var englishStr = ""
     var urduStr = ""
     var hazDatesList = getHaizDatesList(fixedDurations)
@@ -15,27 +13,20 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,dur
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean, endingOutputValues: EndingOutputValues):OutputTexts{
-    println("Start of GenerateOutputString")
     var index = 0
     var englishStr = ""
     var hazDatesList = getHaizDatesList(fixedDurations)
 
     while (index<fixedDurations.size){
         englishStr += outputStringHeaderLine(fixedDurations,index, isDateOnly)
-        println("English header complete")
         englishStr += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
-        println("English sum of indices complete")
         englishStr += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
-        println("English istihaza after complete")
         englishStr += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
-        println("English bigger than 10 complete")
 
 
         index++
     }
-    println("English output complete")
     var urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
-    println("Urdu output completed")
     var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
     return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues)
 }
@@ -118,20 +109,14 @@ fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateO
 }
 
 fun outputStringUrduFinalLines(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
-    println("Started outputStringUrduFinalLines")
-    println("FIxedDurations is ${fixedDurations}")
-    println("Index is ${index}")
 
     var strUrdu = ""
     val aadats = endingOutputValues.aadats
     strUrdu+=outputStringUrduAadatLine(fixedDurations, index, isDateOnly, aadats)
-    println("Aadat line added $strUrdu")
     val filHaal = endingOutputValues.filHaalPaki
     strUrdu+=outputStringUrduFilHaalLine(fixedDurations, index, filHaal)
-    println("FilHaal line added $strUrdu")
     val futureDates = endingOutputValues.futureDateType
     strUrdu+=outputStringUrduAskAgainLine(fixedDurations,index, isDateOnly, futureDates)
-    println("Ask Again Line Added $strUrdu")
 
     //plis note down line
     strUrdu+="جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n"
@@ -307,7 +292,6 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     return strUrdu
 }
 fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
-    println("starting urdu output of bigger than 40")
 
     var strUrdu = ""
 
@@ -320,13 +304,10 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
     fun istihazaLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
         return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
     }
-    println("biggerthan40 output string generation")
 
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        println("Inside the if")
         strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
         strUrdu += "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n"
-        println(strUrdu)
 
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
             if(duration.type==DurationType.NIFAAS){
@@ -355,10 +336,6 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
     if (fixedDurations[index].type==DurationType.DAM){
         var sd:Date = fixedDurations[index].startDate
         var et = fixedDurations[index].endDate
-        println("Index is $index")
-        println("StartDate is $sd")
-        println("EndDate is $et")
-        println("EndDate2 is ${Date(sd.getTime().toLong()+fixedDurations[index].timeInMilliseconds)}")
         if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){//if there is a period after it, and is has an istihaza after
             et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
         }

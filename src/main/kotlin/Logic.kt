@@ -33,7 +33,6 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         }
         .toMutableList()
     addIndicesToFixedDurations(fixedDurations)
-    println("This is the raw fixedDurations after adding indices: ${fixedDurations}")
 
     if(istimrar==true){//make the last period an istimrar type
         fixedDurations[fixedDurations.size-1].type=DurationType.ISTIMRAR;
@@ -74,13 +73,9 @@ fun handleEntries(entries: List<Entry>, istimrar:Boolean, inputtedAadatHaz:Doubl
         }
     }else{//is not pregnancy
         removeTuhrLessThan15(fixedDurations)
-        println("This is fixedDurations after removing less than 15T: ${fixedDurations}")
         removeDamLessThan3(fixedDurations)
-        println("This is fixedDurations after removing less than 3D: ${fixedDurations}")
         addStartDateToFixedDurations(fixedDurations)
-        println("Now we add start date: ${fixedDurations}")
         dealWithBiggerThan10Dam(fixedDurations, durations, inputtedAadatHaz,inputtedAadatTuhr)
-        println("After dealing with bigger than 10D: ${fixedDurations}")
         addDurationsToDams(fixedDurations)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations)
         return generateOutputString(fixedDurations, durations, isDateOnly, endingOutputValues)
@@ -164,27 +159,17 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
 
 
 fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
-    println("In marking Tuhrs as Tuhr in pregnancy")
     for (i in fixedDurations.indices){
-  //      println("1")
         var endDateOfFixedDuration = fixedDurations[i].endDate
-  //      println("2")
-//        println("type is ${fixedDurations[i].type}")
-//        println("startDate is ${fixedDurations[i].startDate}")
-//        println("endDate is ${endDateOfFixedDuration}")
-//        println("birthtime is ${pregnancy.birthTime}")
 
         if(fixedDurations[i].type == DurationType.TUHR &&
             fixedDurations[i].startDate.getTime() < pregnancy.birthTime.getTime() &&
             endDateOfFixedDuration.getTime() > pregnancy.pregStartTime.getTime()){
-            println("3")
 
             fixedDurations[i].type = DurationType.TUHR_IN_HAML
-            println("4")
 
         }
     }
-    println("passed this")
 }
 
 fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
@@ -201,7 +186,6 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
                 fixedDurations[i].startDate.getTime()<startDateOfHaml &&
                 endDateOfFixedDuration.getTime()>startDateOfHaml &&
                 endDateOfFixedDuration.getTime()<=endDateOfHaml){
-            println("We got choice a")
             //mark the portion in pregnancy as dam in haml. we're gonna have to make more dam???
             //or, we could just shorten it to prepregnancy stae, and leave it as is. who cares about dam in haml?
             //we can even put it in istihazaAfter.
@@ -221,7 +205,6 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
                     endDateOfFixedDuration.getTime() <= endDateOfHaml &&
                     fixedDurations[i].startDate.getTime() >= startDateOfHaml
             ){
-            println("We got choice b")
 
             //mark it as dam in haml, aka, istihaza.
             fixedDurations[i].type = DurationType.DAM_IN_HAML
@@ -233,9 +216,6 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
                     fixedDurations[i].startDate.getTime()>=startDateOfHaml &&
                     endDateOfFixedDuration.getTime()>endDateOfHaml
                 ){
-            println("We got choice c")
-            println("End date of haml is ${Date(endDateOfHaml)}")
-            println("this fd start time is ${fixedDurations[i].startDate}")
 
             var firstDuration = pregnancy.birthTime.getTime().toLong()-fixedDurations[i].startDate.getTime().toLong()
             var secondDuration = fixedDurations[i].timeInMilliseconds-firstDuration
@@ -416,12 +396,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                 val dm:Long = fixedDurations[i].timeInMilliseconds
                 val hz:Long = aadatHaz
                 val output:FiveSoortainOutput = fiveSoortain(mp, gp, dm, hz)
-                println("MP is ${mp}")
-                println("GP is ${gp}")
-                println("Dm is ${dm}")
-                println("Hz is ${hz}")
-                println("Soorat is ${output.soorat}")
-                println("istihazaBefore is ${output.istihazaBefore}, haiz is ${output.haiz} and istihazaAfter is ${output.istihazaAfter}")
 
                 //deal with output
                 //update aadats
@@ -430,7 +404,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, duration
                     //if mp is not tuhrefaasid or tuhr in haml
                     aadatTuhr = mp;
                 }
-                println("Aadat after this should be ${aadatTuhr}/${aadatHaz}")
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
                     output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr, mutableListOf<Duration>())
                 fixedDurations[i].biggerThanTen=hall
@@ -492,12 +465,10 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         }
 
     }else{
-        println("Istihaza After is smaller than aadatTuhr+3, not running daur")
 
         //else add istihazaAfter to next Tuhr, mark it as fasid
         //if it exists
         if(i<fixedDurations.size-1){
-            println("marking next tuhr as fasid, because there is istihaza at the end of this dam")
             fixedDurations[i+1].type=DurationType.TUHREFAASID
             fixedDurations[i+1].istihazaAfter = istihazaAfter
         }
@@ -597,11 +568,9 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
 fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
     //currently, this doesn't handle istimrar
 
-    println("Start add durations")
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //bigger than 10
-            println("found a bigger than 10 dam")
             val istihazaBefore = fixedDurations[i].biggerThanTen!!.istihazaBefore
             val istihazaBeforeStartDate:Date = fixedDurations[i].startDate
 
@@ -619,7 +588,6 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
             val aadatHaz = fixedDurations[i].biggerThanTen!!.aadatHaiz
 
             if(istihazaAfter>0){
-                println("istihazaAfter is bigger tnan 0")
                 if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
                     (istihazaAfter>aadatTuhr &&
                             istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
@@ -642,10 +610,6 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                         aadatTuhrStartDate=aadatHaizEndDate
                     }
                     //now deal with remiander
-                    println("remainder is ${remainder/MILLISECONDS_IN_A_DAY}" )
-                    println("aadatTuhr is ${aadatTuhr/MILLISECONDS_IN_A_DAY}" )
-                    println("i is ${i}" )
-                    println("fixedurations.size-1 is ${fixedDurations.size-1}" )
 
 
                     if(remainder==0L){
@@ -653,7 +617,6 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                     }else if(remainder>aadatTuhr
                         && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
                         && i==fixedDurations.size-1){//it is the last period, and ends in less than 3 haiz
-                        println("JUST LOOK AT THIS!!!")
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr
@@ -663,7 +626,6 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
                     }else{
                         //there is full tuhur, followed by a partial haiz
-                        println("remainder 3+addathaiz should end here")
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr
@@ -679,7 +641,6 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD&&fixedDurations[i].days>40){
             //bigger than 40 nifas
-            println("found bigger than 40 nifas")
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             //make nifas period
             fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.NIFAAS,aadatNifas,fixedDurations[i].startDate)
@@ -693,18 +654,14 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
             val aadatHaz = fixedDurations[i].biggerThanForty!!.aadatHaiz
 
             if(istihazaAfter>0){
-                println("istihazaAfter is bigger than 0")
                 if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
                     (istihazaAfter>aadatTuhr &&
                             istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
                             i == fixedDurations.size-1)){
-                    println("there shall be daur")
                     //daur
                     //find quotient and remainder
                     val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-                    println("remainder is ${remainder/MILLISECONDS_IN_A_DAY}")
                     val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr))
-                    println("quotient is $quotient")
                     var aadatTuhrStartDate:Date = istihazaAfterStartDate
                     var aadatTuhrEndDate:Date
                     var aadatHaizEndDate:Date
@@ -718,25 +675,20 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.HAIZ,aadatHaz,aadatTuhrEndDate)
                         aadatTuhrStartDate=aadatHaizEndDate
                     }
-                    println("dealt with quotient")
                     //now deal with remiander
                     if(remainder==0L){
-                        println("remainder was 0")
                         //there is nothing more to be added
                     }else if(remainder>aadatTuhr
                         && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
                         && i==fixedDurations.size-1){//it is the last period, and ends in less than 3 haiz
-                        println("this one shouldn't end in haiz, but does, because last period")
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.LESS_THAN_3_HAIZ,lastHaiz,aadatTuhrEndDate)
                     }else if(remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY){
                         //it ends in tuhr
-                        println("ends in tuhur")
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,remainder,aadatTuhrStartDate)
                     }else{
-                        println("we should get a partial haiz here")
                         //there is full tuhur, followed by a partial haiz
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
@@ -831,7 +783,6 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
     val firstLast = Entry(earliestStartTime, latestEndTime)
 
     val ndays = ((latestEndTime.getTime()-earliestStartTime.getTime())/MILLISECONDS_IN_A_DAY).toInt()
-    println("ndays is ${ndays}")
 
     val headerList = mutableListOf<Date>()
     for(day in 0..(ndays)){//header list is one longer than ndays
@@ -840,12 +791,10 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
             headerList+=dateOfDay
         }
     }
-    println("Header list is ${headerList}")
 
     val listOfColorsOfDaysList = mutableListOf<MutableList<Int>>()
     for (list in listOfLists){//in the lists
         val colorsOfDaysList = mutableListOf<Int>()
-        println("list of lists is ${listOfLists}")
 
         for(i in 0..(ndays-1)){//go through each day
             var header = headerList[i]
@@ -868,7 +817,6 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
         }
         listOfColorsOfDaysList +=colorsOfDaysList
     }
-    println("List of colors of Day List is ${listOfColorsOfDaysList}")
 
     //this bit describes which days are yaqeeni paki, yaqeeni napaki, or shakk
     val resultColors = mutableListOf<Int>()
@@ -1027,7 +975,6 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     }
 
     //create a people-friendly version of output list
-    println("starting peoplefriendly")
     var str = ""
     var durationTypes = mutableListOf<DurationTypes>()
     var i=0
@@ -1038,8 +985,6 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
         durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
         i++
     }
-    println(outputList)
-    println("starting cleanup")
     //clean up the junk in durationTypes list now
 //    var j = 0
 //    while (j <= durationTypes.lastIndex){
@@ -1059,10 +1004,8 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
 //        durationTypes.removeAt(j+1)
 //    }
 
-    println(durationTypes)
 
     str += generateGetDifferenceString(durationTypes)
-    println(str)
 
     return str
 }

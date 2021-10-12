@@ -93,7 +93,6 @@ class LogicTest {
             Entry(Date(2020,6,20), Date(2020,6,27))
         entries+=//30 Aug - 1 Oct
             Entry(Date(2020,7,30), Date(2020,9,1))
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -122,7 +121,6 @@ class LogicTest {
             Entry(Date(2020,4,7), Date(2020,4,14))
         entries+=//30 Aug - 1 Oct
             Entry(Date(2021,5,14), Date(2021,9,6))
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -172,7 +170,6 @@ class LogicTest {
             Entry(Date(2021,8,14), Date(2021,8,21))
         entries+=//30 Aug - 1 Oct
             Entry(Date(2021,9,6), Date(2021,9,6))
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -212,8 +209,6 @@ class LogicTest {
         entries+=
             Entry(Date(2021,2,6), Date(2021,2,9))
 
-        println(entries)
-
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
             isPregnancy = false,
@@ -250,7 +245,6 @@ class LogicTest {
         entries+=
             Entry(Date(2021,1,21), Date(2021,2,11))
 
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -287,7 +281,6 @@ class LogicTest {
         entries+=
             Entry(Date(2020,7,2), Date(2020,7,16))
 
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -331,7 +324,6 @@ class LogicTest {
         entries+=
             Entry(Date(2020,8,5), Date(2020,8,28))
 
-        println(entries)
 
         val output = handleEntries(entries,false,null,null,
             isDateOnly = true,
@@ -384,8 +376,6 @@ class LogicTest {
             Entry(Date(2020, 9, 7), Date(2020, 9, 8))
         entries +=
             Entry(Date(2020, 9, 21), Date(2020, 10, 2))
-
-        println(entries)
 
         val output = handleEntries(
             entries,
@@ -443,8 +433,6 @@ class LogicTest {
         entries +=
             Entry(Date(2021, 1, 14), Date(2021, 3, 14))
 
-        println(entries)
-
         val output = handleEntries(
             entries,
             false,
@@ -501,7 +489,6 @@ class LogicTest {
         entries +=
             Entry(Date(2021, 3, 12), Date(2021, 3, 12))
 
-        println(entries)
 
         val output = handleEntries(
             entries,
@@ -562,8 +549,6 @@ class LogicTest {
             Entry(Date(2021, 2, 22), Date(2021, 2, 28))
         entries +=
             Entry(Date(2021, 3, 10), Date(2021, 3, 23))
-
-        println(entries)
 
         val output = handleEntries(
             entries,
@@ -629,8 +614,6 @@ class LogicTest {
             Entry(Date(2021, 3, 14), Date(2021, 3, 18))
         entries +=
             Entry(Date(2021, 3, 23), Date(2021, 3, 23))
-
-        println(entries)
 
         val output = handleEntries(
             entries,

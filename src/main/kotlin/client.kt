@@ -753,7 +753,6 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
-    println("Calculate button was clicked")
 
     with(inputContainer) {
         val entries = haizInputDatesRows.map { row ->
@@ -816,7 +815,6 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
             }
             div { id = "datesRow"
                 style = Styles.TABLE_ROW_STYLE
-                println("Header list is ${headerList}")
                 for (i in headerList.indices) {
                     val header = headerList[i]
                     val date = header.getDate().toString()
