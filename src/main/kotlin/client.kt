@@ -107,14 +107,24 @@ private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pr
 
 fun main() {
     window.onload = {
-        document.body!!.addInputLayout()
-        setupRows(inputsContainers.first())
-        document.addEventListener(Events.VISIBILITY_CHANGE, {
-            if (!document.isHidden) {
-                setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-            }
-        })
+        if(askPassword()==true){
+            document.body!!.addInputLayout()
+            setupRows(inputsContainers.first())
+            document.addEventListener(Events.VISIBILITY_CHANGE, {
+                if (!document.isHidden) {
+                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+                }
+            })
+        }else{
+            askPassword()
+        }
     }
+}
+
+fun askPassword():Boolean{
+    val pass1 = "786"
+    var password = window.prompt("Please enter password here. To request the password, please contact safarjal22@gmail.com", "")
+    return pass1 == password
 }
 
 fun Node.addInputLayout() {

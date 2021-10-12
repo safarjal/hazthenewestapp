@@ -991,6 +991,7 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     }
 
     //step 2: order list by date
+    //since we want to prioritize khurooj, we should reverse order
     dateTypeList.sortBy { it.date.getTime() }
 
     //step 3: create a counter
