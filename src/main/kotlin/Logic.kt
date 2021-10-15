@@ -5,7 +5,7 @@ import kotlin.js.Date
 // we should only write it, if there is more than one index
 //output line 2 is printing if an istihaza after was added too. it contains amount of istihazaAfter
 //output line 3 is mp,gp, dm, hz, soorat, as well as istihazaBefore, Haiz, IstihazaAfter, and AadatHaiz/AaadatTuhr
-// at the end of it.
+// at the end of it.b
 //output line 3, can be used to generate the daur lines.
 //After this should come output in dates:
 //if we passed dateTime at the start of this thingy, we could use
@@ -444,10 +444,8 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
             //add istihazaAfter to next Tuhur mark it as fasid
             //if it exists
             //if remainder is not equal to zero
-            if(i<fixedDurations.size-1 && remainder>0){//there is a tuhur after this
+            if(i<fixedDurations.lastIndex && remainder>0){//there is a tuhur after this
                 fixedDurations[i+1].type=DurationType.TUHREFAASID
-//                            fixedDurations[i+1].timeInMilliseconds+=(remainder*MILLISECONDS_IN_A_DAY).toLong()
-//                            fixedDurations[i].timeInMilliseconds-=(remainder*MILLISECONDS_IN_A_DAY).toLong()
                 fixedDurations[i+1].istihazaAfter=remainder
             }
 
@@ -671,7 +669,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
                         //there is nothing more to be added
                     }else if(remainder>aadatTuhr
                         && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
-                        && i==fixedDurations.size-1){//it is the last period, and ends in less than 3 haiz
+                        && i==fixedDurations.lastIndex){//it is the last period, and ends in less than 3 haiz
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr

@@ -659,7 +659,89 @@ class LogicTest {
             output.endingOutputValues.futureDateType!!.futureDates
         )
     }
+    @Test
+    fun calculateEndTime(){
+        var fixedDuration1=
+            FixedDuration(type=DurationType.DAM,
+                timeInMilliseconds=5251800000,
+                indices= mutableListOf(10, 11, 12, 13, 14, 15, 16),
+                istihazaAfter=0,
+                biggerThanTen=BiggerThanTenDm(
+                    mp=4243200000,
+                    gp=1903140000,
+                    dm=5251800000,
+                    hz=433740000,
+                    qism=Soortain.B_3,
+                    istihazaBefore=0,
+                    haiz=433740000,
+                    istihazaAfter=4818060000,
+                    aadatHaiz=433740000,
+                    aadatTuhr=1903140000,
+                    durationsList= mutableListOf<Duration>(
+                        Duration(type=DurationType.HAIZ,
+                            timeInMilliseconds=433740000,
+                            startTime=Date(2021,1,27,8,10)),
+                        Duration(type=DurationType.ISTIHAZA_AFTER,
+                            timeInMilliseconds=1903140000,
+                            startTime=Date(2021,2,4,8,39)),
+                        Duration(type=DurationType.HAIZ,
+                            timeInMilliseconds=433740000,
+                            startTime=Date(2021,2,26,9,18)),
+                        Duration(type=DurationType.ISTIHAZA_AFTER,
+                            timeInMilliseconds=1903140000,
+                            startTime=Date(2021,2,31,9,47)),
+                        Duration(type=DurationType.HAIZ,
+                            timeInMilliseconds=433740000,
+                            startTime= Date(2021,3,22,10,26)),
+                        Duration(type=DurationType.ISTIHAZA_AFTER,
+                            timeInMilliseconds=144300000,
+                            startTime= Date(2021, 8,27,10,55)))),
+                biggerThanForty=null,
+                startDate= Date(2021,1,27,8,10))
 
+
+
+
+//        var fixedDuration =
+//            FixedDuration(type=DurationType.DAM,
+//                timeInMilliseconds=5251800000,
+//                mutableListOf(),
+//                istihazaAfter=0,
+//                biggerThanTen=BiggerThanTenDm(mp=1903140000,
+//                    gp=1509960000,
+//                    dm=2807700000,
+//                    hz=864000000,
+//                    qism=Soortain.B_3,
+//                    istihazaBefore=0,
+//                    haiz=470820000,
+//                    istihazaAfter=2336880000,
+//                    aadatHaiz=470820000,
+//                    aadatTuhr=1903140000,
+//                    durationsList= mutableListOf<Duration>(
+//                        Duration(type=DurationType.HAIZ,
+//                            timeInMilliseconds=470820000,
+//                            startTime=Date(2020, 11, 7, 22, 25)),
+//                        Duration(type=DurationType.ISTIHAZA_AFTER,
+//                            timeInMilliseconds=1903140000,
+//                            startTime=Date (2020, 11, 13, 9, 22)),
+//                        Duration(type=DurationType.HAIZ,
+//                            timeInMilliseconds=433740000,
+//                            startTime=Date(2021,0,4,10,1)))),
+//                null,
+//                Date(2021,1,27,8,10))
+        var endtime = fixedDuration1.endDate
+        var expectedentime = Date(2021,3,29, 3,0)
+        println("startTime is ${fixedDuration1.startDate}")
+        println("time in milliseconds is ${fixedDuration1.timeInMilliseconds}")
+        println(daysHoursMinutesDigital(fixedDuration1.timeInMilliseconds,false))
+        println("result of endtime function is $endtime")
+        println("expected endtime $expectedentime")
+        println("result of add time to date ${addTimeToDate(fixedDuration1.startDate, fixedDuration1.timeInMilliseconds)}")
+
+
+        assertEquals(endtime.getTime(), expectedentime.getTime())
+
+    }
 
 }
 

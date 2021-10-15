@@ -8,7 +8,7 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,dur
 
     var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
-    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList,endingOutputValues)
+    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList,endingOutputValues, fixedDurations)
 }
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
@@ -28,7 +28,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
     }
     var urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
     var hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
-    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues)
+    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 
 fun generateHazDatesStr(hazDatesList: MutableList<Entry>,isDateOnly: Boolean):String{
@@ -336,13 +336,13 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
     if (fixedDurations[index].type==DurationType.DAM){
         var sd:Date = fixedDurations[index].startDate
         var et = fixedDurations[index].endDate
-        if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){//if there is a period after it, and is has an istihaza after
-            et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
-        }
+//        if (index +1<fixedDurations.size && fixedDurations[index+1].istihazaAfter>0){//if there is a period after it, and is has an istihaza after
+//            et = addTimeToDate(et, fixedDurations[index +1].istihazaAfter)
+//        }
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             outputString = "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
                     " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} حیض۔\n\n"
-        }else{
+        }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
                 outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
                         " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"

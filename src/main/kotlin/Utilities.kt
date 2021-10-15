@@ -186,12 +186,9 @@ fun parseDays(input: String): Double? {
 }
 
 fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
-    println("Number Of MilliseCONDS IS $numberOfMilliseconds")
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
-//    println(days)
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
     val hours:Double = kotlin.math.floor((milisecsleft/(3600000)).toDouble())
-    println(hours)
     milisecsleft-=hours*3600000
     val minutes = kotlin.math.floor(milisecsleft/60000)
 
@@ -247,7 +244,6 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
-    println("Number Of MilliseCONDS IS $numberOfMilliseconds")
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
     println(days)
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY

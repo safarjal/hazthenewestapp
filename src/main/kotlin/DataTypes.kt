@@ -20,7 +20,8 @@ class OutputTexts (
     var urduText: String,
     var haizDatesText:String,
     var hazDatesList: MutableList<Entry>,
-    var endingOutputValues:EndingOutputValues
+    var endingOutputValues:EndingOutputValues,
+    var fixedDurations: MutableList<FixedDuration>
 )
 
 
@@ -78,7 +79,7 @@ data class FixedDuration(
     var startDate: Date = Date(1,1,1),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date get() = Date(startDate.getTime().toLong() + (timeInMilliseconds))
+    val endDate: Date get() = addTimeToDate(this.startDate, this.timeInMilliseconds)
 }
 
 data class BiggerThanTenDm(
