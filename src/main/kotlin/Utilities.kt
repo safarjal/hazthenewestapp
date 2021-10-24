@@ -1,13 +1,8 @@
-import kotlinx.browser.document
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
 import org.w3c.dom.*
 import kotlin.js.Date
-import kotlin.math.abs
-import kotlin.math.absoluteValue
-import kotlin.math.round
-import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -169,26 +164,33 @@ fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date{
     return Date(date.getTime() + timeInMilliseconds)
 }
 
-fun parseDays(input: String): Double? {
+fun parseDays(input: String): Long? {
+    val millisecondsInAnHour = 3600000
+    val millisecondsInAMinute = 60000
     if (input.isEmpty()) return null
     val sections = input.split(':')
     var days = sections[0].toInt().toDouble()
-    val hours = sections.getOrNull(1)?.toInt() ?: return days
+    val hours = sections.getOrNull(1)?.toInt() ?: return (days*MILLISECONDS_IN_A_DAY).toLong()
     require(hours in 0 until 24) { "Invalid hours value" }
     days += hours / 24.toDouble()
-    val minutes = sections.getOrNull(2)?.toInt() ?: return days
+    val minutes = sections.getOrNull(2)?.toInt() ?: return (days*MILLISECONDS_IN_A_DAY).toLong()
     require(minutes in 0 until 60) { "Invalid minutes value" }
     days += minutes / (24 * 60).toDouble()
-    val seconds = sections.getOrNull(3)?.toInt() ?: return days
+    val seconds = sections.getOrNull(3)?.toInt() ?: return (days*MILLISECONDS_IN_A_DAY).toLong()
     require(seconds in 0 until 60) { "Invalid seconds value" }
     days += seconds / (24 * 60 * 60).toDouble()
-    return days
+    if(hours!=null&&minutes!=null){
+        return ((days*MILLISECONDS_IN_A_DAY).toLong() +
+                (hours*millisecondsInAnHour).toLong() +
+                (minutes*millisecondsInAMinute).toLong())
+    }
+    return (days*MILLISECONDS_IN_A_DAY).toLong()
 }
 
 fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
-    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)).toDouble())
+    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)))
     milisecsleft-=hours*3600000
     val minutes = kotlin.math.floor(milisecsleft/60000)
 
@@ -212,12 +214,12 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //        hours = 0.0
 //        days += 1.0
 //    }
-    var strHours = "${hours} گھنٹے "
-    var strMinutes = "${minutes} منٹ "
-    var strDays = "${days} دن "
+    var strHours = "$hours گھنٹے "
+    var strMinutes = "$minutes منٹ "
+    var strDays = "$days دن "
 
     if(hours==1.0){
-        strHours = "${hours} گھنٹا "
+        strHours = "$hours گھنٹا "
     }
 
     if(hours==0.0){
@@ -240,14 +242,14 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     if(isDateOnly){
         returnStatement = strDays
     }
-    return(returnStatement);
+    return(returnStatement)
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
     println(days)
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
-    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)).toDouble())
+    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)))
     println(hours)
     milisecsleft-=hours*3600000
     val minutes = kotlin.math.floor(milisecsleft/60000)
@@ -256,25 +258,24 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):Stri
 
     var strHours = hours.toString()
     var strMinutes = minutes.toString()
-    var strDays = days.toString()
+    val strDays = days.toString()
     if(hours<10){
-        strHours = "0${hours}";
+        strHours = "0${hours}"
     }
     if(minutes<10){
-        strMinutes = "0${minutes}";
+        strMinutes = "0${minutes}"
     }
     var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m"
-    if(isDateOnly==true){
-        returnStatement = "${strDays} day(s)"
+    if(isDateOnly){
+        returnStatement = "$strDays day(s)"
     }
-    return(returnStatement);
+    return(returnStatement)
 }
  fun parseDate(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT
-     var dateStr = (date.toUTCString()).dropLast(13).drop(5)
+     val dateStr = (date.toUTCString()).dropLast(13).drop(5)
      var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
-     var minutesStr = (date.toUTCString()).dropLast(7).drop(20)
-     var hoursStr:String
+     val minutesStr = (date.toUTCString()).dropLast(7).drop(20)
      var ampm = "am"
      if (hours >=12){
          hours-=12
@@ -283,94 +284,103 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):Stri
      if(hours == 0){
          hours = 12
      }
-     if(hours<10){
-         hoursStr = "0${hours}"
+     val hoursStr:String = if(hours<10){
+         "0${hours}"
      }else{
-         hoursStr = hours.toString()
+         hours.toString()
      }
 
 
-     if(isDateOnly == true){
-        return dateStr
-        //05 Jun 2021
-    }else{
-        //05 Jun 2021 06:21
-        return "${hoursStr}:${minutesStr} ${ampm}, on ${dateStr}"
-    }
+     return if(isDateOnly){
+         dateStr
+         //05 Jun 2021
+     }else{
+         //05 Jun 2021 06:21
+         "$hoursStr:$minutesStr $ampm, on $dateStr"
+     }
  }
 fun difference(date1:Date,date2:Date):Long{
-
-    var diff = (date2.getTime()-date1.getTime()).toLong()
-    return diff
+    return (date2.getTime()-date1.getTime()).toLong()
 
 }
 
  fun urduDateFormat(date: Date, isDateOnly: Boolean):String{
-     var day = date.getUTCDate().toString()
-     var month = date.getUTCMonth()
+     val day = date.getUTCDate().toString()
+     val month = date.getUTCMonth()
      var urduMonth = ""
-     if (month == 0){
-         urduMonth = "جنوری"
-     }else if (month == 1){
-         urduMonth = "فروری"
-     }else if (month == 2){
-         urduMonth = "مارچ"
-     }else if (month == 3){
-         urduMonth = "اپریل"
-     }else if (month == 4){
-         urduMonth = "مئی"
-     }else if (month == 5){
-         urduMonth = "جون"
-     }else if (month == 6){
-         urduMonth = "جولائ"
-     }else if (month == 7){
-         urduMonth = "اگست"
-     }else if (month == 8){
-         urduMonth = "ستمبر"
-     }else if (month == 9){
-         urduMonth = "اکتوبر"
-     }else if (month == 10){
-         urduMonth = "نومبر"
-     }else if (month == 11){
-         urduMonth = "دسمبر"
+     when (month) {
+         0 -> {
+             urduMonth = "جنوری"
+         }
+         1 -> {
+             urduMonth = "فروری"
+         }
+         2 -> {
+             urduMonth = "مارچ"
+         }
+         3 -> {
+             urduMonth = "اپریل"
+         }
+         4 -> {
+             urduMonth = "مئی"
+         }
+         5 -> {
+             urduMonth = "جون"
+         }
+         6 -> {
+             urduMonth = "جولائ"
+         }
+         7 -> {
+             urduMonth = "اگست"
+         }
+         8 -> {
+             urduMonth = "ستمبر"
+         }
+         9 -> {
+             urduMonth = "اکتوبر"
+         }
+         10 -> {
+             urduMonth = "نومبر"
+         }
+         11 -> {
+             urduMonth = "دسمبر"
+         }
      }
-     var urduDay = ""
-     if(day=="1"){
-         urduDay = "یکم"
+     val urduDay:String = if(day=="1"){
+         "یکم"
      }else{
-         urduDay  = "$day"
+         day
      }
-     if(isDateOnly==true){
-         return ("${urduDay} ${urduMonth}")
+     if(isDateOnly){
+         return ("$urduDay $urduMonth")
      }else{//has time too
          var hours = date.getUTCHours()
-         var minutes = date.getUTCMinutes()
-         var strMinutes = ""
-         if(minutes <10){
-             strMinutes = "0${minutes}"
+         val minutes = date.getUTCMinutes()
+         val strMinutes:String = if(minutes <10){
+             "0${minutes}"
          }else{
-             strMinutes = minutes.toString()
+             minutes.toString()
          }
-         var ampm=""
+         val ampm:String
          if (hours == 0){
              ampm = "رات"
              hours = 12
-         }else if(hours > 0 && hours<4){//1-3
+         }else if(hours in 1..3){//1-3
              ampm = "رات"
-         }else if(hours>3 && hours<12){//4-11
+         }else if(hours in 4..11){//4-11
              ampm = "صبح"
-         }else if(hours>11&&hours<15){//12-2
+         }else if(hours in 12..14){//12-2
              ampm = "دوپہر"
              hours -= 12
              if(hours == 0){hours+=12}
-         }else if(hours>14&&hours<19){//3-6
+         }else if(hours in 15..18){//3-6
              ampm = "شام"
              hours -= 12
          }else{//7-11
              ampm = "رات"
              hours-=12
          }
-         return ("${urduDay} ${urduMonth} ${ampm} ${hours}:${strMinutes} بجے")
+         return ("$urduDay $urduMonth $ampm $hours:$strMinutes بجے")
 
 
      }

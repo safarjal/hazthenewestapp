@@ -30,7 +30,7 @@ object Ids {
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
-    const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
+//    const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
@@ -61,7 +61,7 @@ private val contentDatesDifferenceElement get() = document.getElementById(Ids.CO
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
-private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
+//private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
@@ -107,7 +107,7 @@ private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pr
 
 fun main() {
     window.onload = {
-        if(askPassword()==true){
+        if(askPassword()){
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
             document.addEventListener(Events.VISIBILITY_CHANGE, {
@@ -149,8 +149,7 @@ private fun TagConsumer<HTMLElement>.headers() {
             Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the
             second box. To add another period after that, press Add. If you need to remove a period in the middle, click
             the remove button next to it. To add a spot, enter a period where the start time and the end time are the
-            same. If this masla ends with istimrar, make a period that ends on today's date, then check the istimrar
-            check box. Once all periods have been added, click Calculate button, to get the solution.
+            same. Once all periods have been added, click Calculate button, to get the solution.
         """.trimIndent()
     }
 }
@@ -280,7 +279,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         pregnancyEndTimeInput(inputContainerToCopyFrom)
         br()
         haizDatesInputTable(inputContainerToCopyFrom)
-        istimrarCheckBox(inputContainerToCopyFrom)
+//        istimrarCheckBox(inputContainerToCopyFrom)
         br()
         calculateButton()
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
@@ -350,7 +349,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
-        val days = parseDays(value)
+        val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
         require(days == null || days in doubleValidityRange) { "Aadat is incorrect" }
         ""
     } catch (e: IllegalArgumentException) {
@@ -422,22 +421,22 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
     } else {
         timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
             disabled = true
-            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+//            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
             block()
         }
     }
 }
 
-private fun FlowContent.istimrarCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label {
-        htmlFor = Ids.ISTIMRAR_CHECKBOX
-        +"Istimrar"
-    }
-    checkBoxInput {
-        id = Ids.ISTIMRAR_CHECKBOX
-        checked = inputContainerToCopyFrom?.isIstimrar == true
-    }
-}
+//private fun FlowContent.istimrarCheckBox(inputContainerToCopyFrom: HTMLElement?) {
+//    label {
+//        htmlFor = Ids.ISTIMRAR_CHECKBOX
+//        +"Istimrar"
+//    }
+//    checkBoxInput {
+//        id = Ids.ISTIMRAR_CHECKBOX
+//        checked = inputContainerToCopyFrom?.isIstimrar == true
+//    }
+//}
 
 private fun FlowContent.calculateButton() {
     button {
@@ -471,7 +470,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 inputRow(
                     isDateOnlyLayout = IS_DEFAULT_INPUT_MODE_DATE_ONLY,
                     minTimeInput = "",
-                    maxTimeInput = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+                    maxTimeInput = ""//currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
                 )
             }
         }
@@ -673,7 +672,7 @@ private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
     val currentTime = currentTimeString(inputContainer.isDateOnly)
     for (timeInputsGroup in inputContainer.timeInputsGroups) {
         for (timeInput in timeInputsGroup.asReversed()) {
-            timeInput.max = currentTime
+//            timeInput.max = currentTime
             if (timeInput.value.isNotEmpty()) break
         }
     }
@@ -764,7 +763,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries,
-            isIstimrar,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
             isDateOnly,
@@ -815,6 +813,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
             }
             div { id = "datesRow"
                 style = Styles.TABLE_ROW_STYLE
+                println("Header list is $headerList")
                 for (i in headerList.indices) {
                     val header = headerList[i]
                     val date = header.getDate().toString()

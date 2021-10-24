@@ -94,7 +94,7 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(Date(2020,7,30), Date(2020,9,1))
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null,null,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,false)
@@ -122,10 +122,10 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(Date(2021,5,14), Date(2021,9,6))
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries, null,null,
             isDateOnly = true,
             isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020,9,6),Date(2021,5,15),25.0,true)
+            pregnancy = Pregnancy(Date(2020,9,6),Date(2021,5,15),25*MILLISECONDS_IN_A_DAY,true)
         )
         val haizDateList = output.hazDatesList
 
@@ -171,10 +171,10 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(Date(2021,9,6), Date(2021,9,6))
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null, null,
             isDateOnly = true,
             isPregnancy = true,
-            pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25.0,mustabeenUlKhilqat = false)
+            pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)
         )
         val haizDateList = output.hazDatesList
 
@@ -209,7 +209,7 @@ class LogicTest {
         entries+=
             Entry(Date(2021,2,6), Date(2021,2,9))
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null,null,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
@@ -246,7 +246,7 @@ class LogicTest {
             Entry(Date(2021,1,21), Date(2021,2,11))
 
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null,null,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
@@ -282,7 +282,7 @@ class LogicTest {
             Entry(Date(2020,7,2), Date(2020,7,16))
 
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null,null,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
@@ -325,7 +325,7 @@ class LogicTest {
             Entry(Date(2020,8,5), Date(2020,8,28))
 
 
-        val output = handleEntries(entries,false,null,null,
+        val output = handleEntries(entries,null,null,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
@@ -379,7 +379,6 @@ class LogicTest {
 
         val output = handleEntries(
             entries,
-            false,
             null,
             null,
             isDateOnly = true,
@@ -435,12 +434,11 @@ class LogicTest {
 
         val output = handleEntries(
             entries,
-            false,
             null,
             null,
             isDateOnly = true,
             isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40.0, mustabeenUlKhilqat = true)
+            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
         )
         val haizDateList = output.hazDatesList
 
@@ -492,12 +490,11 @@ class LogicTest {
 
         val output = handleEntries(
             entries,
-            false,
             null,
             null,
             isDateOnly = true,
             isPregnancy = false,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40.0, mustabeenUlKhilqat = true)
+            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
         )
         val haizDateList = output.hazDatesList
 
@@ -552,12 +549,11 @@ class LogicTest {
 
         val output = handleEntries(
             entries,
-            false,
             null,
             null,
             isDateOnly = true,
             isPregnancy = false,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40.0, mustabeenUlKhilqat = true)
+            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
         )
         val haizDateList = output.hazDatesList
 
@@ -617,12 +613,11 @@ class LogicTest {
 
         val output = handleEntries(
             entries,
-            false,
             null,
             null,
             isDateOnly = true,
             isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40.0, mustabeenUlKhilqat = true)
+            pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
         )
         val haizDateList = output.hazDatesList
 
@@ -661,7 +656,7 @@ class LogicTest {
     }
     @Test
     fun calculateEndTime(){
-        var fixedDuration1=
+        val fixedDuration1=
             FixedDuration(type=DurationType.DAM,
                 timeInMilliseconds=5251800000,
                 indices= mutableListOf(10, 11, 12, 13, 14, 15, 16),
@@ -677,7 +672,7 @@ class LogicTest {
                     istihazaAfter=4818060000,
                     aadatHaiz=433740000,
                     aadatTuhr=1903140000,
-                    durationsList= mutableListOf<Duration>(
+                    durationsList= mutableListOf(
                         Duration(type=DurationType.HAIZ,
                             timeInMilliseconds=433740000,
                             startTime=Date(2021,1,27,8,10)),
@@ -699,38 +694,8 @@ class LogicTest {
                 biggerThanForty=null,
                 startDate= Date(2021,1,27,8,10))
 
-
-
-
-//        var fixedDuration =
-//            FixedDuration(type=DurationType.DAM,
-//                timeInMilliseconds=5251800000,
-//                mutableListOf(),
-//                istihazaAfter=0,
-//                biggerThanTen=BiggerThanTenDm(mp=1903140000,
-//                    gp=1509960000,
-//                    dm=2807700000,
-//                    hz=864000000,
-//                    qism=Soortain.B_3,
-//                    istihazaBefore=0,
-//                    haiz=470820000,
-//                    istihazaAfter=2336880000,
-//                    aadatHaiz=470820000,
-//                    aadatTuhr=1903140000,
-//                    durationsList= mutableListOf<Duration>(
-//                        Duration(type=DurationType.HAIZ,
-//                            timeInMilliseconds=470820000,
-//                            startTime=Date(2020, 11, 7, 22, 25)),
-//                        Duration(type=DurationType.ISTIHAZA_AFTER,
-//                            timeInMilliseconds=1903140000,
-//                            startTime=Date (2020, 11, 13, 9, 22)),
-//                        Duration(type=DurationType.HAIZ,
-//                            timeInMilliseconds=433740000,
-//                            startTime=Date(2021,0,4,10,1)))),
-//                null,
-//                Date(2021,1,27,8,10))
-        var endtime = fixedDuration1.endDate
-        var expectedentime = Date(2021,3,29, 3,0)
+        val endtime = fixedDuration1.endDate
+        val expectedentime = Date(2021,3,29, 3,0)
         println("startTime is ${fixedDuration1.startDate}")
         println("time in milliseconds is ${fixedDuration1.timeInMilliseconds}")
         println(daysHoursMinutesDigital(fixedDuration1.timeInMilliseconds,false))

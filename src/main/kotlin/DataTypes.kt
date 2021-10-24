@@ -35,12 +35,12 @@ class InfoForCompareTable(
 data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,
-    var aadatNifas:Double? = 40.0,
+    var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat:Boolean
 )
 
 enum class DurationType {
-    DAM, TUHR, TUHREFAASID, ISTIMRAR, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD, ISTIHAZA_BEFORE,ISTIHAZA_AFTER,HAIZ, LESS_THAN_3_HAIZ, HAML,WILADAT_ISQAT
+    DAM, TUHR, TUHREFAASID, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD, ISTIHAZA_BEFORE,ISTIHAZA_AFTER,HAIZ, LESS_THAN_3_HAIZ, HAML,WILADAT_ISQAT
 }
 
 class DateTypeList (
@@ -102,11 +102,6 @@ data class BiggerThanFortyNifas(
     var aadatHaiz:Long, //aadat of haiz before solving this
     var aadatTuhr:Long, //aadat of tuhur before solving this
     var durationsList: MutableList<Duration>
-)
-
-data class IstihazaAfterOutput(
-    var aadatHaiz: Long,
-    var haizDatesEntries: MutableList<Entry>
 )
 
 data class AadatsOfHaizAndTuhr(
