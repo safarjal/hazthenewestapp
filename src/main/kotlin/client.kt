@@ -158,7 +158,7 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    inputsContainersContainer.style.width = "${481*inputsContainers.size}px"
+    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -170,7 +170,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
-    inputsContainersContainer.style.width = "${481*inputsContainers.size}px"
+    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
@@ -213,7 +213,7 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "width:464.06px; float: left; border:1px; padding:8px;"
+        style = "width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -746,6 +746,16 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
         timeInput.min = newMin
         timeInput.max = newMax
     }
+
+    if(isDateOnly){
+        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
+        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
+    }else{
+        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
+        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
+    }
+
+
     if (!isDateOnly) {
         setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
