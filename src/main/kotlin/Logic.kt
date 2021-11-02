@@ -401,6 +401,14 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
                 if(output.aadatTuhrChanges && fixedDurations[i-1].type==DurationType.TUHR){
                     //if mp is not tuhrefaasid or tuhr in haml
                     aadatTuhr = mp
+                    //if aadat is bigger than or equal to 6 months
+                    if(aadatTuhr>=30*6*MILLISECONDS_IN_A_DAY){
+                        //make aadat 2 months
+                        aadatTuhr = 30*2*MILLISECONDS_IN_A_DAY
+                        //mark that tuhr as a super long tuhr
+                        fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
+                    }
+
                 }
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
                     output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr, mutableListOf())
@@ -1023,6 +1031,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDate
 
 
     //if there is a daur situation, and person is currently in a state of paki
+    //give end date of yaqeeni paki
 
     if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
         if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){

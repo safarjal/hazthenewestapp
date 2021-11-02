@@ -367,7 +367,7 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
-        outputString = "60 دن طھر کی عادت (کیونکہ طھر 6 ماہ سے زیادہ تھا)\n\n"
+        outputString = "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n"
     }
     return outputString
 }
