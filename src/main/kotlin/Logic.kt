@@ -352,6 +352,13 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
             aadatHaz = fixedDurations[i].timeInMilliseconds
             if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
                 aadatTuhr = fixedDurations[i-1].timeInMilliseconds
+                //if aadat is bigger than or equal to 6 months
+                if(aadatTuhr>=30*6*MILLISECONDS_IN_A_DAY){
+                    //make aadat 2 months
+                    aadatTuhr = 30*2*MILLISECONDS_IN_A_DAY
+                    //mark that tuhr as a super long tuhr
+                    fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
+                }
             }
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
