@@ -810,7 +810,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                 style =Styles.TABLE_ROW_STYLE
                 for (header in headerList) {
                     val date = header.getDate()
-                    div { id = "cello"
+                    div { class = "cello"
                         style = Styles.TABLE_CELL_STYLE
                         if (date == 1) {
                             +MonthNames[header.getMonth()]
@@ -828,7 +828,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     val header = headerList[i]
                     val date = header.getDate().toString()
 
-                    div { id = "cello"
+                    div { class = "cello"
                         style =Styles.TABLE_CELL_STYLE
                         +date
                     }
@@ -876,7 +876,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
 
                     for (k in colorsOfDaysList.indices) {
                         val cellValue = colorsOfDaysList[k]
-                        div { id = "cello"
+                        div { class = "cello"
                             style = Styles.TABLE_CELL_BORDER_STYLE +
                                     (if (cellValue == 1) Styles.NA_PAKI else "")
                             +"${k+1}"
