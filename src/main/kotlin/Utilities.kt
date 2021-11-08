@@ -224,7 +224,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     var strDays = "$days دن "
 
     if(hours==1.0){
-        strHours = "$hours گھنٹا "
+        strHours = "$hours گھنٹہ "
     }
 
     if(hours==0.0){
