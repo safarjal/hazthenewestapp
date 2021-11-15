@@ -127,8 +127,8 @@ fun outputStringUrduFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOu
     return strUrdu
 }
 fun outputStringUrduFilHaalLine(filHaalPaki:Boolean):String{
-    val filHaalPakiStr = "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں ۔\n\n"
-    val filHaalHaizStr = "فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑہیں ۔\n\n"
+    val filHaalPakiStr = "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n"
+    val filHaalHaizStr = "فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑھیں۔\n\n"
     return if(filHaalPaki){
         filHaalPakiStr
     }else{
@@ -171,8 +171,10 @@ fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDateType: FutureDate
         strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n"
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
         strUrdu += "اگر خون اسی طرح جاری رہے تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے حیض کے دن ہونگے۔</b>\n\n"
-        strUrdu += "اگر خون ${urduDateFormat(futureDate, isDateOnly)} سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا ${urduDateFormat(futureDate, isDateOnly)} کو بہی غسل کر لیجیے۔/n/n"
-        strUrdu += "اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي هوں، تب بھي ${urduDateFormat(futureDate, isDateOnly)} سے پهلے ازدواجي تعلق کي اجازت نهيں\n\n"
+        strUrdu += "اگر خون ${urduDateFormat(futureDate, isDateOnly)} سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا ${urduDateFormat(futureDate, isDateOnly)} کو بھی غسل کر لیجیے۔\n\n"
+        //sex line
+        strUrdu += "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\n"
+        strUrdu += "اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي ${urduDateFormat(futureDate, isDateOnly)} سے پہلے صحبت کي اجازت نہيں۔\n\n"
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
         strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
 

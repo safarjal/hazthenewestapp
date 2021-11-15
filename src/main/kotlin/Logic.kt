@@ -1053,6 +1053,19 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDate
 }
 fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?{
     //we only provide an aadat in a bigger than 10 situation
+    //it is possible to have 3 aadat in a bigger than 10 sitch:
+    // the first is the aadat before this masla,
+        //aadat before this masla is biggerThanTen.hz
+    // the second is the aadat during this masla,
+        //this is the resultant haiz after 5 soortain
+    // and the third is the aadat after this masla
+        //in a sitch with daur, that ends in haiz, this is that
+
+    //if the masla ends in tuhr, we give the second, which is the same as third
+    //of the masla ends in haiz, if it is daur, we wanna give 2
+    //and if it's not daur, we wanna give 1
+
+
     val i = fixedDurations.lastIndex
     if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM) {
         val j = fixedDurations[i].biggerThanTen!!.durationsList.size-1
@@ -1064,7 +1077,13 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?
             AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.aadatHaiz,fixedDurations[i].biggerThanTen!!.aadatTuhr)
         }else{
             //it ended in a hiaz more than 3. We are going to give that haiz as aadat
-            AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,fixedDurations[i].biggerThanTen!!.aadatTuhr)
+            //AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,fixedDurations[i].biggerThanTen!!.aadatTuhr)
+
+            //actually no, we are still going to give aadat before this,
+            //in fact, we are always going to giv aadat before this
+            // but with a note saying that the deciding factor is ending time
+            //TODO: Make this change in bigger than forty too
+            AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.hz,fixedDurations[i].biggerThanTen!!.aadatTuhr)
         }
 
     }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
