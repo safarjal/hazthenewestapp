@@ -1,10 +1,11 @@
 import kotlin.js.Date
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
                          isDateOnly:Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):OutputTexts{
-    val englishStr = ""
+    var englishStr = ""
     var urduStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
     urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)
+    englishStr+= generateEnglishOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
@@ -27,7 +28,10 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
         index++
     }
     val urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
+    englishStr += generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues)
+
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
+
     return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 
@@ -43,23 +47,23 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
     val mustabeen = pregnancy.mustabeenUlKhilqat
 //    var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
     val birthTime = pregnancy.birthTime
-    var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
+    var str = StringsOfLanguages.URDU.answer
 
     if(mustabeen){
         if(fixedDurations[0].type!=DurationType.HAML){
-            str += "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
+            str += StringsOfLanguages.URDU.beforepregheader
         }
         for(index in fixedDurations.indices){
             str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
             str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
             str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
             if(fixedDurations[index].type==DurationType.HAML){
-                str += "\n<b>حمل</b>\n"
+                str += StringsOfLanguages.URDU.preg
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += "\n<b>ولادت ${urduDateFormat(birthTime, isDateOnly)}</b>\n"
+                str += StringsOfLanguages.URDU.birth.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
                 if(index<fixedDurations.size-2){//if there is something after wiladat
-                    str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
+                    str += StringsOfLanguages.URDU.afterpregheader
                 }
             }
 
@@ -69,18 +73,18 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
 
 
     }else{//if it is ghair mustabeenulkhilqat
-        str += "اس ترتیب سے خون آیا اور پاکی ملی:\n\n"
+        str += StringsOfLanguages.URDU.headerline
 
         for(index in fixedDurations.indices){
             str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
             str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
             if(fixedDurations[index].type==DurationType.HAML){
-                str += "\n<b>حمل</b>\n"
+                str += StringsOfLanguages.URDU.preg
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += "\n<b>${urduDateFormat(birthTime, isDateOnly)} کو اسقاط ہوا (غیر مستبین الخلقہ)</b>\n"
+                str += StringsOfLanguages.URDU.earlymiscarriage
                 if(index<fixedDurations.size-2){//if there is something after wiladat
-                    str += "\n<b>ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:</b>\n"
+                    str += StringsOfLanguages.URDU.afterpregheader
                 }
             }
 
@@ -94,8 +98,9 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
 }
 
 fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
-    var str = "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n"
-    str += "مندرجہ ذیل ترتیب سے دم و طہر آیا:\n\n"
+    //ToDo: figure out how to do languages for real
+    var str = StringsOfLanguages.URDU.answer
+    str += StringsOfLanguages.URDU.headerline
     var index = 0
     while (index<fixedDurations.size){
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
@@ -119,16 +124,16 @@ fun outputStringUrduFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOu
     strUrdu+=outputStringUrduAskAgainLine(isDateOnly, futureDates)
 
     //plis note down line
-    strUrdu+="جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n"
+    strUrdu+=StringsOfLanguages.URDU.writedown
 
     //Allahu Aaalam line
-    strUrdu+="<b>واللہ تعالی اعلم بالصواب</b>\n\n"
+    strUrdu+=StringsOfLanguages.URDU.allahknows
 
     return strUrdu
 }
 fun outputStringUrduFilHaalLine(filHaalPaki:Boolean):String{
-    val filHaalPakiStr = "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n"
-    val filHaalHaizStr = "فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑھیں۔\n\n"
+    val filHaalPakiStr = StringsOfLanguages.URDU.currentpaki
+    val filHaalHaizStr = StringsOfLanguages.URDU.currenthaiz
     return if(filHaalPaki){
         filHaalPakiStr
     }else{
@@ -168,15 +173,14 @@ fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDateType: FutureDate
     val futureDate= futureDateType.date
     val futureDatesType = futureDateType.futureDates
     if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
-        strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n"
+        strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
-        strUrdu += "اگر خون اسی طرح جاری رہے تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے حیض کے دن ہونگے۔</b>\n\n"
-        strUrdu += "اگر خون ${urduDateFormat(futureDate, isDateOnly)} سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا ${urduDateFormat(futureDate, isDateOnly)} کو بھی غسل کر لیجیے۔\n\n"
+        strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
+        strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
         //sex line
-        strUrdu += "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\n"
-        strUrdu += "اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي ${urduDateFormat(futureDate, isDateOnly)} سے پہلے صحبت کي اجازت نہيں۔\n\n"
+        strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
     }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
-        strUrdu += "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(futureDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
+        strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
 
     }
     return strUrdu
@@ -223,7 +227,7 @@ fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):
     }else{
         val aadatTuhr = aadats.aadatTuhr
         val aadatHaiz = aadats.aadatHaiz
-        strUrdu+="${UnicodeChars.GREEN_CIRCLE} <b>عادت:: حیض: ${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}، طہر: ${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}</b>\n\n"
+        strUrdu+= StringsOfLanguages.URDU.habit.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
         strUrdu
     }
 
@@ -253,28 +257,28 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     var strUrdu = ""
 
     fun haizLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} حیض کے ہیں۔\n\n"
+        return StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)}")
     }
     fun istihazaLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
+        return StringsOfLanguages.URDU.istihazadays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)}")
     }
 
     if((fixedDurations[index].days>10&&fixedDurations[index].type==DurationType.DAM)){
-        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
-        strUrdu += "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n"
+        strUrdu += StringsOfLanguages.URDU.dashesline
+        strUrdu += StringsOfLanguages.URDU.solution
 
         for(duration in fixedDurations[index].biggerThanTen!!.durationsList){
             if(duration.type == DurationType.ISTIHAZA_BEFORE){
                 strUrdu+= istihazaLineUrdu(duration.startTime,duration.endDate,isDateOnly)
-                strUrdu+= "${UnicodeChars.BLACK_SQUARE} اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔\n\n"
+                strUrdu+= StringsOfLanguages.URDU.istihazadetailslineone
 
             }else if(duration.type == DurationType.HAIZ){
                 strUrdu+= haizLineUrdu(duration.startTime,duration.endDate,isDateOnly)
 
             }else if(duration.type == DurationType.ISTIHAZA_AFTER){
                 strUrdu+= istihazaLineUrdu(duration.startTime,duration.endDate,isDateOnly)
-                strUrdu+= "${UnicodeChars.BLACK_SQUARE} ${urduDateFormat(duration.startTime,isDateOnly)} کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n"
-                strUrdu+= "${UnicodeChars.BLACK_SQUARE} اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔\n\n"
+                strUrdu+= StringsOfLanguages.URDU.istihazadetailslinetwo.replace("date1", "${urduDateFormat(duration.startTime,isDateOnly)}")
+                strUrdu+= StringsOfLanguages.URDU.istihazadetailslineone
 
             }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
                 strUrdu+= haizLineUrdu(duration.startTime,duration.endDate,isDateOnly)
@@ -282,7 +286,7 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
             }
         }
 
-        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+        strUrdu += StringsOfLanguages.URDU.dashesline
     }
 
     return strUrdu
@@ -292,26 +296,26 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
     var strUrdu = ""
 
     fun nifasLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} نفاس کے ہیں۔\n\n"
+        return StringsOfLanguages.URDU.nifasdaysinsolution.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)}")
     }
     fun haizLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.RED_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)} حیض کے ہیں۔\n\n"
+        return StringsOfLanguages.URDU.haizdaysinsolution.replace("date1","${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,ed)), isDateOnly)}")
     }
     fun istihazaLineUrdu(sd:Date,ed:Date, isDateOnly: Boolean):String{
-        return "${UnicodeChars.YELLOW_CIRCLE} ${urduDateFormat(sd, isDateOnly)} تا ${urduDateFormat(ed,isDateOnly)} کل ${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)} یقینی پاکی (استحاضہ) کے ہیں۔\n\n"
+        return StringsOfLanguages.URDU.istihazadays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)}")
     }
 
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
-        strUrdu += "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n"
+        strUrdu += StringsOfLanguages.URDU.dashesline
+        strUrdu += StringsOfLanguages.URDU.solution
 
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
             if(duration.type==DurationType.NIFAAS){
                 strUrdu+= nifasLineUrdu(duration.startTime,duration.endDate, isDateOnly)
             }else if(duration.type==DurationType.ISTIHAZA_AFTER){
                 strUrdu+= istihazaLineUrdu(duration.startTime,duration.endDate, isDateOnly)
-                strUrdu+= "${UnicodeChars.BLACK_SQUARE} ${urduDateFormat(duration.startTime,isDateOnly)} کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n"
-                strUrdu+= "${UnicodeChars.BLACK_SQUARE} اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔\n\n"
+                strUrdu+= StringsOfLanguages.URDU.istihazadetailslinetwo.replace("date1", "${urduDateFormat(duration.startTime,isDateOnly)}")
+                strUrdu+= StringsOfLanguages.URDU.istihazadetailslineone
 
             }else if(duration.type==DurationType.HAIZ){
                 strUrdu+= haizLineUrdu(duration.startTime,duration.endDate, isDateOnly)
@@ -321,7 +325,7 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
                 //maybe we'll wanna add something about itibaar bil khawateem
             }
         }
-        strUrdu += "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+        strUrdu += StringsOfLanguages.URDU.dashesline
     }
 
     return strUrdu
@@ -333,43 +337,35 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
         val sd:Date = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            outputString = "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} حیض۔\n\n"
+            outputString = StringsOfLanguages.URDU.haizdays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,et)), isDateOnly)}")
         }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
-                outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n"
-
+                outputString = StringsOfLanguages.URDU.continuosbleeding.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
             }else{
-                outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                        " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون۔\n\n"
+                outputString = StringsOfLanguages.URDU.blooddays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
             }
         }
 
     }else if (fixedDurations[index].type == DurationType.TUHR){
         val time = fixedDurations[index].timeInMilliseconds
-        outputString =  "${daysHoursMinutesDigitalUrdu(time, isDateOnly)} پاکی۔\n\n"
+        outputString =  StringsOfLanguages.URDU.pakidays.replace("duration1", "${daysHoursMinutesDigitalUrdu(time, isDateOnly)}")
 
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID){
-        outputString =  daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly) +
-                " استحاضہ + ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)} پاکی =" +
-                " ${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)} طہر فاسد۔\n\n"
+        outputString =  StringsOfLanguages.URDU.tuhrfasid.replace("duration1", "daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)").replace("duration2", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){
-            outputString = "${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} نفاس۔\n\n"
+            outputString = StringsOfLanguages.URDU.nifasdays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,et)), isDateOnly)}")
         }else{//more than 40
-            outputString = "\n\n${urduDateFormat(sd, isDateOnly)} سے ${urduDateFormat(et, isDateOnly)}" +
-                    " تک کل ${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} خون۔\n\n"
+            outputString = StringsOfLanguages.URDU.blooddays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
         }
     }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
 
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
-        outputString = "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)} طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n"
+        outputString = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
     }
     return outputString
 }
@@ -553,4 +549,256 @@ fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String
 
     }
     return str
+}
+
+
+
+
+fun generateEnglishOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
+    //ToDo: figure out how to do languages for real
+    var str = StringsOfLanguages.ENGLISH.answer
+    str += StringsOfLanguages.ENGLISH.headerline
+    var index = 0
+    while (index<fixedDurations.size){
+        str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
+        str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues)
+        }
+        index++
+    }
+    return str
+}
+
+fun outputStringEnglishHeaderLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+    var outputString = ""
+    if (fixedDurations[index].type==DurationType.DAM){
+        val sd:Date = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
+            outputString = StringsOfLanguages.ENGLISH.haizdays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(et,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital((difference(sd,et)), isDateOnly)}")
+        }else{//bigger than 10
+            if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
+                outputString = StringsOfLanguages.ENGLISH.continuosbleeding.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+            }else{
+                outputString = StringsOfLanguages.ENGLISH.blooddays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+            }
+        }
+
+    }else if (fixedDurations[index].type == DurationType.TUHR){
+        val time = fixedDurations[index].timeInMilliseconds
+        outputString =  StringsOfLanguages.ENGLISH.pakidays.replace("duration1", "${daysHoursMinutesDigital(time, isDateOnly)}")
+
+    }else if (fixedDurations[index].type == DurationType.TUHREFAASID){
+        outputString =  StringsOfLanguages.ENGLISH.tuhrfasid.replace("duration1", "daysHoursMinutesDigital(fixedDurations[index].istihazaAfter, isDateOnly)").replace("duration2", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigital((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
+        val sd = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        if(fixedDurations[index].days<=40){
+            outputString = StringsOfLanguages.ENGLISH.nifasdays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(et,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital((difference(sd,et)), isDateOnly)}")
+        }else{//more than 40
+            outputString = StringsOfLanguages.ENGLISH.blooddays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(et, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+        }
+    }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
+        outputString = StringsOfLanguages.ENGLISH.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+    }
+    return outputString
+}
+
+fun outputStringEnglishBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+    var strEnglish = ""
+
+    fun haizLineEnglish(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital((difference(sd,ed)), isDateOnly)}")
+    }
+    fun istihazaLineEnglish(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return StringsOfLanguages.ENGLISH.istihazadays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital(difference(sd,ed), isDateOnly)}")
+    }
+
+    if((fixedDurations[index].days>10&&fixedDurations[index].type==DurationType.DAM)){
+        strEnglish += StringsOfLanguages.ENGLISH.dashesline
+        strEnglish += StringsOfLanguages.ENGLISH.solution
+
+        for(duration in fixedDurations[index].biggerThanTen!!.durationsList){
+            if(duration.type == DurationType.ISTIHAZA_BEFORE){
+                strEnglish+= istihazaLineEnglish(duration.startTime,duration.endDate,isDateOnly)
+                strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslineone
+
+            }else if(duration.type == DurationType.HAIZ){
+                strEnglish+= haizLineEnglish(duration.startTime,duration.endDate,isDateOnly)
+
+            }else if(duration.type == DurationType.ISTIHAZA_AFTER){
+                strEnglish+= istihazaLineEnglish(duration.startTime,duration.endDate,isDateOnly)
+                strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslinetwo.replace("date1", "${parseDate(duration.startTime,isDateOnly)}")
+                strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslineone
+
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strEnglish+= haizLineEnglish(duration.startTime,duration.endDate,isDateOnly)
+                //maybe we'll wanna add something about itibaar bil khawateem
+            }
+        }
+
+        strEnglish += StringsOfLanguages.ENGLISH.dashesline
+    }
+
+    return strEnglish
+}
+fun outputStringEnglishBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+
+    var strEnglish = ""
+
+    fun nifasLineEnglish(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return StringsOfLanguages.ENGLISH.nifasdaysinsolution.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital((difference(sd,ed)), isDateOnly)}")
+    }
+    fun haizLineEnglish(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1","${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(ed, isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital((difference(sd,ed)), isDateOnly)}")
+    }
+    fun istihazaLineEnglish(sd:Date,ed:Date, isDateOnly: Boolean):String{
+        return StringsOfLanguages.ENGLISH.istihazadays.replace("date1", "${parseDate(sd, isDateOnly)}").replace("date2", "${parseDate(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigital(difference(sd,ed), isDateOnly)}")
+    }
+
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        strEnglish += StringsOfLanguages.ENGLISH.dashesline
+        strEnglish += StringsOfLanguages.ENGLISH.solution
+
+        for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
+            if(duration.type==DurationType.NIFAAS){
+                strEnglish+= nifasLineEnglish(duration.startTime,duration.endDate, isDateOnly)
+            }else if(duration.type==DurationType.ISTIHAZA_AFTER){
+                strEnglish+= istihazaLineEnglish(duration.startTime,duration.endDate, isDateOnly)
+                strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslinetwo.replace("date1", "${parseDate(duration.startTime,isDateOnly)}")
+                strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslineone
+
+            }else if(duration.type==DurationType.HAIZ){
+                strEnglish+= haizLineEnglish(duration.startTime,duration.endDate, isDateOnly)
+
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strEnglish+= haizLineEnglish(duration.startTime,duration.endDate,isDateOnly)
+                //maybe we'll wanna add something about itibaar bil khawateem
+            }
+        }
+        strEnglish += StringsOfLanguages.ENGLISH.dashesline
+    }
+
+    return strEnglish
+}
+fun generateEnglishOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):String{
+    val mustabeen = pregnancy.mustabeenUlKhilqat
+//    var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
+    val birthTime = pregnancy.birthTime
+    var str = StringsOfLanguages.ENGLISH.answer
+
+    if(mustabeen){
+        if(fixedDurations[0].type!=DurationType.HAML){
+            str += StringsOfLanguages.ENGLISH.beforepregheader
+        }
+        for(index in fixedDurations.indices){
+            str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            str += outputStringEnglishBiggerThan40Hall(fixedDurations,index, isDateOnly)
+            if(fixedDurations[index].type==DurationType.HAML){
+                str += StringsOfLanguages.ENGLISH.preg
+            }
+            if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                str += StringsOfLanguages.ENGLISH.birth.replace("date1", "${parseDate(birthTime, isDateOnly)}")
+                if(index<fixedDurations.size-2){//if there is something after wiladat
+                    str += StringsOfLanguages.ENGLISH.afterpregheader
+                }
+            }
+
+        }
+        str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues)
+
+
+
+    }else{//if it is ghair mustabeenulkhilqat
+        str += StringsOfLanguages.ENGLISH.headerline
+
+        for(index in fixedDurations.indices){
+            str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(fixedDurations[index].type==DurationType.HAML){
+                str += StringsOfLanguages.ENGLISH.preg
+            }
+            if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                str += StringsOfLanguages.ENGLISH.earlymiscarriage
+                if(index<fixedDurations.size-2){//if there is something after wiladat
+                    str += StringsOfLanguages.ENGLISH.afterpregheader
+                }
+            }
+
+        }
+        str += outputStringEnglishFinalLines (isDateOnly, endingOutputValues)
+
+    }
+
+
+    return str
+}
+fun outputStringEnglishFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
+
+    var strEnglish = ""
+    val aadats = endingOutputValues.aadats
+    strEnglish+=outputStringEnglishAadatLine(isDateOnly, aadats)
+    val filHaal = endingOutputValues.filHaalPaki
+    strEnglish+=outputStringEnglishFilHaalLine(filHaal)
+    val futureDates = endingOutputValues.futureDateType
+    strEnglish+=outputStringEnglishAskAgainLine(isDateOnly, futureDates)
+
+    //plis note down line
+    strEnglish+=StringsOfLanguages.ENGLISH.writedown
+
+    //Allahu Aaalam line
+    strEnglish+=StringsOfLanguages.ENGLISH.allahknows
+
+    return strEnglish
+}
+fun outputStringEnglishFilHaalLine(filHaalPaki:Boolean):String{
+    val filHaalPakiStr = StringsOfLanguages.ENGLISH.currentpaki
+    val filHaalHaizStr = StringsOfLanguages.ENGLISH.currenthaiz
+    return if(filHaalPaki){
+        filHaalPakiStr
+    }else{
+        filHaalHaizStr
+    }
+}
+
+fun outputStringEnglishAskAgainLine(isDateOnly: Boolean, futureDateType: FutureDateType?):String{
+    var strEnglish = ""
+    if (futureDateType==null){
+        return ""
+    }
+    val futureDate= futureDateType.date
+    val futureDatesType = futureDateType.futureDates
+    if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
+        strEnglish += StringsOfLanguages.ENGLISH.situationmaychange.replace("date1", "${parseDate(futureDate, isDateOnly)}")
+    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
+        strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", "${parseDate(futureDate, isDateOnly)}")
+        strEnglish += StringsOfLanguages.ENGLISH.ihtiyatighusl.replace("date1", "${parseDate(futureDate, isDateOnly)}")
+        //sex line
+        strEnglish += StringsOfLanguages.ENGLISH.sexnotallowed.replace("date1", "${parseDate(futureDate, isDateOnly)}")
+    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
+        strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", "${parseDate(futureDate, isDateOnly)}")
+
+    }
+    return strEnglish
+
+}
+fun outputStringEnglishAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):String{
+    var strEnglish = ""
+
+    return if(aadats==null){
+        ""
+    }else{
+        val aadatTuhr = aadats.aadatTuhr
+        val aadatHaiz = aadats.aadatHaiz
+        strEnglish+= StringsOfLanguages.ENGLISH.habit.replace("duration1", "${daysHoursMinutesDigital(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(aadatTuhr, isDateOnly)}")
+        strEnglish
+    }
+
+
 }
