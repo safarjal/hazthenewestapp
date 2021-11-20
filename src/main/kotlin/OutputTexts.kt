@@ -5,7 +5,7 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
     var urduStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
     urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)
-    englishStr+= generateEnglishOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)
+    englishStr+= "\n\n${generateEnglishOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)}"
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
@@ -28,7 +28,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: L
         index++
     }
     val urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
-    englishStr += generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues)
+    englishStr += "\n\n${generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues)}"
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
