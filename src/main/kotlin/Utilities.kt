@@ -272,13 +272,20 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):Stri
     }
     var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m"
     if(isDateOnly){
-        returnStatement = "$strDays day(s)"
+        if(days==1.0){
+            returnStatement = "1 day"
+        }else{
+            returnStatement = "$strDays days"
+        }
     }
     return(returnStatement)
 }
  fun parseDate(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT
-     val dateStr = (date.toUTCString()).dropLast(13).drop(5)
+     val dateStr = (date.toUTCString()).dropLast(18).drop(5)
+     if(dateStr.startsWith("0")){
+         dateStr.trimStart()
+     }
      var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
      val minutesStr = (date.toUTCString()).dropLast(7).drop(20)
      var ampm = "am"

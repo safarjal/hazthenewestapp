@@ -388,7 +388,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
                 window.alert("We need at least one more period before this to be able to solve this")
                 break
             }
-            else{
+            else{//we have aadat
                 val mp:Long = fixedDurations[i-1].timeInMilliseconds + fixedDurations[i-1].istihazaAfter
                 val gp:Long = aadatTuhr
                 val dm:Long = fixedDurations[i].timeInMilliseconds
@@ -442,6 +442,8 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
             returnAadatHaiz = remainder-aadatTuhr
 
         }
+
+    }else if(istihazaAfter==0L){
 
     }else{
 

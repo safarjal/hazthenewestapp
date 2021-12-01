@@ -82,7 +82,7 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
                 str += StringsOfLanguages.URDU.preg
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += StringsOfLanguages.URDU.earlymiscarriage
+                str += StringsOfLanguages.URDU.earlymiscarriage.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
                 if(index<fixedDurations.size-2){//if there is something after wiladat
                     str += StringsOfLanguages.URDU.afterpregheader
                 }
@@ -725,7 +725,7 @@ fun generateEnglishOutputStringPregnancy(fixedDurations: MutableList<FixedDurati
                 str += StringsOfLanguages.ENGLISH.preg
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += StringsOfLanguages.ENGLISH.earlymiscarriage
+                str += StringsOfLanguages.ENGLISH.earlymiscarriage.replace("date1", "${parseDate(birthTime, isDateOnly)}")
                 if(index<fixedDurations.size-2){//if there is something after wiladat
                     str += StringsOfLanguages.ENGLISH.afterpregheader
                 }
