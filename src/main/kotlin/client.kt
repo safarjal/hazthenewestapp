@@ -140,20 +140,6 @@ fun Node.addInputLayout() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.headers() {
-    h1 {
-        +"Mashqi Sawal"
-    }
-    p {
-        +"""
-            Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the
-            second box. To add another period after that, press Add. If you need to remove a period in the middle, click
-            the remove button next to it. To add a spot, enter a period where the start time and the end time are the
-            same. Once all periods have been added, click Calculate button, to get the solution.
-        """.trimIndent()
-    }
-}
-
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
