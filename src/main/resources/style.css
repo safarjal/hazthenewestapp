@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+}
+
+#how-to {
+  text-align: center;
+  width: 90vw;
+  margin: auto;
+}
+
+form {
+  margin: 0.5rem 0;
+}
+
+button,
+input {
+  margin: 0.5rem;
+}
+
+#input_containers_container {
+  display: flex;
+  width: 100vw;
+  margin: auto;
+}
+
+#input_container {
+  margin: auto;
+}
