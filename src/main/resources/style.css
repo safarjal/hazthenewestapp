@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+.invisible {
+  display: none !important;
+}
+
 h1 {
   text-align: center;
 }
@@ -34,24 +38,25 @@ input {
 
 #input_container {
   margin: 0 auto;
+  min-width: 30rem;
 }
 
 #button_add_before_container > button {
   margin: 0.1rem;
 }
 
-.invisible {
- display: none !important;
+.aadat {
+  width: 2.5rem;
 }
 
 .plus {
- color: green;
- background-color: rgba(0, 128, 0, 0.5);
- border-radius: 5px;
+  color: green;
+  background-color: rgba(0, 128, 0, 0.5);
+  border-radius: 5px;
 }
 
 .minus {
- color: red;
- background-color: rgba(128, 0, 0, 0.5);
- border-radius: 5px;
+  color: red;
+  background-color: rgba(128, 0, 0, 0.5);
+  border-radius: 5px;
 }
