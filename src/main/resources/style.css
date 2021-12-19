@@ -35,7 +35,6 @@ input {
 
 #input_containers_container {
   display: flex;
-  width: 100vw;
   margin: auto;
   overflow: auto;
 }

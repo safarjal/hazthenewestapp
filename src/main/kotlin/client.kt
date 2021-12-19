@@ -183,7 +183,7 @@ private fun addCompareButtonIfNeeded() {
             id = Ids.COMPARISON_CONTAINER
             button(type = ButtonType.button) {
                 +"Calculate difference"
-                style = "margin: 0 auto; display: block;"
+                style = "margin: 0.2rem auto; display: block;"
                 onClickFunction = { compareResults() }
             }
             content {
@@ -242,14 +242,17 @@ private fun TagConsumer<HTMLElement>.content() {
     content {
         id = Ids.CONTENT_ENG
     }
+    hr()
     content {
         id = Ids.CONTENT_URDU
         dir = Dir.rtl
 //            style += "font-family: Helvetica"
     }
+    hr()
     content {
         id = Ids.CONTENT_DATES
     }
+    hr()
 }
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
@@ -270,6 +273,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
 //        istimrarCheckBox(inputContainerToCopyFrom)
 //        br()
         calculateButton()
+        hr()
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
     }
 }
