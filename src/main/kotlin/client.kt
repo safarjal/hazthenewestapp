@@ -161,8 +161,8 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
     inputContainer.inputsContainerCloneButton.before {
-        button(type = ButtonType.button) {
-            +"X"
+        button(type = ButtonType.button, classes = "minus") {
+            +"\u274C"
             id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
             style = "float: right"
             onClickFunction = { event ->
@@ -212,6 +212,7 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
 private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
     inputsContainerAddRemoveButton {
         +"Clone"
+        classes = setOf("plus", "clone")
         id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
         onClickFunction = { event ->
             cloneInputsContainer(findInputContainer(event))
@@ -348,7 +349,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Pregnancy"
     }
-    checkBoxInput(classes = "pregnancy") {
+    checkBoxInput(classes = "") {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
         onChangeFunction = { event ->
@@ -382,6 +383,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
         +"Pregnancy Start Time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
+        classes = setOf("preg-checked invisible")
         id = Ids.PREG_START_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
@@ -395,6 +397,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
         +"Birth/Miscarriage time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
+        classes = setOf("preg-checked invisible")
         id = Ids.PREG_END_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
