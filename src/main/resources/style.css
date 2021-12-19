@@ -29,8 +29,13 @@ input {
   display: flex;
   width: 100vw;
   margin: auto;
+  overflow: auto;
 }
 
 #input_container {
   margin: auto;
+}
+
+.display {
+ display: none !important;
 }

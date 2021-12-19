@@ -129,7 +129,6 @@ fun askPassword():Boolean{
 
 fun Node.addInputLayout() {
     append {
-        headers()
         div {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
@@ -156,7 +155,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
-    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
+    inputsContainersContainer.style.width = "100vw"
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
@@ -319,10 +318,12 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     br()
     label {
         htmlFor = Ids.AADAT_NIFAS_INPUT
+//        style = "display: " + if (inputContainerToCopyFrom?.isPregnancy != true) "none" else "initial"
         +"Nifas Aadat: "
     }
     input {
         id = Ids.AADAT_NIFAS_INPUT
+//        style = "display: " + if (inputContainerToCopyFrom?.isPregnancy != true) "none" else "initial"
         step = "any"
         required = true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -354,6 +355,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         onChangeFunction = { event ->
             val isChecked = (event.currentTarget as HTMLInputElement).checked
             for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                //pregnancyElement.classList.toggle("display", isChecked)
                 pregnancyElement.disabled = !isChecked
             }
         }
