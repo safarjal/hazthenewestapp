@@ -33,9 +33,9 @@ input {
 }
 
 #input_container {
-  margin: auto;
+  margin: 0 auto;
 }
 
-.display {
+.invisible {
  display: none !important;
 }

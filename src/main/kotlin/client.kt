@@ -316,14 +316,12 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
     br()
-    label {
+    label(classes="pregnancy preg-checked") {
         htmlFor = Ids.AADAT_NIFAS_INPUT
-//        style = "display: " + if (inputContainerToCopyFrom?.isPregnancy != true) "none" else "initial"
         +"Nifas Aadat: "
     }
-    input {
+    input(classes="pregnancy preg-checked") {
         id = Ids.AADAT_NIFAS_INPUT
-//        style = "display: " + if (inputContainerToCopyFrom?.isPregnancy != true) "none" else "initial"
         step = "any"
         required = true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -345,29 +343,32 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label {
+    label(classes="pregnancy") {
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Pregnancy"
     }
-    checkBoxInput {
+    checkBoxInput(classes="pregnancy") {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
         onChangeFunction = { event ->
             val isChecked = (event.currentTarget as HTMLInputElement).checked
             for (pregnancyElement in findInputContainer(event).pregnancyElements) {
-                //pregnancyElement.classList.toggle("display", isChecked)
+                pregnancyElement.classList.toggle("invisible", isChecked)
                 pregnancyElement.disabled = !isChecked
             }
+//            for (pregnancyElement in document.querySelectorAll('.preg-checked')) {
+//                pregnancyElement.classList.toggle("invisible", isChecked)
+//            }
         }
     }
 }
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label {
+    label(classes="pregnancy preg-checked") {
         htmlFor = Ids.MUSTABEEN_CHECKBOX
         +"Mustabeen ul Khilqah"
     }
-    checkBoxInput {
+    checkBoxInput(classes="pregnancy preg-checked") {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -375,7 +376,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label {
+    label(classes="pregnancy preg-checked") {
         htmlFor = Ids.PREG_START_TIME_INPUT
         +"Pregnancy Start Time"
     }
@@ -388,7 +389,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label {
+    label(classes="pregnancy preg-checked") {
         htmlFor = Ids.PREG_END_TIME_INPUT
         +"Birth/Miscarriage time"
     }
