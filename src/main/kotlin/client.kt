@@ -653,9 +653,10 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
 
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
-    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
+//    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
     inputDatesRows.first().removeButton.classList.toggle("invisible", inputDatesRows.size == 1)
-    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
+//    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
+    inputDatesRows.getOrNull(1)?.removeButton?.classList?.toggle("invisible", false)
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
