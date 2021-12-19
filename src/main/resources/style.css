@@ -29,7 +29,6 @@ form {
   margin: 0.5rem 0;
 }
 
-button,
 input {
   margin: 0.5rem;
 }
@@ -43,25 +42,32 @@ input {
 
 #input_container {
   margin: 0 auto;
-  min-width: 30rem;
 }
 
 #button_add_before_container > button {
-  margin: 0.1rem;
+  margin: 0;
 }
 
 .aadat {
   width: 2.5rem;
 }
 
-.plus {
-  color: green;
-  background-color: rgba(0, 128, 0, 0.5);
+button {
   border-radius: 5px;
+
+}
+
+.plus {
+  color: black;
+  background-color: rgba(0, 128, 0, 0.5);
+}
+
+.clone {
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .minus {
   color: red;
   background-color: rgba(128, 0, 0, 0.5);
-  border-radius: 5px;
 }

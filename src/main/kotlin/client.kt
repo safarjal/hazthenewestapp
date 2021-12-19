@@ -144,7 +144,7 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
+    inputsContainersContainer.style.width = "100vw"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -199,7 +199,7 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
+        style = "min-width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -222,7 +222,8 @@ private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
 
 private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
     inputsContainerAddRemoveButton {
-        +"X"
+        +"\u274C"
+        classes = setOf("minus")
         id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
         onClickFunction = { event ->
             removeInputsContainer(findInputContainer(event))
@@ -349,7 +350,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Pregnancy"
     }
-    checkBoxInput(classes = "") {
+    checkBoxInput() {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
         onChangeFunction = { event ->
@@ -742,11 +743,11 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 
     if(isDateOnly){
-        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
-        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
+        inputsContainersContainer.style.width = "100vw"
+        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_ONLY}px"
     }else{
-        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
-        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
+        inputsContainersContainer.style.width = "100vw"
+        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_TIME}px"
     }
 
 
