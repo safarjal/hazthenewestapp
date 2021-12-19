@@ -22,6 +22,7 @@ object Ids {
         const val BUTTON_ADD_BEFORE = "button_add_before"
     }
 
+    const val CONTENT_CONTAINER = "content_container"
     const val CONTENT_ENG = "content_eng"
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_DATES = "content_dates"
@@ -69,6 +70,7 @@ private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT
 private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
 private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
+private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
 private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
 private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
@@ -239,20 +241,23 @@ private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTT
 }
 
 private fun TagConsumer<HTMLElement>.content() {
-    content {
-        id = Ids.CONTENT_ENG
-    }
-    hr()
-    content {
-        id = Ids.CONTENT_URDU
-        dir = Dir.rtl
+    div(classes = "invisible") {
+        id = Ids.CONTENT_CONTAINER
+        content {
+            id = Ids.CONTENT_ENG
+        }
+        hr()
+        content {
+            id = Ids.CONTENT_URDU
+            dir = Dir.rtl
 //            style += "font-family: Helvetica"
+        }
+        hr()
+        content {
+            id = Ids.CONTENT_DATES
+        }
+        hr()
     }
-    hr()
-    content {
-        id = Ids.CONTENT_DATES
-    }
-    hr()
 }
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
@@ -262,11 +267,26 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         aadatInputs(inputContainerToCopyFrom)
         br()
         pregnancyCheckBox(inputContainerToCopyFrom)
-        br(classes = "preg-checked invisible")
+        br {
+            classes = setOfNotNull(
+                "preg-checked",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+            )
+        }
         mustabeenCheckBox(inputContainerToCopyFrom)
-        br(classes = "preg-checked invisible")
+        br {
+            classes = setOfNotNull(
+                "preg-checked",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+            )
+        }
         pregnancyStartTimeInput(inputContainerToCopyFrom)
-        br(classes = "preg-checked invisible")
+        br {
+            classes = setOfNotNull(
+                "preg-checked",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+            )
+        }
         pregnancyEndTimeInput(inputContainerToCopyFrom)
 //        br()
         haizDatesInputTable(inputContainerToCopyFrom)
@@ -322,13 +342,27 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
-    br(classes = "preg-checked invisible")
-    label(classes = "preg-checked invisible") {
+    br {
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
+    }
+    label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Nifas Aadat: "
     }
-    input(classes = "preg-checked invisible aadat") {
+    input {
         id = Ids.AADAT_NIFAS_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            "aadat",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         step = "any"
         required = true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -360,35 +394,50 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         onChangeFunction = { event ->
             val isChecked = (event.currentTarget as HTMLInputElement).checked
             for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
-                pregnancyElement.classList.toggle("invisible", !isChecked)
+                pregnancyElement.visibility = isChecked
                 pregnancyElement.disabled = !isChecked
             }
             for (pregnancyElement in findInputContainer(event).pregnancyElements) {
-                pregnancyElement.classList.toggle("invisible", !isChecked)
+                pregnancyElement.visibility = isChecked
             }
         }
     }
 }
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "preg-checked invisible") {
+    label {
         htmlFor = Ids.MUSTABEEN_CHECKBOX
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Mustabeen ul Khilqah"
     }
-    checkBoxInput(classes = "preg-checked invisible") {
+    checkBoxInput{
         id = Ids.MUSTABEEN_CHECKBOX
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         checked = inputContainerToCopyFrom?.mustabeen == true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
     }
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "preg-checked invisible") {
+    label {
         htmlFor = Ids.PREG_START_TIME_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Pregnancy Start Time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
-        classes = setOf("preg-checked invisible")
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         id = Ids.PREG_START_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
@@ -397,12 +446,19 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "preg-checked invisible") {
+    label {
         htmlFor = Ids.PREG_END_TIME_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Birth/Miscarriage time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
-        classes = setOf("preg-checked invisible")
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         id = Ids.PREG_END_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
@@ -654,9 +710,9 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
 //    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
-    inputDatesRows.first().removeButton.classList.toggle("invisible", inputDatesRows.size == 1)
+    inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
 //    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
-    inputDatesRows.getOrNull(1)?.removeButton?.classList?.toggle("invisible", false)
+    inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
@@ -785,6 +841,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             )
         )
+        contentContainer.visibility = true
         contentEnglishElement.innerHTML = output.englishText
         contentUrduElement.innerHTML = output.urduText
         contentDatesElement.innerHTML = output.haizDatesText

@@ -97,6 +97,10 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
     }
 }
 
+var Element.visibility: Boolean
+    get() = !classList.contains("invisible")
+    set(visible) { classList.toggle("invisible", !visible) }
+
 val HTMLTableRowElement.rowIndexWithinTableBody get() =
     (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
 
