@@ -146,7 +146,6 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    inputsContainersContainer.style.width = "100vw"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -158,7 +157,6 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
-    inputsContainersContainer.style.width = "100vw"
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
@@ -264,34 +262,16 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     form(action = "javascript:void(0);") {
         dateConfigurationRadioButtons(inputContainerToCopyFrom)
         br()
-        aadatInputs(inputContainerToCopyFrom)
-        br()
-        pregnancyCheckBox(inputContainerToCopyFrom)
-        br {
-            classes = setOfNotNull(
-                "preg-checked",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-            )
+        div(classes = "label-input") {
+            aadatInputs(inputContainerToCopyFrom)
+            pregnancyCheckBox(inputContainerToCopyFrom)
+            mustabeenCheckBox(inputContainerToCopyFrom)
+            pregnancyStartTimeInput(inputContainerToCopyFrom)
+            pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
-        mustabeenCheckBox(inputContainerToCopyFrom)
-        br {
-            classes = setOfNotNull(
-                "preg-checked",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-            )
-        }
-        pregnancyStartTimeInput(inputContainerToCopyFrom)
-        br {
-            classes = setOfNotNull(
-                "preg-checked",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-            )
-        }
-        pregnancyEndTimeInput(inputContainerToCopyFrom)
-//        br()
+        hr()
         haizDatesInputTable(inputContainerToCopyFrom)
 //        istimrarCheckBox(inputContainerToCopyFrom)
-//        br()
         calculateButton()
         hr()
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
@@ -332,7 +312,6 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
     }
-    br()
     label {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
@@ -341,12 +320,6 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         id = Ids.AADAT_TUHR_INPUT
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
-    }
-    br {
-        classes = setOfNotNull(
-            "preg-checked",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-        )
     }
     label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -464,7 +437,6 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
             findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
         }
     }
-    hr()
 }
 
 private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
@@ -805,10 +777,8 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 
     if(isDateOnly){
-        inputsContainersContainer.style.width = "100vw"
         inputContainer.style.minWidth = "${FORM_WIDTH_DATE_ONLY}px"
     }else{
-        inputsContainersContainer.style.width = "100vw"
         inputContainer.style.minWidth = "${FORM_WIDTH_DATE_TIME}px"
     }
 

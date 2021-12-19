@@ -1,6 +1,8 @@
 /*
   Todo:
-    1) RUN IS_CHECKED? ON PREGNANCY ELEMENTS INITIALLY, INSTEAD OF ADDING MANUALLY
+    1) VR?
+    2) CLONE DATE-AND-TIME:
+      CLASS TIME ==> !ISDATEONLY
 */
 
 * {
@@ -9,6 +11,10 @@
 
 .invisible {
   display: none !important;
+}
+
+header {
+  width: 100vw
 }
 
 h1 {
@@ -34,17 +40,32 @@ input {
 }
 
 #input_containers_container {
-  display: flex;
-  margin: auto;
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.1rem;
+  width: 100vw;
   overflow: auto;
+  margin: auto;
 }
 
 #input_container {
   margin: 0 auto;
+  min-width: 410px;
+}
+
+.time {
+  min-width: 605px;
 }
 
 .vertical {
   margin: 0 0.5rem;
+}
+
+.label-input {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-items: baseline;
 }
 
 #button_add_before_container > button {
