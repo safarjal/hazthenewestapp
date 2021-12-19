@@ -12,6 +12,10 @@ h1 {
   margin: auto;
 }
 
+hr {
+  margin: 1rem 0;
+}
+
 form {
   margin: 0.5rem 0;
 }
