@@ -44,6 +44,10 @@ input {
   margin: 0 auto;
 }
 
+.vertical {
+  margin: 0 0.5rem;
+}
+
 #button_add_before_container > button {
   margin: 0;
 }
