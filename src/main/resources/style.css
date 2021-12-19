@@ -68,17 +68,20 @@ input {
   justify-items: baseline;
 }
 
+button {
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
 #button_add_before_container > button {
   margin: 0;
 }
 
 .aadat {
   width: 2.5rem;
-}
-
-button {
-  border-radius: 5px;
-
 }
 
 .plus {

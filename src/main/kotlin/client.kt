@@ -617,6 +617,7 @@ private fun FlowContent.timeInput(
 private fun FlowContent.removeButton() {
     button(type = ButtonType.button, classes = "minus") {
         +"\u274C"
+        title = "Remove"
         id = Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
@@ -631,6 +632,7 @@ private fun FlowContent.removeButton() {
 private fun FlowContent.addButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795"
+        title = "Add"
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
@@ -649,6 +651,7 @@ private fun FlowContent.addButton() {
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u2BC5"
+        title = "Add Before"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val row = findRow(event)
