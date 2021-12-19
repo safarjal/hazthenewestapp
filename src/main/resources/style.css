@@ -36,6 +36,22 @@ input {
   margin: 0 auto;
 }
 
+#button_add_before_container > button {
+  margin: 0.1rem;
+}
+
 .invisible {
  display: none !important;
+}
+
+.plus {
+ color: green;
+ background-color: rgba(0, 128, 0, 0.5);
+ border-radius: 5px;
+}
+
+.minus {
+ color: red;
+ background-color: rgba(128, 0, 0, 0.5);
+ border-radius: 5px;
 }

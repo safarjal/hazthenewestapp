@@ -316,11 +316,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
     br()
-    label(classes="pregnancy preg-checked") {
+    label(classes = "pregnancy preg-checked") {
         htmlFor = Ids.AADAT_NIFAS_INPUT
         +"Nifas Aadat: "
     }
-    input(classes="pregnancy preg-checked") {
+    input(classes = "pregnancy preg-checked") {
         id = Ids.AADAT_NIFAS_INPUT
         step = "any"
         required = true
@@ -343,11 +343,11 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes="pregnancy") {
+    label(classes = "pregnancy") {
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Pregnancy"
     }
-    checkBoxInput(classes="pregnancy") {
+    checkBoxInput(classes = "pregnancy") {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
         onChangeFunction = { event ->
@@ -364,11 +364,11 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 }
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes="pregnancy preg-checked") {
+    label(classes = "pregnancy preg-checked") {
         htmlFor = Ids.MUSTABEEN_CHECKBOX
         +"Mustabeen ul Khilqah"
     }
-    checkBoxInput(classes="pregnancy preg-checked") {
+    checkBoxInput(classes = "pregnancy preg-checked") {
         id = Ids.MUSTABEEN_CHECKBOX
         checked = inputContainerToCopyFrom?.mustabeen == true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -376,7 +376,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes="pregnancy preg-checked") {
+    label(classes = "pregnancy preg-checked") {
         htmlFor = Ids.PREG_START_TIME_INPUT
         +"Pregnancy Start Time"
     }
@@ -389,7 +389,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes="pregnancy preg-checked") {
+    label(classes = "pregnancy preg-checked") {
         htmlFor = Ids.PREG_END_TIME_INPUT
         +"Birth/Miscarriage time"
     }
@@ -577,8 +577,8 @@ private fun FlowContent.timeInput(
 }
 
 private fun FlowContent.removeButton() {
-    button(type = ButtonType.button) {
-        +"Remove"
+    button(type = ButtonType.button, classes = "minus") {
+        +"\u274C"
         id = Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
@@ -591,8 +591,8 @@ private fun FlowContent.removeButton() {
 }
 
 private fun FlowContent.addButton() {
-    button(type = ButtonType.button) {
-        +"Add"
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795"
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
@@ -609,8 +609,8 @@ private fun FlowContent.addButton() {
 }
 
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
-    button(type = ButtonType.button) {
-        +"Add Before"
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795 \u2BC5"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val row = findRow(event)
