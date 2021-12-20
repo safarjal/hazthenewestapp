@@ -80,6 +80,10 @@ button:hover {
   margin: 0;
 }
 
+.urdu {
+  text-align: right;
+}
+
 .aadat {
   width: 2.5rem;
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Haz The Newest App</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RGMD55PENZ"></script>
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-RGMD55PENZ" defer></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -12,11 +12,11 @@
 
         gtag('config', 'G-RGMD55PENZ');
     </script>
+    <script src="hazthenewestapp.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<script src="hazthenewestapp.js"></script>
-<div id="root"></div>
+<!--<div id="root"></div>-->
 <header>
     <h1>Mashqi Sawal</h1>
     <p id="how-to">
@@ -24,6 +24,12 @@
         second box. To add another period after that, press (➕). If you need to remove a period in the middle, click
         the remove (❌) button next to it. To add a spot, enter a period where the start time and the end time are the
         same. Once all periods have been added, click Calculate button, to get the solution.
+        <br>
+        <label for="language">Select Language</label>
+        <select name="language" id="language">
+            <option value="urdu">Urdu</option>
+            <option value="english">English</option>
+        </select>
     </p>
     <hr>
 </header>

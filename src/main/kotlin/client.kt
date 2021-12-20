@@ -23,8 +23,7 @@ object Ids {
     }
 
     const val CONTENT_CONTAINER = "content_container"
-    const val CONTENT_ENG = "content_eng"
-    const val CONTENT_URDU = "content_urdu"
+    const val CONTENT = "content"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
@@ -61,6 +60,8 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
+private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
+
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
@@ -71,8 +72,7 @@ private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as H
 private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
-private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
-private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
+private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 private val HTMLElement.inputsContainerCloneButton get() =
     getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
@@ -242,13 +242,7 @@ private fun TagConsumer<HTMLElement>.content() {
     div(classes = "invisible") {
         id = Ids.CONTENT_CONTAINER
         content {
-            id = Ids.CONTENT_ENG
-        }
-        hr()
-        content {
-            id = Ids.CONTENT_URDU
-            dir = Dir.rtl
-//            style += "font-family: Helvetica"
+            id = Ids.CONTENT
         }
         hr()
         content {
@@ -815,8 +809,13 @@ private fun parseEntries(inputContainer: HTMLElement) {
             )
         )
         contentContainer.visibility = true
-        contentEnglishElement.innerHTML = output.englishText
-        contentUrduElement.innerHTML = output.urduText
+        if (languageSelecter.value == "english") {
+            contentElement.innerHTML = output.englishText
+            contentElement.classList.toggle("urdu", false)
+        } else {
+            contentElement.innerHTML = output.urduText
+            contentElement.classList.toggle("urdu", true)
+        }
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
