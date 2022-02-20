@@ -318,20 +318,32 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.AADAT_HAIZ_INPUT
         +("Haiz Aadat: ")
+        classes = setOfNotNull(
+            if (inputContainerToCopyFrom?.isMubtadia == true) "invisible" else null
+        )
     }
     input(classes = "aadat") {
         id = Ids.AADAT_HAIZ_INPUT
         value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
+        classes = setOfNotNull(
+            if (inputContainerToCopyFrom?.isMubtadia == true) "invisible" else null
+        )
     }
     label {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
+        classes = setOfNotNull(
+            if (inputContainerToCopyFrom?.isMubtadia == true) "invisible" else null
+        )
     }
     input(classes = "aadat") {
         id = Ids.AADAT_TUHR_INPUT
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
+        classes = setOfNotNull(
+            if (inputContainerToCopyFrom?.isMubtadia == true) "invisible" else null
+        )
     }
     label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -675,7 +687,7 @@ private fun FlowContent.addButton() {
 
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
-        +"\u2795 \u2BC5"
+        +"\u2795 \u2303"
         title = "Add Before"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
