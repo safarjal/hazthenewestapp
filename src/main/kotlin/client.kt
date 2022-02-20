@@ -334,7 +334,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
         )
         step = "any"
-        required = true
+        required = false
         disabled = inputContainerToCopyFrom?.isPregnancy != true
         value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
@@ -856,7 +856,6 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
             }
             div { id = "datesRow"
                 style = Styles.TABLE_ROW_STYLE
-                println("Header list is $headerList")
                 for (i in headerList.indices) {
                     val header = headerList[i]
                     val date = header.getDate().toString()
