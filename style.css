@@ -1,0 +1,104 @@
+/*
+  Todo:
+    1) VR?
+    2) CLONE DATE-AND-TIME:
+      CLASS TIME ==> !ISDATEONLY
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+.invisible {
+  display: none !important;
+}
+
+header {
+  width: 100vw
+}
+
+h1 {
+  text-align: center;
+}
+
+#how-to {
+  text-align: center;
+  width: 90vw;
+  margin: auto;
+}
+
+hr {
+  margin: 1rem 0;
+}
+
+form {
+  margin: 0.5rem 0;
+}
+
+input {
+  margin: 0.5rem;
+}
+
+#input_containers_container {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.1rem;
+  width: 100vw;
+  overflow: auto;
+  margin: auto;
+}
+
+#input_container {
+  margin: 0 auto;
+  min-width: 410px;
+}
+
+.time {
+  min-width: 605px;
+}
+
+.vertical {
+  margin: 0 0.5rem;
+}
+
+.label-input {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-items: baseline;
+}
+
+button {
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#button_add_before_container > button {
+  margin: 0;
+}
+
+.urdu {
+  text-align: right;
+}
+
+.aadat {
+  width: 2.5rem;
+}
+
+.plus {
+  color: black;
+  background-color: rgba(0, 128, 0, 0.5);
+}
+
+.clone {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.minus {
+  color: red;
+  background-color: rgba(128, 0, 0, 0.5);
+}
