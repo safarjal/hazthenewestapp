@@ -127,7 +127,10 @@ fun main() {
 fun askPassword():Boolean{
     val pass1 = "786"
     val password = window.prompt("Please enter password here. To request the password, please contact safarjal22@gmail.com", "")
-    return pass1 == password
+    if (pass1 == password) {
+        return true
+    }
+    else return askPassword()
 }
 
 fun Node.addInputLayout() {
