@@ -687,7 +687,7 @@ private fun FlowContent.addButton() {
 
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
-        +"\u2795 \u2303"
+        +"\u2795 \u25B2"
         title = "Add Before"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
