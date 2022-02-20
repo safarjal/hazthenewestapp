@@ -22,8 +22,8 @@ object Ids {
         const val BUTTON_ADD_BEFORE = "button_add_before"
     }
 
-    const val CONTENT_ENG = "content_eng"
-    const val CONTENT_URDU = "content_urdu"
+    const val CONTENT_CONTAINER = "content_container"
+    const val CONTENT = "content"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
@@ -60,6 +60,8 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
+private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
+
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
@@ -69,8 +71,8 @@ private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT
 private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
 private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
-private val HTMLElement.contentEnglishElement get() = getChildById(Ids.CONTENT_ENG) as HTMLParagraphElement
-private val HTMLElement.contentUrduElement get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
+private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
+private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 private val HTMLElement.inputsContainerCloneButton get() =
     getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
@@ -81,9 +83,10 @@ private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
     set(value) { contentDatesElement.asDynamic().haizDatesList = value }
 
-private val HTMLElement.pregnancyElements get() = Ids.pregnancyElementIds.map { id ->
+private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id ->
     getChildById(id) as HTMLInputElement
 }
+private val HTMLElement.pregnancyElements get() = getElementsByClassName("preg-checked").asList()
 
 private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
     get() {
@@ -129,7 +132,6 @@ fun askPassword():Boolean{
 
 fun Node.addInputLayout() {
     append {
-        headers()
         div {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
@@ -140,25 +142,10 @@ fun Node.addInputLayout() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.headers() {
-    h1 {
-        +"Mashqi Sawal"
-    }
-    p {
-        +"""
-            Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the
-            second box. To add another period after that, press Add. If you need to remove a period in the middle, click
-            the remove button next to it. To add a spot, enter a period where the start time and the end time are the
-            same. Once all periods have been added, click Calculate button, to get the solution.
-        """.trimIndent()
-    }
-}
-
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -170,13 +157,12 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
-    inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
     inputContainer.inputsContainerCloneButton.before {
-        button(type = ButtonType.button) {
-            +"X"
+        button(type = ButtonType.button, classes = "minus") {
+            +"\u274C"
             id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
             style = "float: right"
             onClickFunction = { event ->
@@ -197,7 +183,7 @@ private fun addCompareButtonIfNeeded() {
             id = Ids.COMPARISON_CONTAINER
             button(type = ButtonType.button) {
                 +"Calculate difference"
-                style = "margin: 0 auto; display: block;"
+                style = "margin: 0.2rem auto; display: block;"
                 onClickFunction = { compareResults() }
             }
             content {
@@ -213,7 +199,7 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
+        style = "min-width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -226,6 +212,7 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
 private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
     inputsContainerAddRemoveButton {
         +"Clone"
+        classes = setOf("plus", "clone")
         id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
         onClickFunction = { event ->
             cloneInputsContainer(findInputContainer(event))
@@ -235,7 +222,8 @@ private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
 
 private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
     inputsContainerAddRemoveButton {
-        +"X"
+        +"\u274C"
+        classes = setOf("minus")
         id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
         onClickFunction = { event ->
             removeInputsContainer(findInputContainer(event))
@@ -251,16 +239,16 @@ private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTT
 }
 
 private fun TagConsumer<HTMLElement>.content() {
-    content {
-        id = Ids.CONTENT_ENG
-    }
-    content {
-        id = Ids.CONTENT_URDU
-        dir = Dir.rtl
-//            style += "font-family: Helvetica"
-    }
-    content {
-        id = Ids.CONTENT_DATES
+    div(classes = "invisible") {
+        id = Ids.CONTENT_CONTAINER
+        content {
+            id = Ids.CONTENT
+        }
+        hr()
+        content {
+            id = Ids.CONTENT_DATES
+        }
+        hr()
     }
 }
 
@@ -268,20 +256,18 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     form(action = "javascript:void(0);") {
         dateConfigurationRadioButtons(inputContainerToCopyFrom)
         br()
-        aadatInputs(inputContainerToCopyFrom)
-        br()
-        pregnancyCheckBox(inputContainerToCopyFrom)
-        br()
-        mustabeenCheckBox(inputContainerToCopyFrom)
-        br()
-        pregnancyStartTimeInput(inputContainerToCopyFrom)
-        br()
-        pregnancyEndTimeInput(inputContainerToCopyFrom)
-        br()
+        div(classes = "label-input") {
+            aadatInputs(inputContainerToCopyFrom)
+            pregnancyCheckBox(inputContainerToCopyFrom)
+            mustabeenCheckBox(inputContainerToCopyFrom)
+            pregnancyStartTimeInput(inputContainerToCopyFrom)
+            pregnancyEndTimeInput(inputContainerToCopyFrom)
+        }
+        hr()
         haizDatesInputTable(inputContainerToCopyFrom)
 //        istimrarCheckBox(inputContainerToCopyFrom)
-        br()
         calculateButton()
+        hr()
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
     }
 }
@@ -315,28 +301,35 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         htmlFor = Ids.AADAT_HAIZ_INPUT
         +("Haiz Aadat: ")
     }
-    input {
+    input(classes = "aadat") {
         id = Ids.AADAT_HAIZ_INPUT
         value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
     }
-    br()
     label {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
     }
-    input {
+    input(classes = "aadat") {
         id = Ids.AADAT_TUHR_INPUT
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
-    br()
-    label {
+    label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Nifas Aadat: "
     }
     input {
         id = Ids.AADAT_NIFAS_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            "aadat",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         step = "any"
         required = true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
@@ -358,17 +351,21 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label {
+    label() {
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Pregnancy"
     }
-    checkBoxInput {
+    checkBoxInput() {
         id = Ids.PREGNANCY_CHECKBOX
         checked = inputContainerToCopyFrom?.isPregnancy == true
         onChangeFunction = { event ->
             val isChecked = (event.currentTarget as HTMLInputElement).checked
-            for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+            for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
+                pregnancyElement.visibility = isChecked
                 pregnancyElement.disabled = !isChecked
+            }
+            for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                pregnancyElement.visibility = isChecked
             }
         }
     }
@@ -377,10 +374,18 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.MUSTABEEN_CHECKBOX
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Mustabeen ul Khilqah"
     }
-    checkBoxInput {
+    checkBoxInput{
         id = Ids.MUSTABEEN_CHECKBOX
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         checked = inputContainerToCopyFrom?.mustabeen == true
         disabled = inputContainerToCopyFrom?.isPregnancy != true
     }
@@ -389,9 +394,17 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.PREG_START_TIME_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Pregnancy Start Time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         id = Ids.PREG_START_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
@@ -402,9 +415,17 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     label {
         htmlFor = Ids.PREG_END_TIME_INPUT
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         +"Birth/Miscarriage time"
     }
     pregnancyTimeInput(inputContainerToCopyFrom) {
+        classes = setOfNotNull(
+            "preg-checked",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+        )
         id = Ids.PREG_END_TIME_INPUT
         onChangeFunction = { event ->
             findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
@@ -588,8 +609,9 @@ private fun FlowContent.timeInput(
 }
 
 private fun FlowContent.removeButton() {
-    button(type = ButtonType.button) {
-        +"Remove"
+    button(type = ButtonType.button, classes = "minus") {
+        +"\u274C"
+        title = "Remove"
         id = Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
@@ -602,8 +624,9 @@ private fun FlowContent.removeButton() {
 }
 
 private fun FlowContent.addButton() {
-    button(type = ButtonType.button) {
-        +"Add"
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795"
+        title = "Add"
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
@@ -620,8 +643,9 @@ private fun FlowContent.addButton() {
 }
 
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
-    button(type = ButtonType.button) {
-        +"Add Before"
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795 \u2BC5"
+        title = "Add Before"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val row = findRow(event)
@@ -654,8 +678,10 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
 
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
-    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
-    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
+//    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
+    inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
+//    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
+    inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 
 private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
@@ -748,11 +774,9 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 
     if(isDateOnly){
-        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
-        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
+        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_ONLY}px"
     }else{
-        inputsContainersContainer.style.width = "${(FORM_WIDTH_DATE_TIME+2*FORM_PADDING)*inputsContainers.size}px"
-        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
+        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_TIME}px"
     }
 
 
@@ -784,8 +808,14 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             )
         )
-        contentEnglishElement.innerHTML = output.englishText
-        contentUrduElement.innerHTML = output.urduText
+        contentContainer.visibility = true
+        if (languageSelecter.value == "english") {
+            contentElement.innerHTML = output.englishText
+            contentElement.classList.toggle("urdu", false)
+        } else {
+            contentElement.innerHTML = output.urduText
+            contentElement.classList.toggle("urdu", true)
+        }
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }

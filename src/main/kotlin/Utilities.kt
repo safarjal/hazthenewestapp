@@ -10,8 +10,8 @@ import kotlin.time.toDuration
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
 
-const val FORM_WIDTH_DATE_ONLY = 492.05
-const val FORM_WIDTH_DATE_TIME = 636.05
+const val FORM_WIDTH_DATE_ONLY = 410
+const val FORM_WIDTH_DATE_TIME = 605
 const val FORM_PADDING = 8
 const val FORM_BORDER = 1
 
@@ -96,6 +96,10 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
         parent = parent.parentElement
     }
 }
+
+var Element.visibility: Boolean
+    get() = !classList.contains("invisible")
+    set(visible) { classList.toggle("invisible", !visible) }
 
 val HTMLTableRowElement.rowIndexWithinTableBody get() =
     (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
