@@ -778,8 +778,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
             isDateOnly,
             isPregnancy,
             Pregnancy(
-                pregStartTime.valueAsDate,
-                pregEndTime.valueAsDate,
+                Date(pregStartTime.valueAsNumber),
+                Date(pregEndTime.valueAsNumber),
                 parseDays(aadatNifas.value),
                 mustabeen
             )
