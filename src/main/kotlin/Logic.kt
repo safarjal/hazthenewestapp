@@ -15,6 +15,7 @@ import kotlin.js.Date
 lateinit var firstStartTime:Date
 
 fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy): OutputTexts {
+    println("aadat nifas at start of handle entries is ${pregnancy.aadatNifas?.div(MILLISECONDS_IN_A_DAY)}")
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -59,6 +60,8 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             addStartDateToFixedDurations(fixedDurations)//cuz the last shoulda messed it up
             makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,pregnancy) //also, marking them as Dam in
             dealWithDamInMuddateNifas(fixedDurations,pregnancy)
+            if(pregnancy.aadatNifas==-1L){//there is no aadat, and we need it, so return
+                return OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, null), mutableListOf())}
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
             dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr)
@@ -85,7 +88,11 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
             if(fixedDurations[i].timeInMilliseconds > 40*MILLISECONDS_IN_A_DAY){
                 //if nifas exceeded 40
                 if(pregnancy.aadatNifas==null){
-                    pregnancy.aadatNifas=40*MILLISECONDS_IN_A_DAY
+//                    pregnancy.aadatNifas=40*MILLISECONDS_IN_A_DAY
+                    //give error
+                    window.alert("Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40.")
+                    pregnancy.aadatNifas=-1
+                    return
                 }
                 val istihazaAfter = fixedDurations[i].timeInMilliseconds-pregnancy.aadatNifas!!
                 val nifasInfo = BiggerThanFortyNifas(
@@ -363,6 +370,11 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD && fixedDurations[i].days>40){
             //check if we have aadaat.
+            // first check for nifas aadat
+            val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
+            println("nifasAdat is ${aadatNifas/MILLISECONDS_IN_A_DAY}")
+
+
             //we don't need mawjoodah paki
             if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                 //give error message
@@ -371,7 +383,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
             }
 
             val istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
-            val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter,aadatHaz, aadatTuhr, mutableListOf())
             fixedDurations[i].biggerThanForty=nifasInfo
 

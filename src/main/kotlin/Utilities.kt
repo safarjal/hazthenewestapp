@@ -247,7 +247,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //        strMinutes = "0${minutes}";
 //    }
     var returnStatement = "${strDays}${strHours}${strMinutes}"
-    println(returnStatement)
+//    println(returnStatement)
     if(isDateOnly){
         returnStatement = strDays
     }
@@ -256,10 +256,10 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
-    println(days)
+//    println(days)
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
     val hours:Double = kotlin.math.floor((milisecsleft/(3600000)))
-    println(hours)
+//    println(hours)
     milisecsleft-=hours*3600000
     val minutes = kotlin.math.floor(milisecsleft/60000)
 
