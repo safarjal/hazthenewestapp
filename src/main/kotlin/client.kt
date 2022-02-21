@@ -341,8 +341,9 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
     input(classes = "aadat") {
         id = Ids.MAWJOODA_TUHR_INPUT
-        value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
-        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
+        value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
+        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
+        //TODO: Find out how to do infinity, rather than 10000
     }
     label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -842,6 +843,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
+            parseDays(mawjoodaTuhr.value),
             isDateOnly,
             isPregnancy,
             Pregnancy(
