@@ -377,9 +377,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
             //check if we have aadaat.
             // first check for nifas aadat
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
-            //TODO:What is happening here?
-
-
+          
             //we don't need mawjoodah paki
             if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                 //give error message

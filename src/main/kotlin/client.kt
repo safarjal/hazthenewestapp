@@ -31,7 +31,6 @@ object Ids {
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
 //    const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
-    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
@@ -42,7 +41,6 @@ object Ids {
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
-    const val DURATION_RADIO = "duration_radio"
     const val DATE_AND_OR_RADIO = "date_and_or_time"
     const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
@@ -66,10 +64,8 @@ private val datesDifferenceTableElement get() = document.getElementById(Ids.DATE
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
-private val HTMLElement.isDuration get() = (getChildById(Ids.DURATION_RADIO) as HTMLInputElement).checked
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
-private val HTMLElement.isMubtadia get() = (getChildById(Ids.MUBTADIA_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -267,7 +263,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         br()
         div(classes = "label-input") {
             aadatInputs(inputContainerToCopyFrom)
-            mubtadiaCheckBox(inputContainerToCopyFrom)
             pregnancyCheckBox(inputContainerToCopyFrom)
             mustabeenCheckBox(inputContainerToCopyFrom)
             pregnancyStartTimeInput(inputContainerToCopyFrom)
@@ -303,16 +298,6 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
     label {
         htmlFor = Ids.DATE_ONLY_RADIO
         +"Date only"
-    }
-    radioInput {
-        id = Ids.DURATION_RADIO
-        name = Ids.DATE_AND_OR_RADIO
-        checked = !isDateOnly
-        onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-    }
-    label {
-        htmlFor = Ids.DURATION_RADIO
-        +"Duration"
     }
 }
 
@@ -378,19 +363,6 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     } catch (e: IllegalArgumentException) {
         e.message ?: "Aadat is incorrect"
     })
-}
-private fun FlowContent.mubtadiaCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label() {
-        htmlFor = Ids.MUBTADIA_CHECKBOX
-        +"Mubtadia"
-    }
-    checkBoxInput() {
-        id = Ids.MUBTADIA_CHECKBOX
-        checked = inputContainerToCopyFrom?.isMubtadia == true
-        onChangeFunction = { event ->
-            val isChecked = (event.currentTarget as HTMLInputElement).checked
-        }
-    }
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
@@ -687,7 +659,7 @@ private fun FlowContent.addButton() {
 
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
-        +"\u2795 \u2BC5"
+        +"\u2795 \u25B2"
         title = "Add Before"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
@@ -803,13 +775,12 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
 
 private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     val isDateOnly = inputContainer.isDateOnly
-    val isDuration = inputContainer.isDuration
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
         val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-        val dateInputType = if (isDateOnly || isDuration) InputType.date else InputType.dateTimeLocal
+        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
         timeInput.type = dateInputType.realValue
 
         timeInput.value = newValue
@@ -824,7 +795,7 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 
 
-    if (!isDateOnly && !isDuration) {
+    if (!isDateOnly) {
         setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
 }
