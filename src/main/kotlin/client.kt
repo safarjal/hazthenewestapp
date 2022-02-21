@@ -73,7 +73,7 @@ private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT
 private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
 private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPUT) as HTMLInputElement
-private val HTMLElement.mawjoodaFasidTuhr get() = getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
 private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
@@ -827,6 +827,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
             parseDays(mawjoodaTuhr.value),
+            isMawjoodaFasid,
             isDateOnly,
             isPregnancy,
             Pregnancy(
