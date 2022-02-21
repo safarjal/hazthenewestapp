@@ -37,6 +37,7 @@ object Ids {
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
     const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
     const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
+    const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val DATE_ONLY_RADIO = "date_only_radio"
     const val DATE_TIME_RADIO = "date_time_radio"
@@ -70,6 +71,7 @@ private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_I
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
 private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
+private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
 private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
@@ -317,6 +319,16 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         id = Ids.AADAT_TUHR_INPUT
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
+    }
+    label {
+        htmlFor = Ids.MAWJOODA_TUHR_INPUT
+        +"Mawjooda Tuhr: "
+    }
+    input(classes = "aadat") {
+        id = Ids.MAWJOODA_TUHR_INPUT
+        value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
+        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
+        //TODO: Find out how to do infinity, rather than 10000
     }
     label() {
         htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -802,6 +814,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
+            parseDays(mawjoodaTuhr.value),
             isDateOnly,
             isPregnancy,
             Pregnancy(
