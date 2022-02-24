@@ -206,10 +206,11 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-        style = "min-width:${FORM_WIDTH_DATE_ONLY}px; float: left; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
+//        style = "width:${FORM_WIDTH_DATE_ONLY}px; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
+        classes = setOf(Ids.INPUT_CONTAINER, "date_only")
         addInputsContainerButton()
         inputForm(inputContainerToCopyFrom)
         content()
@@ -413,7 +414,8 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
             "preg-checked",
             if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
         )
-        checked = inputContainerToCopyFrom?.mustabeen == true
+        checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
+        checked = inputContainerToCopyFrom?.mustabeen != false
         disabled = inputContainerToCopyFrom?.isPregnancy != true
     }
 }
@@ -801,9 +803,13 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     }
 
     if(isDateOnly){
-        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_ONLY}px"
+//        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
+        inputContainer.classList.toggle("date_only", true)
+        inputContainer.classList.toggle("date_and_time", false)
     }else{
-        inputContainer.style.minWidth = "${FORM_WIDTH_DATE_TIME}px"
+//        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
+        inputContainer.classList.toggle("date_only", false)
+        inputContainer.classList.toggle("date_and_time", true)
     }
 
 
