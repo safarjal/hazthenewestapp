@@ -413,7 +413,8 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
             "preg-checked",
             if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
         )
-        checked = inputContainerToCopyFrom?.mustabeen == true
+        checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
+        checked = inputContainerToCopyFrom?.mustabeen != false
         disabled = inputContainerToCopyFrom?.isPregnancy != true
     }
 }
