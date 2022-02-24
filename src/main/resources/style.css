@@ -28,7 +28,8 @@ h1 {
   text-align: center;
 }
 
-#how-to {
+#how-to,
+#language-selection {
   text-align: center;
   width: 90vw;
   margin: auto;
@@ -46,6 +47,10 @@ input {
   margin: 0.5rem;
 }
 
+input [type="date"] {
+  margin-left: 0;
+}
+
 #input_containers_container {
   display: grid;
   grid-auto-flow: column;
@@ -55,9 +60,19 @@ input {
   margin: auto;
 }
 
-#input_container {
+.input_container {
+  float: left;
   margin: 0 auto;
-  min-width: 410px;
+  border:1px;
+  padding:8px;
+}
+
+.date_only {
+  width: 410px;
+}
+
+.date_and_time {
+  width: 605px;
 }
 
 .time {
