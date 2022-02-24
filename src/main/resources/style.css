@@ -47,8 +47,9 @@ input {
   margin: 0.5rem;
 }
 
-input [type="date"] {
-  margin-left: 0;
+input[type='date'] {
+  margin: 0;
+  max-width: 130px;
 }
 
 #input_containers_container {
@@ -63,12 +64,12 @@ input [type="date"] {
 .input_container {
   float: left;
   margin: 0 auto;
-  border:1px;
-  padding:8px;
+  border: 1px;
+  padding: 8px;
 }
 
 .date_only {
-  width: 410px;
+  width: 360px;
 }
 
 .date_and_time {
@@ -92,10 +93,15 @@ input [type="date"] {
 
 button {
   border-radius: 5px;
+  background-color: lightblue;
 }
 
 button:hover {
   cursor: pointer;
+}
+
+td > button {
+  font-size: 9px;
 }
 
 #button_add_before_container > button {
@@ -118,7 +124,6 @@ button:hover {
 
 .clone {
   font-weight: bold;
-  font-size: 14px;
 }
 
 .minus {
