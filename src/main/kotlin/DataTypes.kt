@@ -6,6 +6,8 @@ data class Strings(
 //    جواب: 
     val headerline: String,
 //    مندرجہ ذیل ترتیب سے دم و طہر آیا:
+    val headerlinemubtadia: String,
+//    مبتداہ کو اس ترتیب سے دم و طہر آیا:
     val writedown: String,
 //    جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔
     val allahknows: String,
@@ -64,7 +66,10 @@ data class Strings(
 //    days, hours, minutes استحاضہ + days, hours, minutes پاکی = days, hours, minutes  طہر فاسد۔
     val twomonthstuhr: String,
 //    days, hours, minutes طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)
-    val dashesline: String
+    val dashesline: String,
+    val becamemutadah:String,
+    val thereisnoaadat:String,
+    val aadatofhaizonly:String
 )
 
 enum class LanguageNames { ENGLISH, URDU }
@@ -109,7 +114,24 @@ data class Pregnancy(
 )
 
 enum class DurationType {
-    DAM, TUHR, TUHREFAASID, TUHR_IN_HAML, NIFAAS, DAM_IN_HAML, DAM_IN_NIFAAS_PERIOD, ISTIHAZA_BEFORE,ISTIHAZA_AFTER,HAIZ, LESS_THAN_3_HAIZ, HAML,WILADAT_ISQAT, TUHR_BIGGER_THAN_6_MONTHS
+    DAM,
+    TUHR,
+    TUHREFAASID,
+    TUHR_IN_HAML,
+    NIFAAS,
+    DAM_IN_HAML,
+    DAM_IN_NIFAAS_PERIOD,
+    ISTIHAZA_BEFORE,
+    ISTIHAZA_AFTER,
+    HAIZ,
+    LESS_THAN_3_HAIZ,
+    HAML,
+    WILADAT_ISQAT,
+    TUHR_BIGGER_THAN_6_MONTHS,
+    TUHR_MUBTADIA_BECAME_A_MUTADA_NOW,
+    DAM_MUBTADIA,
+    TUHR_MUBTADIA,
+    TUHREFAASID_MUBTADIA
 }
 
 class DateTypeList (
@@ -158,9 +180,9 @@ data class BiggerThanTenDm(
     var hz: Long, //aadat of haiz before solving this
     var qism: Soortain, //name of that case A-1, A-2, A-3, B-2, B-3
     var istihazaBefore: Long, //number of days of istihaza before haiz
-    var haiz:Long, //number of days of haiz
+    var haiz:Long, //number of days of haiz (also aadat of haiz before istimrar)
     var istihazaAfter: Long, //number of days of istihaza after haiz
-    var aadatHaiz:Long, //aadat of haiz after solving this
+    var aadatHaiz:Long, //aadat of haiz after end of istimrar
     var aadatTuhr:Long, //aadat of tuhur after solving this
     var durationsList: MutableList<Duration>
 
@@ -168,8 +190,9 @@ data class BiggerThanTenDm(
 data class BiggerThanFortyNifas(
     var nifas: Long, //muddate nifas
     var istihazaAfter: Long, //number of days of istihaza after nifas
-    var aadatHaiz:Long, //aadat of haiz before solving this
-    var aadatTuhr:Long, //aadat of tuhur before solving this
+    var haiz:Long, //aadat of haiz before solving this
+    var aadatHaiz:Long, //aadat of haiz after solving this
+    var aadatTuhr:Long, //aadat of tuhur after solving this
     var durationsList: MutableList<Duration>
 )
 
