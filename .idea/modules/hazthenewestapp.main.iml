@@ -2,31 +2,33 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="5" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp">
+      <configuration version="4" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp" pureKotlinSourceFolders="C:\Users\safar\Documents\GitHub\hazthenewestapp\src\test\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\main\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\build\externals\hazthenewestapp\src;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\main\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\build\externals\hazthenewestapp\src;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\test\kotlin">
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <productionOutputPath>$MODULE_DIR$/../../build/classes/kotlin/main</productionOutputPath>
         <compilerSettings>
           <option name="additionalArguments" value="-Xir-module-name=me.safar:hazthenewestapp -Xir-only -Xir-per-module-output-name=hazthenewestapp -Xir-produce-klib-dir" />
         </compilerSettings>
         <compilerArguments>
-          <flagArguments>
-            <flagArg name="metaInfo" arg="true" />
-            <flagArg name="noStdlib" arg="true" />
-            <flagArg name="sourceMap" arg="true" />
-          </flagArguments>
-          <stringArguments>
-            <stringArg name="main" arg="call" />
-            <stringArg name="moduleKind" arg="umd" />
-            <stringArg name="outputFile" arg="$MODULE_DIR$/../../build/classes/kotlin/main" />
-            <stringArg name="sourceMapEmbedSources" arg="never" />
-            <stringArg name="target" arg="v5" />
-            <stringArg name="apiVersion" arg="1.6" />
-            <stringArg name="languageVersion" arg="1.6" />
-          </stringArguments>
-          <arrayArguments>
-            <arrayArg name="pluginClasspaths" />
-            <arrayArg name="pluginOptions" />
-          </arrayArguments>
+          <option name="outputFile" value="$MODULE_DIR$/../../build/classes/kotlin/main" />
+          <option name="noStdlib" value="true" />
+          <option name="sourceMap" value="true" />
+          <option name="sourceMapEmbedSources" value="never" />
+          <option name="metaInfo" value="true" />
+          <option name="target" value="v5" />
+          <option name="moduleKind" value="umd" />
+          <option name="main" value="call" />
+          <option name="languageVersion" value="1.6" />
+          <option name="apiVersion" value="1.6" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+          <option name="multiPlatform" value="true" />
+          <option name="errors">
+            <ArgumentParseErrors />
+          </option>
         </compilerArguments>
       </configuration>
     </facet>

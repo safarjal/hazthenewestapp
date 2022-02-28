@@ -11,7 +11,18 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
 
     return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList,endingOutputValues, fixedDurations)
 }
+fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
+                         isDateOnly:Boolean, endingOutputValues: EndingOutputValues):OutputTexts{
+    var index = 0
+    var englishStr = ""
+    val hazDatesList = getHaizDatesList(fixedDurations)
+    val urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
+    englishStr += "\n\n${generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues)}"
 
+    val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
+
+    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
+}
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean, endingOutputValues: EndingOutputValues):OutputTexts{
     var index = 0
@@ -99,8 +110,23 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
 
 fun generateUrduOutputString(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
     //ToDo: figure out how to do languages for real
-    var str = StringsOfLanguages.URDU.answer
-    str += StringsOfLanguages.URDU.headerline
+    var str = StringsOfLanguages.URDU.answer //جواب:
+    str += StringsOfLanguages.URDU.headerline //اس ترتیب سے خون آیا اور پاکی ملی
+    var index = 0
+    while (index<fixedDurations.size){
+        str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
+        str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+        if(index==fixedDurations.size-1){//if this os the last index
+            str += outputStringUrduFinalLines(isDateOnly, endingOutputValues)
+        }
+        index++
+    }
+    return str
+}
+fun generateUrduOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
+    //ToDo: figure out how to do languages for real
+    var str = StringsOfLanguages.URDU.answer //جواب:
+    str += StringsOfLanguages.URDU.headerlinemubtadia //اس ترتیب سے خون آیا اور پاکی ملی
     var index = 0
     while (index<fixedDurations.size){
         str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
@@ -227,7 +253,14 @@ fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):
     }else{
         val aadatTuhr = aadats.aadatTuhr
         val aadatHaiz = aadats.aadatHaiz
-        strUrdu+= StringsOfLanguages.URDU.habit.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
+        if(aadatHaiz==-1L && aadatTuhr==-1L){
+            strUrdu+= StringsOfLanguages.URDU.thereisnoaadat
+        }else if(aadatHaiz!=-1L && aadatTuhr==-1L){
+            println("aadat of haiz is ${daysHoursMinutesDigital(aadatHaiz,isDateOnly)}")
+            strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
+        }else{
+            strUrdu+= StringsOfLanguages.URDU.habit.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
+        }
         strUrdu
     }
 
@@ -263,7 +296,10 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
         return StringsOfLanguages.URDU.istihazadays.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(ed,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu(difference(sd,ed), isDateOnly)}")
     }
 
-    if((fixedDurations[index].days>10&&fixedDurations[index].type==DurationType.DAM)){
+    if((fixedDurations[index].days>10 &&
+        (fixedDurations[index].type==DurationType.DAM||
+        fixedDurations[index].type==DurationType.DAM_MUBTADIA))){
+
         strUrdu += StringsOfLanguages.URDU.dashesline
         strUrdu += StringsOfLanguages.URDU.solution
 
@@ -333,7 +369,8 @@ fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
 
 fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     var outputString = ""
-    if (fixedDurations[index].type==DurationType.DAM){
+    if (fixedDurations[index].type==DurationType.DAM||
+        fixedDurations[index].type==DurationType.DAM_MUBTADIA){
         val sd:Date = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
@@ -346,11 +383,16 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
             }
         }
 
-    }else if (fixedDurations[index].type == DurationType.TUHR){
+    }else if (fixedDurations[index].type == DurationType.TUHR||
+        fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
+        fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
         val time = fixedDurations[index].timeInMilliseconds
         outputString =  StringsOfLanguages.URDU.pakidays.replace("duration1", "${daysHoursMinutesDigitalUrdu(time, isDateOnly)}")
+        if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+            outputString+=StringsOfLanguages.URDU.becamemutadah
+        }
 
-    }else if (fixedDurations[index].type == DurationType.TUHREFAASID){
+    }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
         outputString =  StringsOfLanguages.URDU.tuhrfasid.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
         val sd = fixedDurations[index].startDate
@@ -572,7 +614,8 @@ fun generateEnglishOutputString(fixedDurations: MutableList<FixedDuration>, isDa
 
 fun outputStringEnglishHeaderLine(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     var outputString = ""
-    if (fixedDurations[index].type==DurationType.DAM){
+    if (fixedDurations[index].type==DurationType.DAM||
+        fixedDurations[index].type==DurationType.DAM_MUBTADIA){
         val sd:Date = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
@@ -585,11 +628,17 @@ fun outputStringEnglishHeaderLine(fixedDurations: MutableList<FixedDuration>,ind
             }
         }
 
-    }else if (fixedDurations[index].type == DurationType.TUHR){
+    }else if (fixedDurations[index].type == DurationType.TUHR||
+        fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
+        fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
         val time = fixedDurations[index].timeInMilliseconds
         outputString =  StringsOfLanguages.ENGLISH.pakidays.replace("duration1", "${daysHoursMinutesDigital(time, isDateOnly)}")
+        if(fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+            outputString+= StringsOfLanguages.ENGLISH.becamemutadah
+        }
 
-    }else if (fixedDurations[index].type == DurationType.TUHREFAASID){
+    }else if (fixedDurations[index].type == DurationType.TUHREFAASID ||
+        fixedDurations[index].type == DurationType.TUHREFAASID_MUBTADIA){
         outputString =  StringsOfLanguages.ENGLISH.tuhrfasid.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigital((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
         val sd = fixedDurations[index].startDate
@@ -796,7 +845,13 @@ fun outputStringEnglishAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr
     }else{
         val aadatTuhr = aadats.aadatTuhr
         val aadatHaiz = aadats.aadatHaiz
-        strEnglish+= StringsOfLanguages.ENGLISH.habit.replace("duration1", "${daysHoursMinutesDigital(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(aadatTuhr, isDateOnly)}")
+        if(aadatTuhr==-1L&&aadatHaiz==-1L){
+            strEnglish+= StringsOfLanguages.ENGLISH.thereisnoaadat
+        }else if(aadatTuhr==-1L&&aadatHaiz!=-1L){
+            strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly.replace("duration1", "${daysHoursMinutesDigital(aadatHaiz, isDateOnly)}")
+        }else{
+            strEnglish+= StringsOfLanguages.ENGLISH.habit.replace("duration1", "${daysHoursMinutesDigital(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(aadatTuhr, isDateOnly)}")
+        }
         strEnglish
     }
 

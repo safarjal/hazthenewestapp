@@ -32,6 +32,7 @@ object Ids {
     const val COMPARISON_CONTAINER = "comparison_container"
 //    const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
+    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
@@ -67,6 +68,7 @@ private val languageSelecter get() = document.getElementById("language") as HTML
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.isMubtadia get() = (getChildById(Ids.MUBTADIA_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -268,6 +270,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             aadatInputs(inputContainerToCopyFrom)
             pregnancyCheckBox(inputContainerToCopyFrom)
             mustabeenCheckBox(inputContainerToCopyFrom)
+            mubtadiaCheckBox(inputContainerToCopyFrom)
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
@@ -396,6 +399,16 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 pregnancyElement.visibility = isChecked
             }
         }
+    }
+}
+private fun FlowContent.mubtadiaCheckBox(inputContainerToCopyFrom: HTMLElement?) {
+    label() {
+        htmlFor = Ids.MUBTADIA_CHECKBOX
+        +"Mubtadia"
+    }
+    checkBoxInput() {
+        id = Ids.MUBTADIA_CHECKBOX
+        checked = inputContainerToCopyFrom?.isPregnancy == true
     }
 }
 
@@ -841,7 +854,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 Date(pregEndTime.valueAsNumber),
                 parseDays(aadatNifas.value),
                 mustabeen
-            )
+            ),
+            isMubtadia
         )
         contentContainer.visibility = true
         if (languageSelecter.value == "english") {

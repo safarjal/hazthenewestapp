@@ -2,6 +2,7 @@
 val urduStrings = Strings(
     "${UnicodeChars.ROSE}<b>جواب ::</b>\n\n",
     "اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
+    "مبتداہ کو اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n",
     "<b>واللہ تعالی اعلم بالصواب</b>\n\n",
     "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n",
@@ -30,11 +31,15 @@ val urduStrings = Strings(
     "duration1 پاکی۔\n\n",
     "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد۔\n\n",
     "duration1 طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n",
-    "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+    "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
+    "اب سے  یہ معتادہ ہیں۔\n\n",
+    "ابھی حیض اور طہر کی کویٔ عادت نہیں۔\n\n",
+    "حیض کی عادت duration1 ہے، البتہ ابھی پاکی کی کویٔ عادت نہیں۔\n\n"
 )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
     "The bleeding and tuh’r has been in the following sequence:\n\n",
+    "\"The bleeding and tuh’r has been in the following sequence for the menstruation beginner:\\n\\n\"",
     "Kindly keep noting down your bleeding/spotting with time, date and month.\n\n",
     "<b>And Allah Ta’ala knows the best.</b>\n\n",
     "You are in the days of your tuh’r right now, so keep up your ritual worship as usual.\n\n",
@@ -63,7 +68,10 @@ val englishStrings = Strings(
     "duration1 of Tuh’r\n\n",
     "duration1 of istihaadha + duration2 of tuh’r = duration3 of Tuh’r Faasid.\n\n",
     "duration1 of Tuhr. (Since tuh’r is of more than 6 months, therefore 60 days shall be taken as habit of Tuh’r)\n\n",
-    "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n"
+    "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
+    "From now on, she is a Mutadah\n\n",
+    "Till now, there is no habit of Haidh or Tuhr",
+    "duration 1 is the habit of Haidh. There is no habit of Tuhr yet."
 )
 
 object StringsOfLanguages{
