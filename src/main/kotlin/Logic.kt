@@ -1320,7 +1320,7 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
     val filHaalPaki:Boolean
     val i = fixedDurations.lastIndex
 
-    filHaalPaki = if(fixedDurations[i].days>10&&fixedDurations[i].type==DurationType.DAM){
+    filHaalPaki = if(fixedDurations[i].days>10&&(fixedDurations[i].type==DurationType.DAM||fixedDurations[i].type==DurationType.DAM_MUBTADIA)){
         fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER
 
     }else if(fixedDurations[i].days>40 && fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
