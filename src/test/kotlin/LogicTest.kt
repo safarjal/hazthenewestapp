@@ -709,8 +709,6 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        println(output.endingOutputValues.futureDateType!!.date)
-        println(output.endingOutputValues.futureDateType!!.futureDates)
         assertEquals(
             expectedEndingOutputValues.futureDateType!!.date.getTime(),
             output.endingOutputValues.futureDateType!!.date.getTime()
@@ -763,16 +761,7 @@ class LogicTest {
 
         val endtime = fixedDuration1.endDate
         val expectedentime = Date(2021,3,29, 3,0)
-//        println("startTime is ${fixedDuration1.startDate}")
-//        println("time in milliseconds is ${fixedDuration1.timeInMilliseconds}")
-//        println(daysHoursMinutesDigital(fixedDuration1.timeInMilliseconds,false))
-//        println("result of endtime function is $endtime")
-//        println("expected endtime $expectedentime")
-//        println("result of add time to date ${addTimeToDate(fixedDuration1.startDate, fixedDuration1.timeInMilliseconds)}")
-
-
         assertEquals(endtime.getTime(), expectedentime.getTime())
-
     }
 
 }
