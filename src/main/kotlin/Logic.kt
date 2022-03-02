@@ -1212,12 +1212,21 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMu
     val filHaalPaki = calculateFilHaal(fixedDurations)
     val aadaat = finalAadats(fixedDurations)
     val futureDates = futureDatesOfInterest(fixedDurations)
-    return if(aadaat!=null && (aadaat.aadatHaiz==-1L||aadaat.aadatTuhr==-1L) && !isMubtadia){
-        EndingOutputValues(filHaalPaki,null, null)
+    if(aadaat!=null && (aadaat.aadatHaiz==-1L||aadaat.aadatTuhr==-1L) && !isMubtadia){
+        println(futureDates!!.date)
+        println(futureDates!!.futureDates)
+        println(aadaat)
+        println(aadaat.aadatHaiz)
+        println(aadaat.aadatTuhr)
+        println(isMubtadia)
+        println("number1")
+        return EndingOutputValues(filHaalPaki,null, null)
     }else if(isMubtadia){
-        EndingOutputValues(filHaalPaki,aadaat, null)
+        println("number2")
+        return EndingOutputValues(filHaalPaki,aadaat, null)
     }else{
-        EndingOutputValues(filHaalPaki,aadaat,futureDates)
+        println("number3")
+        return EndingOutputValues(filHaalPaki,aadaat,futureDates)
     }
 }
 
