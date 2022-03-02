@@ -268,9 +268,9 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         br()
         div(classes = "label-input") {
             aadatInputs(inputContainerToCopyFrom)
+            mubtadiaCheckBox(inputContainerToCopyFrom)
             pregnancyCheckBox(inputContainerToCopyFrom)
             mustabeenCheckBox(inputContainerToCopyFrom)
-            mubtadiaCheckBox(inputContainerToCopyFrom)
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }

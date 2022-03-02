@@ -54,7 +54,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false)
             return generateOutputStringPregnancy(fixedDurations, isDateOnly, pregnancy, endingOutputValues)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
@@ -69,31 +69,21 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            val endingOutputValues = calculateEndingOutputValues(fixedDurations)
-            println(fixedDurations)
-            println(endingOutputValues)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false)
             return generateOutputStringPregnancy(fixedDurations, isDateOnly, pregnancy, endingOutputValues)
         }
     }else if(isMubtadia){
-        println("started mubtadia")
         removeTuhrLessThan15(fixedDurations)
         removeDamLessThan3(fixedDurations)
         addStartDateToFixedDurations(fixedDurations)
-        println("heading to deal with mubtadia dam")
         val aadats = dealWithMubtadiaDam(fixedDurations)
-        println("Aadat: ${aadats.aadatHaiz/MILLISECONDS_IN_A_DAY}/${aadats.aadatTuhr/MILLISECONDS_IN_A_DAY}")
-        println("this is fixed periods after that: ${fixedDurations}")
         markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations)
-        println("this is fixed periods after marking: ${fixedDurations}")
         //if we got aadats, the we run this portion
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
             dealWithBiggerThan10Dam(fixedDurations, aadats.aadatHaiz, aadats.aadatTuhr,aadats.aadatTuhr, false)
         }
-        println("I expect it to break before this")
         addDurationsToDams(fixedDurations)
-        println("this is fixed periods after add durations: ${fixedDurations}")
-        println("did we safely cross add durations?")
-        val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+        val endingOutputValues = calculateEndingOutputValues(fixedDurations, true)
         return generateOutputStringMubtadia(fixedDurations, durations, isDateOnly, endingOutputValues)
     }else{//is mutadah
         removeTuhrLessThan15(fixedDurations)
@@ -101,7 +91,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         addStartDateToFixedDurations(fixedDurations)
         if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid)){return noOutput}
         addDurationsToDams(fixedDurations)
-        val endingOutputValues = calculateEndingOutputValues(fixedDurations)
+        val endingOutputValues = calculateEndingOutputValues(fixedDurations, false)
         return generateOutputString(fixedDurations, durations, isDateOnly, endingOutputValues)
     }
 }
@@ -127,7 +117,6 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
 
     var i = 0
     while (i<fixedDurations.size){
-        println("i is $i")
         //iterate through the dimaa
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
             //we have a haiz aadat!
@@ -146,8 +135,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
                 return AadatsOfHaizAndTuhr(aadatHaz,aadatTuhr)
             }
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){//this is where bigger than 10 starts
-            println("dam fasid, tuhr-e-fasid")
-            println("1")
+//            println("dam fasid, tuhr-e-fasid")
             //if there is tuhr behind it, check how long it is
             var istehazaBefore: Long = 0
             var haiz:Long
@@ -155,25 +143,25 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
             //if there is an addat of tuhr, we would not be in mubtadia any more, so check iztirari
             var mawjoodahTuhr=-1L
             if(i>0 && (fixedDurations[i-1].type==DurationType.TUHR||fixedDurations[i-1].type==DurationType.TUHREFAASID)){
-                println("2")
-                println("dam-e-fasid tuhr-e-fasid type 1")
+//                println("2")
+//                println("dam-e-fasid tuhr-e-fasid type 1")
                 //if there is a duration before this one, and it is either atuhr or a tuhr-e fasid
                 //then mawjoodah tuhr will be that + any istihaza after associated with it
                 mawjoodahTuhr = fixedDurations[i-1].timeInMilliseconds+fixedDurations[i-1].istihazaAfter
             }
             if(i>0 && mawjoodahTuhr < iztirariAadatTuhr && mawjoodahTuhr !=-1L){
-                println("3")
-                println("dam-e-fasid tuhr-e-fasid type2")
+//                println("3")
+//                println("dam-e-fasid tuhr-e-fasid type2")
                 //if mawjoodah paki is less than iztirari aadat, then make the difference from the start istehaza
                 istehazaBefore = iztirariAadatTuhr-mawjoodahTuhr
             }else{//if either mawjoodah tuhr was long, or it began with a long haiz
                 //istehazabefore remains 0. we don't really need this else
-                println("4")
+//                println("4")
 
             }
             //follow this by haiz
             if(fixedDurations[i].timeInMilliseconds-istehazaBefore<= iztirariAadatHaiz){//no daur sitch
-                println("5")
+//                println("5")
                 haiz = fixedDurations[i].timeInMilliseconds-istehazaBefore
                 //we have an aadat of haiz!!
                 //in this case, haiz and aadat of haiz is the same
@@ -193,24 +181,24 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
                     iztirariAadatTuhr=30*MILLISECONDS_IN_A_DAY-haiz
                 }
             }else{//we have an istehaza after sitch
-                println("6")
+//                println("6")
 
                 haiz = iztirariAadatHaiz
                 istehazaAfter = fixedDurations[i].timeInMilliseconds-istehazaBefore-iztirariAadatHaiz
 
                 //now we gotta check if a daur happened
                 iztirariAadatHaiz = dealWithIstihazaAfter(istehazaAfter, haiz, iztirariAadatTuhr, fixedDurations, i)
-                println("7")
-                println("istehaza after was ${istehazaAfter/MILLISECONDS_IN_A_DAY}")
-                println("deal with istihaza after returned this aadat ${iztirariAadatHaiz/MILLISECONDS_IN_A_DAY} ")
+//                println("7")
+//                println("istehaza after was ${istehazaAfter/MILLISECONDS_IN_A_DAY}")
+//                println("deal with istihaza after returned this aadat ${iztirariAadatHaiz/MILLISECONDS_IN_A_DAY} ")
 
                 //now we wanna check if aadat did change.
                 //a bit hackish but..
                 val remainder = istehazaAfter%(30*MILLISECONDS_IN_A_DAY)
-                println("remainder was $remainder")
+//                println("remainder was $remainder")
                 if(iztirariAadatHaiz<10*MILLISECONDS_IN_A_DAY ||
                     (iztirariAadatHaiz==10*MILLISECONDS_IN_A_DAY && remainder==10*MILLISECONDS_IN_A_DAY)){
-                    println("8")
+//                    println("8")
 
                     //in this case we gotta check further
                     //if iztirari aadat of haiz is 10, the of tuhr is def 20.
@@ -235,7 +223,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
                 }
                 val biggerThanTen = BiggerThanTenDm(0,0,0,0,Soortain.A_1,istehazaBefore, haiz, istehazaAfter, aadatHaz, -1L, mutableListOf())
                 fixedDurations[i].biggerThanTen = biggerThanTen
-                println("9")
+//                println("9")
 
             }
         }
@@ -541,19 +529,31 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
             //check if we have aadaat.
             // first check for nifas aadat
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
-          
-            //we don't need mawjoodah paki
-            if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
-                //give error message
-                window.alert("Please enter aadaat of Haiz and Tuhr to solve this")
-                return false
-            }
-
             val istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
-            val haiz = aadatHaz
-            aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i)
-            val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, haiz,aadatHaz, aadatTuhr, mutableListOf())
-            fixedDurations[i].biggerThanForty=nifasInfo
+
+            //if istihaza after is less than 15, so ther is no possibilty of daur,
+            // and it is followed by a Tuhr-e tamm, then we don't need aadats just yet
+            if((istihazaAfter<18*MILLISECONDS_IN_A_DAY && i != fixedDurations.lastIndex)||
+                    istihazaAfter<15*MILLISECONDS_IN_A_DAY){
+                //we do not need aadaat yet
+                //I'm going to run this with a bogus aadat cuz we need it for other stuff
+                dealWithIstihazaAfter(istihazaAfter,3*MILLISECONDS_IN_A_DAY,15*MILLISECONDS_IN_A_DAY,fixedDurations, i)
+                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, 0L,-1, -1, mutableListOf())
+                fixedDurations[i].biggerThanForty=nifasInfo
+            }else{
+                //we do need aadaat
+                //we don't need mawjoodah paki
+                if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
+                    //give error message
+                    window.alert("Please enter aadaat of Haiz and Tuhr to solve this")
+                    return false
+                }
+
+                val haiz = aadatHaz
+                aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i)
+                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, haiz,aadatHaz, aadatTuhr, mutableListOf())
+                fixedDurations[i].biggerThanForty=nifasInfo
+            }
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
@@ -614,7 +614,6 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
     // it adds the right amount of istehaza to the next tuhr, and marks it as fasid, if it ended at istehaza.
 
     //if istihazaAfter is bigger than addatTuhr +3, run daur
-    println("we made it to istehaza after")
 
     var returnAadatHaiz = aadatHaz
     if (istihazaAfter>=aadatTuhr+(3*MILLISECONDS_IN_A_DAY)){
@@ -841,14 +840,23 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
 
             val istihazaAfterStartDate = addTimeToDate(fixedDuration.startDate, (aadatNifas))
             val istihazaAfter = fixedDuration.biggerThanForty!!.istihazaAfter
-            val aadatTuhr = fixedDuration.biggerThanForty!!.aadatTuhr
-            val aadatHaz = fixedDuration.biggerThanForty!!.haiz
+            var aadatTuhr = fixedDuration.biggerThanForty!!.aadatTuhr
+            var aadatHaz = fixedDuration.biggerThanForty!!.haiz
 
-            if(istihazaAfter>0){
+            //this ought to fix if we got here without an aadat. persumably, we did it cuz there was no daur
+            if(aadatTuhr==-1L){
+                aadatTuhr=15*MILLISECONDS_IN_A_DAY
+            }
+            if(aadatHaz==-1L){
+                aadatHaz=3*MILLISECONDS_IN_A_DAY
+            }
+
+            if(istihazaAfter>0){//if there is istehaza after
                 if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
                     (istihazaAfter>aadatTuhr &&
                             istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
                             fixedDuration == fixedDurations.last())){
+
                     //daur
                     //find quotient and remainder
                     val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
@@ -1200,11 +1208,26 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     return str
 }
 
-fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>):EndingOutputValues{
+fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMubtadia: Boolean):EndingOutputValues{
     val filHaalPaki = calculateFilHaal(fixedDurations)
     val aadaat = finalAadats(fixedDurations)
     val futureDates = futureDatesOfInterest(fixedDurations)
-    return EndingOutputValues(filHaalPaki,aadaat,futureDates)
+    if(aadaat!=null && (aadaat.aadatHaiz==-1L||aadaat.aadatTuhr==-1L) && !isMubtadia){
+        println(futureDates!!.date)
+        println(futureDates!!.futureDates)
+        println(aadaat)
+        println(aadaat.aadatHaiz)
+        println(aadaat.aadatTuhr)
+        println(isMubtadia)
+        println("number1")
+        return EndingOutputValues(filHaalPaki,null, null)
+    }else if(isMubtadia){
+        println("number2")
+        return EndingOutputValues(filHaalPaki,aadaat, null)
+    }else{
+        println("number3")
+        return EndingOutputValues(filHaalPaki,aadaat,futureDates)
+    }
 }
 
 fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDateType?{
