@@ -1321,15 +1321,17 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?
     //of the masla ends in haiz, if it is daur, we wanna give 2
     //and if it's not daur, we wanna give 1
 
-
+    val lastDurationBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
+    val lastDurationBiggerThanForty = fixedDurations.last().biggerThanForty!!.durationsList.last()
+    
     if(fixedDurations.last().days>10&&
         (fixedDurations.last().type==DurationType.DAM||
             fixedDurations.last().type==DurationType.DAM_MUBTADIA)) {
 
-        return if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
+        return if(lastDurationBiggerThanTen.type==DurationType.ISTIHAZA_AFTER){
             //if it ended in paki
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.haiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
-        }else if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
+        }else if(lastDurationBiggerThanTen.type==DurationType.LESS_THAN_3_HAIZ){
             //it ended in a haiz less than 3, no tension
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.haiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
         }else{
@@ -1337,10 +1339,10 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?
         }
 
     }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        return if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
+        return if(lastDurationBiggerThanForty.type==DurationType.ISTIHAZA_AFTER){
             //if it ended in paki, no tension
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
-        }else if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
+        }else if(lastDurationBiggerThanForty.type==DurationType.LESS_THAN_3_HAIZ){
             //it ended in a haiz less than 3, no tension
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
         }else{
