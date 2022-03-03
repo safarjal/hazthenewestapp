@@ -538,7 +538,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
                 //we do not need aadaat yet
                 //I'm going to run this with a bogus aadat cuz we need it for other stuff
                 dealWithIstihazaAfter(istihazaAfter,3*MILLISECONDS_IN_A_DAY,15*MILLISECONDS_IN_A_DAY,fixedDurations, i)
-                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, 0L,-1, -1, mutableListOf())
+                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, aadatHaz,aadatHaz, aadatTuhr, mutableListOf())
                 fixedDurations[i].biggerThanForty=nifasInfo
             }else{
                 //we do need aadaat
@@ -1325,20 +1325,14 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?
     if(fixedDurations.last().days>10&&
         (fixedDurations.last().type==DurationType.DAM||
             fixedDurations.last().type==DurationType.DAM_MUBTADIA)) {
+
         return if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
             //if it ended in paki
-            AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.aadatHaiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
+            AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.haiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
         }else if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
             //it ended in a haiz less than 3, no tension
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.haiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
         }else{
-            //it ended in a hiaz more than 3. We are not going to give that haiz as aadat
-            //AadatsOfHaizAndTuhr(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,fixedDurations[i].biggerThanTen!!.aadatTuhr)
-
-            //actually no, we are still going to give aadat before this,
-            //in fact, we are always going to giv aadat before this
-            // but with a note saying that the deciding factor is ending time
-            //TODO: Make this change in bigger than forty too
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanTen!!.haiz,fixedDurations.last().biggerThanTen!!.aadatTuhr)
         }
 
@@ -1353,6 +1347,13 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>):AadatsOfHaizAndTuhr?
             //it ended in a hiaz more than 3. We are not going to give that haiz as aadat
             AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
         }
+    }else if(fixedDurations.last().days<=10 &&
+        (fixedDurations.last().type==DurationType.DAM||fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
+
+    }else if(fixedDurations.last().days<=40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
+
+    }else{
+
     }
     return null
 }
