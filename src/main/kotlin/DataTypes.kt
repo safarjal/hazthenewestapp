@@ -199,4 +199,5 @@ data class BiggerThanFortyNifas(
 data class AadatsOfHaizAndTuhr(
     var aadatHaiz: Long,
     var aadatTuhr: Long
+//    var decisionBasedOnBloodStopping: Boolean
 )
