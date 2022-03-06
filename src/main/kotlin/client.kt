@@ -129,7 +129,7 @@ fun main() {
             languageSelecter.onchange = {
                 for (element in englishElements) element.visibility = (languageSelecter.value == "english")
                 for (element in urduElements) element.visibility = (languageSelecter.value == "urdu")
-                if (languageSelecter.value == "urdu") document.body!!.style.direction = "rtl"
+                document.body!!.classList.toggle("rtl", languageSelecter.value == "urdu")
             }
         }else{
             askPassword()

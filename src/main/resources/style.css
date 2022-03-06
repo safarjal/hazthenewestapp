@@ -16,6 +16,10 @@ body {
   overflow-x: hidden;
 }
 
+.rtl {
+  direction: rtl;
+}
+
 .invisible {
   display: none !important;
 }
@@ -103,7 +107,6 @@ button:hover {
 }
 
 .urdu {
-  text-align: right;
   direction: rtl;
 }
 
