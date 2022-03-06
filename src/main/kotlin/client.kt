@@ -127,8 +127,8 @@ fun main() {
                 }
             })
             languageSelecter.onchange = {
-                for (element in englishElements) element.visibility = (languageSelecter.value == "english")
-                for (element in urduElements) element.visibility = (languageSelecter.value == "urdu")
+                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecter.value == "urdu")
+                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecter.value == "english")
                 document.body!!.classList.toggle("rtl", languageSelecter.value == "urdu")
             }
         }else{
@@ -298,7 +298,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
         checked = !isDateOnly
         onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
     }
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.DATE_TIME_RADIO
         +"Date and Time"
     }
@@ -312,7 +312,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
         checked = isDateOnly
         onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
     }
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.DATE_ONLY_RADIO
         +"Date only"
     }
@@ -323,7 +323,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.AADAT_HAIZ_INPUT
         +("Haiz Aadat: ")
     }
@@ -336,7 +336,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
     }
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.AADAT_TUHR_INPUT
         +"Tuhr Aadat: "
     }
@@ -349,7 +349,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
     }
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.MAWJOODA_TUHR_INPUT
         +"Mawjooda Tuhr: "
     }
@@ -368,7 +368,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             id = Ids.MAWJOODA_FASID_CHECKBOX
             checked = false
         }
-        label(classes = "english invisible") {
+        label(classes = "english lang-invisible") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
             +"Fasid"
         }
@@ -382,8 +382,8 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         classes = setOfNotNull(
             "preg-checked",
             "english",
-//            "invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "urdu") "invisible" else null
+            "lang-invisible",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"Nifas Aadat: "
     }
@@ -392,7 +392,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         classes = setOfNotNull(
             "preg-checked",
             "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "english") "invisible" else null
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"نفاس کی عادت: "
     }
@@ -424,7 +424,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "english invisible") {
+    label(classes = "english lang-invisible") {
         htmlFor = Ids.PREGNANCY_CHECKBOX
         +"Nifas"
     }
@@ -438,11 +438,15 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         onChangeFunction = { event ->
             val isChecked = (event.currentTarget as HTMLInputElement).checked
             for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
-                pregnancyElement.visibility = isChecked
-                pregnancyElement.disabled = !isChecked
+                if (pregnancyElement.classList.contains(languageSelecter.value)) {
+                    pregnancyElement.visibility = isChecked
+                    pregnancyElement.disabled = !isChecked
+                }
             }
             for (pregnancyElement in findInputContainer(event).pregnancyElements) {
-                pregnancyElement.visibility = isChecked
+                if (pregnancyElement.classList.contains(languageSelecter.value)){
+                    pregnancyElement.visibility = isChecked
+                }
             }
         }
     }
@@ -464,8 +468,8 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
         classes = setOfNotNull(
             "preg-checked",
             "english",
-            "invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "urdu") "invisible" else null
+            "lang-invisible",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"Mustabeen ul Khilqah"
     }
@@ -474,7 +478,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
         classes = setOfNotNull(
             "preg-checked",
             "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "english") "invisible" else null
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"مستبين الخلقت"
     }
@@ -496,8 +500,8 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
         classes = setOfNotNull(
             "preg-checked",
             "english",
-            "invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "urdu") "invisible" else null
+            "lang-invisible",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"Pregnancy Start Time"
     }
@@ -506,7 +510,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
         classes = setOfNotNull(
             "preg-checked",
             "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "english") "invisible" else null
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"حمل کے شروع ہونے کا وقت"
     }
@@ -528,8 +532,8 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
         classes = setOfNotNull(
             "preg-checked",
             "english",
-            "invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "urdu") "invisible" else null
+            "lang-invisible",
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +"Birth/Miscarriage time"
     }
@@ -538,7 +542,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
         classes = setOfNotNull(
             "preg-checked",
             "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true || languageSelecter.value == "english") "invisible" else null
+            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
         )
         +" ولادت/اسقاط کی تاریخ"
     }
@@ -581,7 +585,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 //}
 
 private fun FlowContent.calculateButton() {
-    button(classes = "english invisible") {
+    button(classes = "english lang-invisible") {
         +"Calculate"
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
@@ -603,8 +607,8 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
         id = Ids.HAIZ_INPUT_TABLE
         thead {
             tr {
-                th(classes = "english invisible") { +"Start Time" }
-                th(classes = "english invisible") { +"End Time" }
+                th(classes = "english lang-invisible") { +"Start Time" }
+                th(classes = "english lang-invisible") { +"End Time" }
                 th(classes = "urdu") { +"شروع ہوا" }
                 th(classes = "urdu") { +" ختم ہوا" }
             }
@@ -805,9 +809,7 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
 
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
-//    inputDatesRows.first().removeButton.disabled = inputDatesRows.size == 1
     inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
-//    inputDatesRows.getOrNull(1)?.removeButton?.disabled = false
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 

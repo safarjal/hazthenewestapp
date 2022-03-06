@@ -24,6 +24,10 @@ body {
   display: none !important;
 }
 
+.lang-invisible {
+  display: none !important;
+}
+
 header {
   width: 100vw;
 }
