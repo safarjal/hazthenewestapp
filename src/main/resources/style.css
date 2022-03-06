@@ -14,6 +14,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  background: bisque;
 }
 
 .rtl {
@@ -30,6 +31,7 @@ body {
 
 header {
   width: 100vw;
+  /* background: bisque; */
 }
 
 h1 {
@@ -44,19 +46,30 @@ h1 {
 }
 
 hr {
-  margin: 1rem 0;
+  margin: 1rem 0 0 0;
 }
 
-form {
-  margin: 0.5rem 0;
-}
+/* form {
+  background: bisque;
+} */
 
 input {
   margin: 0.5rem;
+  padding: 0.5rem;
+  flex: 1;
 }
 
 input [type="date"] {
   margin-left: 0;
+}
+
+label {
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  flex: 1;
+}
+
+#fasid {
+  margin: 0 0.5rem;
 }
 
 #input_containers_container {
@@ -64,6 +77,7 @@ input [type="date"] {
   grid-auto-flow: column;
   gap: 0.1rem;
   width: 100vw;
+  font-size: 1.1rem;
   overflow: auto;
   margin: auto;
 }
@@ -71,12 +85,12 @@ input [type="date"] {
 .input_container {
   float: left;
   margin: 0 auto;
+  max-width: 768px;
   border:1px;
-  padding:8px;
 }
 
-.date_only {
-  width: 410px;
+#fasid {
+  margin: 0 0.5rem;
 }
 
 .date_and_time {
@@ -92,10 +106,23 @@ input [type="date"] {
 }
 
 .label-input {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-items: baseline;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  border: 2px groove;
+}
+
+.row:nth-child(even) {
+  background: antiquewhite;
+}
+
+.row:nth-child(odd) {
+  background: beige;
 }
 
 button {
@@ -114,10 +141,6 @@ button:hover {
   direction: rtl;
 }
 
-.aadat {
-  width: 4.5rem;
-}
-
 .plus {
   color: black;
   background-color: rgba(0, 128, 0, 0.5);
@@ -131,4 +154,17 @@ button:hover {
 .minus {
   color: red;
   background-color: rgba(128, 0, 0, 0.5);
+}
+
+#mawjooda-div {
+  display: flex;
+  align-items: center;
+}
+
+tbody > tr:nth-child(even) {
+  background: burlywood;
+}
+
+tbody > tr:nth-child(odd) {
+  background: darkgray;
 }

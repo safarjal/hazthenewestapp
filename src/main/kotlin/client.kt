@@ -30,7 +30,6 @@ object Ids {
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
-//    const val ISTIMRAR_CHECKBOX = "istimrar_checkbox"
     const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
     const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
@@ -271,9 +270,8 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
-        dateConfigurationRadioButtons(inputContainerToCopyFrom)
-        br()
         div(classes = "label-input") {
+            dateConfigurationRadioButtons(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
 //            mubtadiaCheckBox(inputContainerToCopyFrom)
             pregnancyCheckBox(inputContainerToCopyFrom)
@@ -292,122 +290,141 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
 
 private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
-    radioInput {
-        id = Ids.DATE_TIME_RADIO
-        name = Ids.DATE_AND_OR_RADIO
-        checked = !isDateOnly
-        onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-    }
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.DATE_TIME_RADIO
-        +"Date and Time"
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.DATE_TIME_RADIO
-        +"تاریخ اور وقت"
-    }
-    radioInput {
-        id = Ids.DATE_ONLY_RADIO
-        name = Ids.DATE_AND_OR_RADIO
-        checked = isDateOnly
-        onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-    }
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.DATE_ONLY_RADIO
-        +"Date only"
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.DATE_ONLY_RADIO
-        +"صرف تاریخیں"
+    div(classes = "row") {
+        div {
+            radioInput {
+                id = Ids.DATE_TIME_RADIO
+                name = Ids.DATE_AND_OR_RADIO
+                checked = !isDateOnly
+                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+            }
+            label(classes = "english lang-invisible") {
+                htmlFor = Ids.DATE_TIME_RADIO
+                +"Date and Time"
+            }
+            label(classes = "urdu") {
+                htmlFor = Ids.DATE_TIME_RADIO
+                +"تاریخ اور وقت"
+            }
+        }
+        div {
+            radioInput {
+                id = Ids.DATE_ONLY_RADIO
+                name = Ids.DATE_AND_OR_RADIO
+                checked = isDateOnly
+                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+            }
+            label(classes = "english lang-invisible") {
+                htmlFor = Ids.DATE_ONLY_RADIO
+                +"Date only"
+            }
+            label(classes = "urdu") {
+                htmlFor = Ids.DATE_ONLY_RADIO
+                +"صرف تاریخیں"
+            }
+
+        }
     }
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.AADAT_HAIZ_INPUT
-        +("Haiz Aadat: ")
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.AADAT_HAIZ_INPUT
-        +("حیض کی عادت: ")
-    }
-    input(classes = "aadat") {
-        id = Ids.AADAT_HAIZ_INPUT
-        value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
-        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
-    }
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.AADAT_TUHR_INPUT
-        +"Tuhr Aadat: "
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.AADAT_TUHR_INPUT
-        +"طہر کی عادت: "
-    }
-    input(classes = "aadat") {
-        id = Ids.AADAT_TUHR_INPUT
-        value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
-        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6*30) }
-    }
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.MAWJOODA_TUHR_INPUT
-        +"Mawjooda Tuhr: "
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.MAWJOODA_TUHR_INPUT
-        +"موجودہ طہر: "
-    }
-    div {
+    div(classes = "row") {
+        label(classes = "english lang-invisible") {
+            htmlFor = Ids.AADAT_HAIZ_INPUT
+            +("Haiz Aadat: ")
+        }
+        label(classes = "urdu") {
+            htmlFor = Ids.AADAT_HAIZ_INPUT
+            +("حیض کی عادت: ")
+        }
         input(classes = "aadat") {
-            id = Ids.MAWJOODA_TUHR_INPUT
-            value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
-            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
-            //TODO: Find out how to do infinity, rather than 10000
+            id = Ids.AADAT_HAIZ_INPUT
+            value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
+            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
-        input(type = InputType.checkBox) {
-            id = Ids.MAWJOODA_FASID_CHECKBOX
-            checked = false
+    }
+    div(classes = "row") {
+        label(classes = "english lang-invisible") {
+            htmlFor = Ids.AADAT_TUHR_INPUT
+            +"Tuhr Aadat: "
         }
+        label(classes = "urdu") {
+            htmlFor = Ids.AADAT_TUHR_INPUT
+            +"طہر کی عادت: "
+        }
+        input(classes = "aadat") {
+            id = Ids.AADAT_TUHR_INPUT
+            value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
+            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
+        }
+    }
+    div(classes = "row") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +"Fasid"
+            +"Mawjooda Tuhr: "
         }
         label(classes = "urdu") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +"فاسد"
+            +"موجودہ طہر: "
+        }
+        div {
+            id = "mawjooda-div"
+            input(classes = "aadat") {
+                id = Ids.MAWJOODA_TUHR_INPUT
+                value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
+                onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
+                //TODO: Find out how to do infinity, rather than 10000
+            }
+            div {
+                id = "fasid"
+                input(type = InputType.checkBox) {
+                    id = Ids.MAWJOODA_FASID_CHECKBOX
+                    checked = false
+                }
+                label(classes = "english lang-invisible") {
+                    htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                    +"Fasid"
+                }
+                label(classes = "urdu") {
+                    htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                    +"فاسد"
+                }
+            }
         }
     }
-    label {
-        htmlFor = Ids.AADAT_NIFAS_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "english",
-            "lang-invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"Nifas Aadat: "
-    }
-    label {
-        htmlFor = Ids.AADAT_NIFAS_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"نفاس کی عادت: "
-    }
-    input {
-        id = Ids.AADAT_NIFAS_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "aadat",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-        )
-        step = "any"
-        required = false
-        disabled = inputContainerToCopyFrom?.isPregnancy != true
-        value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
-        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
+    div(classes = "row preg-checked invisible") {
+        label {
+            htmlFor = Ids.AADAT_NIFAS_INPUT
+            classes = setOfNotNull(
+                "preg-checked",
+                "english",
+                "lang-invisible",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+            )
+            +"Nifas Aadat: "
+        }
+        label {
+            htmlFor = Ids.AADAT_NIFAS_INPUT
+            classes = setOfNotNull(
+                "preg-checked",
+                "urdu",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+            )
+            +"نفاس کی عادت: "
+        }
+        input {
+            id = Ids.AADAT_NIFAS_INPUT
+            classes = setOfNotNull(
+                "preg-checked",
+                "aadat",
+                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+            )
+            step = "any"
+            required = false
+            disabled = inputContainerToCopyFrom?.isPregnancy != true
+            value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
+            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
+        }
     }
 }
 
@@ -424,28 +441,28 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label(classes = "english lang-invisible") {
-        htmlFor = Ids.PREGNANCY_CHECKBOX
-        +"Nifas"
-    }
-    label(classes = "urdu") {
-        htmlFor = Ids.PREGNANCY_CHECKBOX
-        +"نفاس"
-    }
-    checkBoxInput() {
-        id = Ids.PREGNANCY_CHECKBOX
-        checked = inputContainerToCopyFrom?.isPregnancy == true
-        onChangeFunction = { event ->
-            val isChecked = (event.currentTarget as HTMLInputElement).checked
-            for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
-                if (pregnancyElement.classList.contains(languageSelecter.value)) {
-                    pregnancyElement.visibility = isChecked
-                    pregnancyElement.disabled = !isChecked
-                }
+    div(classes = "row") {
+        div {
+            label(classes = "english lang-invisible") {
+                htmlFor = Ids.PREGNANCY_CHECKBOX
+                +"Nifas"
             }
-            for (pregnancyElement in findInputContainer(event).pregnancyElements) {
-                if (pregnancyElement.classList.contains(languageSelecter.value)){
-                    pregnancyElement.visibility = isChecked
+            label(classes = "urdu") {
+                htmlFor = Ids.PREGNANCY_CHECKBOX
+                +"نفاس"
+            }
+            checkBoxInput() {
+                id = Ids.PREGNANCY_CHECKBOX
+                checked = inputContainerToCopyFrom?.isPregnancy == true
+                onChangeFunction = { event ->
+                    val isChecked = (event.currentTarget as HTMLInputElement).checked
+                    for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
+                            pregnancyElement.visibility = isChecked
+                            pregnancyElement.disabled = !isChecked
+                    }
+                    for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                            pregnancyElement.visibility = isChecked
+                    }
                 }
             }
         }
@@ -463,97 +480,109 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 //}
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    label {
-        htmlFor = Ids.MUSTABEEN_CHECKBOX
-        classes = setOfNotNull(
-            "preg-checked",
-            "english",
-            "lang-invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"Mustabeen ul Khilqah"
-    }
-    label {
-        htmlFor = Ids.MUSTABEEN_CHECKBOX
-        classes = setOfNotNull(
-            "preg-checked",
-            "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"مستبين الخلقت"
-    }
-    checkBoxInput{
-        id = Ids.MUSTABEEN_CHECKBOX
-        classes = setOfNotNull(
-            "preg-checked",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-        )
-        checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
-        checked = inputContainerToCopyFrom?.mustabeen != false
-        disabled = inputContainerToCopyFrom?.isPregnancy != true
+    div(classes = "row preg-checked invisible") {
+        div {
+            label {
+                htmlFor = Ids.MUSTABEEN_CHECKBOX
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "english",
+                    "lang-invisible",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +"Mustabeen ul Khilqah"
+            }
+            label {
+                htmlFor = Ids.MUSTABEEN_CHECKBOX
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "urdu",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +"مستبين الخلقت"
+            }
+            checkBoxInput {
+                id = Ids.MUSTABEEN_CHECKBOX
+                classes = setOfNotNull(
+                    "preg-checked",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                )
+                checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
+                checked = inputContainerToCopyFrom?.mustabeen != false
+                disabled = inputContainerToCopyFrom?.isPregnancy != true
+            }
+        }
     }
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label {
-        htmlFor = Ids.PREG_START_TIME_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "english",
-            "lang-invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"Pregnancy Start Time"
-    }
-    label {
-        htmlFor = Ids.PREG_START_TIME_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"حمل کے شروع ہونے کا وقت"
-    }
-    pregnancyTimeInput(inputContainerToCopyFrom) {
-        classes = setOfNotNull(
-            "preg-checked",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-        )
-        id = Ids.PREG_START_TIME_INPUT
-        onChangeFunction = { event ->
-            findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
+    div(classes = "row preg-checked invisible") {
+        div {
+            label {
+                htmlFor = Ids.PREG_START_TIME_INPUT
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "english",
+                    "lang-invisible",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +"Pregnancy Start Time"
+            }
+            label {
+                htmlFor = Ids.PREG_START_TIME_INPUT
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "urdu",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +"حمل کے شروع ہونے کا وقت"
+            }
+            pregnancyTimeInput(inputContainerToCopyFrom) {
+                classes = setOfNotNull(
+                    "preg-checked",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                )
+                id = Ids.PREG_START_TIME_INPUT
+                onChangeFunction = { event ->
+                    findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
+                }
+            }
         }
     }
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    label {
-        htmlFor = Ids.PREG_END_TIME_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "english",
-            "lang-invisible",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +"Birth/Miscarriage time"
-    }
-    label {
-        htmlFor = Ids.PREG_END_TIME_INPUT
-        classes = setOfNotNull(
-            "preg-checked",
-            "urdu",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-        )
-        +" ولادت/اسقاط کی تاریخ"
-    }
-    pregnancyTimeInput(inputContainerToCopyFrom) {
-        classes = setOfNotNull(
-            "preg-checked",
-            if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
-        )
-        id = Ids.PREG_END_TIME_INPUT
-        onChangeFunction = { event ->
-            findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
+    div(classes = "row preg-checked invisible") {
+        div {
+            label {
+                htmlFor = Ids.PREG_END_TIME_INPUT
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "english",
+                    "lang-invisible",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +"Birth/Miscarriage time"
+            }
+            label {
+                htmlFor = Ids.PREG_END_TIME_INPUT
+                classes = setOfNotNull(
+                    "preg-checked",
+                    "urdu",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
+                )
+                +" ولادت/اسقاط کی تاریخ"
+            }
+            pregnancyTimeInput(inputContainerToCopyFrom) {
+                classes = setOfNotNull(
+                    "preg-checked",
+                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                )
+                id = Ids.PREG_END_TIME_INPUT
+                onChangeFunction = { event ->
+                    findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
+                }
+            }
         }
     }
 }
@@ -573,26 +602,15 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
     }
 }
 
-//private fun FlowContent.istimrarCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-//    label {
-//        htmlFor = Ids.ISTIMRAR_CHECKBOX
-//        +"Istimrar"
-//    }
-//    checkBoxInput {
-//        id = Ids.ISTIMRAR_CHECKBOX
-//        checked = inputContainerToCopyFrom?.isIstimrar == true
-//    }
-//}
-
 private fun FlowContent.calculateButton() {
-    button(classes = "english lang-invisible") {
+    button(classes = "english lang-invisible calc-btn") {
         +"Calculate"
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
-    button(classes = "urdu") {
-        +"حساب لگائیں"
-        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
-    }
+//    button(classes = "urdu calc-btn") {
+//        +"حساب لگائیں"
+//        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
+//    }
 }
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
