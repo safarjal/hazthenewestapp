@@ -67,7 +67,6 @@ private val languageSelecter get() = document.getElementById("language") as HTML
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
-private val HTMLElement.isMubtadia get() = (getChildById(Ids.MUBTADIA_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -284,7 +283,9 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
 //        istimrarCheckBox(inputContainerToCopyFrom)
         calculateButton()
         hr()
-        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
+        onSubmitFunction = { event ->
+            parseEntries(findInputContainer(event))
+        }
     }
 }
 
@@ -607,10 +608,10 @@ private fun FlowContent.calculateButton() {
         +"Calculate"
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
-//    button(classes = "urdu calc-btn") {
-//        +"حساب لگائیں"
-//        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
-//    }
+    button(classes = "urdu calc-btn") {
+        +"حساب لگائیں"
+        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
+    }
 }
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
@@ -960,15 +961,17 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 parseDays(aadatNifas.value),
                 mustabeen
             ),
-            isMubtadia
+            false
         )
         contentContainer.visibility = true
         if (languageSelecter.value == "english") {
+            println("1")
             contentElement.innerHTML = output.englishText
-            contentElement.classList.toggle("urdu", false)
+            contentElement.classList.toggle("rtl", false)
         } else {
+            println("2")
             contentElement.innerHTML = output.urduText
-            contentElement.classList.toggle("urdu", true)
+            contentElement.classList.toggle("rtl", true)
         }
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
