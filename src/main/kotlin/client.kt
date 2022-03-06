@@ -446,11 +446,11 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         div {
             label(classes = "english lang-invisible") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
-                +"Nifas"
+                +"Nifas: "
             }
             label(classes = "urdu") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
-                +"نفاس"
+                +"نفاس: "
             }
             checkBoxInput() {
                 id = Ids.PREGNANCY_CHECKBOX
@@ -491,7 +491,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Mustabeen ul Khilqah"
+                +"Mustabeen ul Khilqah: "
             }
             label {
                 htmlFor = Ids.MUSTABEEN_CHECKBOX
@@ -500,7 +500,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"مستبين الخلقت"
+                +"مستبين الخلقت: "
             }
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
@@ -527,7 +527,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Pregnancy Start Time"
+                +"Pregnancy Start Time: "
             }
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
@@ -536,7 +536,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"حمل کے شروع ہونے کا وقت"
+                +"حمل کے شروع ہونے کا وقت: "
             }
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
@@ -563,7 +563,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Birth/Miscarriage time"
+                +"Birth/Miscarriage time: "
             }
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
@@ -572,7 +572,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +" ولادت/اسقاط کی تاریخ"
+                +" ولادت/اسقاط کی تاریخ: "
             }
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
