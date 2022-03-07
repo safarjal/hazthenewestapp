@@ -273,7 +273,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             dateConfigurationRadioButtons(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
 //            mubtadiaCheckBox(inputContainerToCopyFrom)
-            pregnancyCheckBox(inputContainerToCopyFrom)
+//            pregnancyCheckBox(inputContainerToCopyFrom)
             mustabeenCheckBox(inputContainerToCopyFrom)
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
@@ -393,6 +393,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
+    pregnancyCheckBox(inputContainerToCopyFrom)
     div(classes = "row preg-checked invisible") {
         label {
             htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -648,16 +649,45 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
     }
 }
 
+//private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
+//    tr {
+//        td {
+//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
+//                id = Ids.Row.INPUT_START_TIME
+//            }
+//        }
+//        td {
+//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
+//                id = Ids.Row.INPUT_END_TIME
+//            }
+//        }
+//        addRemoveButtonsTableData()
+//    }
+//}
+
 private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
     tr {
         td {
-            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
-                id = Ids.Row.INPUT_START_TIME
-            }
+            input(type = InputType.number)
         }
         td {
-            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
-                id = Ids.Row.INPUT_END_TIME
+            select {
+                option(classes = "english lang-invisible") {
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "english lang-invisible") {
+                    value = "tuhr"
+                    + "Tuhr"
+                }
+                option(classes = "urdu") {
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "urdu") {
+                    value = "tuhr"
+                    + "Tuhr"
+                }
             }
         }
         addRemoveButtonsTableData()
