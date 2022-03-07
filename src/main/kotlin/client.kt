@@ -137,7 +137,7 @@ fun main() {
 
 fun askPassword():Boolean{
     val pass1 = "786"
-    val password = window.prompt("Please enter password here. To request the password, please contact safarjal22@gmail.com", "")
+    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}${StringsOfLanguages.URDU.passwordRequired}", "")
     if (pass1 == password) {
         return true
     }
@@ -292,8 +292,8 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
 private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
-        div {
-            radioInput {
+        div(classes = "flex") {
+            radioInput(classes = "zero-flex") {
                 id = Ids.DATE_TIME_RADIO
                 name = Ids.DATE_AND_OR_RADIO
                 checked = !isDateOnly
@@ -308,8 +308,8 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
                 +"تاریخ اور وقت"
             }
         }
-        div {
-            radioInput {
+        div(classes = "flex") {
+            radioInput(classes = "zero-flex") {
                 id = Ids.DATE_ONLY_RADIO
                 name = Ids.DATE_AND_OR_RADIO
                 checked = isDateOnly
@@ -450,7 +450,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 htmlFor = Ids.PREGNANCY_CHECKBOX
                 +(StringsOfLanguages.URDU.nifas)
             }
-            checkBoxInput() {
+            checkBoxInput {
                 id = Ids.PREGNANCY_CHECKBOX
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
