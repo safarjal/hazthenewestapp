@@ -63,6 +63,7 @@ data class Strings(
     val pakidays:String,
 //    days, hours, minutes پاکی۔
     val tuhrfasid:String,
+    val tuhrfasidwithaddition:String,
 //    days, hours, minutes استحاضہ + days, hours, minutes پاکی = days, hours, minutes  طہر فاسد۔
     val twomonthstuhr: String,
 //    days, hours, minutes طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)
@@ -155,7 +156,9 @@ enum class DurationType {
     TUHR_MUBTADIA_BECAME_A_MUTADA_NOW,
     DAM_MUBTADIA,
     TUHR_MUBTADIA,
-    TUHREFAASID_MUBTADIA
+    TUHREFAASID_MUBTADIA,
+    TUHREFAASID_MUBTADIA_WITH_ISTEHAZA,
+    TUHREFAASID_WITH_ISTEHAZA
 }
 
 class DateTypeList (

@@ -29,6 +29,7 @@ val urduStrings = Strings(
     "${UnicodeChars.BLACK_SQUARE} date1 کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n",
     "\n\ndate1 سے date2 تک کل duration1 خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
     "duration1 پاکی۔\n\n",
+    "duration1 طہر فاسد۔\n\n",
     "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد۔\n\n",
     "duration1 طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n",
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
@@ -87,7 +88,7 @@ val englishStrings = Strings(
     "${UnicodeChars.BLACK_SQUARE} If you performed your ghusl on date1 then the salahs after that were valid, if not, then the salahs before your next ghusl have to be made qaza of.\n\n",
     "\n\nduration1 of continued bleeding from date1 to date2 (since you haven’t had 15 or more blood-free days at a stretch in there)\n\n",
     "duration1 of Tuh’r\n\n",
-    "Faasid",
+    "duration1 of Tuh’r Faasid\n\n",
     "duration1 of istihaadha + duration2 of tuh’r = duration3 of Tuh’r Faasid.\n\n",
     "duration1 of Tuhr. (Since tuh’r is of more than 6 months, therefore 60 days shall be taken as habit of Tuh’r)\n\n",
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
@@ -98,6 +99,7 @@ val englishStrings = Strings(
     "Date only",
     "Date and Time",
     "Urdu",
+    "English",
     "Haiz Aadat",
     "Tuhr Aadat",
     "Mawjooda Tuhr",
@@ -113,7 +115,7 @@ val englishStrings = Strings(
     "Mustabeen ul Khilqat",
     "Please enter aadaat of Haiz and Tuhr to solve this",
     "Please enter a duration for Mawjooda Tuhr",
-    "Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40."
+    "Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40.",
 
 )
 
