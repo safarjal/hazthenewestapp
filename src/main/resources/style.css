@@ -14,9 +14,25 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  --bg-color: rgb(243, 237, 241);
+  --primary1: rgb(236, 226, 236);
+  --primary2: rgb(205, 186, 203);
+  --primary3: rgb(169, 147, 166);
+  --delete: rgb(145, 120, 142);
+  --add: #0002;
+  background: var(--bg-color);
+}
+
+.rtl {
+  direction: rtl;
+  font-family: 'Amiri', serif;
 }
 
 .invisible {
+  display: none !important;
+}
+
+.lang-invisible {
   display: none !important;
 }
 
@@ -36,19 +52,28 @@ h1 {
 }
 
 hr {
-  margin: 1rem 0;
-}
-
-form {
-  margin: 0.5rem 0;
+  margin: 1rem 0 0 0;
 }
 
 input {
   margin: 0.5rem;
+  padding: 0.5rem;
+  flex: 1;
 }
 
-input [type="date"] {
+input[type="date"],
+input[type="datetime-local"] {
   margin-left: 0;
+  direction: ltr
+}
+
+label {
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  flex: 1;
+}
+
+#fasid {
+  margin: 0 0.5rem;
 }
 
 #input_containers_container {
@@ -56,6 +81,7 @@ input [type="date"] {
   grid-auto-flow: column;
   gap: 0.1rem;
   width: 100vw;
+  font-size: 1.2rem;
   overflow: auto;
   margin: auto;
 }
@@ -63,12 +89,12 @@ input [type="date"] {
 .input_container {
   float: left;
   margin: 0 auto;
+  max-width: 768px;
   border:1px;
-  padding:8px;
 }
 
-.date_only {
-  width: 410px;
+#fasid {
+  margin: 0 0.5rem;
 }
 
 .date_and_time {
@@ -84,10 +110,23 @@ input [type="date"] {
 }
 
 .label-input {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-items: baseline;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  border: 2px groove;
+}
+
+.row:nth-child(even) {
+  background: var(--primary1);
+}
+
+.row:nth-child(odd) {
+  background: var(--primary2);
 }
 
 button {
@@ -103,17 +142,12 @@ button:hover {
 }
 
 .urdu {
-  text-align: right;
   direction: rtl;
-}
-
-.aadat {
-  width: 4.5rem;
 }
 
 .plus {
   color: black;
-  background-color: rgba(0, 128, 0, 0.5);
+  background-color: var(--add);
 }
 
 .clone {
@@ -123,5 +157,41 @@ button:hover {
 
 .minus {
   color: red;
-  background-color: rgba(128, 0, 0, 0.5);
+  background-color: var(--delete);
+}
+
+tbody > tr:nth-child(even) {
+  background: var(--primary2);
+}
+
+tbody > tr:nth-child(odd) {
+  background: var(--primary1);
+}
+
+.calc-btn {
+  padding: 0.4rem;
+  font-size: 1.2rem;
+  margin: 0.5rem;
+  background: var(--primary3)
+}
+
+#content_container {
+  padding: 1rem;
+}
+
+#language {
+  padding: 0.2rem;
+  font-size: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.zero-flex {
+    flex: 0;
 }
