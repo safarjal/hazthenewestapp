@@ -14,15 +14,13 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  --bg-color: rgb(231, 220, 228);
-  --primary1: rgb(217, 198, 217);
-  --primary2: rgb(180, 152, 177);
-  --primary3: rgb(123, 98, 120);
-  --delete: rgb(178, 98, 156);
-  /* --add: rgb(214, 118, 187); */
+  --bg-color: rgb(243, 237, 241);
+  --primary1: rgb(236, 226, 236);
+  --primary2: rgb(205, 186, 203);
+  --primary3: rgb(169, 147, 166);
+  --delete: rgb(145, 120, 142);
   --add: #0002;
   background: var(--bg-color);
-  filter: brightness(1.2);
 }
 
 .rtl {
