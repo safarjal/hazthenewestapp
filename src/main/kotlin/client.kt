@@ -137,7 +137,7 @@ fun main() {
 
 fun askPassword():Boolean{
     val pass1 = "786"
-    val password = window.prompt("Please enter password here. To request the password, please contact safarjal22@gmail.com", "")
+    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}${StringsOfLanguages.URDU.passwordRequired}", "")
     if (pass1 == password) {
         return true
     }

@@ -90,7 +90,9 @@ data class Strings(
     val mustabeenUlKhilqa: String,
     val errorEnterAadat: String,
     val errorEnterMawjoodaPaki:String,
-    val errorEnterNifasAadat:String
+    val errorEnterNifasAadat:String,
+    val passwordRequired:String,
+    val warningOnlyAuthorizedPersonnel:String
 )
 
 
