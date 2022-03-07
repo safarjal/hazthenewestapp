@@ -17,22 +17,27 @@
     <script src="hazthenewestapp.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="rtl">
 <!--<div id="root"></div>-->
 <header>
-    <h1>Haidh and Istihadha Calculator<span class="instructions invisible">i</span></h1>
-    <p class="how-to invisible">
-        Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the
-        second box. To add another period after that, press (➕). If you need to remove a period in the middle, click
-        the remove (❌) button next to it. To add a spot, enter a period where the start time and the end time are the
-        same. Once all periods have been added, click Calculate button, to get the solution.
-    </p>
+    <h1><span class="english lang-invisible">Haidh and Istihadha Calculator</span><span class="urdu">حيض و استحاضہ کیلکولیٹر</span></h1>
+<!--    <details>-->
+<!--        <summary class="english">Instructions</summary>-->
+<!--        <p class="how-to english">-->
+<!--            Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the-->
+<!--            second box. To add another period after that, press (➕). If you need to remove a period in the middle, click-->
+<!--            the remove (❌) button next to it. To add a spot, enter a period where the start time and the end time are the-->
+<!--            same. Once all periods have been added, click Calculate button, to get the solution.-->
+<!--        </p>-->
+<!--        <p class="how-to urdu">This is my Urdu instructions</p>-->
+<!--    </details>-->
     <div id="language-selection">
-        <label for="language">Select Language</label>
         <select name="language" id="language">
-            <option value="urdu">Urdu</option>
+            <option selected="selected" value="urdu">اردو</option>
             <option value="english">English</option>
         </select>
+        <label class="english lang-invisible" for="language">زبان تبديل كريں</label>
+        <label class="urdu" for="language">Select Language</label>
     </div>
     <hr>
 </header>
