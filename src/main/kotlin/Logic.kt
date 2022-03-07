@@ -947,6 +947,16 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
             }
 
         }
+        if(fixedDuration.type==DurationType.TUHREFAASID||fixedDuration.type==DurationType.TUHREFAASID_MUBTADIA){
+            //check if it has istehaza attached
+            if(fixedDuration.istihazaAfter>0){
+                if(fixedDuration.type==DurationType.TUHREFAASID){
+                    fixedDuration.type = DurationType.TUHREFAASID_WITH_ISTEHAZA
+                }else if( fixedDuration.type==DurationType.TUHREFAASID_MUBTADIA){
+                    fixedDuration.type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA
+                }
+            }
+        }
     }
 
 }

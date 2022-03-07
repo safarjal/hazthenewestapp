@@ -393,6 +393,9 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
         }
 
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
+        outputString =  StringsOfLanguages.URDU.tuhrfasid.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}")
+    }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
+        fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         outputString =  StringsOfLanguages.URDU.tuhrfasid.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
         val sd = fixedDurations[index].startDate
@@ -636,9 +639,11 @@ fun outputStringEnglishHeaderLine(fixedDurations: MutableList<FixedDuration>,ind
         if(fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
             outputString+= StringsOfLanguages.ENGLISH.becamemutadah
         }
-
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID ||
         fixedDurations[index].type == DurationType.TUHREFAASID_MUBTADIA){
+        outputString =  StringsOfLanguages.ENGLISH.tuhrfasid.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}")
+    }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
+            fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         outputString =  StringsOfLanguages.ENGLISH.tuhrfasid.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigital((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
         val sd = fixedDurations[index].startDate
