@@ -179,9 +179,10 @@ tbody > tr:nth-child(odd) {
   padding: 1rem;
 }
 
-#language {
+select {
   padding: 0.2rem;
   font-size: 1rem;
+  margin: 0.5rem;
 }
 
 table {
