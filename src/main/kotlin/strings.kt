@@ -39,6 +39,7 @@ val urduStrings = Strings(
     "صرف تاریخ کے ساتھ مسئلہ حل کیجیے",
     "تاریخ اور وقت کے ساتھ مسئلہ حل کیجیے",
     "اردو",
+    "English",
     "حیض کی عادت صحیح",
     "طہر کی عادت صحیح",
     "موجودہ طہر",
@@ -56,6 +57,7 @@ val urduStrings = Strings(
     "موجودہ طہر(حل کیے جانے والےدم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
     "نفاس کی عادت لکھیے! اگر پہلا بچہ ہے تو 40 کا عدد لکھیے!",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
+    "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!"
 )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
