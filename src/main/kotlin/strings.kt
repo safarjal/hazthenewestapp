@@ -39,7 +39,6 @@ val urduStrings = Strings(
     "صرف تاریخ کے ساتھ مسئلہ حل کیجیے",
     "تاریخ اور وقت کے ساتھ مسئلہ حل کیجیے",
     "اردو",
-    "انگریزی",
     "حیض کی عادت صحیح",
     "طہر کی عادت صحیح",
     "موجودہ طہر",
@@ -55,7 +54,8 @@ val urduStrings = Strings(
     "مستبين الخلقہ: ",
     "مسئلہ حل کرنے کے لیے حیض و طہر کی \"عادت صحیح\" لکھیے",
     "موجودہ طہر(حل کیے جانے والےدم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
-    "نفاس کی عادت لکھیے! اگر پہلا بچہ ہے تو 40 کا عدد لکھیے!"
+    "نفاس کی عادت لکھیے! اگر پہلا بچہ ہے تو 40 کا عدد لکھیے!",
+    "Please enter password here. To request the password, please contact safarjal22@gmail.com",
 )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
@@ -97,7 +97,7 @@ val englishStrings = Strings(
     "Select Language",
     "Date only",
     "Date and Time",
-    "Urdu",
+    "اردو",
     "Haiz Aadat",
     "Tuhr Aadat",
     "Mawjooda Tuhr",
@@ -113,7 +113,9 @@ val englishStrings = Strings(
     "Mustabeen ul Khilqat",
     "Please enter aadaat of Haiz and Tuhr to solve this",
     "Please enter a duration for Mawjooda Tuhr",
-    "Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40."
+    "Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40.",
+    "Please enter password here. To request the password, please contact safarjal22@gmail.com",
+    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifaas, and understand the minutae of the information required to solve this."
 
 )
 
