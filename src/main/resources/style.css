@@ -14,7 +14,14 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  background: rgb(231, 220, 228);
+  --bg-color: rgb(231, 220, 228);
+  --primary1: rgb(217, 198, 217);
+  --primary2: rgb(180, 152, 177);
+  --primary3: rgb(123, 98, 120);
+  --red: rgba(128, 0, 0, 0.5);
+  --green: rgba(0, 128, 0, 0.5);
+  background: var(--bg-color);
+  filter: brightness(1.2);
 }
 
 .rtl {
@@ -115,11 +122,11 @@ label {
 }
 
 .row:nth-child(even) {
-  background: rgb(217, 198, 217);
+  background: var(--primary1);
 }
 
 .row:nth-child(odd) {
-  background: rgb(180, 152, 177);
+  background: var(--primary2);
 }
 
 button {
@@ -140,7 +147,7 @@ button:hover {
 
 .plus {
   color: black;
-  background-color: rgba(0, 128, 0, 0.5);
+  background-color: var(--green);
 }
 
 .clone {
@@ -150,22 +157,22 @@ button:hover {
 
 .minus {
   color: red;
-  background-color: rgba(128, 0, 0, 0.5);
+  background-color: var(--red);
 }
 
 tbody > tr:nth-child(even) {
-  background: rgb(180, 152, 177);
+  background: var(--primary2);
 }
 
 tbody > tr:nth-child(odd) {
-  background: rgb(217, 198, 217);
+  background: var(--primary1);
 }
 
 .calc-btn {
   padding: 0.4rem;
   font-size: 1.2rem;
   margin: 0.5rem;
-  background: rgb(123, 98, 120)
+  background: var(--primary3)
 }
 
 #content_container {
@@ -179,4 +186,12 @@ tbody > tr:nth-child(odd) {
 
 table {
   width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.zero-flex {
+    flex: 0;
 }
