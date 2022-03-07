@@ -2,6 +2,7 @@ import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
+import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
 import kotlinx.html.tr
@@ -94,12 +95,15 @@ private val HTMLElement.pregnancyElements get() = getElementsByClassName("preg-c
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
 
-private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
+private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
     get() {
         val inputDatesTable = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
-        val inputDatesTableBody = inputDatesTable.tBodies[0] as HTMLTableSectionElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
+private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
+    get() {
         @Suppress("UNCHECKED_CAST")
-        return inputDatesTableBody.rows.asList() as List<HTMLTableRowElement>
+        return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
     }
 
 private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
@@ -630,6 +634,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.endTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
+                th {addBeforeButton()}
             }
         }
         tbody {
@@ -824,18 +829,17 @@ private fun FlowContent.addButton() {
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u25B2"
-        title = "Add Before"
+        title = "Add at Start"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
-            val row = findRow(event)
             val inputContainer = findInputContainer(event)
-            row.before {
-                inputRow(
-                    inputContainer.isDateOnly,
-                    minTimeInput = row.startTimeInput.min,
-                    maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
-                )
-            }
+            val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
+
+            inputContainer.hazInputTableBody.prepend { inputRow(
+                inputContainer.isDateOnly,
+                minTimeInput = "",
+                maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
+            ) }
             setupRows(inputContainer)
         }
     }
@@ -852,7 +856,7 @@ private fun setupRows(inputContainer: HTMLElement) {
 
 private fun setupFirstRow(inputContainer: HTMLElement) {
     updateRemoveButtonDisabledStateForFirstRow(inputContainer)
-    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
+//    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
 }
 
 private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
@@ -861,15 +865,15 @@ private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLEleme
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 
-private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
-    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
-        if (index > 0) {
-            row.addBeforeButton?.remove()
-        } else if (row.addBeforeButton == null) {
-            row.buttonsContainer.append { addBeforeButton() }
-        }
-    }
-}
+//private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
+//    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
+//        if (index > 0) {
+//            row.addBeforeButton?.remove()
+//        } else if (row.addBeforeButton == null) {
+//            row.buttonsContainer.append { addBeforeButton() }
+//        }
+//    }
+//}
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
     val currentTime = currentTimeString(inputContainer.isDateOnly)
