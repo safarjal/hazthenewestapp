@@ -292,39 +292,64 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
 private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
-        div(classes = "flex") {
-            radioInput(classes = "zero-flex") {
-                id = Ids.DATE_TIME_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = !isDateOnly
-                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-            }
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.DATE_TIME_RADIO
-                +"Date and Time"
-            }
-            label(classes = "urdu") {
-                htmlFor = Ids.DATE_TIME_RADIO
-                +"تاریخ اور وقت"
-            }
+        label(classes = "english lang-invisible") {
+            htmlFor = Ids.DATE_TIME_RADIO
+            +"Type of input: "
         }
-        div(classes = "flex") {
-            radioInput(classes = "zero-flex") {
-                id = Ids.DATE_ONLY_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = isDateOnly
-                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-            }
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.DATE_ONLY_RADIO
+        label(classes = "urdu") {
+            htmlFor = Ids.DATE_TIME_RADIO
+            +"تاریخ و وقت"
+        }
+        select {
+            option(classes = "english lang-invisible") {
+                value = "dateOnly"
                 +"Date only"
             }
-            label(classes = "urdu") {
-                htmlFor = Ids.DATE_ONLY_RADIO
-                +"صرف تاریخیں"
+            option(classes = "urdu") {
+                value = "dateOnly"
+                +"Date only urdu"
             }
-
+            option(classes = "english lang-invisible") {
+                value = "dateTime"
+                +"Date and Time: "
+            }
+            option(classes = "urdu") {
+                value = "dateTime"
+                +"Date and Time urdu: "
+            }
         }
+//        div(classes = "flex") {
+//            radioInput(classes = "zero-flex") {
+//                id = Ids.DATE_TIME_RADIO
+//                name = Ids.DATE_AND_OR_RADIO
+//                checked = !isDateOnly
+//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+//            }
+//            label(classes = "english lang-invisible") {
+//                htmlFor = Ids.DATE_TIME_RADIO
+//                +"Date and Time"
+//            }
+//            label(classes = "urdu") {
+//                htmlFor = Ids.DATE_TIME_RADIO
+//                +"تاریخ اور وقت"
+//            }
+//        }
+//        div(classes = "flex") {
+//            radioInput(classes = "zero-flex") {
+//                id = Ids.DATE_ONLY_RADIO
+//                name = Ids.DATE_AND_OR_RADIO
+//                checked = isDateOnly
+//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+//            }
+//            label(classes = "english lang-invisible") {
+//                htmlFor = Ids.DATE_ONLY_RADIO
+//                +"Date only"
+//            }
+//            label(classes = "urdu") {
+//                htmlFor = Ids.DATE_ONLY_RADIO
+//                +"صرف تاریخیں"
+//            }
+//        }
     }
 }
 
