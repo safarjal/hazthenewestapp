@@ -14,7 +14,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  background: bisque;
+  background: rgb(231, 220, 228);
 }
 
 .rtl {
@@ -31,7 +31,6 @@ body {
 
 header {
   width: 100vw;
-  /* background: bisque; */
 }
 
 h1 {
@@ -48,10 +47,6 @@ h1 {
 hr {
   margin: 1rem 0 0 0;
 }
-
-/* form {
-  background: bisque;
-} */
 
 input {
   margin: 0.5rem;
@@ -120,11 +115,11 @@ label {
 }
 
 .row:nth-child(even) {
-  background: antiquewhite;
+  background: rgb(217, 198, 217);
 }
 
 .row:nth-child(odd) {
-  background: beige;
+  background: rgb(180, 152, 177);
 }
 
 button {
@@ -164,11 +159,11 @@ button:hover {
 }
 
 tbody > tr:nth-child(even) {
-  background: burlywood;
+  background: rgb(180, 152, 177);
 }
 
 tbody > tr:nth-child(odd) {
-  background: darkgray;
+  background: rgb(217, 198, 217);
 }
 
 .calc-btn {
