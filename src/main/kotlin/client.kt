@@ -137,7 +137,9 @@ fun main() {
 
 fun askPassword():Boolean{
     val pass1 = "786"
-    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}${StringsOfLanguages.URDU.passwordRequired}", "")
+    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
+            "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
+            "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
     if (pass1 == password) {
         return true
     }
@@ -402,11 +404,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         div {
             id = "fasid"
             label(classes = "english lang-invisible") {
-                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
                 +(StringsOfLanguages.ENGLISH.faasid)
             }
             label(classes = "urdu") {
-                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
                 +(StringsOfLanguages.URDU.faasid)
             }
             input(type = InputType.checkBox) {
