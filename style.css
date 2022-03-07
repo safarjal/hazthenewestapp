@@ -59,8 +59,10 @@ input {
   flex: 1;
 }
 
-input [type="date"] {
+input[type="date"],
+input[type="datetime-local"] {
   margin-left: 0;
+  direction: ltr
 }
 
 label {
