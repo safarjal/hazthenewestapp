@@ -649,50 +649,50 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
     }
 }
 
-private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
-    tr {
-        td {
-            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
-                id = Ids.Row.INPUT_START_TIME
-            }
-        }
-        td {
-            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
-                id = Ids.Row.INPUT_END_TIME
-            }
-        }
-        addRemoveButtonsTableData()
-    }
-}
-
 //private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
 //    tr {
 //        td {
-//            input(type = InputType.number)
+//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
+//                id = Ids.Row.INPUT_START_TIME
+//            }
 //        }
 //        td {
-//            select {
-//                option(classes = "english lang-invisible") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "english lang-invisible") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
-//                option(classes = "urdu") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "urdu") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
+//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
+//                id = Ids.Row.INPUT_END_TIME
 //            }
 //        }
 //        addRemoveButtonsTableData()
 //    }
 //}
+
+private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
+    tr {
+        td {
+            input(type = InputType.number)
+        }
+        td {
+            select {
+                option(classes = "english lang-invisible") {
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "english lang-invisible") {
+                    value = "tuhr"
+                    + "Tuhr"
+                }
+                option(classes = "urdu") {
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "urdu") {
+                    value = "tuhr"
+                    + "Tuhr"
+                }
+            }
+        }
+        addRemoveButtonsTableData()
+    }
+}
 
 private fun TagConsumer<HTMLElement>.inputRow(
     inputContainerToCopyFrom: HTMLElement,
