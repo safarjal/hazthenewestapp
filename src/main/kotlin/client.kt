@@ -332,11 +332,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_HAIZ_INPUT
-            +("Haiz Aadat: ")
+            +(StringsOfLanguages.ENGLISH.haizAadat)
         }
         label(classes = "urdu") {
             htmlFor = Ids.AADAT_HAIZ_INPUT
-            +("حیض کی عادت: ")
+            +(StringsOfLanguages.URDU.haizAadat)
         }
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
@@ -347,11 +347,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_TUHR_INPUT
-            +"Tuhr Aadat: "
+            +(StringsOfLanguages.ENGLISH.tuhrAadat)
         }
         label(classes = "urdu") {
             htmlFor = Ids.AADAT_TUHR_INPUT
-            +"طہر کی عادت: "
+            +(StringsOfLanguages.URDU.tuhrAadat)
         }
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
@@ -362,11 +362,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +"Mawjooda Tuhr: "
+            +(StringsOfLanguages.ENGLISH.mawjoodahTuhr)
         }
         label(classes = "urdu") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +"موجودہ طہر: "
+            +(StringsOfLanguages.URDU.mawjoodahTuhr)
         }
         div {
             id = "mawjooda-div"
@@ -384,11 +384,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
                 }
                 label(classes = "english lang-invisible") {
                     htmlFor = Ids.MAWJOODA_TUHR_INPUT
-                    +"Fasid"
+                    +(StringsOfLanguages.ENGLISH.faasid)
                 }
                 label(classes = "urdu") {
                     htmlFor = Ids.MAWJOODA_TUHR_INPUT
-                    +"فاسد"
+                    +(StringsOfLanguages.URDU.faasid)
                 }
             }
         }
@@ -403,7 +403,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
                 "lang-invisible",
                 if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
             )
-            +"Nifas Aadat: "
+            +(StringsOfLanguages.ENGLISH.nifasAadat)
         }
         label {
             htmlFor = Ids.AADAT_NIFAS_INPUT
@@ -412,7 +412,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
                 "urdu",
                 if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
             )
-            +"نفاس کی عادت: "
+            +(StringsOfLanguages.URDU.nifasAadat)
         }
         input {
             id = Ids.AADAT_NIFAS_INPUT
@@ -447,11 +447,11 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         div {
             label(classes = "english lang-invisible") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
-                +"Nifas: "
+                +(StringsOfLanguages.ENGLISH.nifas)
             }
             label(classes = "urdu") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
-                +"نفاس: "
+                +(StringsOfLanguages.URDU.nifas)
             }
             checkBoxInput() {
                 id = Ids.PREGNANCY_CHECKBOX
@@ -492,7 +492,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Mustabeen ul Khilqah: "
+                +StringsOfLanguages.ENGLISH.mustabeenUlKhilqa
             }
             label {
                 htmlFor = Ids.MUSTABEEN_CHECKBOX
@@ -501,7 +501,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"مستبين الخلقت: "
+                +StringsOfLanguages.URDU.mustabeenUlKhilqa
             }
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
@@ -528,7 +528,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Pregnancy Start Time: "
+                +StringsOfLanguages.ENGLISH.pregnancyStartTime
             }
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
@@ -537,7 +537,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"حمل کے شروع ہونے کا وقت: "
+                +StringsOfLanguages.URDU.pregnancyStartTime
             }
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
@@ -564,7 +564,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     "lang-invisible",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +"Birth/Miscarriage time: "
+                +StringsOfLanguages.ENGLISH.birthMiscarrriageTime
             }
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
@@ -573,7 +573,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     "urdu",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
                 )
-                +" ولادت/اسقاط کی تاریخ: "
+                +StringsOfLanguages.URDU.birthMiscarrriageTime
             }
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
@@ -606,11 +606,11 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 
 private fun FlowContent.calculateButton() {
     button(classes = "english lang-invisible calc-btn") {
-        +"Calculate"
+        +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
     button(classes = "urdu calc-btn") {
-        +"حساب لگائیں"
+        +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
 }
@@ -627,10 +627,10 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
         id = Ids.HAIZ_INPUT_TABLE
         thead {
             tr {
-                th(classes = "english lang-invisible") { +"Start Time" }
-                th(classes = "english lang-invisible") { +"End Time" }
-                th(classes = "urdu") { +"شروع ہوا" }
-                th(classes = "urdu") { +" ختم ہوا" }
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.startTime }
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.endTime }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
             }
         }
         tbody {
@@ -991,7 +991,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 parseDays(aadatNifas.value),
                 mustabeen
             ),
-            false
+            false,
+            languageSelecter.value
         )
         contentContainer.visibility = true
         if (languageSelecter.value == "english") {

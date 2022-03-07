@@ -69,8 +69,32 @@ data class Strings(
     val dashesline: String,
     val becamemutadah:String,
     val thereisnoaadat:String,
-    val aadatofhaizonly:String
+    val aadatofhaizonly:String,
+    val selectLanguage:String,
+    val dateOnly:String,
+    val dateAndTime:String,
+    val urdu:String,
+    val english:String,
+    val haizAadat:String,
+    val tuhrAadat:String,
+    val mawjoodahTuhr:String,
+    val faasid:String,
+    val nifasAadat:String,
+    val pregnancyStartTime:String,
+    val birthMiscarrriageTime:String,
+    val startTime:String,
+    val endTime:String,
+    val calculate:String,
+    val incorrectAadat:String,
+    val nifas:String,
+    val mustabeenUlKhilqa: String,
+    val errorEnterAadat: String,
+    val errorEnterMawjoodaPaki:String,
+    val errorEnterNifasAadat:String
 )
+
+
+
 
 enum class LanguageNames { ENGLISH, URDU }
 
