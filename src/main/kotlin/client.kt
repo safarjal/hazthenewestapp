@@ -377,11 +377,11 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         div {
             id = "fasid"
             label(classes = "english lang-invisible") {
-                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
                 +(StringsOfLanguages.ENGLISH.faasid)
             }
             label(classes = "urdu") {
-                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
                 +(StringsOfLanguages.URDU.faasid)
             }
             input(type = InputType.checkBox) {
