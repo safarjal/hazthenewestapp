@@ -34,7 +34,20 @@ val urduStrings = Strings(
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
     "اب سے  یہ معتادہ ہیں۔\n\n",
     "ابھی حیض اور طہر کی کویٔ عادت نہیں۔\n\n",
-    "حیض کی عادت duration1 ہے، البتہ ابھی پاکی کی کویٔ عادت نہیں۔\n\n"
+    "حیض کی عادت duration1 ہے، البتہ ابھی پاکی کی کویٔ عادت نہیں۔\n\n",
+    "زبان منتخب کریں:",
+    "صرف تاریخ",
+    "تاریخ اور وقت",
+    "اردو",
+    "انگریزی",
+    "عادتِ حیض",
+    "عادتِ طہر",
+    "عادت  نفاس",
+    "ابتداء حمل کی تاریخ(یعنی آخری حیض کب ختم ہوا؟)",
+    "اسقاط/ وضع حمل(ولادت) کاوقت/تاریخ",
+    "ابتدائے خون کا وقت/تاریخ",
+    "خون کی انتہا کا وقت/تاریخ",
+    "حساب لگائیں"
 )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
@@ -71,7 +84,20 @@ val englishStrings = Strings(
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
     "From now on, she is a Mutadah\n\n",
     "Till now, there is no habit of Haidh or Tuhr",
-    "duration 1 is the habit of Haidh. There is no habit of Tuhr yet."
+    "duration 1 is the habit of Haidh. There is no habit of Tuhr yet.",
+    "Select Language",
+    "Date only",
+    "Date and Time",
+    "Urdu",
+    "English",
+    "Haiz Aadat",
+    "Tuhr Aadat",
+    "Nifas Aadat",
+    "Pregnancy Start Time",
+    "Birth/Miscarriage Time",
+    "Start Time",
+    "End Time",
+    "Calculate"
 )
 
 object StringsOfLanguages{
