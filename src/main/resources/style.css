@@ -153,11 +153,6 @@ button:hover {
   background-color: rgba(128, 0, 0, 0.5);
 }
 
-#mawjooda-div {
-  display: flex;
-  align-items: center;
-}
-
 tbody > tr:nth-child(even) {
   background: rgb(180, 152, 177);
 }
@@ -170,6 +165,7 @@ tbody > tr:nth-child(odd) {
   padding: 0.4rem;
   font-size: 1.2rem;
   margin: 0.5rem;
+  background: rgb(123, 98, 120)
 }
 
 #content_container {
@@ -179,4 +175,8 @@ tbody > tr:nth-child(odd) {
 #language {
   padding: 0.2rem;
   font-size: 1rem;
+}
+
+table {
+  width: 100%;
 }

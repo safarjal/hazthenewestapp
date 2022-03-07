@@ -368,28 +368,25 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
             +(StringsOfLanguages.URDU.mawjoodahTuhr)
         }
+        input(classes = "aadat") {
+            id = Ids.MAWJOODA_TUHR_INPUT
+            value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
+            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
+            //TODO: Find out how to do infinity, rather than 10000
+        }
         div {
-            id = "mawjooda-div"
-            input(classes = "aadat") {
-                id = Ids.MAWJOODA_TUHR_INPUT
-                value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
-                onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
-                //TODO: Find out how to do infinity, rather than 10000
+            id = "fasid"
+            label(classes = "english lang-invisible") {
+                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                +(StringsOfLanguages.ENGLISH.faasid)
             }
-            div {
-                id = "fasid"
-                input(type = InputType.checkBox) {
-                    id = Ids.MAWJOODA_FASID_CHECKBOX
-                    checked = false
-                }
-                label(classes = "english lang-invisible") {
-                    htmlFor = Ids.MAWJOODA_TUHR_INPUT
-                    +(StringsOfLanguages.ENGLISH.faasid)
-                }
-                label(classes = "urdu") {
-                    htmlFor = Ids.MAWJOODA_TUHR_INPUT
-                    +(StringsOfLanguages.URDU.faasid)
-                }
+            label(classes = "urdu") {
+                htmlFor = Ids.MAWJOODA_TUHR_INPUT
+                +(StringsOfLanguages.URDU.faasid)
+            }
+            input(type = InputType.checkBox) {
+                id = Ids.MAWJOODA_FASID_CHECKBOX
+                checked = false
             }
         }
     }
