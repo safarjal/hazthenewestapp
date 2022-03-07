@@ -18,8 +18,9 @@ body {
   --primary1: rgb(217, 198, 217);
   --primary2: rgb(180, 152, 177);
   --primary3: rgb(123, 98, 120);
-  --red: rgba(128, 0, 0, 0.5);
-  --green: rgba(0, 128, 0, 0.5);
+  --delete: rgb(178, 98, 156);
+  /* --add: rgb(214, 118, 187); */
+  --add: #0002;
   background: var(--bg-color);
   filter: brightness(1.2);
 }
@@ -148,7 +149,7 @@ button:hover {
 
 .plus {
   color: black;
-  background-color: var(--green);
+  background-color: var(--add);
 }
 
 .clone {
@@ -158,7 +159,7 @@ button:hover {
 
 .minus {
   color: red;
-  background-color: var(--red);
+  background-color: var(--delete);
 }
 
 tbody > tr:nth-child(even) {
