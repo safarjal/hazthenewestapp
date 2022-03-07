@@ -1438,16 +1438,95 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
 
 fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
     //calculate filHaal status
-    val filHaalPaki:Boolean
+    var filHaalPaki:Boolean = false
 
-    filHaalPaki = if(fixedDurations.last().days>10&&
-        (fixedDurations.last().type==DurationType.DAM||fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
-        fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER
+    if(fixedDurations.last().type==DurationType.DAM){
+        if(fixedDurations.last().days>10){
+            val aadatTuhr = fixedDurations.last().biggerThanTen!!.aadatTuhr
+            val aadatHaz = fixedDurations.last().biggerThanTen!!.aadatHaiz
+            val lastDurationType = fixedDurations.last().biggerThanTen!!.durationsList.last().type
+            val lastDurationTime = fixedDurations.last().biggerThanTen!!.durationsList.last().timeInMilliseconds
 
-    }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER
+            if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
+                filHaalPaki=false
+            }else if(lastDurationType==DurationType.HAIZ){
+                if(aadatHaz>lastDurationTime){
+                    filHaalPaki=false
+                }else {
+                    filHaalPaki = true
+                }
+            }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){
+                if(aadatTuhr>lastDurationTime){
+                    val qism = fixedDurations.last().biggerThanTen!!.qism
+                    val ayyameQabliyya = fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp
+                    if(qism==Soortain.A_3 &&
+                        ayyameQabliyya<=fixedDurations.last().timeInMilliseconds) {
+                        filHaalPaki=false
+                    }else{
+                        filHaalPaki=true
+                    }
+                }else{
+                    filHaalPaki=false
+                }
+            }
+        }else{
+            filHaalPaki=false
+        }
+    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
+        if(fixedDurations.last().days>10){
+            var aadatTuhr:Long
+            var aadatHaz = fixedDurations.last().biggerThanTen!!.aadatHaiz
+            val lastDurationType = fixedDurations.last().biggerThanTen!!.durationsList.last().type
+            val lastDurationTime = fixedDurations.last().biggerThanTen!!.durationsList.last().timeInMilliseconds
+            if(aadatHaz==-1L){
+                aadatHaz=10
+            }
+            aadatTuhr=30-aadatHaz
+            if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
+                filHaalPaki=false
+            }else if(lastDurationType==DurationType.HAIZ){
+                if(aadatHaz>lastDurationTime){
+                    filHaalPaki=false
+                }else{
+                    filHaalPaki=true
+                }
+            }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){
+                if(aadatTuhr>lastDurationTime){
+                    filHaalPaki=true
+                }else{
+                    filHaalPaki=false
+                }
+            }
+        }
+    }else if(fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        if(fixedDurations.last().days>40){
+            var aadatTuhr=fixedDurations.last().biggerThanForty!!.aadatTuhr
+            var aadatHaz = fixedDurations.last().biggerThanForty!!.aadatHaiz
+            val lastDurationType = fixedDurations.last().biggerThanForty!!.durationsList.last().type
+            val lastDurationTime = fixedDurations.last().biggerThanForty!!.durationsList.last().timeInMilliseconds
+            if(lastDurationType==DurationType.ISTIHAZA_AFTER){
+                if(aadatTuhr==-1L){
+                    filHaalPaki=true
+                }else if(aadatTuhr>lastDurationTime){
+                    filHaalPaki=true
+                }else{
+                    filHaalPaki=false
+                }
+            }else if(lastDurationType==DurationType.HAIZ){
+                if(aadatHaz==-1L){
+                    //this shouldn't happen
+                    filHaalPaki=false
+                }else if(aadatHaz>lastDurationTime){
+                    filHaalPaki=false
+                }else{
+                    filHaalPaki=true
+                }
+            }else if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
+                filHaalPaki=false
+            }
+        }
     }else{
-        false
+        filHaalPaki=false
     }
     return filHaalPaki
 }
