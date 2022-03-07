@@ -14,7 +14,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy, isMubtadia:Boolean): OutputTexts {
+fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy, isMubtadia:Boolean, language:String): OutputTexts {
 
     firstStartTime = entries[0].startTime
     val times = entries
@@ -51,7 +51,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
             var mawjoodahIsNotAadat = checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations, pregnancy, inputtedMawjoodaTuhr,isMawjoodaFasid)
-            if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, mawjoodahIsNotAadat)){return noOutput}
+            if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, mawjoodahIsNotAadat, language)){return noOutput}
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
@@ -63,10 +63,10 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             removeTuhrLessThan15(fixedDurations)//do this before the next, cuz why not, mkes thigns simpler in joining dams
             addStartDateToFixedDurations(fixedDurations)//cuz the last shoulda messed it up
             makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,pregnancy) //also, marking them as Dam in
-            if(!dealWithDamInMuddateNifas(fixedDurations,pregnancy)){return noOutput}
+            if(!dealWithDamInMuddateNifas(fixedDurations,pregnancy, language)){return noOutput}
             removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
             addStartDateToFixedDurations(fixedDurations)
-            if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid)){return noOutput}
+            if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, language)){return noOutput}
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
@@ -81,7 +81,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations)
         //if we got aadats, the we run this portion
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
-            dealWithBiggerThan10Dam(fixedDurations, aadats.aadatHaiz, aadats.aadatTuhr,aadats.aadatTuhr, false)
+            dealWithBiggerThan10Dam(fixedDurations, aadats.aadatHaiz, aadats.aadatTuhr,aadats.aadatTuhr, false, language)
         }
         addDurationsToDams(fixedDurations)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations, true)
@@ -90,7 +90,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         removeTuhrLessThan15(fixedDurations)
         removeDamLessThan3(fixedDurations)
         addStartDateToFixedDurations(fixedDurations)
-        if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid)){return noOutput}
+        if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, language)){return noOutput}
         addDurationsToDams(fixedDurations)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations, false)
         return generateOutputString(fixedDurations, durations, isDateOnly, endingOutputValues)
@@ -255,7 +255,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>):AadatsOfHaizA
     return AadatsOfHaizAndTuhr(aadatHaz,aadatTuhr)
 }
 
-fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy):Boolean{
+fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy, language: String):Boolean{
     var i = 0
     while (i<fixedDurations.size){
         if(fixedDurations[i].type==DurationType.DAM_IN_NIFAAS_PERIOD){
@@ -263,7 +263,11 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                 //if nifas exceeded 40
                 if(pregnancy.aadatNifas==null){
                     //give error
-                    window.alert("Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40.")
+                    if(language=="english"){
+                        window.alert(StringsOfLanguages.ENGLISH.errorEnterNifasAadat)
+                    }else if(language=="urdu"){
+                        window.alert(StringsOfLanguages.URDU.errorEnterNifasAadat)
+                    }
                     pregnancy.aadatNifas=-1
                     return false
                 }
@@ -508,7 +512,7 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputtedAadatHaz: Long?,inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean):Boolean{
+fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputtedAadatHaz: Long?,inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, language: String):Boolean{
 
     //This basically adds this info to each fixed duration of dam:
     // - istihaza before haiz duration
@@ -569,7 +573,11 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
                 //we don't need mawjoodah paki
                 if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                     //give error message
-                    window.alert("Please enter aadaat of Haiz and Tuhr to solve this")
+                    if(language=="english"){
+                        window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                    }else if(language=="urdu"){
+                        window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                    }
                     return false
                 }
 
@@ -584,13 +592,21 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>, inputted
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                 //give error message
-                window.alert("Please enter aadaat of Haiz and Tuhr to solve this")
+                if(language=="english"){
+                    window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                }else if(language=="urdu"){
+                    window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                }
                 return false
             }
             else{//we have aadat
                 if(mawjoodaTuhr==-1L && i<1){//if mawjoodah tuhr doesn't exist and the first period is bigger than 10
                     //give error message
-                    window.alert("Please enter a duration for Mawjooda Tuhr")
+                    if(language=="english"){
+                        window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                    }else if(language=="urdu"){
+                        window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
+                    }
                     return false
                 }else{
 
