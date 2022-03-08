@@ -1383,36 +1383,33 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
     //and if it's not daur, we wanna give 1
 
 
-    if(fixedDurations.last().days>10){
-        if(fixedDurations.last().type==DurationType.DAM) {
-            val lastDurationBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
+    if(fixedDurations.last().type==DurationType.DAM&&fixedDurations.last().days>10) {
+        val lastDurationBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
 
-            return if (lastDurationBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
-                //if it ended in paki
-                AadatsOfHaizAndTuhr(
-                    fixedDurations.last().biggerThanTen!!.haiz,
-                    fixedDurations.last().biggerThanTen!!.aadatTuhr
-                )
-            } else if (lastDurationBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
-                //it ended in a haiz less than 3, no tension
-                return AadatsOfHaizAndTuhr(
-                    fixedDurations.last().biggerThanTen!!.haiz,
-                    fixedDurations.last().biggerThanTen!!.aadatTuhr
-                )
-            } else {
-                return AadatsOfHaizAndTuhr(
-                    fixedDurations.last().biggerThanTen!!.haiz,
-                    fixedDurations.last().biggerThanTen!!.aadatTuhr
-                )
-            }
-        }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
-            //this is a bigger than 10 mubtadia dam and the last thing
+        return if (lastDurationBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
+            //if it ended in paki
+            AadatsOfHaizAndTuhr(
+                fixedDurations.last().biggerThanTen!!.haiz,
+                fixedDurations.last().biggerThanTen!!.aadatTuhr
+            )
+        } else if (lastDurationBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
+            //it ended in a haiz less than 3, no tension
             return AadatsOfHaizAndTuhr(
-                fixedDurations.last().biggerThanTen!!.aadatHaiz,
+                fixedDurations.last().biggerThanTen!!.haiz,
+                fixedDurations.last().biggerThanTen!!.aadatTuhr
+            )
+        } else {
+            return AadatsOfHaizAndTuhr(
+                fixedDurations.last().biggerThanTen!!.haiz,
                 fixedDurations.last().biggerThanTen!!.aadatTuhr
             )
         }
-
+    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA&&fixedDurations.last().days>10){
+        //this is a bigger than 10 mubtadia dam and the last thing
+        return AadatsOfHaizAndTuhr(
+            fixedDurations.last().biggerThanTen!!.aadatHaiz,
+            fixedDurations.last().biggerThanTen!!.aadatTuhr
+        )
     }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
         val lastDurationBiggerThanForty = fixedDurations.last().biggerThanForty!!.durationsList.last()
 
