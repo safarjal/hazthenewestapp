@@ -1,9 +1,7 @@
-/*
-  Todo:
-    1) VR?
-    2) CLONE DATE-AND-TIME:
-      CLASS TIME ==> !ISDATEONLY
-*/
+@font-face {
+  font-family: Nastaleeq;
+  src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
+}
 
 * {
   box-sizing: border-box;
@@ -14,18 +12,19 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  --bg-color: rgb(231, 220, 228);
-  --primary1: rgb(217, 198, 217);
-  --primary2: rgb(180, 152, 177);
-  --primary3: rgb(123, 98, 120);
-  --red: rgba(128, 0, 0, 0.5);
-  --green: rgba(0, 128, 0, 0.5);
+  --bg-color: rgb(243, 237, 241);
+  --primary1: rgb(236, 226, 236);
+  --primary2: rgb(205, 186, 203);
+  --primary3: rgb(169, 147, 166);
+  --delete: rgb(145, 120, 142);
+  --add: #0002;
+  --urdu-font: Nastaleeq, serif;
   background: var(--bg-color);
-  filter: brightness(1.2);
 }
 
 .rtl {
   direction: rtl;
+  font-family: var(--urdu-font);
 }
 
 .invisible {
@@ -143,11 +142,12 @@ button:hover {
 
 .urdu {
   direction: rtl;
+  font-family: var(--urdu-font);
 }
 
 .plus {
   color: black;
-  background-color: var(--green);
+  background-color: var(--add);
 }
 
 .clone {
@@ -157,7 +157,7 @@ button:hover {
 
 .minus {
   color: red;
-  background-color: var(--red);
+  background-color: var(--delete);
 }
 
 tbody > tr:nth-child(even) {
@@ -183,6 +183,7 @@ select {
   padding: 0.2rem;
   font-size: 1rem;
   margin: 0.5rem;
+  font-family: var(--urdu-font);
 }
 
 table {

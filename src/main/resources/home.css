@@ -1,0 +1,80 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.bg {
+  z-index: -1;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --diameter: calc(clamp(380px, 50vw, 470px));
+}
+
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('./branch-of-small-flowers.jpeg'), rgba(203, 182, 201, 0.42);
+  background-blend-mode: multiply;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 100vw clamp(65vh, 640px, 100vw);
+  filter: blur(1px);
+}
+
+.outer {
+  z-index: 50;
+  border: 20px solid rgb(117, 108, 137);
+  border-radius: 50%;
+  padding: 15px;
+}
+
+a {
+  z-index: 50;
+  display: flex;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: rgb(61, 14, 60);
+  font-weight: bold;
+  /* font-size: 4rem; */
+  font-family: 'Mea Culpa', cursive;
+  font-size: 3rem;
+}
+
+.circle {
+  z-index: 51;
+  background: rgb(114, 74, 109);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* width: var(--diameter);
+  height: var(--diameter); */
+  /* width: 100%; */
+  padding: 3rem;
+}
+
+a:hover {
+  background: pink;
+  box-shadow: 0 0 20px 20px rgb(203, 182, 201),
+  0 0 -10px -10px rgb(203, 182, 201);
+}
+
+.semicircle {
+  z-index: 1;
+  position: fixed;
+  bottom: 0;
+  height: 55vh;
+  width: 150vw;
+  background-color: rgb(203, 182, 201);
+  border-radius: 50% 50% 0 0;
+}
