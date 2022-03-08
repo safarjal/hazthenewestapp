@@ -64,7 +64,9 @@ private val datesDifferenceTableElement get() = document.getElementById(Ids.DATE
 
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 
-private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+//private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val HTMLElement.isDateOnly get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateOnly"
+private val HTMLElement.isDuration get() = (getChildById("typePicker") as HTMLSelectElement).value == "duration"
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
@@ -303,11 +305,18 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             +"تاریخ و وقت"
         }
         select {
+            id = "typePicker"
+            onChangeFunction = { event ->
+                if((event.currentTarget as HTMLSelectElement).value in setOf("dateOnly", "dateTime")) {
+                    onClickDateConfigurationRadioButton(findInputContainer(event))
+                }
+            }
             option(classes = "english lang-invisible") {
                 value = "dateOnly"
                 +"Date only"
             }
             option(classes = "urdu") {
+                selected = true
                 value = "dateOnly"
                 +"Date only urdu"
             }
@@ -318,6 +327,14 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             option(classes = "urdu") {
                 value = "dateTime"
                 +"Date and Time urdu: "
+            }
+            option(classes = "english lang-invisible") {
+                value = "duration"
+                +"Duration: "
+            }
+            option(classes = "urdu") {
+                value = "duration"
+                +"Duration: "
             }
         }
 //        div(classes = "flex") {
@@ -673,50 +690,50 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
     }
 }
 
-//private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
-//    tr {
-//        td {
-//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
-//                id = Ids.Row.INPUT_START_TIME
-//            }
-//        }
-//        td {
-//            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
-//                id = Ids.Row.INPUT_END_TIME
-//            }
-//        }
-//        addRemoveButtonsTableData()
-//    }
-//}
-
 private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
     tr {
         td {
-            input(type = InputType.number)
+            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
+                id = Ids.Row.INPUT_START_TIME
+            }
         }
         td {
-            select {
-                option(classes = "english lang-invisible") {
-                    value = "dam"
-                    + "Dam"
-                }
-                option(classes = "english lang-invisible") {
-                    value = "tuhr"
-                    + "Tuhr"
-                }
-                option(classes = "urdu") {
-                    value = "dam"
-                    + "Dam"
-                }
-                option(classes = "urdu") {
-                    value = "tuhr"
-                    + "Tuhr"
-                }
+            timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
+                id = Ids.Row.INPUT_END_TIME
             }
         }
         addRemoveButtonsTableData()
     }
 }
+
+//private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
+//    tr {
+//        td {
+//            input(type = InputType.number)
+//        }
+//        td {
+//            select {
+//                option(classes = "english lang-invisible") {
+//                    value = "dam"
+//                    + "Dam"
+//                }
+//                option(classes = "english lang-invisible") {
+//                    value = "tuhr"
+//                    + "Tuhr"
+//                }
+//                option(classes = "urdu") {
+//                    value = "dam"
+//                    + "Dam"
+//                }
+//                option(classes = "urdu") {
+//                    value = "tuhr"
+//                    + "Tuhr"
+//                }
+//            }
+//        }
+//        addRemoveButtonsTableData()
+//    }
+//}
 
 private fun TagConsumer<HTMLElement>.inputRow(
     inputContainerToCopyFrom: HTMLElement,
