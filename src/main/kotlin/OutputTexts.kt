@@ -16,7 +16,7 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,dura
     var index = 0
     var englishStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues)
+    val urduStr = generateUrduOutputStringMubtadia(fixedDurations, isDateOnly, endingOutputValues)
     englishStr += "\n\n${generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues)}"
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
@@ -249,6 +249,7 @@ fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):
     var strUrdu = ""
 
     return if(aadats==null){
+        println("aadats were null")
         ""
     }else{
         val aadatTuhr = aadats.aadatTuhr
