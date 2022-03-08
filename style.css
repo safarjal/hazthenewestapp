@@ -1,9 +1,7 @@
-/*
-  Todo:
-    1) VR?
-    2) CLONE DATE-AND-TIME:
-      CLASS TIME ==> !ISDATEONLY
-*/
+@font-face {
+  font-family: Nastaleeq;
+  src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
+}
 
 * {
   box-sizing: border-box;
@@ -20,12 +18,13 @@ body {
   --primary3: rgb(169, 147, 166);
   --delete: rgb(145, 120, 142);
   --add: #0002;
+  --urdu-font: Nastaleeq, serif;
   background: var(--bg-color);
 }
 
 .rtl {
   direction: rtl;
-  font-family: 'Amiri', serif;
+  font-family: var(--urdu-font);
 }
 
 .invisible {
@@ -143,6 +142,7 @@ button:hover {
 
 .urdu {
   direction: rtl;
+  font-family: var(--urdu-font);
 }
 
 .plus {
@@ -182,6 +182,7 @@ tbody > tr:nth-child(odd) {
 #language {
   padding: 0.2rem;
   font-size: 1rem;
+  font-family: var(--urdu-font);
 }
 
 table {
