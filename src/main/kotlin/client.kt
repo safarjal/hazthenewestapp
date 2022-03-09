@@ -313,7 +313,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             onChangeFunction = { event ->
                 if((event.currentTarget as HTMLSelectElement).value in setOf("dateOnly", "dateTime")) {
                     onClickDateConfigurationRadioButton(findInputContainer(event))
-                }
+                } else { onClickDurationRadioButton(findInputContainer(event)) }
             }
             option(classes = "english lang-invisible") {
                 value = "dateOnly"
@@ -322,7 +322,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             option(classes = "urdu") {
                 selected = true
                 value = "dateOnly"
-                +"Date only urdu"
+                +"صرف تاریخیں"
             }
             option(classes = "english lang-invisible") {
                 value = "dateTime"
@@ -330,7 +330,7 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             }
             option(classes = "urdu") {
                 value = "dateTime"
-                +"Date and Time urdu: "
+                +"تاریخ اور وقت"
             }
             option(classes = "english lang-invisible") {
                 value = "duration"
@@ -711,34 +711,39 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
     }
 }
 
-//private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
-//    tr {
-//        td {
-//            input(type = InputType.number)
-//        }
-//        td {
-//            select {
-//                option(classes = "english lang-invisible") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "english lang-invisible") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
-//                option(classes = "urdu") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "urdu") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
-//            }
-//        }
-//        addRemoveButtonsTableData()
-//    }
-//}
+private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean) {
+    val urdu = languageSelecter.value == "urdu"
+    tr {
+        td {
+            input(type = InputType.number)
+        }
+        td {
+            select {
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && !lastWasDam
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && lastWasDam
+                    value = "tuhr"
+                    + "Tuhr"
+                }
+                option(classes = "urdu") {
+                    selected = urdu && !lastWasDam
+                    value = "dam"
+                    + "Dam"
+                }
+                option(classes = "urdu") {
+                    selected = urdu && lastWasDam
+                    value = "tuhr"
+                    + "Tuhr"
+                }
+            }
+        }
+        addRemoveButtonsDurationData()
+    }
+}
 
 private fun TagConsumer<HTMLElement>.inputRow(
     inputContainerToCopyFrom: HTMLElement,
@@ -765,6 +770,14 @@ private fun TR.addRemoveButtonsTableData() {
         id = Ids.Row.BUTTONS_CONTAINER
         addButton()
         removeButton()
+    }
+}
+
+private fun TR.addRemoveButtonsDurationData() {
+    td {
+        id = Ids.Row.BUTTONS_CONTAINER
+        durationAddButton()
+        durationRemoveButton()
     }
 }
 
@@ -849,6 +862,20 @@ private fun FlowContent.removeButton() {
     }
 }
 
+private fun FlowContent.durationRemoveButton() {
+    button(type = ButtonType.button, classes = "minus") {
+        +"\u274C"
+        title = "Remove"
+        id = Ids.Row.BUTTON_REMOVE
+        onClickFunction = { event ->
+            val row = findRow(event)
+            val inputContainer = findInputContainer(event)
+            row.remove()
+            setupFirstRow(inputContainer)
+        }
+    }
+}
+
 private fun FlowContent.addButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795"
@@ -863,6 +890,40 @@ private fun FlowContent.addButton() {
                     maxTimeInput = row.endTimeInput.max
                 )
             }
+            setupRows(inputContainer)
+        }
+    }
+}
+
+private fun FlowContent.durationAddButton() {
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795"
+        title = "Add"
+        onClickFunction = { event ->
+            val row = findRow(event)
+            val inputContainer = findInputContainer(event)
+            row.after {
+                durationInputRow(true)
+            }
+            setupRows(inputContainer)
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795 \u25B2"
+        title = "Add at Start"
+        id = Ids.Row.BUTTON_ADD_BEFORE
+        onClickFunction = { event ->
+            val inputContainer = findInputContainer(event)
+            val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
+
+            inputContainer.hazInputTableBody.prepend { inputRow(
+                inputContainer.isDateOnly,
+                minTimeInput = "",
+                maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
+            ) }
             setupRows(inputContainer)
         }
     }
@@ -981,6 +1042,14 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
     }
 }
 
+private fun onClickDurationRadioButton(inputContainer: HTMLElement) {
+//    val isDuration = inputContainer.isDuration
+
+    inputContainer.classList.toggle("date_only", false)
+    inputContainer.classList.toggle("date_and_time", false)
+    inputContainer.classList.toggle("duration", true)
+}
+
 private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
     val isDateOnly = inputContainer.isDateOnly
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
@@ -996,16 +1065,9 @@ private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
         timeInput.max = newMax
     }
 
-    if(isDateOnly){
-//        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
-        inputContainer.classList.toggle("date_only", true)
-        inputContainer.classList.toggle("date_and_time", false)
-    }else{
-//        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
-        inputContainer.classList.toggle("date_only", false)
-        inputContainer.classList.toggle("date_and_time", true)
-    }
-
+    inputContainer.classList.toggle("date_only", isDateOnly)
+    inputContainer.classList.toggle("date_and_time", !isDateOnly)
+    inputContainer.classList.toggle("duration", false)
 
     if (!isDateOnly) {
         setMaxToCurrentTimeForTimeInputs(inputContainer)
