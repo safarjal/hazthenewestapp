@@ -729,7 +729,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
 }
 
 private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
-    table(classes = "") {
+    table(classes = "invisible") {
         id = Ids.HAIZ_DURATION_INPUT_TABLE
         thead {
             tr {
@@ -741,7 +741,7 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
             }
         }
         tbody {
-            durationInputRow(false)
+            durationInputRow(false, true)
         }
     }
 }
@@ -762,19 +762,19 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
     }
 }
 
-private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean) {
+private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean) {
     val urdu = languageSelecter.value == "urdu"
     tr {
         td {
             input(type = InputType.number) {
                 id = Ids.DurationRow.INPUT_DURATION
-                disabled = true
+                disabled = disable
             }
         }
         td {
             select {
                 id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
-                disabled = true
+                disabled = disable
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
@@ -960,7 +960,7 @@ private fun FlowContent.durationAddButton() {
             val rowIsDam = row.damOrTuhr == "dam"
             val inputContainer = findInputContainer(event)
             row.after {
-                durationInputRow(rowIsDam)
+                durationInputRow(rowIsDam, false)
             }
             setupFirstDurationRow(inputContainer)
         }
@@ -977,7 +977,7 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
             val inputDatesRows = inputContainer.haizDurationInputDatesRows
             val firstIsDam = inputDatesRows.first().damOrTuhr == "dam"
 
-            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam) }
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false) }
             setupFirstDurationRow(inputContainer)
         }
     }
