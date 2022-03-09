@@ -1,5 +1,5 @@
 @font-face {
-  font-family: Nastaleeq;
+  font-family: NastaleeqF
   src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
 }
 
@@ -88,7 +88,7 @@ label {
 .input_container {
   float: left;
   margin: 0 auto;
-  max-width: 768px;
+  width: 343px;
   border:1px;
 }
 
