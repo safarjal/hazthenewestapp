@@ -1398,17 +1398,24 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
 
         return if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
             //if it ended in paki
-            println("WE GOTHERE!!!!!!!!!!!!!!!!!!!!")
             AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,
                 fixedDurations.last().biggerThanTen!!.aadatTuhr
             )
         } else if (lastDurationOfBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
             //it ended in a haiz less than 3, no tension
-            return AadatsOfHaizAndTuhr(
-                fixedDurations.last().biggerThanTen!!.haiz,
-                fixedDurations.last().biggerThanTen!!.aadatTuhr
-            )
+            if (fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3){
+                println("!!!!!!GOT HERE !!!!!")
+                return AadatsOfHaizAndTuhr(
+                    fixedDurations.last().biggerThanTen!!.hz,
+                    fixedDurations.last().biggerThanTen!!.gp
+                )
+            }else{
+                return AadatsOfHaizAndTuhr(
+                    fixedDurations.last().biggerThanTen!!.haiz,
+                    fixedDurations.last().biggerThanTen!!.aadatTuhr
+                )
+            }
         } else {
             return AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,

@@ -1098,27 +1098,27 @@ class LogicTest {
         //A-3 becoming A-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 21), Date(2022, 2, 26))
-        println(entries)
+            Entry(Date(2022, 1, 1), Date(2022, 2, 1))
 
         val output = handleEntries(
             entries,
             5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,true,
+            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,true,
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
             , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
-        println(output.fixedDurations)
 
         val expectedEndingOutputValues =
             EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                false,
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
             )
+        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
+        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
