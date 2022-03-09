@@ -14,6 +14,7 @@ private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 
 object Ids {
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
+    const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
     object Row {
         const val INPUT_START_TIME = "input_start_time"
@@ -58,14 +59,16 @@ object Ids {
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
-
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
+
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
-
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 
+private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
+
 //private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val HTMLElement.isDateTime get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateTime"
 private val HTMLElement.isDateOnly get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateOnly"
 private val HTMLElement.isDuration get() = (getChildById("typePicker") as HTMLSelectElement).value == "duration"
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
@@ -278,7 +281,7 @@ private fun TagConsumer<HTMLElement>.content() {
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
         div(classes = "label-input") {
-            dateConfigurationRadioButtons(inputContainerToCopyFrom)
+            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
 //            mubtadiaCheckBox(inputContainerToCopyFrom)
 //            pregnancyCheckBox(inputContainerToCopyFrom)
@@ -297,7 +300,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
-private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
+private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
         label(classes = "english lang-invisible") {
@@ -308,12 +311,16 @@ private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: 
             htmlFor = Ids.DATE_TIME_RADIO
             +"تاریخ و وقت"
         }
+        p {
+            span {  }
+        }
         select {
             id = "typePicker"
             onChangeFunction = { event ->
-                if((event.currentTarget as HTMLSelectElement).value in setOf("dateOnly", "dateTime")) {
-                    onClickDateConfigurationRadioButton(findInputContainer(event))
-                } else { onClickDurationRadioButton(findInputContainer(event)) }
+                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
+//                if((event.currentTarget as HTMLSelectElement).value in setOf("dateOnly", "dateTime")) {
+//                    onClickDateConfigurationRadioButton(findInputContainer(event))
+//                } else { onClickDurationRadioButton(findInputContainer(event)) }
             }
             option(classes = "english lang-invisible") {
                 value = "dateOnly"
@@ -695,6 +702,24 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
     }
 }
 
+private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
+    table {
+        id = Ids.HAIZ_DURATION_INPUT_TABLE
+        thead {
+            tr {
+                th(classes = "english lang-invisible") { +"Duration" }
+                th(classes = "english lang-invisible") { +"Dam/Tuhr" }
+                th(classes = "urdu") { +"DurationU" }
+                th(classes = "urdu") { +"Dam w Tuhr" }
+                th {durationAddBeforeButton()}
+            }
+        }
+        tbody {
+            durationInputRow(false)
+        }
+    }
+}
+
 private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
     tr {
         td {
@@ -1042,35 +1067,59 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
     }
 }
 
-private fun onClickDurationRadioButton(inputContainer: HTMLElement) {
-//    val isDuration = inputContainer.isDuration
+private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) {
+    val isDateOnly = inputContainer.isDateOnly
+    val isDateTime = inputContainer.isDateTime
+    val isDuration = inputContainer.isDuration
+    if (isDateOnly || isDateTime) {
+        disableDateTable(inputContainer, false)
+        inputContainer.haizInputTable.visibility = true
+        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-    inputContainer.classList.toggle("date_only", false)
-    inputContainer.classList.toggle("date_and_time", false)
-    inputContainer.classList.toggle("duration", true)
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
+
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
+
+        inputContainer.classList.toggle("date_only", isDateOnly)
+        inputContainer.classList.toggle("date_and_time", !isDateOnly)
+        inputContainer.classList.toggle("duration", false)
+
+        if (!isDateOnly) {
+            setMaxToCurrentTimeForTimeInputs(inputContainer)
+        }
+    } else if (isDuration) {
+        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
+
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
+
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
+        inputContainer.classList.toggle("date_only", false)
+        inputContainer.classList.toggle("date_and_time", false)
+        inputContainer.classList.toggle("duration", true)
+        inputContainer.haizInputTable.visibility = false
+        disableDateTable(inputContainer, true)
+    }
 }
 
-private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
-    val isDateOnly = inputContainer.isDateOnly
-    for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-        val newValue = convertInputValue(timeInput.value, isDateOnly)
-        val newMin = convertInputValue(timeInput.min, isDateOnly)
-        val newMax = convertInputValue(timeInput.max, isDateOnly)
-
-        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-        timeInput.type = dateInputType.realValue
-
-        timeInput.value = newValue
-        timeInput.min = newMin
-        timeInput.max = newMax
-    }
-
-    inputContainer.classList.toggle("date_only", isDateOnly)
-    inputContainer.classList.toggle("date_and_time", !isDateOnly)
-    inputContainer.classList.toggle("duration", false)
-
-    if (!isDateOnly) {
-        setMaxToCurrentTimeForTimeInputs(inputContainer)
+private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
+    for (timeInput in inputContainer.timeInputsGroups) {
+        for (input in timeInput) {
+            input.disabled = disable
+        }
     }
 }
 
