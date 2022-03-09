@@ -141,6 +141,7 @@ private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON
 private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
 private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
+private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
     listOf(row.startTimeInput, row.endTimeInput)
@@ -1166,13 +1167,32 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
+    var entries= listOf<Entry>()
 
     with(inputContainer) {
-        val entries = haizInputDatesRows.map { row ->
-            Entry(
-                startTime = Date(row.startTimeInput.valueAsNumber),
-                endTime = Date(row.endTimeInput.valueAsNumber)
-            )
+        if(isDuration){
+            //take arbitrary date
+            var arbitraryDate= Date(0,0,0)
+            arbitraryDate=addTimeToDate(arbitraryDate, -1*parseDays(haizDurationInputDatesRows[0].duration.value)!!)
+            val durations = haizDurationInputDatesRows.map { row ->
+                Duration(
+                    type = if(row.damOrTuhr == "dam"){DurationType.DAM} else{DurationType.TUHR},
+                    timeInMilliseconds = parseDays(row.duration.value)!!,
+                    startTime = addTimeToDate(arbitraryDate, parseDays(row.duration.value)!!)
+                ) }
+            for(dur in durations){
+                if(dur.type==DurationType.DAM){
+                    entries+=Entry(dur.startTime, dur.endDate)
+                }
+            }
+        }else{
+            entries = haizInputDatesRows.map { row ->
+                Entry(
+                    startTime = Date(row.startTimeInput.valueAsNumber),
+                    endTime = Date(row.endTimeInput.valueAsNumber)
+                )
+            }
+
         }
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
