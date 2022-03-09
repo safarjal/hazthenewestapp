@@ -134,6 +134,8 @@ private val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement>
 
 private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
+private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
+private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BUTTONS_CONTAINER)!!
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
@@ -143,9 +145,12 @@ private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
     listOf(row.startTimeInput, row.endTimeInput)
 }
+private val HTMLElement.haizDurationInputs get() = haizDurationInputDatesRows.flatMap { row ->
+    listOf(row.durationInput, row.durationTypeInput)
+}
 
 private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
-//private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
+private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
@@ -340,9 +345,6 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
             id = "typePicker"
             onChangeFunction = { event ->
                 onClickTypeConfigurationSelectDropdown(findInputContainer(event))
-//                if((event.currentTarget as HTMLSelectElement).value in setOf("dateOnly", "dateTime")) {
-//                    onClickDateConfigurationRadioButton(findInputContainer(event))
-//                } else { onClickDurationRadioButton(findInputContainer(event)) }
             }
             option(classes = "english lang-invisible") {
                 value = "dateOnly"
@@ -725,7 +727,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
 }
 
 private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
-    table(classes = "invisible") {
+    table(classes = "") {
         id = Ids.HAIZ_DURATION_INPUT_TABLE
         thead {
             tr {
@@ -762,11 +764,15 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean) {
     val urdu = languageSelecter.value == "urdu"
     tr {
         td {
-            input(type = InputType.number) { id = Ids.DurationRow.INPUT_DURATION }
+            input(type = InputType.number) {
+                id = Ids.DurationRow.INPUT_DURATION
+                disabled = true
+            }
         }
         td {
             select {
                 id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                disabled = true
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
@@ -1120,7 +1126,7 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
         inputContainer.classList.toggle("date_and_time", !isDateOnly)
         inputContainer.classList.toggle("duration", false)
 
-        if (!isDateOnly) {
+        if (isDateTime) {
             setMaxToCurrentTimeForTimeInputs(inputContainer)
         }
     } else if (isDuration) {
@@ -1150,6 +1156,11 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
     for (timeInput in inputContainer.timeInputsGroups) {
         for (input in timeInput) {
             input.disabled = disable
+        }
+    }
+    for (durationInput in inputContainer.durationInputsGroups) {
+        for (input in durationInput) {
+            input.asDynamic().disabled = !disable
         }
     }
 }
