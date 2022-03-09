@@ -234,3 +234,8 @@ data class AadaatWithChangeability(
     var aadaat:AadatsOfHaizAndTuhr,
     var isChangeable:Boolean
 )
+
+data class AadatAfterIndexOfFixedDuration(
+    var aadat: Long,
+    var index: Int
+)
