@@ -1393,30 +1393,17 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDate
     return null
 }
 fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):AadatsOfHaizAndTuhr?{
-    //we only provide an aadat in a bigger than 10 situation
-    //it is possible to have 3 aadat in a bigger than 10 sitch:
-    // the first is the aadat before this masla,
-        //aadat before this masla is biggerThanTen.hz
-    // the second is the aadat during this masla,
-        //this is the resultant haiz after 5 soortain
-    // and the third is the aadat after this masla
-        //in a sitch with daur, that ends in haiz, this is that
-
-    //if the masla ends in tuhr, we give the second, which is the same as third
-    //of the masla ends in haiz, if it is daur, we wanna give 2
-    //and if it's not daur, we wanna give 1
-
-
     if(fixedDurations.last().type==DurationType.DAM&&fixedDurations.last().days>10) {
-        val lastDurationBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
+        val lastDurationOfBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
 
-        return if (lastDurationBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
+        return if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
             //if it ended in paki
+            println("WE GOTHERE!!!!!!!!!!!!!!!!!!!!")
             AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,
                 fixedDurations.last().biggerThanTen!!.aadatTuhr
             )
-        } else if (lastDurationBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
+        } else if (lastDurationOfBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
             //it ended in a haiz less than 3, no tension
             return AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,
