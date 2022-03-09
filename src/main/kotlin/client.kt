@@ -24,6 +24,15 @@ object Ids {
         const val BUTTON_ADD_BEFORE = "button_add_before"
     }
 
+    object DurationRow {
+        const val INPUT_DURATION = "input_duration"
+        const val INPUT_TYPE_OF_DURATION = "input_duration_type"
+        const val DURATION_BUTTONS_CONTAINER = "duration_button_add_before_container"
+        const val DURATION_BUTTON_REMOVE = "duration_button_remove"
+        const val DURATION_BUTTON_ADD_BEFORE = "duration_button_add_before"
+    }
+
+
     const val CONTENT_CONTAINER = "content_container"
     const val CONTENT = "content"
     const val CONTENT_DATES = "content_dates"
@@ -66,6 +75,7 @@ private val datesDifferenceTableElement get() = document.getElementById(Ids.DATE
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
+private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
 //private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
 private val HTMLElement.isDateTime get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateTime"
@@ -105,16 +115,28 @@ private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
         val inputDatesTable = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
         return inputDatesTable.tBodies[0] as HTMLTableSectionElement
     }
+private val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement
+    get() {
+        val inputDatesTable = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
+
 private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
     get() {
         @Suppress("UNCHECKED_CAST")
         return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
+    }
+private val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement>
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
     }
 
 private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BUTTONS_CONTAINER)!!
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
+private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
@@ -122,12 +144,14 @@ private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row 
 }
 
 private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
+//private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
 
 fun main() {
     window.onload = {
         if(askPassword()){
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
+            setupFirstDurationRow(inputsContainers.first())
             document.addEventListener(Events.VISIBILITY_CHANGE, {
                 if (!document.isHidden) {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
@@ -224,7 +248,6 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-//        style = "width:${FORM_WIDTH_DATE_ONLY}px; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -291,6 +314,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         }
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
+        haizDurationInputTable(inputContainerToCopyFrom)
 //        istimrarCheckBox(inputContainerToCopyFrom)
         calculateButton()
         hr()
@@ -703,7 +727,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
 }
 
 private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
-    table {
+    table(classes = "invisible") {
         id = Ids.HAIZ_DURATION_INPUT_TABLE
         thead {
             tr {
@@ -740,10 +764,11 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean) {
     val urdu = languageSelecter.value == "urdu"
     tr {
         td {
-            input(type = InputType.number)
+            input(type = InputType.number) { id = Ids.DurationRow.INPUT_DURATION }
         }
         td {
             select {
+                id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
@@ -800,7 +825,7 @@ private fun TR.addRemoveButtonsTableData() {
 
 private fun TR.addRemoveButtonsDurationData() {
     td {
-        id = Ids.Row.BUTTONS_CONTAINER
+        id = Ids.DurationRow.DURATION_BUTTONS_CONTAINER
         durationAddButton()
         durationRemoveButton()
     }
@@ -891,12 +916,12 @@ private fun FlowContent.durationRemoveButton() {
     button(type = ButtonType.button, classes = "minus") {
         +"\u274C"
         title = "Remove"
-        id = Ids.Row.BUTTON_REMOVE
+        id = Ids.DurationRow.DURATION_BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
             row.remove()
-            setupFirstRow(inputContainer)
+            setupFirstDurationRow(inputContainer)
         }
     }
 }
@@ -930,7 +955,7 @@ private fun FlowContent.durationAddButton() {
             row.after {
                 durationInputRow(true)
             }
-            setupRows(inputContainer)
+            setupFirstDurationRow(inputContainer)
         }
     }
 }
@@ -942,14 +967,10 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
-            val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
+            val row = inputContainer.hazDurationInputTableBody.firstChild as HTMLTableRowElement
 
-            inputContainer.hazInputTableBody.prepend { inputRow(
-                inputContainer.isDateOnly,
-                minTimeInput = "",
-                maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
-            ) }
-            setupRows(inputContainer)
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(false) }
+            setupFirstDurationRow(inputContainer)
         }
     }
 }
@@ -958,7 +979,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u25B2"
         title = "Add at Start"
-        id = Ids.Row.BUTTON_ADD_BEFORE
+        id = Ids.DurationRow.DURATION_BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
             val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
@@ -982,16 +1003,23 @@ private fun setupRows(inputContainer: HTMLElement) {
     setupFirstRow(inputContainer)
 }
 
-private fun setupFirstRow(inputContainer: HTMLElement) {
-    updateRemoveButtonDisabledStateForFirstRow(inputContainer)
+//private fun setupFirstRow(inputContainer: HTMLElement) {
 //    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
-}
+//}
 
-private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
+//private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
+private fun setupFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
     inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
+//private fun updateRemoveButtonDisabledStateForFirstDurationRow(inputContainer: HTMLElement) {
+private fun setupFirstDurationRow(inputContainer: HTMLElement) {
+    val inputDatesRows = inputContainer.haizDurationInputDatesRows
+    inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
+    inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
+}
+
 
 //private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
 //    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
@@ -1074,6 +1102,7 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
     if (isDateOnly || isDateTime) {
         disableDateTable(inputContainer, false)
         inputContainer.haizInputTable.visibility = true
+        inputContainer.haizDurationInputTable.visibility = false
         for (timeInput in inputContainer.timeInputsGroups.flatten()) {
             val newValue = convertInputValue(timeInput.value, isDateOnly)
             val newMin = convertInputValue(timeInput.min, isDateOnly)
@@ -1110,8 +1139,10 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
         inputContainer.classList.toggle("date_only", false)
         inputContainer.classList.toggle("date_and_time", false)
         inputContainer.classList.toggle("duration", true)
-        inputContainer.haizInputTable.visibility = false
+
         disableDateTable(inputContainer, true)
+        inputContainer.haizInputTable.visibility = false
+        inputContainer.haizDurationInputTable.visibility = true
     }
 }
 
