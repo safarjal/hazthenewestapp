@@ -93,7 +93,12 @@ data class Strings(
     val errorEnterMawjoodaPaki:String,
     val errorEnterNifasAadat:String,
     val passwordRequired:String,
-    val warningOnlyAuthorizedPersonnel:String
+    val warningOnlyAuthorizedPersonnel:String,
+    val typeOfInput: String,
+    val duration: String,
+    val damOrTuhr: String,
+    val dam: String,
+    val tuhr: String
 )
 
 

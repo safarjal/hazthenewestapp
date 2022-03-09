@@ -336,11 +336,11 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
     div(classes = "row") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.DATE_TIME_RADIO
-            +"Type of input: "
+            +StringsOfLanguages.ENGLISH.typeOfInput
         }
         label(classes = "urdu") {
             htmlFor = Ids.DATE_TIME_RADIO
-            +"تاریخ و وقت"
+            +StringsOfLanguages.URDU.typeOfInput
         }
         select {
             id = "typePicker"
@@ -349,28 +349,28 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
             }
             option(classes = "english lang-invisible") {
                 value = "dateOnly"
-                +"Date only"
+                +StringsOfLanguages.ENGLISH.dateOnly
             }
             option(classes = "urdu") {
                 selected = true
                 value = "dateOnly"
-                +"صرف تاریخیں"
+                +StringsOfLanguages.URDU.dateOnly
             }
             option(classes = "english lang-invisible") {
                 value = "dateTime"
-                +"Date and Time: "
+                +StringsOfLanguages.ENGLISH.dateAndTime
             }
             option(classes = "urdu") {
                 value = "dateTime"
-                +"تاریخ اور وقت"
+                +StringsOfLanguages.URDU.dateAndTime
             }
             option(classes = "english lang-invisible") {
                 value = "duration"
-                +"Duration: "
+                +StringsOfLanguages.ENGLISH.duration
             }
             option(classes = "urdu") {
                 value = "duration"
-                +"Duration: "
+                +StringsOfLanguages.URDU.duration
             }
         }
 //        div(classes = "flex") {
@@ -508,14 +508,15 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+    val errormessage = if(languageSelecter.value=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
         val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
-        require(days == null || days in doubleValidityRange) { "Aadat is incorrect" }
+        require(days == null || days in doubleValidityRange) { errormessage }
         ""
     } catch (e: IllegalArgumentException) {
-        e.message ?: "Aadat is incorrect"
+        e.message ?: errormessage
     })
 }
 
@@ -732,10 +733,10 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
         id = Ids.HAIZ_DURATION_INPUT_TABLE
         thead {
             tr {
-                th(classes = "english lang-invisible") { +"Duration" }
-                th(classes = "english lang-invisible") { +"Dam/Tuhr" }
-                th(classes = "urdu") { +"DurationU" }
-                th(classes = "urdu") { +"Dam w Tuhr" }
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.duration }
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.damOrTuhr }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.duration }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
                 th {durationAddBeforeButton()}
             }
         }
@@ -777,22 +778,22 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean) {
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
-                    + "Dam"
+                    + StringsOfLanguages.ENGLISH.dam
                 }
                 option(classes = "english lang-invisible") {
                     selected = !urdu && lastWasDam
                     value = "tuhr"
-                    + "Tuhr"
+                    + StringsOfLanguages.ENGLISH.tuhr
                 }
                 option(classes = "urdu") {
                     selected = urdu && !lastWasDam
                     value = "dam"
-                    + "Dam"
+                    + StringsOfLanguages.URDU.dam
                 }
                 option(classes = "urdu") {
                     selected = urdu && lastWasDam
                     value = "tuhr"
-                    + "Tuhr"
+                    + StringsOfLanguages.URDU.tuhr
                 }
             }
         }
@@ -1214,11 +1215,9 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
         contentContainer.visibility = true
         if (languageSelecter.value == "english") {
-            println("1")
             contentElement.innerHTML = output.englishText
             contentElement.classList.toggle("rtl", false)
         } else {
-            println("2")
             contentElement.innerHTML = output.urduText
             contentElement.classList.toggle("rtl", true)
         }
