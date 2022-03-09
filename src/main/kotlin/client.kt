@@ -138,6 +138,7 @@ private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BU
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
+private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
     listOf(row.startTimeInput, row.endTimeInput)
@@ -334,9 +335,6 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
         label(classes = "urdu") {
             htmlFor = Ids.DATE_TIME_RADIO
             +"تاریخ و وقت"
-        }
-        p {
-            span {  }
         }
         select {
             id = "typePicker"
@@ -951,9 +949,10 @@ private fun FlowContent.durationAddButton() {
         title = "Add"
         onClickFunction = { event ->
             val row = findRow(event)
+            val rowIsDam = row.damOrTuhr == "dam"
             val inputContainer = findInputContainer(event)
             row.after {
-                durationInputRow(true)
+                durationInputRow(rowIsDam)
             }
             setupFirstDurationRow(inputContainer)
         }
@@ -967,9 +966,10 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
-            val row = inputContainer.hazDurationInputTableBody.firstChild as HTMLTableRowElement
+            val inputDatesRows = inputContainer.haizDurationInputDatesRows
+            val firstIsDam = inputDatesRows.first().damOrTuhr == "dam"
 
-            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(false) }
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam) }
             setupFirstDurationRow(inputContainer)
         }
     }
