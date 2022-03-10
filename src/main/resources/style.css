@@ -1,9 +1,7 @@
-/*
-  Todo:
-    1) VR?
-    2) CLONE DATE-AND-TIME:
-      CLASS TIME ==> !ISDATEONLY
-*/
+@font-face {
+  font-family: Nastaleeq;
+  src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
+}
 
 * {
   box-sizing: border-box;
@@ -20,12 +18,14 @@ body {
   --primary3: rgb(169, 147, 166);
   --delete: rgb(145, 120, 142);
   --add: #0002;
+  --urdu-font: Nastaleeq, serif;
   background: var(--bg-color);
 }
 
 .rtl {
   direction: rtl;
-  font-family: 'Amiri', serif;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
 }
 
 .invisible {
@@ -33,6 +33,10 @@ body {
 }
 
 .lang-invisible {
+  display: none !important;
+}
+
+.duration-invis {
   display: none !important;
 }
 
@@ -64,6 +68,7 @@ input {
 input[type="date"],
 input[type="datetime-local"] {
   margin-left: 0;
+  margin-right: 0;
   direction: ltr
 }
 
@@ -89,7 +94,8 @@ label {
 .input_container {
   float: left;
   margin: 0 auto;
-  max-width: 768px;
+  /* width: min(100vw, 410px); */
+  width: clamp(min(301px, 100vw), 100vw, 375px);
   border:1px;
 }
 
@@ -98,7 +104,7 @@ label {
 }
 
 .date_and_time {
-  width: 605px;
+  width: 517px;
 }
 
 .time {
@@ -143,6 +149,8 @@ button:hover {
 
 .urdu {
   direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
 }
 
 .plus {
@@ -179,9 +187,12 @@ tbody > tr:nth-child(odd) {
   padding: 1rem;
 }
 
-#language {
+select {
   padding: 0.2rem;
   font-size: 1rem;
+  margin: 0.5rem;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
 }
 
 table {

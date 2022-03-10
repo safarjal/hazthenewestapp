@@ -2,8 +2,10 @@ import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
+import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
+import kotlinx.html.stream.createHTML
 import kotlinx.html.tr
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
@@ -13,6 +15,7 @@ private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 
 object Ids {
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
+    const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
     object Row {
         const val INPUT_START_TIME = "input_start_time"
@@ -21,6 +24,15 @@ object Ids {
         const val BUTTON_REMOVE = "button_remove"
         const val BUTTON_ADD_BEFORE = "button_add_before"
     }
+
+    object DurationRow {
+        const val INPUT_DURATION = "input_duration"
+        const val INPUT_TYPE_OF_DURATION = "input_duration_type"
+        const val DURATION_BUTTONS_CONTAINER = "duration_button_add_before_container"
+        const val DURATION_BUTTON_REMOVE = "duration_button_remove"
+        const val DURATION_BUTTON_ADD_BEFORE = "duration_button_add_before"
+    }
+
 
     const val CONTENT_CONTAINER = "content_container"
     const val CONTENT = "content"
@@ -57,14 +69,20 @@ object Ids {
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
-
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
+
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
-
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
+private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
 
-private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
+private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+
+//private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
+private val HTMLElement.isDateTime get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateTime"
+private val HTMLElement.isDateOnly get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateOnly"
+private val HTMLElement.isDuration get() = (getChildById("typePicker") as HTMLSelectElement).value == "duration"
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
@@ -94,40 +112,76 @@ private val HTMLElement.pregnancyElements get() = getElementsByClassName("preg-c
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
 
-private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
+private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
     get() {
         val inputDatesTable = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
-        val inputDatesTableBody = inputDatesTable.tBodies[0] as HTMLTableSectionElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
+private val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement
+    get() {
+        val inputDatesTable = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
+
+private val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
+    get() {
         @Suppress("UNCHECKED_CAST")
-        return inputDatesTableBody.rows.asList() as List<HTMLTableRowElement>
+        return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
+    }
+private val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement>
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
     }
 
 private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
+private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
+private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BUTTONS_CONTAINER)!!
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
+private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
+private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
+private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
     listOf(row.startTimeInput, row.endTimeInput)
 }
+private val HTMLElement.haizDurationInputs get() = haizDurationInputDatesRows.flatMap { row ->
+    listOf(row.durationInput, row.durationTypeInput)
+}
 
 private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
+private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
         if(askPassword()){
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
+            setupFirstDurationRow(inputsContainers.first())
             document.addEventListener(Events.VISIBILITY_CHANGE, {
                 if (!document.isHidden) {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                 }
             })
             languageSelecter.onchange = {
-                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecter.value == "urdu")
-                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecter.value == "english")
-                document.body!!.classList.toggle("rtl", languageSelecter.value == "urdu")
+                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecterValue == "urdu")
+                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecterValue == "english")
+                document.body!!.classList.toggle("rtl", languageSelecterValue == "urdu")
+                document.querySelectorAll("select")
+                    .asList()
+                    .map { it as HTMLSelectElement }
+                    .forEach { select ->
+                        select.children
+                            .asList()
+                            .map { it as HTMLOptionElement }
+                            .firstOrNull { option ->
+                                option.value == select.value && option.classList.contains(languageSelecterValue)
+                            }
+                            ?.selected = true
+                    }
             }
         }else{
             askPassword()
@@ -215,7 +269,6 @@ private fun addCompareButtonIfNeeded() {
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
     div {
         id = Ids.INPUT_CONTAINER
-//        style = "width:${FORM_WIDTH_DATE_ONLY}px; border:${FORM_BORDER}px; padding:${FORM_PADDING}px;"
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -272,7 +325,7 @@ private fun TagConsumer<HTMLElement>.content() {
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
         div(classes = "label-input") {
-            dateConfigurationRadioButtons(inputContainerToCopyFrom)
+            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
 //            mubtadiaCheckBox(inputContainerToCopyFrom)
 //            pregnancyCheckBox(inputContainerToCopyFrom)
@@ -282,6 +335,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         }
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
+        haizDurationInputTable(inputContainerToCopyFrom)
 //        istimrarCheckBox(inputContainerToCopyFrom)
         calculateButton()
         hr()
@@ -291,47 +345,85 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
-private fun FlowContent.dateConfigurationRadioButtons(inputContainerToCopyFrom: HTMLElement?) {
+private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
-        div(classes = "flex") {
-            radioInput(classes = "zero-flex") {
-                id = Ids.DATE_TIME_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = !isDateOnly
-                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+        label(classes = "english lang-invisible") {
+            htmlFor = Ids.DATE_TIME_RADIO
+            +StringsOfLanguages.ENGLISH.typeOfInput
+        }
+        label(classes = "urdu") {
+            htmlFor = Ids.DATE_TIME_RADIO
+            +StringsOfLanguages.URDU.typeOfInput
+        }
+        select {
+            id = "typePicker"
+            onChangeFunction = { event ->
+                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
             }
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.DATE_TIME_RADIO
-                +"Date and Time"
+            option(classes = "english lang-invisible") {
+                value = "dateOnly"
+                +StringsOfLanguages.ENGLISH.dateOnly
             }
-            label(classes = "urdu") {
-                htmlFor = Ids.DATE_TIME_RADIO
-                +"تاریخ اور وقت"
+            option(classes = "urdu") {
+                selected = true
+                value = "dateOnly"
+                +StringsOfLanguages.URDU.dateOnly
+            }
+            option(classes = "english lang-invisible") {
+                value = "dateTime"
+                +StringsOfLanguages.ENGLISH.dateAndTime
+            }
+            option(classes = "urdu") {
+                value = "dateTime"
+                +StringsOfLanguages.URDU.dateAndTime
+            }
+            option(classes = "english lang-invisible") {
+                value = "duration"
+                +StringsOfLanguages.ENGLISH.duration
+            }
+            option(classes = "urdu") {
+                value = "duration"
+                +StringsOfLanguages.URDU.duration
             }
         }
-        div(classes = "flex") {
-            radioInput(classes = "zero-flex") {
-                id = Ids.DATE_ONLY_RADIO
-                name = Ids.DATE_AND_OR_RADIO
-                checked = isDateOnly
-                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-            }
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.DATE_ONLY_RADIO
-                +"Date only"
-            }
-            label(classes = "urdu") {
-                htmlFor = Ids.DATE_ONLY_RADIO
-                +"صرف تاریخیں"
-            }
-
-        }
+//        div(classes = "flex") {
+//            radioInput(classes = "zero-flex") {
+//                id = Ids.DATE_TIME_RADIO
+//                name = Ids.DATE_AND_OR_RADIO
+//                checked = !isDateOnly
+//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+//            }
+//            label(classes = "english lang-invisible") {
+//                htmlFor = Ids.DATE_TIME_RADIO
+//                +"Date and Time"
+//            }
+//            label(classes = "urdu") {
+//                htmlFor = Ids.DATE_TIME_RADIO
+//                +"تاریخ اور وقت"
+//            }
+//        }
+//        div(classes = "flex") {
+//            radioInput(classes = "zero-flex") {
+//                id = Ids.DATE_ONLY_RADIO
+//                name = Ids.DATE_AND_OR_RADIO
+//                checked = isDateOnly
+//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
+//            }
+//            label(classes = "english lang-invisible") {
+//                htmlFor = Ids.DATE_ONLY_RADIO
+//                +"Date only"
+//            }
+//            label(classes = "urdu") {
+//                htmlFor = Ids.DATE_ONLY_RADIO
+//                +"صرف تاریخیں"
+//            }
+//        }
     }
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_HAIZ_INPUT
             +(StringsOfLanguages.ENGLISH.haizAadat)
@@ -346,7 +438,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
     }
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_TUHR_INPUT
             +(StringsOfLanguages.ENGLISH.tuhrAadat)
@@ -361,7 +453,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
     }
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
             +(StringsOfLanguages.ENGLISH.mawjoodahTuhr)
@@ -430,14 +522,15 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+    val errormessage = if(languageSelecterValue=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
         val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
-        require(days == null || days in doubleValidityRange) { "Aadat is incorrect" }
+        require(days == null || days in doubleValidityRange) { errormessage }
         ""
     } catch (e: IllegalArgumentException) {
-        e.message ?: "Aadat is incorrect"
+        e.message ?: errormessage
     })
 }
 
@@ -457,13 +550,15 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
                     val isChecked = (event.currentTarget as HTMLInputElement).checked
-                    for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
+                    val inputContainer = findInputContainer(event)
+                    for (pregnancyElement in inputContainer.pregnancyInputs) {
                             pregnancyElement.visibility = isChecked
                             pregnancyElement.disabled = !isChecked
                     }
-                    for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                    for (pregnancyElement in inputContainer.pregnancyElements) {
                             pregnancyElement.visibility = isChecked
                     }
+                    disableAadaat(inputContainer, inputContainer.isDuration)
                 }
             }
         }
@@ -517,7 +612,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         div {
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
@@ -553,7 +648,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         div {
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
@@ -630,6 +725,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.endTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
+                th {addBeforeButton()}
             }
         }
         tbody {
@@ -644,6 +740,24 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                     maxTimeInput = ""//currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
                 )
             }
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
+    table(classes = "invisible") {
+        id = Ids.HAIZ_DURATION_INPUT_TABLE
+        thead {
+            tr {
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.duration }
+                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.damOrTuhr }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.duration }
+                th(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
+                th {durationAddBeforeButton()}
+            }
+        }
+        tbody {
+            durationInputRow(false, true)
         }
     }
 }
@@ -664,34 +778,87 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
     }
 }
 
-//private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
-//    tr {
-//        td {
-//            input(type = InputType.number)
-//        }
-//        td {
-//            select {
-//                option(classes = "english lang-invisible") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "english lang-invisible") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
-//                option(classes = "urdu") {
-//                    value = "dam"
-//                    + "Dam"
-//                }
-//                option(classes = "urdu") {
-//                    value = "tuhr"
-//                    + "Tuhr"
-//                }
-//            }
-//        }
-//        addRemoveButtonsTableData()
-//    }
-//}
+private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
+    val urdu = languageSelecterValue == "urdu"
+    tr {
+        td {
+            input(type = InputType.number) {
+                id = Ids.DurationRow.INPUT_DURATION
+                disabled = disable
+            }
+        }
+        td {
+            select {
+                id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                disabled = disable
+                onChangeFunction = { event ->
+                    val row = findRow(event)
+                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                    row.durationInput.value = "0"
+                }
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && !lastWasDam
+                    value = "dam"
+                    + StringsOfLanguages.ENGLISH.dam
+                }
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && lastWasDam
+                    value = "tuhr"
+                    + StringsOfLanguages.ENGLISH.tuhr
+                }
+                option {
+                    classes = setOfNotNull(
+                        "english",
+                        "lang-invisible",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "haml"
+                    + StringsOfLanguages.ENGLISH.preg
+                }
+                option(classes = "english lang-invisible preg-checked invisible") {
+                    classes = setOfNotNull(
+                        "english",
+                        "lang-invisible",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "wiladat"
+                    + StringsOfLanguages.ENGLISH.birthduration
+                }
+                option(classes = "urdu") {
+                    selected = urdu && !lastWasDam
+                    value = "dam"
+                    + StringsOfLanguages.URDU.dam
+                }
+                option(classes = "urdu") {
+                    selected = urdu && lastWasDam
+                    value = "tuhr"
+                    + StringsOfLanguages.URDU.tuhr
+                }
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "haml"
+                    + StringsOfLanguages.URDU.pregduration
+                }
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "wiladat"
+                    + StringsOfLanguages.URDU.birthduration
+                }
+            }
+        }
+        addRemoveButtonsDurationData()
+    }
+}
 
 private fun TagConsumer<HTMLElement>.inputRow(
     inputContainerToCopyFrom: HTMLElement,
@@ -718,6 +885,14 @@ private fun TR.addRemoveButtonsTableData() {
         id = Ids.Row.BUTTONS_CONTAINER
         addButton()
         removeButton()
+    }
+}
+
+private fun TR.addRemoveButtonsDurationData() {
+    td {
+        id = Ids.DurationRow.DURATION_BUTTONS_CONTAINER
+        durationAddButton()
+        durationRemoveButton()
     }
 }
 
@@ -802,6 +977,20 @@ private fun FlowContent.removeButton() {
     }
 }
 
+private fun FlowContent.durationRemoveButton() {
+    button(type = ButtonType.button, classes = "minus") {
+        +"\u274C"
+        title = "Remove"
+        id = Ids.DurationRow.DURATION_BUTTON_REMOVE
+        onClickFunction = { event ->
+            val row = findRow(event)
+            val inputContainer = findInputContainer(event)
+            row.remove()
+            setupFirstDurationRow(inputContainer)
+        }
+    }
+}
+
 private fun FlowContent.addButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795"
@@ -821,21 +1010,52 @@ private fun FlowContent.addButton() {
     }
 }
 
+private fun FlowContent.durationAddButton() {
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795"
+        title = "Add"
+        onClickFunction = { event ->
+            val row = findRow(event)
+            val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
+            val inputContainer = findInputContainer(event)
+            row.after {
+                durationInputRow(rowIsDam, false, inputContainer.isPregnancy)
+            }
+            setupFirstDurationRow(inputContainer)
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
+    button(type = ButtonType.button, classes = "plus") {
+        +"\u2795 \u25B2"
+        title = "Add at Start"
+        id = Ids.Row.BUTTON_ADD_BEFORE
+        onClickFunction = { event ->
+            val inputContainer = findInputContainer(event)
+            val inputDatesRows = inputContainer.haizDurationInputDatesRows
+            val firstIsDam = inputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
+
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isPregnancy) }
+            setupFirstDurationRow(inputContainer)
+        }
+    }
+}
+
 private fun TagConsumer<HTMLElement>.addBeforeButton() {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u25B2"
-        title = "Add Before"
-        id = Ids.Row.BUTTON_ADD_BEFORE
+        title = "Add at Start"
+        id = Ids.DurationRow.DURATION_BUTTON_ADD_BEFORE
         onClickFunction = { event ->
-            val row = findRow(event)
             val inputContainer = findInputContainer(event)
-            row.before {
-                inputRow(
-                    inputContainer.isDateOnly,
-                    minTimeInput = row.startTimeInput.min,
-                    maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
-                )
-            }
+            val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
+
+            inputContainer.hazInputTableBody.prepend { inputRow(
+                inputContainer.isDateOnly,
+                minTimeInput = "",
+                maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
+            ) }
             setupRows(inputContainer)
         }
     }
@@ -850,26 +1070,33 @@ private fun setupRows(inputContainer: HTMLElement) {
     setupFirstRow(inputContainer)
 }
 
-private fun setupFirstRow(inputContainer: HTMLElement) {
-    updateRemoveButtonDisabledStateForFirstRow(inputContainer)
-    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
-}
+//private fun setupFirstRow(inputContainer: HTMLElement) {
+//    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
+//}
 
-private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
+//private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
+private fun setupFirstRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizInputDatesRows
     inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
-
-private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
-    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
-        if (index > 0) {
-            row.addBeforeButton?.remove()
-        } else if (row.addBeforeButton == null) {
-            row.buttonsContainer.append { addBeforeButton() }
-        }
-    }
+//private fun updateRemoveButtonDisabledStateForFirstDurationRow(inputContainer: HTMLElement) {
+private fun setupFirstDurationRow(inputContainer: HTMLElement) {
+    val inputDatesRows = inputContainer.haizDurationInputDatesRows
+    inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
+    inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
 }
+
+
+//private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
+//    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
+//        if (index > 0) {
+//            row.addBeforeButton?.remove()
+//        } else if (row.addBeforeButton == null) {
+//            row.buttonsContainer.append { addBeforeButton() }
+//        }
+//    }
+//}
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
     val currentTime = currentTimeString(inputContainer.isDateOnly)
@@ -935,71 +1162,159 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
     }
 }
 
-private fun onClickDateConfigurationRadioButton(inputContainer: HTMLElement) {
+private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) {
     val isDateOnly = inputContainer.isDateOnly
-    for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-        val newValue = convertInputValue(timeInput.value, isDateOnly)
-        val newMin = convertInputValue(timeInput.min, isDateOnly)
-        val newMax = convertInputValue(timeInput.max, isDateOnly)
+    val isDateTime = inputContainer.isDateTime
+    val isDuration = inputContainer.isDuration
+    if (isDateOnly || isDateTime) {
+        disableDateTable(inputContainer, false)
+        inputContainer.haizInputTable.visibility = true
+        inputContainer.haizDurationInputTable.visibility = false
+        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-        timeInput.type = dateInputType.realValue
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
 
-        timeInput.value = newValue
-        timeInput.min = newMin
-        timeInput.max = newMax
-    }
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
 
-    if(isDateOnly){
-//        inputContainer.style.width = "${FORM_WIDTH_DATE_ONLY}px"
-        inputContainer.classList.toggle("date_only", true)
-        inputContainer.classList.toggle("date_and_time", false)
-    }else{
-//        inputContainer.style.width = "${FORM_WIDTH_DATE_TIME}px"
+        inputContainer.classList.toggle("date_only", isDateOnly)
+        inputContainer.classList.toggle("date_and_time", !isDateOnly)
+        inputContainer.classList.toggle("duration", false)
+
+        if (isDateTime) {
+            setMaxToCurrentTimeForTimeInputs(inputContainer)
+        }
+    } else if (isDuration) {
+        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
+
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
+
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
         inputContainer.classList.toggle("date_only", false)
-        inputContainer.classList.toggle("date_and_time", true)
-    }
+        inputContainer.classList.toggle("date_and_time", false)
+        inputContainer.classList.toggle("duration", true)
 
-
-    if (!isDateOnly) {
-        setMaxToCurrentTimeForTimeInputs(inputContainer)
+        disableDateTable(inputContainer, true)
+        inputContainer.haizInputTable.visibility = false
+        inputContainer.haizDurationInputTable.visibility = true
     }
 }
 
+private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
+    for (timeInput in inputContainer.timeInputsGroups) {
+        for (input in timeInput) {
+            input.disabled = disable
+        }
+    }
+    for (durationInput in inputContainer.durationInputsGroups) {
+        for (input in durationInput) {
+            input.asDynamic().disabled = !disable
+        }
+    }
+    disableAadaat(inputContainer, disable)
+}
+
+private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
+    inputContainer.getElementsByClassName("aadat_inputs")
+        .asList()
+        .forEach { row ->
+            row.classList.toggle("duration-invis", disable)
+            row.querySelectorAll("input")
+                .asList()
+                .map { input ->
+                    input as HTMLInputElement
+                    input.disabled = disable
+                }
+        }
+}
+
 private fun parseEntries(inputContainer: HTMLElement) {
+    var entries= listOf<Entry>()
 
     with(inputContainer) {
-        val entries = haizInputDatesRows.map { row ->
-            Entry(
-                startTime = Date(row.startTimeInput.valueAsNumber),
-                endTime = Date(row.endTimeInput.valueAsNumber)
-            )
+        var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
+        var pregnancyIs = isPregnancy
+        var pregnancyStrt = Date(pregStartTime.valueAsNumber)
+        var pregnancyEnd = Date(pregEndTime.valueAsNumber)
+
+
+        if(isDuration){
+            //take arbitrary date
+            val arbitraryDate= Date(0,0,0)
+            var durations = haizDurationInputDatesRows.map { row ->
+                Duration(
+                    type = if(row.damOrTuhr == "dam"){DurationType.DAM}
+                    else if(row.damOrTuhr == "tuhr"){DurationType.TUHR}
+                    else if(row.damOrTuhr == "haml"){DurationType.HAML}
+                    else if(row.damOrTuhr == "wiladat"){DurationType.WILADAT_ISQAT}
+                            else{DurationType.NIFAAS},
+                    timeInMilliseconds = parseDays(row.duration.value)!!,
+                    startTime = arbitraryDate
+                ) }
+            for (index in durations.indices){
+                if(index>0){
+                    durations[index].startTime = durations[index-1].endDate
+                }
+            }
+            if(durations[0].type==DurationType.TUHR){mawjodahtuhreditable=durations[0].timeInMilliseconds}
+            println(durations)
+            for(dur in durations){
+                if(dur.type==DurationType.DAM){
+                    entries+=Entry(dur.startTime, dur.endDate)
+                }else if(dur.type==DurationType.HAML){
+                    pregnancyIs=true
+                    pregnancyStrt=dur.startTime
+                }else if(dur.type==DurationType.WILADAT_ISQAT){
+                    pregnancyEnd=dur.startTime
+                }
+            }
+        }else{
+            entries = haizInputDatesRows.map { row ->
+                Entry(
+                    startTime = Date(row.startTimeInput.valueAsNumber),
+                    endTime = Date(row.endTimeInput.valueAsNumber)
+                )
+            }
+
         }
+        println(entries)
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
-            parseDays(mawjoodaTuhr.value),
+            mawjodahtuhreditable,
             isMawjoodaFasid,
             isDateOnly,
-            isPregnancy,
+            pregnancyIs,
             Pregnancy(
-                Date(pregStartTime.valueAsNumber),
-                Date(pregEndTime.valueAsNumber),
+                pregnancyStrt,
+                pregnancyEnd,
                 parseDays(aadatNifas.value),
                 mustabeen
             ),
             false,
-            languageSelecter.value
+            languageSelecterValue,
+            isDuration
         )
         contentContainer.visibility = true
-        if (languageSelecter.value == "english") {
-            println("1")
+        if (languageSelecterValue == "english") {
             contentElement.innerHTML = output.englishText
             contentElement.classList.toggle("rtl", false)
         } else {
-            println("2")
             contentElement.innerHTML = output.urduText
             contentElement.classList.toggle("rtl", true)
         }

@@ -99,7 +99,7 @@ class LogicTest {
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,false),
             isMubtadia = false,
-            language = "urdu"
+            language = "urdu", false
         )
         val haizDateList = output.hazDatesList
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -128,7 +128,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = true,
             pregnancy = Pregnancy(Date(2020,9,6),Date(2021,5,15),25*MILLISECONDS_IN_A_DAY,true), isMubtadia = false,
-            language = "urdu"
+            language = "urdu", false
         )
         val haizDateList = output.hazDatesList
 
@@ -179,7 +179,7 @@ class LogicTest {
             isPregnancy = true,
             pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)
         , isMubtadia = false,
-            language = "urdu")
+            language = "urdu", false)
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()

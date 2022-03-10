@@ -17,29 +17,25 @@
     <script src="hazthenewestapp.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="rtl">
 <!--<div id="root"></div>-->
 <header>
-    <h1><span class="english lang-invisible">Haidh and Istihadha Calculator</span><span class="urdu">حيض و استحاضہ کیلکولیٹر</span></h1>
-<!--    <details>-->
-<!--        <summary class="english">Instructions</summary>-->
-<!--        <p class="how-to english">-->
-<!--            Please enter the start date-time for first dam in the first box, and the end date-time for that dam in the-->
-<!--            second box. To add another period after that, press (➕). If you need to remove a period in the middle, click-->
-<!--            the remove (❌) button next to it. To add a spot, enter a period where the start time and the end time are the-->
-<!--            same. Once all periods have been added, click Calculate button, to get the solution.-->
-<!--        </p>-->
-<!--        <p class="how-to urdu">This is my Urdu instructions</p>-->
-<!--    </details>-->
+    <h1>
+        <!-- <a href="./home.html">Home</a> -->
+        <span class="english lang-invisible">Haidh and Istihadha Calculator</span>
+        <span class="urdu">حيض و استحاضہ کیلکولیٹر</span>
+<!--        <a class="english lang-invisible" href="./instructions-english.html">i</a>-->
+<!--        <a class="urdu" href="./instructions-urdu.html">i</a>-->
+    </h1>
     <div id="language-selection">
         <select name="language" id="language">
-            <option selected="selected" value="urdu">اردو</option>
+            <option class="rtl" selected="selected" value="urdu">اردو</option>
             <option value="english">English</option>
         </select>
-        <label class="english lang-invisible" for="language">زبان تبديل كريں</label>
+        <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
         <label class="urdu" for="language">Select Language</label>
     </div>
     <hr>
