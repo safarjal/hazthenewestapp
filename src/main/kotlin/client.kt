@@ -788,6 +788,10 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
             select {
                 id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
                 disabled = disable
+                onChangeFunction = { event ->
+                    val row = findRow(event)
+                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "waza")
+                }
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
@@ -798,6 +802,16 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     value = "tuhr"
                     + StringsOfLanguages.ENGLISH.tuhr
                 }
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && lastWasDam
+                    value = "haml"
+                    + "Haml"
+                }
+                option(classes = "english lang-invisible") {
+                    selected = !urdu && lastWasDam
+                    value = "waza"
+                    + "Waza'"
+                }
                 option(classes = "urdu") {
                     selected = urdu && !lastWasDam
                     value = "dam"
@@ -807,6 +821,14 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     selected = urdu && lastWasDam
                     value = "tuhr"
                     + StringsOfLanguages.URDU.tuhr
+                }
+                option(classes = "urdu") {
+                    value = "haml"
+                    + "Haml"
+                }
+                option(classes = "urdu") {
+                    value = "waza"
+                    + "Waza'"
                 }
             }
         }
