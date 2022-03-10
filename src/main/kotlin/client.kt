@@ -1245,7 +1245,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
     var entries= listOf<Entry>()
 
     with(inputContainer) {
-        var mawjodahtuhreditable = mawjoodaTuhr.value
+        var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
         var pregnancyIs = isPregnancy
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
@@ -1269,7 +1269,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     durations[index].startTime = durations[index-1].endDate
                 }
             }
-
+            if(durations[0].type==DurationType.TUHR){mawjodahtuhreditable=durations[0].timeInMilliseconds}
             println(durations)
             for(dur in durations){
                 if(dur.type==DurationType.DAM){
@@ -1296,7 +1296,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
-            parseDays(mawjodahtuhreditable),
+            mawjodahtuhreditable,
             isMawjoodaFasid,
             isDateOnly,
             pregnancyIs,
