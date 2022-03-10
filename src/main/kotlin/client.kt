@@ -710,9 +710,22 @@ private fun FlowContent.calculateButton() {
 }
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
-    p {
-        style = "white-space: pre-wrap;"
-        block()
+    div {
+        id = "content_wrapper"
+        button {
+            onClickFunction = { event ->
+                val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id.equals("content_wrapper") }
+                val para = div?.getChildById("content_para")
+                val myClipboard: ClipboardManager = activity.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                navigator.clipboard.writeText(copyText.value);
+            }
+            +"✓"
+        }
+        p {
+            id = "content_para"
+            style = "white-space: pre-wrap;"
+            block()
+        }
     }
 }
 
