@@ -422,7 +422,7 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_HAIZ_INPUT
             +(StringsOfLanguages.ENGLISH.haizAadat)
@@ -437,7 +437,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
     }
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.AADAT_TUHR_INPUT
             +(StringsOfLanguages.ENGLISH.tuhrAadat)
@@ -452,7 +452,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
     }
-    div(classes = "row") {
+    div(classes = "row aadat_inputs") {
         label(classes = "english lang-invisible") {
             htmlFor = Ids.MAWJOODA_TUHR_INPUT
             +(StringsOfLanguages.ENGLISH.mawjoodahTuhr)
@@ -484,7 +484,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     pregnancyCheckBox(inputContainerToCopyFrom)
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         label {
             htmlFor = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
@@ -534,7 +534,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row") {
+    div(classes = "row  aadat_inputs") {
         div {
             label(classes = "english lang-invisible") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
@@ -573,7 +573,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 //}
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         div {
             label {
                 htmlFor = Ids.MUSTABEEN_CHECKBOX
@@ -609,7 +609,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         div {
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
@@ -645,7 +645,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row preg-checked invisible aadat_inputs") {
         div {
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
@@ -1178,6 +1178,21 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
             input.asDynamic().disabled = !disable
         }
     }
+    disableAdaat(inputContainer, disable)
+}
+
+private fun disableAdaat(inputContainer: HTMLElement, disable: Boolean) {
+    inputContainer.getElementsByClassName("aadat_inputs")
+        .asList()
+        .forEach { row ->
+            row.visibility = !disable
+            row.querySelectorAll("input")
+                .asList()
+                .map { input ->
+                    input as HTMLInputElement
+                    input.disabled = disable
+                }
+        }
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
