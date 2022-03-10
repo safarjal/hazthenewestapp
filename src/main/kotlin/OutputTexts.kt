@@ -5,11 +5,11 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
     var urduStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
     urduStr+= generateUrduOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues, isDuration)
-    englishStr+= "\n\n${generateEnglishOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues)}"
+    englishStr+= "\n\n${generateEnglishOutputStringPregnancy(fixedDurations,isDateOnly,pregnancy, endingOutputValues, isDuration)}"
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,isDateOnly)
 
-    return OutputTexts(englishStr,urduStr, hazDatesStr,hazDatesList,endingOutputValues, fixedDurations)
+    return OutputTexts(englishStr,urduStr, "",hazDatesList,endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,durations: List<Duration>,
                          isDateOnly:Boolean, endingOutputValues: EndingOutputValues, isDuration: Boolean):OutputTexts{
@@ -345,6 +345,42 @@ fun outputStringUrduBiggerThan10HallDurations(fixedDurations: MutableList<FixedD
 
     return strUrdu
 }
+fun outputStringEnglishBiggerThan10HallDurations(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+    var strEnglish = ""
+
+    if((fixedDurations[index].days>10 &&
+                (fixedDurations[index].type==DurationType.DAM||
+                        fixedDurations[index].type==DurationType.DAM_MUBTADIA))){
+
+        strEnglish += TAB
+
+        for(duration in fixedDurations[index].biggerThanTen!!.durationsList){
+            if(duration.type == DurationType.ISTIHAZA_BEFORE){
+                strEnglish+= StringsOfLanguages.ENGLISH.startingFromIstehaza.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+
+            }else if(duration.type == DurationType.HAIZ){
+                if(duration==fixedDurations[index].biggerThanTen!!.durationsList[0]){
+                    strEnglish+= StringsOfLanguages.ENGLISH.startingFromHaiz.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+                }else{
+                    strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+                }
+            }else if(duration.type == DurationType.ISTIHAZA_AFTER){
+                strEnglish+= StringsOfLanguages.ENGLISH.followedByistehazaAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+                //maybe we'll wanna add something about itibaar bil khawateem
+            }else if(duration.type == DurationType.NIFAAS){
+                strEnglish+= StringsOfLanguages.ENGLISH.startingFromNifas
+            }
+        }
+    }
+    if(strEnglish!=""){
+        strEnglish+=StringsOfLanguages.ENGLISH.khatimaplusnewline
+    }
+
+    return strEnglish
+}
 
 fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
     var strUrdu = ""
@@ -386,6 +422,29 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     }
 
     return strUrdu
+}
+fun outputStringEnglishBiggerThan40HallDuration(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+
+    var strEnglish = ""
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        strEnglish+=TAB
+        for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
+            if(duration.type==DurationType.NIFAAS){
+                strEnglish+= StringsOfLanguages.ENGLISH.startingFromNifas.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+            }else if(duration.type==DurationType.ISTIHAZA_AFTER){
+                strEnglish+= StringsOfLanguages.ENGLISH.followedByistehazaAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+            }else if(duration.type==DurationType.HAIZ){
+                strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigital(duration.timeInMilliseconds, isDateOnly)}")
+                //maybe we'll wanna add something about itibaar bil khawateem
+            }
+        }
+    }
+    if(strEnglish!=""){
+        strEnglish+=StringsOfLanguages.ENGLISH.khatimaplusnewline
+    }
+    return strEnglish
 }
 fun outputStringUrduBiggerThan40HallDuration(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
 
@@ -490,6 +549,50 @@ fun outputStringUrduHeaderLineDuration(fixedDurations: MutableList<FixedDuration
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputString = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+    }
+    return outputString
+}
+fun outputStringEnglishHeaderLineDuration(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+    //in duration we just give the fixed duration
+    var outputString = ""
+    if (fixedDurations[index].type==DurationType.DAM||
+        fixedDurations[index].type==DurationType.DAM_MUBTADIA){
+        val sd:Date = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
+            outputString = StringsOfLanguages.ENGLISH.durationHaiz.replace("duration1", "${daysHoursMinutesDigital((difference(sd,et)), isDateOnly)}")
+        }else{//bigger than 10
+            outputString = StringsOfLanguages.ENGLISH.durationDam.replace("duration1", "${daysHoursMinutesDigital((difference(sd,et)), isDateOnly)}")
+        }
+
+    }else if (fixedDurations[index].type == DurationType.TUHR||
+        fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
+        fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+        val time = fixedDurations[index].timeInMilliseconds
+        outputString =  StringsOfLanguages.ENGLISH.durationPaki.replace("duration1", "${daysHoursMinutesDigital(time, isDateOnly)}")
+        if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+            outputString+=StringsOfLanguages.ENGLISH.becamemutadah
+        }
+
+    }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
+        outputString =  StringsOfLanguages.ENGLISH.durationTuhrefasid.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}")
+    }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
+        fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
+        outputString =  StringsOfLanguages.ENGLISH.durationTuhreFasidWithAddition.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigital((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
+        val sd = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        if(fixedDurations[index].days<=40){
+            outputString = StringsOfLanguages.ENGLISH.durationNifas.replace("duration1", "${daysHoursMinutesDigital((difference(sd,et)), isDateOnly)}")
+        }else{//more than 40
+            outputString = StringsOfLanguages.ENGLISH.durationDam.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+        }
+    }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
+
+    }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
+        outputString = StringsOfLanguages.ENGLISH.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
     }
     return outputString
 }
@@ -731,10 +834,18 @@ fun generateEnglishOutputString(fixedDurations: MutableList<FixedDuration>, isDa
     str += StringsOfLanguages.ENGLISH.headerline
     var index = 0
     while (index<fixedDurations.size){
-        str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
-        str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
-        if(index==fixedDurations.size-1){//if this os the last index
-            str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues)
+        if(isDuration){
+            str += outputStringEnglishHeaderLineDuration(fixedDurations,index, isDateOnly)
+            str += outputStringEnglishBiggerThan10HallDurations(fixedDurations,index, isDateOnly)
+            if(index==fixedDurations.size-1){//if this os the last index
+                str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues, isDuration)
+            }
+        }else{
+            str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            if(index==fixedDurations.size-1){//if this os the last index
+                str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues, isDuration)
+            }
         }
         index++
     }
@@ -866,7 +977,7 @@ fun outputStringEnglishBiggerThan40Hall(fixedDurations: MutableList<FixedDuratio
 
     return strEnglish
 }
-fun generateEnglishOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues):String{
+fun generateEnglishOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, isDateOnly: Boolean, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues, isDuration: Boolean):String{
     val mustabeen = pregnancy.mustabeenUlKhilqat
 //    var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
     val birthTime = pregnancy.birthTime
@@ -877,52 +988,66 @@ fun generateEnglishOutputStringPregnancy(fixedDurations: MutableList<FixedDurati
             str += StringsOfLanguages.ENGLISH.beforepregheader
         }
         for(index in fixedDurations.indices){
-            str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
-            str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
-            str += outputStringEnglishBiggerThan40Hall(fixedDurations,index, isDateOnly)
-            if(fixedDurations[index].type==DurationType.HAML){
-                str += StringsOfLanguages.ENGLISH.preg
-            }
-            if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += StringsOfLanguages.ENGLISH.birth.replace("date1", "${parseDate(birthTime, isDateOnly)}")
-                if(index<fixedDurations.size-2){//if there is something after wiladat
-                    str += StringsOfLanguages.ENGLISH.afterpregheader
+            if(isDuration){
+                str += outputStringEnglishHeaderLineDuration(fixedDurations,index, isDateOnly)
+                str += outputStringEnglishBiggerThan10HallDurations(fixedDurations,index, isDateOnly)
+                str += outputStringEnglishBiggerThan40HallDuration(fixedDurations,index, isDateOnly)
+                if(fixedDurations[index].type==DurationType.HAML){
+                    str += StringsOfLanguages.ENGLISH.pregduration
                 }
+                if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                    str += StringsOfLanguages.ENGLISH.birthduration
+                }
+
+            }else{
+                str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
+                str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+                str += outputStringEnglishBiggerThan40Hall(fixedDurations,index, isDateOnly)
+                if(fixedDurations[index].type==DurationType.HAML){
+                    str += StringsOfLanguages.ENGLISH.preg
+                }
+                if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                    str += StringsOfLanguages.ENGLISH.birth.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
+                    if(index<fixedDurations.size-2){//if there is something after wiladat
+                        str += StringsOfLanguages.ENGLISH.afterpregheader
+                    }
+                }
+
             }
 
         }
-        str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues)
+        str += outputStringEnglishFinalLines(isDateOnly, endingOutputValues, isDuration)
 
 
 
     }else{//if it is ghair mustabeenulkhilqat
-        str += StringsOfLanguages.ENGLISH.headerline
+        str += StringsOfLanguages.URDU.headerline
 
         for(index in fixedDurations.indices){
-            str += outputStringEnglishHeaderLine(fixedDurations,index, isDateOnly)
-            str += outputStringEnglishBiggerThan10Hall(fixedDurations,index, isDateOnly)
+            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
             if(fixedDurations[index].type==DurationType.HAML){
-                str += StringsOfLanguages.ENGLISH.preg
+                str += StringsOfLanguages.URDU.preg
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                str += StringsOfLanguages.ENGLISH.earlymiscarriage.replace("date1", "${parseDate(birthTime, isDateOnly)}")
+                str += StringsOfLanguages.URDU.earlymiscarriage.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
                 if(index<fixedDurations.size-2){//if there is something after wiladat
-                    str += StringsOfLanguages.ENGLISH.afterpregheader
+                    str += StringsOfLanguages.URDU.afterpregheader
                 }
             }
 
         }
-        str += outputStringEnglishFinalLines (isDateOnly, endingOutputValues)
+        str += outputStringUrduFinalLines (isDateOnly, endingOutputValues, isDuration)
 
     }
 
 
     return str
 }
-fun outputStringEnglishFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutputValues):String{
-
+fun outputStringEnglishFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutputValues, isDuration: Boolean):String{
     var strEnglish = ""
     val aadats = endingOutputValues.aadats
+    if(isDuration){return strEnglish}
     strEnglish+=outputStringEnglishAadatLine(isDateOnly, aadats)
     val filHaal = endingOutputValues.filHaalPaki
     strEnglish+=outputStringEnglishFilHaalLine(filHaal)
