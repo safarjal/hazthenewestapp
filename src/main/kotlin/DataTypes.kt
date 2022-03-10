@@ -106,13 +106,14 @@ data class Strings(
     val durationTuhreFasidWithAddition:String,
     val durationHaiz:String,
     val durationNifas:String,
-    val tab:String,
     val startingFromIstehaza:String,
     val startingFromHaiz:String,
     val followedByistehazaAfter:String,
     val followedByHaizAfter:String,
     val khatimaplusnewline:String,
     val birthduration: String,
+    val pregduration:String,
+    val startingFromNifas:String
 
 )
 

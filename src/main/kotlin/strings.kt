@@ -70,13 +70,14 @@ val urduStrings = Strings(
     "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد\n\n",
     "duration1 حیض\n\n",
     "duration1 نفاس\n\n",
-    "      ",
     "شروع کے duration1 استحاضہ",
     "شروع کے duration1 حیض",
     "، پھر duration1 استحاضہ",
-    "، پھر duration2 حیض",
+    "، پھر duration1 حیض",
     "۔\n\n",
-    "ولادت"
+    "ولادت\n\n",
+    "حمل\n\n",
+    "شروع کے duration1 نفاس"
 
 )
 val englishStrings = Strings(
@@ -150,13 +151,14 @@ val englishStrings = Strings(
     "duration1 istehaza + duration2 tuhr = duration3 tuhr-e-faasid\n\n",
     "duration1 haiz\n\n",
     "duration1 nifas\n\n",
-    "      ",
     "The first duration1 are istehaza",
     "The first duration1 are haiz",
     ", then the next duration1 are istehaza",
     ", then the next duration1 are haiz",
     ".\n\n",
-    "birth"
+    "birth\n\n",
+    "pregnancy\n\n",
+    "The first duration1 are nifas"
 
 
 )
