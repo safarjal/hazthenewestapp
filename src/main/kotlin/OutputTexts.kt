@@ -29,15 +29,15 @@ fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,durat
     var englishStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
 
-    while (index<fixedDurations.size){
-        englishStr += outputStringHeaderLine(fixedDurations,index, isDateOnly)
-        englishStr += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
-        englishStr += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
-        englishStr += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
-
-
-        index++
-    }
+//    while (index<fixedDurations.size){
+//        englishStr += outputStringHeaderLine(fixedDurations,index, isDateOnly)
+//        englishStr += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
+//        englishStr += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
+//        englishStr += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
+//
+//
+//        index++
+//    }
 
     val urduStr = generateUrduOutputString(fixedDurations, isDateOnly, endingOutputValues, isDuration)
     englishStr += "\n\n${generateEnglishOutputString(fixedDurations, isDateOnly, endingOutputValues, isDuration)}"
@@ -66,9 +66,15 @@ fun generateUrduOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>
             str += StringsOfLanguages.URDU.beforepregheader
         }
         for(index in fixedDurations.indices){
-            str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
-            str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
-            str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
+            if(isDuration){
+                str += outputStringUrduHeaderLineDuration(fixedDurations,index, isDateOnly)
+                str += outputStringUrduBiggerThan10HallDurations(fixedDurations,index, isDateOnly)
+                str += outputStringUrduBiggerThan40HallDuration(fixedDurations,index, isDateOnly)
+            }else{
+                str += outputStringUrduHeaderLine(fixedDurations,index, isDateOnly)
+                str += outputStringUrduBiggerThan10Hall(fixedDurations,index, isDateOnly)
+                str += outputStringUrduBiggerThan40Hall(fixedDurations,index, isDateOnly)
+            }
             if(fixedDurations[index].type==DurationType.HAML){
                 str += StringsOfLanguages.URDU.preg
             }
@@ -376,6 +382,28 @@ fun outputStringUrduBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
         strUrdu += StringsOfLanguages.URDU.dashesline
     }
 
+    return strUrdu
+}
+fun outputStringUrduBiggerThan40HallDuration(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{
+
+    var strUrdu = ""
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+        for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
+            if(duration.type==DurationType.NIFAAS){
+                strUrdu+= StringsOfLanguages.URDU.durationNifas.replace("duration1", "${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds, isDateOnly)}")
+            }else if(duration.type==DurationType.ISTIHAZA_AFTER){
+                strUrdu+= StringsOfLanguages.URDU.followedByistehazaAfter.replace("duration1", "\${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds)")
+            }else if(duration.type==DurationType.HAIZ){
+                strUrdu+= StringsOfLanguages.URDU.followedByHaizAfter.replace("duration1", "\${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds)")
+            }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
+                strUrdu+= StringsOfLanguages.URDU.followedByHaizAfter.replace("duration1", "\${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds)")
+                //maybe we'll wanna add something about itibaar bil khawateem
+            }
+        }
+         }
+    if(strUrdu!=""){
+        strUrdu+=StringsOfLanguages.URDU.khatimaplusnewline
+    }
     return strUrdu
 }
 fun outputStringUrduBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,index: Int, isDateOnly: Boolean):String{

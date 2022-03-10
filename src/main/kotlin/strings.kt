@@ -75,7 +75,8 @@ val urduStrings = Strings(
     "شروع کے duration1 حیض",
     "، پھر duration1 استحاضہ",
     "، پھر duration2 حیض",
-    "۔\n\n"
+    "۔\n\n",
+    "ولادت"
 
 )
 val englishStrings = Strings(
@@ -154,7 +155,8 @@ val englishStrings = Strings(
     "The first duration1 are haiz",
     ", then the next duration1 are istehaza",
     ", then the next duration1 are haiz",
-    ".\n\n"
+    ".\n\n",
+    "birth"
 
 
 )

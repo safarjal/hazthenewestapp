@@ -111,7 +111,8 @@ data class Strings(
     val startingFromHaiz:String,
     val followedByistehazaAfter:String,
     val followedByHaizAfter:String,
-    val khatimaplusnewline:String
+    val khatimaplusnewline:String,
+    val birthduration: String,
 
 )
 
