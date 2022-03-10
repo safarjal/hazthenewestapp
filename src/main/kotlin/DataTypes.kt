@@ -1,3 +1,4 @@
+import kotlinx.html.attributes.StringSetEncoder
 import kotlin.js.Date
 
 
@@ -98,7 +99,20 @@ data class Strings(
     val duration: String,
     val damOrTuhr: String,
     val dam: String,
-    val tuhr: String
+    val tuhr: String,
+    val durationDam: String,
+    val durationPaki:String,
+    val durationTuhrefasid:String,
+    val durationTuhreFasidWithAddition:String,
+    val durationHaiz:String,
+    val durationNifas:String,
+    val tab:String,
+    val startingFromIstehaza:String,
+    val startingFromHaiz:String,
+    val followedByistehazaAfter:String,
+    val followedByHaizAfter:String,
+    val khatimaplusnewline:String
+
 )
 
 

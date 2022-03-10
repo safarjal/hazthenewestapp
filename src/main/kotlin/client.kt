@@ -1187,6 +1187,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         if(isDuration){
             //take arbitrary date
             var arbitraryDate= Date(0,0,0)
+            println(arbitraryDate)
             arbitraryDate=addTimeToDate(arbitraryDate, -1*parseDays(haizDurationInputDatesRows[0].duration.value)!!)
             val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
@@ -1224,7 +1225,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             ),
             false,
-            languageSelecter.value
+            languageSelecter.value,
+            isDuration
         )
         contentContainer.visibility = true
         if (languageSelecter.value == "english") {

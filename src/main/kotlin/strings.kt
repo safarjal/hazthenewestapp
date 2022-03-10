@@ -60,10 +60,22 @@ val urduStrings = Strings(
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
     "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!",
     "کس طرح حل کرنا ہے؟",
-    "دورانیہ",
+    "صرف دورانیہ",
     "دم و طہر",
-"دم",
-    "طہر"
+    "دم",
+    "طہر",
+    "duration1 دم\n\n",
+    "duration1 طہر\n\n",
+    "duration1 طہر فاسد\n\n",
+    "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد\n\n",
+    "duration1 حیض\n\n",
+    "duration1 نفاس\n\n",
+    "      ",
+    "شروع کے duration1 استحاضہ",
+    "شروع کے duration1 حیض",
+    "، پھر duration1 استحاضہ",
+    "، پھر duration2 حیض",
+    "۔\n\n"
 
 )
 val englishStrings = Strings(
@@ -130,7 +142,20 @@ val englishStrings = Strings(
     "Duration",
     "Dam/Tuhr",
     "Dam",
-    "Tuhr"
+    "Tuhr",
+    "duration1 dam\n\n",
+    "duration1 tuhr\n\n",
+    "duraion1 tuhr-e-faasid\n\n",
+    "duration1 istehaza + duration2 tuhr = duration3 tuhr-e-faasid\n\n",
+    "duration1 haiz\n\n",
+    "duration1 nifas\n\n",
+    "      ",
+    "The first duration1 are istehaza",
+    "The first duration1 are haiz",
+    ", then the next duration1 are istehaza",
+    ", then the next duration2 are haiz",
+    ".\n\n"
+
 
 )
 
