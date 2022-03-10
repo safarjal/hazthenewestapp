@@ -24,6 +24,7 @@ body {
 
 .rtl {
   direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 
@@ -32,6 +33,10 @@ body {
 }
 
 .lang-invisible {
+  display: none !important;
+}
+
+.duration-invis {
   display: none !important;
 }
 
@@ -142,6 +147,7 @@ button:hover {
 
 .urdu {
   direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 
@@ -179,9 +185,11 @@ tbody > tr:nth-child(odd) {
   padding: 1rem;
 }
 
-#language {
+select {
   padding: 0.2rem;
   font-size: 1rem;
+  margin: 0.5rem;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 

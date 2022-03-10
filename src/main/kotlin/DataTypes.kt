@@ -1,3 +1,4 @@
+import kotlinx.html.attributes.StringSetEncoder
 import kotlin.js.Date
 
 
@@ -93,7 +94,27 @@ data class Strings(
     val errorEnterMawjoodaPaki:String,
     val errorEnterNifasAadat:String,
     val passwordRequired:String,
-    val warningOnlyAuthorizedPersonnel:String
+    val warningOnlyAuthorizedPersonnel:String,
+    val typeOfInput: String,
+    val duration: String,
+    val damOrTuhr: String,
+    val dam: String,
+    val tuhr: String,
+    val durationDam: String,
+    val durationPaki:String,
+    val durationTuhrefasid:String,
+    val durationTuhreFasidWithAddition:String,
+    val durationHaiz:String,
+    val durationNifas:String,
+    val startingFromIstehaza:String,
+    val startingFromHaiz:String,
+    val followedByistehazaAfter:String,
+    val followedByHaizAfter:String,
+    val khatimaplusnewline:String,
+    val birthduration: String,
+    val pregduration:String,
+    val startingFromNifas:String
+
 )
 
 
@@ -182,7 +203,7 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    val startTime: Date
+    var startTime: Date
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))

@@ -58,7 +58,27 @@ val urduStrings = Strings(
     "موجودہ طہر(حل کیے جانے والےدم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
     "نفاس کی عادت لکھیے! اگر پہلا بچہ ہے تو 40 کا عدد لکھیے!",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
-    "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!"
+    "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!",
+    "کس طرح حل کرنا ہے؟",
+    "صرف دورانیہ",
+    "دم و طہر",
+    "دم",
+    "طہر",
+    "duration1 دم\n\n",
+    "duration1 طہر\n\n",
+    "duration1 طہر فاسد\n\n",
+    "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد\n\n",
+    "duration1 حیض\n\n",
+    "duration1 نفاس\n\n",
+    "شروع کے duration1 استحاضہ",
+    "شروع کے duration1 حیض",
+    "، پھر duration1 استحاضہ",
+    "، پھر duration1 حیض",
+    "۔\n\n",
+    "ولادت\n\n",
+    "حمل\n\n",
+    "شروع کے duration1 نفاس"
+
 )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
@@ -119,7 +139,27 @@ val englishStrings = Strings(
     "Please enter a duration for Mawjooda Tuhr",
     "Please enter Nifaas Aadat to solve this. If this is a first baby, please enter 40.",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
-    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifaas, and understand the minutae of the information required to solve this."
+    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifaas, and understand the minutae of the information required to solve this.",
+    "Type of input: ",
+    "Duration",
+    "Dam/Tuhr",
+    "Dam",
+    "Tuhr",
+    "duration1 dam\n\n",
+    "duration1 tuhr\n\n",
+    "duraion1 tuhr-e-faasid\n\n",
+    "duration1 istehaza + duration2 tuhr = duration3 tuhr-e-faasid\n\n",
+    "duration1 haiz\n\n",
+    "duration1 nifas\n\n",
+    "The first duration1 are istehaza",
+    "The first duration1 are haiz",
+    ", then the next duration1 are istehaza",
+    ", then the next duration1 are haiz",
+    ".\n\n",
+    "birth\n\n",
+    "pregnancy\n\n",
+    "The first duration1 are nifas"
+
 
 )
 
