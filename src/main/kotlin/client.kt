@@ -484,7 +484,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     pregnancyCheckBox(inputContainerToCopyFrom)
-    div(classes = "row preg-checked invisible aadat_inputs") {
+    div(classes = "row preg-checked invisible") {
         label {
             htmlFor = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
@@ -534,7 +534,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row  aadat_inputs") {
+    div(classes = "row") {
         div {
             label(classes = "english lang-invisible") {
                 htmlFor = Ids.PREGNANCY_CHECKBOX
@@ -549,13 +549,15 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
                     val isChecked = (event.currentTarget as HTMLInputElement).checked
-                    for (pregnancyElement in findInputContainer(event).pregnancyInputs) {
+                    val inputContainer = findInputContainer(event)
+                    for (pregnancyElement in inputContainer.pregnancyInputs) {
                             pregnancyElement.visibility = isChecked
                             pregnancyElement.disabled = !isChecked
                     }
-                    for (pregnancyElement in findInputContainer(event).pregnancyElements) {
+                    for (pregnancyElement in inputContainer.pregnancyElements) {
                             pregnancyElement.visibility = isChecked
                     }
+                    disableAadaat(inputContainer, inputContainer.isDuration)
                 }
             }
         }
@@ -573,7 +575,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 //}
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible aadat_inputs") {
+    div(classes = "row preg-checked invisible") {
         div {
             label {
                 htmlFor = Ids.MUSTABEEN_CHECKBOX
@@ -1200,14 +1202,14 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
             input.asDynamic().disabled = !disable
         }
     }
-    disableAdaat(inputContainer, disable)
+    disableAadaat(inputContainer, disable)
 }
 
-private fun disableAdaat(inputContainer: HTMLElement, disable: Boolean) {
+private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
     inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
-            row.visibility = !disable
+            row.classList.toggle("duration-invis", disable)
             row.querySelectorAll("input")
                 .asList()
                 .map { input ->

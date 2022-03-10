@@ -36,6 +36,10 @@ body {
   display: none !important;
 }
 
+.duration-invis {
+  display: none !important;
+}
+
 header {
   width: 100vw;
 }
