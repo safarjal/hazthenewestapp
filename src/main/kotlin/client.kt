@@ -805,12 +805,12 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     value = "tuhr"
                     + StringsOfLanguages.ENGLISH.tuhr
                 }
-                option(classes = "english lang-invisible") {
+                option(classes = "english lang-invisible preg-checked invisible") {
                     selected = !urdu && lastWasDam
                     value = "haml"
                     + "Haml"
                 }
-                option(classes = "english lang-invisible") {
+                option(classes = "english lang-invisible preg-checked invisible") {
                     selected = !urdu && lastWasDam
                     value = "wiladat"
                     + "Waza'"
@@ -825,11 +825,11 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     value = "tuhr"
                     + StringsOfLanguages.URDU.tuhr
                 }
-                option(classes = "urdu") {
+                option(classes = "urdu preg-checked invisible") {
                     value = "haml"
                     + "Haml"
                 }
-                option(classes = "urdu") {
+                option(classes = "urdu preg-checked invisible") {
                     value = "wiladat"
                     + "Wiladat"
                 }
