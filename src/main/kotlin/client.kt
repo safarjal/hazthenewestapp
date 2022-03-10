@@ -827,7 +827,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                         if (!preg) "invisible" else null,
                     )
                     value = "haml"
-                    + "Haml"
+                    + StringsOfLanguages.ENGLISH.preg
                 }
                 option(classes = "english lang-invisible preg-checked invisible") {
                     classes = setOfNotNull(
@@ -837,7 +837,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                         if (!preg) "invisible" else null,
                     )
                     value = "wiladat"
-                    + "Wiladat"
+                    + StringsOfLanguages.ENGLISH.birthduration
                 }
                 option(classes = "urdu") {
                     selected = urdu && !lastWasDam
@@ -856,7 +856,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                         if (!preg) "invisible" else null,
                     )
                     value = "haml"
-                    + "HamlU"
+                    + StringsOfLanguages.URDU.pregduration
                 }
                 option {
                     classes = setOfNotNull(
@@ -865,7 +865,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                         if (!preg) "invisible" else null,
                     )
                     value = "wiladat"
-                    + "Wiladat"
+                    + StringsOfLanguages.URDU.birthduration
                 }
             }
         }
@@ -1258,7 +1258,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
     var entries= listOf<Entry>()
 
     with(inputContainer) {
-        var mawjodahtuhreditable = mawjoodaTuhr.value
+        var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
         var pregnancyIs = isPregnancy
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
@@ -1282,7 +1282,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     durations[index].startTime = durations[index-1].endDate
                 }
             }
-
+            if(durations[0].type==DurationType.TUHR){mawjodahtuhreditable=durations[0].timeInMilliseconds}
             println(durations)
             for(dur in durations){
                 if(dur.type==DurationType.DAM){
@@ -1309,7 +1309,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
-            parseDays(mawjodahtuhreditable),
+            mawjodahtuhreditable,
             isMawjoodaFasid,
             isDateOnly,
             pregnancyIs,

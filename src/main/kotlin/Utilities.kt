@@ -9,6 +9,7 @@ import kotlin.time.toDuration
 
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
+const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 const val FORM_WIDTH_DATE_ONLY = 410
 const val FORM_WIDTH_DATE_TIME = 605
