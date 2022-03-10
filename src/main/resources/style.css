@@ -68,6 +68,7 @@ input {
 input[type="date"],
 input[type="datetime-local"] {
   margin-left: 0;
+  margin-right: 0;
   direction: ltr
 }
 
@@ -93,7 +94,8 @@ label {
 .input_container {
   float: left;
   margin: 0 auto;
-  width: 344px;
+  /* width: min(100vw, 410px); */
+  width: clamp(min(301px, 100vw), 100vw, 375px);
   border:1px;
 }
 
@@ -102,7 +104,7 @@ label {
 }
 
 .date_and_time {
-  width: 605px;
+  width: 517px;
 }
 
 .time {
