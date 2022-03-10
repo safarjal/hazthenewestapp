@@ -790,7 +790,8 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
-                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "waza")
+                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                    row.durationInput.value = "0"
                 }
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
@@ -809,7 +810,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 }
                 option(classes = "english lang-invisible") {
                     selected = !urdu && lastWasDam
-                    value = "waza"
+                    value = "wiladat"
                     + "Waza'"
                 }
                 option(classes = "urdu") {
@@ -827,8 +828,8 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     + "Haml"
                 }
                 option(classes = "urdu") {
-                    value = "waza"
-                    + "Waza'"
+                    value = "wiladat"
+                    + "Wiladat"
                 }
             }
         }
@@ -1221,12 +1222,22 @@ private fun parseEntries(inputContainer: HTMLElement) {
     var entries= listOf<Entry>()
 
     with(inputContainer) {
+        var mawjodahtuhreditable = mawjoodaTuhr.value
+        var pregnancyIs = isPregnancy
+        var pregnancyStrt = Date(pregStartTime.valueAsNumber)
+        var pregnancyEnd = Date(pregEndTime.valueAsNumber)
+
+
         if(isDuration){
             //take arbitrary date
             val arbitraryDate= Date(0,0,0)
             var durations = haizDurationInputDatesRows.map { row ->
                 Duration(
-                    type = if(row.damOrTuhr == "dam"){DurationType.DAM} else{DurationType.TUHR},
+                    type = if(row.damOrTuhr == "dam"){DurationType.DAM}
+                    else if(row.damOrTuhr == "tuhr"){DurationType.TUHR}
+                    else if(row.damOrTuhr == "haml"){DurationType.HAML}
+                    else if(row.damOrTuhr == "wiladat"){DurationType.WILADAT_ISQAT}
+                            else{DurationType.NIFAAS},
                     timeInMilliseconds = parseDays(row.duration.value)!!,
                     startTime = arbitraryDate
                 ) }
@@ -1240,6 +1251,11 @@ private fun parseEntries(inputContainer: HTMLElement) {
             for(dur in durations){
                 if(dur.type==DurationType.DAM){
                     entries+=Entry(dur.startTime, dur.endDate)
+                }else if(dur.type==DurationType.HAML){
+                    pregnancyIs=true
+                    pregnancyStrt=dur.startTime
+                }else if(dur.type==DurationType.WILADAT_ISQAT){
+                    pregnancyEnd=dur.startTime
                 }
             }
         }else{
@@ -1257,13 +1273,13 @@ private fun parseEntries(inputContainer: HTMLElement) {
             entries,
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr.value),
-            parseDays(mawjoodaTuhr.value),
+            parseDays(mawjodahtuhreditable),
             isMawjoodaFasid,
             isDateOnly,
-            isPregnancy,
+            pregnancyIs,
             Pregnancy(
-                Date(pregStartTime.valueAsNumber),
-                Date(pregEndTime.valueAsNumber),
+                pregnancyStrt,
+                pregnancyEnd,
                 parseDays(aadatNifas.value),
                 mustabeen
             ),
