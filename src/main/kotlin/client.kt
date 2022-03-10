@@ -5,6 +5,7 @@ import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
+import kotlinx.html.stream.createHTML
 import kotlinx.html.tr
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
@@ -168,6 +169,18 @@ fun main() {
                 for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecter.value == "urdu")
                 for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecter.value == "english")
                 document.body!!.classList.toggle("rtl", languageSelecter.value == "urdu")
+                document.querySelectorAll("select")
+                    .asList()
+                    .map { it as HTMLSelectElement }
+                    .forEach { select ->
+                        select.children
+                            .asList()
+                            .map { it as HTMLOptionElement }
+                            .firstOrNull { option ->
+                                option.value == select.value && option.classList.contains(languageSelecter.value)
+                            }
+                            ?.selected = true
+                    }
             }
         }else{
             askPassword()

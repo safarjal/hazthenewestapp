@@ -1,5 +1,5 @@
 @font-face {
-  font-family: NastaleeqF
+  font-family: Nastaleeq;
   src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
 }
 
@@ -24,6 +24,7 @@ body {
 
 .rtl {
   direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 
@@ -142,6 +143,7 @@ button:hover {
 
 .urdu {
   direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 
@@ -183,6 +185,7 @@ select {
   padding: 0.2rem;
   font-size: 1rem;
   margin: 0.5rem;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
 }
 
