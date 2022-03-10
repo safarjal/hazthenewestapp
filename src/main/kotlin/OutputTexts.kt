@@ -330,7 +330,9 @@ fun outputStringUrduBiggerThan10HallDurations(fixedDurations: MutableList<FixedD
             }
         }
     }
-    strUrdu+=StringsOfLanguages.URDU.khatimaplusnewline
+    if(strUrdu!=""){
+        strUrdu+=StringsOfLanguages.URDU.khatimaplusnewline
+    }
 
     return strUrdu
 }

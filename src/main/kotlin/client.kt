@@ -1186,15 +1186,20 @@ private fun parseEntries(inputContainer: HTMLElement) {
     with(inputContainer) {
         if(isDuration){
             //take arbitrary date
-            var arbitraryDate= Date(0,0,0)
-            println(arbitraryDate)
-            arbitraryDate=addTimeToDate(arbitraryDate, -1*parseDays(haizDurationInputDatesRows[0].duration.value)!!)
-            val durations = haizDurationInputDatesRows.map { row ->
+            val arbitraryDate= Date(0,0,0)
+            var durations = haizDurationInputDatesRows.map { row ->
                 Duration(
                     type = if(row.damOrTuhr == "dam"){DurationType.DAM} else{DurationType.TUHR},
                     timeInMilliseconds = parseDays(row.duration.value)!!,
-                    startTime = addTimeToDate(arbitraryDate, parseDays(row.duration.value)!!)
+                    startTime = arbitraryDate
                 ) }
+            for (index in durations.indices){
+                if(index>0){
+                    durations[index].startTime = durations[index-1].endDate
+                }
+            }
+
+            println(durations)
             for(dur in durations){
                 if(dur.type==DurationType.DAM){
                     entries+=Entry(dur.startTime, dur.endDate)
@@ -1209,6 +1214,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             }
 
         }
+        println(entries)
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries,

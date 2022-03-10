@@ -153,7 +153,7 @@ val englishStrings = Strings(
     "The first duration1 are istehaza",
     "The first duration1 are haiz",
     ", then the next duration1 are istehaza",
-    ", then the next duration2 are haiz",
+    ", then the next duration1 are haiz",
     ".\n\n"
 
 
