@@ -74,6 +74,7 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
+private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
@@ -166,9 +167,9 @@ fun main() {
                 }
             })
             languageSelecter.onchange = {
-                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecter.value == "urdu")
-                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecter.value == "english")
-                document.body!!.classList.toggle("rtl", languageSelecter.value == "urdu")
+                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecterValue == "urdu")
+                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecterValue == "english")
+                document.body!!.classList.toggle("rtl", languageSelecterValue == "urdu")
                 document.querySelectorAll("select")
                     .asList()
                     .map { it as HTMLSelectElement }
@@ -177,7 +178,7 @@ fun main() {
                             .asList()
                             .map { it as HTMLOptionElement }
                             .firstOrNull { option ->
-                                option.value == select.value && option.classList.contains(languageSelecter.value)
+                                option.value == select.value && option.classList.contains(languageSelecterValue)
                             }
                             ?.selected = true
                     }
@@ -521,7 +522,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelecter.value=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if(languageSelecterValue=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
@@ -777,8 +778,8 @@ private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTime
     }
 }
 
-private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean) {
-    val urdu = languageSelecter.value == "urdu"
+private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
+    val urdu = languageSelecterValue == "urdu"
     tr {
         td {
             input(type = InputType.number) {
@@ -805,15 +806,25 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     value = "tuhr"
                     + StringsOfLanguages.ENGLISH.tuhr
                 }
-                option(classes = "english lang-invisible preg-checked invisible") {
-                    selected = !urdu && lastWasDam
+                option {
+                    classes = setOfNotNull(
+                        "english",
+                        "lang-invisible",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
                     value = "haml"
                     + "Haml"
                 }
                 option(classes = "english lang-invisible preg-checked invisible") {
-                    selected = !urdu && lastWasDam
+                    classes = setOfNotNull(
+                        "english",
+                        "lang-invisible",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
                     value = "wiladat"
-                    + "Waza'"
+                    + "Wiladat"
                 }
                 option(classes = "urdu") {
                     selected = urdu && !lastWasDam
@@ -825,11 +836,21 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     value = "tuhr"
                     + StringsOfLanguages.URDU.tuhr
                 }
-                option(classes = "urdu preg-checked invisible") {
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
                     value = "haml"
-                    + "Haml"
+                    + "HamlU"
                 }
-                option(classes = "urdu preg-checked invisible") {
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "preg-checked",
+                        if (!preg) "invisible" else null,
+                    )
                     value = "wiladat"
                     + "Wiladat"
                 }
@@ -998,7 +1019,7 @@ private fun FlowContent.durationAddButton() {
             val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
             val inputContainer = findInputContainer(event)
             row.after {
-                durationInputRow(rowIsDam, false)
+                durationInputRow(rowIsDam, false, inputContainer.isPregnancy)
             }
             setupFirstDurationRow(inputContainer)
         }
@@ -1015,7 +1036,7 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
             val inputDatesRows = inputContainer.haizDurationInputDatesRows
             val firstIsDam = inputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
 
-            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false) }
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isPregnancy) }
             setupFirstDurationRow(inputContainer)
         }
     }
@@ -1286,11 +1307,11 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             ),
             false,
-            languageSelecter.value,
+            languageSelecterValue,
             isDuration
         )
         contentContainer.visibility = true
-        if (languageSelecter.value == "english") {
+        if (languageSelecterValue == "english") {
             contentElement.innerHTML = output.englishText
             contentElement.classList.toggle("rtl", false)
         } else {
