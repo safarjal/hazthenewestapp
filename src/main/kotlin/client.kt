@@ -995,7 +995,7 @@ private fun FlowContent.durationAddButton() {
         title = "Add"
         onClickFunction = { event ->
             val row = findRow(event)
-            val rowIsDam = row.damOrTuhr == "dam"
+            val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
             val inputContainer = findInputContainer(event)
             row.after {
                 durationInputRow(rowIsDam, false)
@@ -1013,7 +1013,7 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
             val inputDatesRows = inputContainer.haizDurationInputDatesRows
-            val firstIsDam = inputDatesRows.first().damOrTuhr == "dam"
+            val firstIsDam = inputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
 
             inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false) }
             setupFirstDurationRow(inputContainer)
