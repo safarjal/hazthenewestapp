@@ -54,7 +54,7 @@ a {
 
 .nav-link {
   margin: 0.5rem;
-  position: fixed;
+  position: absolute;
   top: 0.2rem;
   left: 0.7rem;
   font-size: 3rem;
