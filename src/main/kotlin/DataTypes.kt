@@ -113,7 +113,11 @@ data class Strings(
     val khatimaplusnewline:String,
     val birthduration: String,
     val pregduration:String,
-    val startingFromNifas:String
+    val startingFromNifas:String,
+    val bleedingstopsbeforethree:String,
+    val bleedingstopsbeforethreemaslachanges: String,
+    val afterfortydays:String,
+    val aftertendays:String
 
 )
 
@@ -126,7 +130,17 @@ data class Entry(
     val startTime: Date,
     val endTime: Date
 )
-enum class TypesOfFutureDates { A3_CHANGING_TO_A2, END_OF_AADAT_HAIZ, END_OF_AADAT_TUHR }
+enum class TypesOfFutureDates {
+    A3_CHANGING_TO_A2,
+    END_OF_AADAT_HAIZ,
+    END_OF_AADAT_TUHR,
+    BEFORE_THREE_DAYS_MASLA_WILL_CHANGE,
+    BEFORE_THREE_DAYS,
+    AFTER_TEN_DAYS,
+    FORTY_DAYS,
+    IC_FORBIDDEN_DATE,
+    IHTIYATI_GHUSL
+}
 
 class FutureDateType(
     val date:Date,
@@ -135,7 +149,7 @@ class FutureDateType(
 class EndingOutputValues(
     val filHaalPaki:Boolean,
     val aadats:AadatsOfHaizAndTuhr?,
-    val futureDateType: FutureDateType?
+    val futureDateType: MutableList<FutureDateType>
 )
 class OutputTexts (
     var englishText:String,

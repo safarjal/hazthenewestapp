@@ -34,7 +34,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         }
         .toMutableList()
     addIndicesToFixedDurations(fixedDurations)
-    val noOutput = OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, null), mutableListOf())
+    val noOutput = OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, mutableListOf()), mutableListOf())
     var adatsOfHaizList = mutableListOf<AadatAfterIndexOfFixedDuration>()
     var adatsOfTuhrList = mutableListOf<AadatAfterIndexOfFixedDuration>()
     adatsOfHaizList +=AadatAfterIndexOfFixedDuration(-1,-1)
@@ -59,7 +59,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr,inputtedMawjoodaTuhr, mawjoodahIsNotAadat,adatsOfHaizList,adatsOfTuhrList)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr,inputtedMawjoodaTuhr, mawjoodahIsNotAadat,adatsOfHaizList,adatsOfTuhrList, -1L)
             return generateOutputStringPregnancy(fixedDurations, isDateOnly, pregnancy, endingOutputValues, isDuration)
         }else{         //it is mustabeen ul khilqat
             //mark all dam in pregnancy as isithaza.
@@ -74,7 +74,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
-            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList)
+            val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList, pregnancy.aadatNifas)
             return generateOutputStringPregnancy(fixedDurations, isDateOnly, pregnancy, endingOutputValues, isDuration)
         }
     }else if(isMubtadia){
@@ -88,7 +88,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             dealWithBiggerThan10Dam(fixedDurations, aadats.aadatHaiz, aadats.aadatTuhr,aadats.aadatTuhr, false, language, adatsOfHaizList, adatsOfTuhrList)
         }
         addDurationsToDams(fixedDurations)
-        val endingOutputValues = calculateEndingOutputValues(fixedDurations, true, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList)
+        val endingOutputValues = calculateEndingOutputValues(fixedDurations, true, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList, -1L)
         return generateOutputStringMubtadia(fixedDurations, durations, isDateOnly, endingOutputValues, isDuration)
     }else{//is mutadah
         removeTuhrLessThan15(fixedDurations)
@@ -97,7 +97,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, language, adatsOfHaizList, adatsOfTuhrList)){return noOutput}
         println("going to add Durations now")
         addDurationsToDams(fixedDurations)
-        val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList)
+        val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList,-1L)
         return generateOutputStringMutadah(fixedDurations, durations, isDateOnly, endingOutputValues, isDuration)
     }
 }
@@ -811,19 +811,19 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
     //so, for example 15B could have a first 3 days of istihaza before, then
     // 7 days of haiz, then 3 days of istihaza after. this will make all those duration.
 
-    //currently, this doesn't handle istimrar
-
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM &&
             fixedDurations[i].days>10 &&
             fixedDurations[i].biggerThanTen!!.qism==Soortain.A_3 &&
-            i==fixedDurations.lastIndex){
+            i==fixedDurations.lastIndex){//A-3 switching to aadat
             val ayyameQabliyyah = fixedDurations[i].biggerThanTen!!.gp-fixedDurations[i].biggerThanTen!!.mp
-            if(fixedDurations[i].timeInMilliseconds>ayyameQabliyyah){
+            if(fixedDurations[i].timeInMilliseconds>=ayyameQabliyyah){
                 fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,ayyameQabliyyah,fixedDurations[i].startDate)
-                val haizStartDate = addTimeToDate(fixedDurations[i].startDate, ayyameQabliyyah)
-                val haizDuration = fixedDurations[i].timeInMilliseconds-ayyameQabliyyah
-                fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.LESS_THAN_3_HAIZ,haizDuration, haizStartDate)
+                if(ayyameQabliyyah > fixedDurations[i].timeInMilliseconds){
+                    val haizStartDate = addTimeToDate(fixedDurations[i].startDate, ayyameQabliyyah)
+                    val haizDuration = fixedDurations[i].timeInMilliseconds-ayyameQabliyyah
+                    fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.LESS_THAN_3_HAIZ,haizDuration, haizStartDate)
+                }
                 return
             }
         }
@@ -1297,107 +1297,269 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
     return str
 }
 
-fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMubtadia: Boolean, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):EndingOutputValues{
+fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMubtadia: Boolean, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, aadatNifas:Long?):EndingOutputValues{
     val filHaalPaki = calculateFilHaal(fixedDurations)
     println("done filhaal")
     val aadaat = finalAadats(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
     println("done aadats")
-//    println("adats of haiz list is ${adatsOfHaizList}")
-//    println("adats of tuhr list is ${adatsOfHaizList}")
-    val futureDates = futureDatesOfInterest(fixedDurations)
-    if(aadaat!=null && (aadaat.aadatHaiz==-1L||aadaat.aadatTuhr==-1L) && !isMubtadia){
-        return EndingOutputValues(filHaalPaki, aadaat, null)
-    }else if(isMubtadia){
-        return EndingOutputValues(filHaalPaki,aadaat, null)
-    }else{
+    val futureDates = futureDatesOfInterest(fixedDurations, aadaat, filHaalPaki, aadatNifas, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
+    println(futureDates)
         return EndingOutputValues(filHaalPaki,aadaat,futureDates)
-    }
 }
 
-fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>):FutureDateType?{
-    //A-3 changing to A-2 or A-1
+fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: AadatsOfHaizAndTuhr, fillHaalPaki:Boolean, aadatNifas: Long?, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
+    var futureDatesList = mutableListOf<FutureDateType>()
+
+    //bigger than 10
     if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
-        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3){
-            //A-3 is when bleeding begins well before aadat.
-            //A-2 is when bleeding is 3 days or more into aadat.
-            //But we must ask again at start of aadat, not A-2.
+        val lastDuration = fixedDurations.last().biggerThanTen!!.durationsList.last()
+        val qism = fixedDurations.last().biggerThanTen!!.qism
+        //A-3
+        if(qism==Soortain.A_3){
             val mp = fixedDurations.last().biggerThanTen!!.mp
             val gp = fixedDurations.last().biggerThanTen!!.gp
-            //when dm becomes equal to or more than gp-mp
-            //dm is duration
-            var date = addTimeToDate(fixedDurations.last().startDate, gp-mp)
-            if(date.getTime()>fixedDurations.last().endDate.getTime()){
-                return FutureDateType(date,TypesOfFutureDates.A3_CHANGING_TO_A2)
-            }else if(date.getTime()<=fixedDurations.last().endDate.getTime()){
-                date = addTimeToDate(date, fixedDurations.last().biggerThanTen!!.haiz)
-                return FutureDateType(date, TypesOfFutureDates.END_OF_AADAT_HAIZ)
-            }
-
-        }
-    }
-
-    //last date of aadat of haiz.
-    //with insructions for ihtiyati ghusl
-    if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
-        //it is bigger than 10 and dam
-        if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.HAIZ||
-            fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
-            //it ends at a haiz., or a less than 3 starting of a haiz
-            //was it a daur or was it not
-            if(fixedDurations.last().biggerThanTen!!.istihazaAfter>0L){
-                //it was a daur
-                val date = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime,fixedDurations.last().biggerThanTen!!.haiz)
-                //add haiz to satrt time of last duration
-                return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_HAIZ)
-            }else{
-                //it was not a daur
-                //then it was either A-2 or A-1
-                if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_1){
-                    val date = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime,fixedDurations.last().biggerThanTen!!.aadatTuhr)
-                    return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
-                }else if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_2){
-                    val date = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime,fixedDurations.last().biggerThanTen!!.aadatHaiz)
-                    return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
+            val startOfAadat = addTimeToDate(fixedDurations.last().startDate, gp-mp)//this is start of aadat
+            if(startOfAadat.getTime()>fixedDurations.last().endDate.getTime()){//A-3 hasn't entered aadat yet , but could experience duar!
+                futureDatesList+= FutureDateType(startOfAadat,TypesOfFutureDates.A3_CHANGING_TO_A2)
+                if((lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<aadats.aadatHaiz)||
+                    lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
+                    var endDateOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                    if (endDateOfHaiz.getTime()<startOfAadat.getTime()){
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IHTIYATI_GHUSL)
+                    }
+                    if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
+                        var threeDays=addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
+                        futureDatesList+=FutureDateType(threeDays,TypesOfFutureDates.BEFORE_THREE_DAYS)
+                    }
+                }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER&& lastDuration.timeInMilliseconds<aadats.aadatTuhr){
+                    var endDateOfTuhr = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime, aadats.aadatTuhr)
+                    if(endDateOfTuhr.getTime()<startOfAadat.getTime()){
+                        futureDatesList+=FutureDateType(endDateOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    }
+                }else if(lastDuration.type==DurationType.HAIZ&&lastDuration.timeInMilliseconds==aadats.aadatHaiz){
+                    var endDateOfTuhr = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, aadats.aadatTuhr)
+                    if(endDateOfTuhr.getTime()<startOfAadat.getTime()){
+                        futureDatesList+=FutureDateType(endDateOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    }
+                }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER&&lastDuration.timeInMilliseconds==aadats.aadatTuhr){
+                    var endDateOfHaiz = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, aadats.aadatHaiz)
+                    if(endDateOfHaiz.getTime()<startOfAadat.getTime()){
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IHTIYATI_GHUSL)
+                    }
                 }
+
+            }else if(startOfAadat.getTime()<=fixedDurations.last().endDate.getTime()){//A-3 entered into aadat
+                if(lastDuration.type==DurationType.HAIZ){
+                    val lessThanThreeDate = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
+                    futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
+                }else{
+                    val lessThanThreeDate = addTimeToDate(lastDuration.endDate, 3*MILLISECONDS_IN_A_DAY)
+                    futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
+                }
+                val endofHaiz = addTimeToDate(startOfAadat, fixedDurations.last().biggerThanTen!!.haiz)
+                futureDatesList+= FutureDateType(endofHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                val icForbiddenDate = endofHaiz
+                futureDatesList+= FutureDateType(icForbiddenDate, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                val ihtiyatiGhuslDate = endofHaiz
+                futureDatesList+=FutureDateType(ihtiyatiGhuslDate, TypesOfFutureDates.IHTIYATI_GHUSL)
+            }
+        }else if(fixedDurations.last().istihazaAfter>=aadats.aadatTuhr){//daur
+            if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<aadats.aadatTuhr){
+                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+            }else if(lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<aadats.aadatHaiz){
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                }else if(lastDuration.type==DurationType.HAIZ){
+                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+            }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            }
+
+        }else{//not daur
+            if(qism==Soortain.A_1||qism==Soortain.B_2||qism==Soortain.B_3){
+                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                if(endOfTuhr.getTime()!=lastDuration.endDate.getTime()){
+                    futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+                }else if(endOfTuhr.getTime()==lastDuration.endDate.getTime()){
+                    val endOfHaz = addTimeToDate(lastDuration.endDate, aadats.aadatHaiz)
+                    futureDatesList+= FutureDateType(endOfHaz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                }
+            }else if(qism==Soortain.A_2){
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
+            }
+        }
+    }else if(fixedDurations.last().days<=10){
+        if(aadats.aadatHaiz!=-1L){//if aadat of haiz exists
+            var endOfAadat = addTimeToDate(fixedDurations.last().startDate, aadats.aadatHaiz)
+            val tenDays = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
+            if(fixedDurations.last().days<3){//this is less than 3 dam, so prior aadat
+                var threeDays = addTimeToDate(fixedDurations.last().startDate, 3*MILLISECONDS_IN_A_DAY)
+                futureDatesList+=FutureDateType(threeDays, TypesOfFutureDates.BEFORE_THREE_DAYS)
+                futureDatesList+=FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
+
+                //ihtiyati ghusl calculation
+                var mp = -1L
+                var gp = aadats.aadatTuhr
+                var hz = aadats.aadatHaiz
+                val dm = 1000*MILLISECONDS_IN_A_DAY
+                if(fixedDurations.size>1 &&
+                            (fixedDurations[fixedDurations.size-2].type==DurationType.TUHR||fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID)){
+                    mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds
+                }else if(inputtedMawjoodaTuhr!=null){
+                    mp=inputtedMawjoodaTuhr
+                }
+                if(mp!=-1L && aadats.aadatTuhr!=-1L && aadats.aadatHaiz!=-1L){
+                    var output = fiveSoortain(mp, gp,    dm,hz)
+                    var ihtiyatiGhuslDate = addTimeToDate(fixedDurations.last().startDate,(output.istihazaBefore+output.haiz))
+                    if(ihtiyatiGhuslDate.getTime()>=fixedDurations.last().endDate.getTime()){
+                        futureDatesList+=FutureDateType(ihtiyatiGhuslDate,TypesOfFutureDates.IHTIYATI_GHUSL)
+                    }
+                }
+
+            }else if(adatsOfHaizList.size>1&&
+                adatsOfHaizList[adatsOfHaizList.size-2].aadat!=-1L&&
+                fixedDurations.last().timeInMilliseconds<adatsOfHaizList[adatsOfHaizList.size-2].aadat){
+                //there is a prior aadat of haiz, and this is less than aadat, more than 3
+
+                endOfAadat = addTimeToDate(fixedDurations.last().startDate, adatsOfHaizList[adatsOfHaizList.size-2].aadat)
+                futureDatesList+=FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
+
+                //ihtiyati ghusl calculation
+                var mp = -1L
+                var gp = aadats.aadatTuhr
+                var hz = adatsOfHaizList[adatsOfHaizList.size-2].aadat
+                val dm = 10 * MILLISECONDS_IN_A_DAY + 1
+                if(fixedDurations.size>1 &&
+                    (fixedDurations[fixedDurations.size-2].type==DurationType.TUHR||fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID)){
+                    mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds
+                }else if(inputtedMawjoodaTuhr!=null){
+                    mp=inputtedMawjoodaTuhr
+                }
+                if(mp!=-1L && aadats.aadatTuhr!=-1L && aadats.aadatHaiz!=-1L){
+                    var output = fiveSoortain(mp, gp, dm,hz)
+                    var ihtiyatiGhuslDate = addTimeToDate(fixedDurations.last().startDate,(output.istihazaBefore+output.haiz))
+                    if(ihtiyatiGhuslDate.getTime()>=fixedDurations.last().endDate.getTime()){
+                        futureDatesList+=FutureDateType(ihtiyatiGhuslDate,TypesOfFutureDates.IHTIYATI_GHUSL)
+                    }
+                }
+
+            }else if(adatsOfHaizList.size>1&&adatsOfHaizList[adatsOfHaizList.size-2].aadat!=-1L&&fixedDurations.last().timeInMilliseconds>=adatsOfHaizList[adatsOfHaizList.size-2].aadat){
+                futureDatesList+=FutureDateType(tenDays, TypesOfFutureDates.AFTER_TEN_DAYS)
+                //ihtiyati ghusl calculation
+                var mp = -1L
+                var gp = aadats.aadatTuhr
+                var hz = adatsOfHaizList[adatsOfHaizList.size-2].aadat
+                val dm = 10 * MILLISECONDS_IN_A_DAY + 1
+                if(fixedDurations.size>1 &&
+                    (fixedDurations[fixedDurations.size-2].type==DurationType.TUHR||fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID)){
+                    mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds
+                }else if(inputtedMawjoodaTuhr!=null){
+                    mp=inputtedMawjoodaTuhr
+                }
+                if(mp!=-1L && aadats.aadatTuhr!=-1L && aadats.aadatHaiz!=-1L){
+                    var output = fiveSoortain(mp, gp, dm,hz)
+                    var ihtiyatiGhuslDate = addTimeToDate(fixedDurations.last().startDate,(output.istihazaBefore+output.haiz))
+                    futureDatesList+=FutureDateType(ihtiyatiGhuslDate,TypesOfFutureDates.IHTIYATI_GHUSL)
+                }
+
             }
         }
     }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.HAIZ||
-            fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.LESS_THAN_3_HAIZ){
-            var date = addTimeToDate(fixedDurations.last().biggerThanForty!!.durationsList.last().startTime,fixedDurations.last().biggerThanForty!!.haiz)
-            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+        val lastDuration=fixedDurations.last().biggerThanForty!!.durationsList.last()
+        if(fixedDurations.last().istihazaAfter>=aadats.aadatTuhr){//daur
+            if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<aadats.aadatTuhr){
+                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+            }else if(lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<aadats.aadatHaiz){
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+            }else if(lastDuration.type==DurationType.HAIZ){
+                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+            }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            }
+
         }
+    }else if(fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD&&
+        fixedDurations.last().days<=40){
+        var nifasAadat = 40*MILLISECONDS_IN_A_DAY
+        if(aadatNifas!=null){nifasAadat=aadatNifas}
+        val fortyDays = addTimeToDate(fixedDurations.last().startDate, 40*MILLISECONDS_IN_A_DAY)
+        futureDatesList+=FutureDateType(fortyDays, TypesOfFutureDates.FORTY_DAYS)
+        if(fixedDurations.last().timeInMilliseconds<nifasAadat&&
+            aadatNifas!=40*MILLISECONDS_IN_A_DAY){
+            val aadatNifasEnd = addTimeToDate(fixedDurations.last().startDate, nifasAadat)
+            futureDatesList+=FutureDateType(aadatNifasEnd,TypesOfFutureDates.IC_FORBIDDEN_DATE)
+        }
+    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA && fixedDurations.last().days<=10){
+        val tenDays = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
+        futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
+        if(aadats.aadatHaiz!=-1L){//we have a haiz aadat
+            val endOfHaizAadat = addTimeToDate(fixedDurations.last().startDate, aadats.aadatHaiz)
+            futureDatesList+=FutureDateType(endOfHaizAadat,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+        }
+
+    }else if(fixedDurations
+            .last().type == DurationType.DAM_MUBTADIA&& fixedDurations.last().days>10){
+        var izitrariAadatHaiz=10*MILLISECONDS_IN_A_DAY
+        if(aadats.aadatHaiz!=-1L){
+            //we have aadat of haiz
+            izitrariAadatHaiz=aadats.aadatHaiz
+        }
+        val iztirariTuhrAadat = 30-izitrariAadatHaiz
+        val lastDuration= fixedDurations.last().biggerThanTen!!.durationsList.last()
+        if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<iztirariTuhrAadat){
+            val endOfTuhr = addTimeToDate(lastDuration.startTime, iztirariTuhrAadat)
+            futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+        }else if(lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<izitrariAadatHaiz){
+            val endOfHaiz = addTimeToDate(lastDuration.startTime, izitrariAadatHaiz)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+        }else if(lastDuration.type==DurationType.HAIZ){
+            val endOfTuhr = addTimeToDate(lastDuration.startTime, iztirariTuhrAadat)
+            futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+        }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
+            val endOfHaiz = addTimeToDate(lastDuration.startTime, izitrariAadatHaiz)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+        }
+
+
     }
 
-
-    //if there is a daur situation, and person is currently in a state of paki
-    //give end date of yaqeeni paki
-
-    if(fixedDurations.last().days>10&&fixedDurations.last().type==DurationType.DAM) {
-        if(fixedDurations.last().biggerThanTen!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
-            val date = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime, fixedDurations.last().biggerThanTen!!.aadatTuhr)
-            //if bigger than 10, ended in istihaza
-            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
-        }
-
-    }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
-        if(fixedDurations.last().biggerThanForty!!.durationsList.last().type==DurationType.ISTIHAZA_AFTER){
-            val date = addTimeToDate(fixedDurations.last().biggerThanForty!!.durationsList.last().startTime, fixedDurations.last().biggerThanForty!!.aadatTuhr)
-            //if bigger than 40, ended in istihaza
-            return FutureDateType(date,TypesOfFutureDates.END_OF_AADAT_TUHR)
-        }
-
-    }
-
-    return null
+    return futureDatesList
 }
-fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):AadatsOfHaizAndTuhr?{
+
+fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):AadatsOfHaizAndTuhr{
     if(fixedDurations.last().type==DurationType.DAM&&fixedDurations.last().days>10) {
         val lastDurationOfBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
 
-        return if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
+        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
+                fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=fixedDurations.last().timeInMilliseconds){
+            return AadatsOfHaizAndTuhr(
+                fixedDurations.last().biggerThanTen!!.haiz,
+                fixedDurations.last().biggerThanTen!!.gp
+            )
+        }
+
+        if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
             //if it ended in paki
-            AadatsOfHaizAndTuhr(
+            return AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,
                 fixedDurations.last().biggerThanTen!!.aadatTuhr
             )
@@ -1486,7 +1648,7 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
     }else{
 
     }
-    return null
+    return AadatsOfHaizAndTuhr(-1L,-1L)
 }
 
 fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
