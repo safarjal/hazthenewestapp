@@ -273,6 +273,7 @@ fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):
     var strUrdu = ""
 
     return if(aadats==null){
+        println("aadats were null")
         ""
     }else{
         val aadatTuhr = aadats.aadatTuhr

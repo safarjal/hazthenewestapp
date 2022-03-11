@@ -249,5 +249,14 @@ data class BiggerThanFortyNifas(
 data class AadatsOfHaizAndTuhr(
     var aadatHaiz: Long,
     var aadatTuhr: Long
-//    var decisionBasedOnBloodStopping: Boolean
+)
+
+data class AadaatWithChangeability(
+    var aadaat:AadatsOfHaizAndTuhr,
+    var isChangeable:Boolean
+)
+
+data class AadatAfterIndexOfFixedDuration(
+    var aadat: Long,
+    var index: Int
 )
