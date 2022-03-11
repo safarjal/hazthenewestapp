@@ -318,11 +318,11 @@ private fun TagConsumer<HTMLElement>.content() {
         div(classes = "urdu") {
             id = "content_wrapper"
             div(classes = "left") {
-                button {
+                small(classes = "rtl") { }
+                button(classes = "rtl") {
                     onClickFunction = { event -> copyText(event) }
                     +"Copy"
                 }
-                small { }
             }
             content {
                 id = Ids.CONTENT_URDU
@@ -332,11 +332,11 @@ private fun TagConsumer<HTMLElement>.content() {
         div(classes = "english lang-invisible") {
             id = "content_wrapper"
             div(classes = "right") {
+                small { }
                 button {
                     onClickFunction = { event -> copyText(event) }
                     +"Copy"
                 }
-                small { }
             }
             div(classes = "content") {
                 content {
