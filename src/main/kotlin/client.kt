@@ -572,7 +572,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelecterValue=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if(languageSelecterValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
@@ -1376,16 +1376,21 @@ private fun parseEntries(inputContainer: HTMLElement) {
         )
         contentContainer.visibility = true
 //        if (languageSelecterValue == "english") {
-            contentEnglish.innerHTML = output.englishText
+            contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
 //            contentElement.classList.toggle("rtl", false)
 //        } else {
-            contentUrdu.innerHTML = output.urduText
+            contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
 //            contentElement.classList.toggle("rtl", true)
 //        }
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
+}
+
+fun replaceBoldTagWithBoldAndStar(string: String): String {
+    return string.replace("<b>", "<b><span class='invisible'>*</span>")
+        .replace("</b>", "<span class='invisible'>*</span></b>")
 }
 
 private fun compareResults() {

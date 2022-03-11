@@ -91,7 +91,7 @@ val englishStrings = Strings(
     "In case this bleeding continues without gap, or, it continues with gaps less than 15 days at a stretch, then <b>kindly do contact us again on date1 as the current ruling may change accordingly.</b>\n\n",
     "If the bleeding continues, then <b>till date1 will be the days of your period.</b>\n\n",
     "The bleeding and tuh’r has been in the following sequence before pregnancy:\n\n",
-    "\n<b>Pregnancy</b>\n",
+    "\nPregnancy\n",
     "\n<b>Date of delivery: date1</b>\n",
     "\n<b>The bleeding and tuh’r has been in the following sequence after delivery:</b>\n",
     "\n<b>Miscarriage of an undeveloped fetus confirmed on date1</b>\n",
