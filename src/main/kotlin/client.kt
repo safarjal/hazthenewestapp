@@ -338,9 +338,11 @@ private fun TagConsumer<HTMLElement>.content() {
                 }
                 small { }
             }
-            content {
-                id = Ids.CONTENT_ENGLISH
-                classes = setOfNotNull("english", "lang_invisible")
+            div(classes = "content") {
+                content {
+                    id = Ids.CONTENT_ENGLISH
+                    classes = setOfNotNull("english", "lang_invisible")
+                }
             }
         }
         hr()
@@ -353,7 +355,7 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id.equals("content_wrapper") }
-    val para = div?.getChildById("content")
+    val para = div?.querySelector("p")
     val small = div?.querySelector("small")
     para?.textContent?.let { window.navigator.clipboard.writeText(it) }
     small?.innerHTML?.let { small.innerHTML = "Copied!" }
