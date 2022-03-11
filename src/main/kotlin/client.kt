@@ -2,6 +2,7 @@ import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
+import kotlinx.html.consumers.delayed
 import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
@@ -36,6 +37,8 @@ object Ids {
 
     const val CONTENT_CONTAINER = "content_container"
     const val CONTENT = "content"
+    const val CONTENT_URDU = "content_urdu"
+    const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
@@ -94,7 +97,8 @@ private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPU
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
-private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
+private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
+private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 //private val HTMLElement.inputsContainerCloneButton get() =
 //    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
@@ -311,15 +315,55 @@ private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTT
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = "invisible") {
         id = Ids.CONTENT_CONTAINER
-        content {
-            id = Ids.CONTENT
+        div(classes = "urdu") {
+            id = "content_wrapper"
+            div(classes = "left") {
+                small(classes = "rtl") { }
+                button(classes = "rtl") {
+                    onClickFunction = { event -> copyText(event) }
+                    +"Copy"
+                }
+            }
+            content {
+                id = Ids.CONTENT_URDU
+                classes = setOfNotNull("urdu")
+            }
+        }
+        div(classes = "english lang-invisible") {
+            id = "content_wrapper"
+            div(classes = "right") {
+                small { }
+                button {
+                    onClickFunction = { event -> copyText(event) }
+                    +"Copy"
+                }
+            }
+            div(classes = "content") {
+                content {
+                    id = Ids.CONTENT_ENGLISH
+                    classes = setOfNotNull("english", "lang_invisible")
+                }
+            }
         }
         hr()
-        content {
-            id = Ids.CONTENT_DATES
-        }
-        hr()
+//        content {
+//            id = Ids.CONTENT_DATES
+//        }
+//        hr()
     }
+}
+
+private fun copyText(event: Event) {
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id.equals("content_wrapper") }
+    val para = div?.querySelector("p")
+    val small = div?.querySelector("small")
+    para?.textContent?.let { window.navigator.clipboard.writeText(it) }
+    small?.innerHTML?.let { small.innerHTML = "Copied!" }
+    window.setTimeout({
+        if (small != null) {
+            small.innerHTML = ""
+        }
+    }, 1000)
 }
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
@@ -711,6 +755,7 @@ private fun FlowContent.calculateButton() {
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
     p {
+        id = "content"
         style = "white-space: pre-wrap;"
         block()
     }
@@ -1311,14 +1356,14 @@ private fun parseEntries(inputContainer: HTMLElement) {
             isDuration
         )
         contentContainer.visibility = true
-        if (languageSelecterValue == "english") {
-            contentElement.innerHTML = output.englishText
-            contentElement.classList.toggle("rtl", false)
-        } else {
-            contentElement.innerHTML = output.urduText
-            contentElement.classList.toggle("rtl", true)
-        }
-        contentDatesElement.innerHTML = output.haizDatesText
+//        if (languageSelecterValue == "english") {
+            contentEnglish.innerHTML = output.englishText
+//            contentElement.classList.toggle("rtl", false)
+//        } else {
+            contentUrdu.innerHTML = output.urduText
+//            contentElement.classList.toggle("rtl", true)
+//        }
+//        contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()

@@ -187,6 +187,22 @@ tbody > tr:nth-child(odd) {
   padding: 1rem;
 }
 
+#content_wrapper {
+  position: relative;
+}
+
+.left {
+  position: absolute;
+  left: 0;
+}
+
+.right {
+  position: absolute;
+  right: 0;
+}
+
+small { margin: 0.2rem; }
+
 select {
   padding: 0.2rem;
   font-size: 1rem;
