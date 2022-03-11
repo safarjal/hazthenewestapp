@@ -2,6 +2,7 @@ import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
+import kotlinx.html.consumers.delayed
 import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
@@ -36,6 +37,8 @@ object Ids {
 
     const val CONTENT_CONTAINER = "content_container"
     const val CONTENT = "content"
+    const val CONTENT_URDU = "content_urdu"
+    const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
@@ -94,7 +97,8 @@ private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPU
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
-private val HTMLElement.contentElement get() = getChildById(Ids.CONTENT) as HTMLParagraphElement
+private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
+private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 //private val HTMLElement.inputsContainerCloneButton get() =
 //    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
@@ -311,8 +315,35 @@ private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTT
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = "invisible") {
         id = Ids.CONTENT_CONTAINER
-        content {
-            id = Ids.CONTENT
+        div(classes = "urdu") {
+            id = "content_wrapper"
+            div(classes = "left") {
+                small(classes = "rtl") { }
+                button(classes = "rtl") {
+                    onClickFunction = { event -> copyText(event) }
+                    +"Copy"
+                }
+            }
+            content {
+                id = Ids.CONTENT_URDU
+                classes = setOfNotNull("urdu")
+            }
+        }
+        div(classes = "english lang-invisible") {
+            id = "content_wrapper"
+            div(classes = "right") {
+                small { }
+                button {
+                    onClickFunction = { event -> copyText(event) }
+                    +"Copy"
+                }
+            }
+            div(classes = "content") {
+                content {
+                    id = Ids.CONTENT_ENGLISH
+                    classes = setOfNotNull("english", "lang_invisible")
+                }
+            }
         }
         hr()
         content {
@@ -320,6 +351,19 @@ private fun TagConsumer<HTMLElement>.content() {
         }
         hr()
     }
+}
+
+private fun copyText(event: Event) {
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id.equals("content_wrapper") }
+    val para = div?.querySelector("p")
+    val small = div?.querySelector("small")
+    para?.textContent?.let { window.navigator.clipboard.writeText(it) }
+    small?.innerHTML?.let { small.innerHTML = "Copied!" }
+    window.setTimeout({
+        if (small != null) {
+            small.innerHTML = ""
+        }
+    }, 1000)
 }
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
@@ -340,6 +384,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         calculateButton()
         hr()
         onSubmitFunction = { event ->
+            println("submit")
             parseEntries(findInputContainer(event))
         }
     }
@@ -434,6 +479,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
+            name = Ids.AADAT_HAIZ_INPUT
             value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
@@ -449,6 +495,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
+            name = Ids.AADAT_TUHR_INPUT
             value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
@@ -464,6 +511,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.MAWJOODA_TUHR_INPUT
+            name = Ids.MAWJOODA_TUHR_INPUT
             value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
             //TODO: Find out how to do infinity, rather than 10000
@@ -480,6 +528,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
             input(type = InputType.checkBox) {
                 id = Ids.MAWJOODA_FASID_CHECKBOX
+                name = Ids.MAWJOODA_FASID_CHECKBOX
                 checked = false
             }
         }
@@ -507,6 +556,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input {
             id = Ids.AADAT_NIFAS_INPUT
+            name = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
                 "preg-checked",
                 "aadat",
@@ -522,7 +572,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelecterValue=="english"){StringsOfLanguages.ENGLISH.incorrectAadat } else{StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if(languageSelecterValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
@@ -547,18 +597,19 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
             }
             checkBoxInput {
                 id = Ids.PREGNANCY_CHECKBOX
+                name = Ids.PREGNANCY_CHECKBOX
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
                     val isChecked = (event.currentTarget as HTMLInputElement).checked
                     val inputContainer = findInputContainer(event)
                     for (pregnancyElement in inputContainer.pregnancyInputs) {
-                            pregnancyElement.visibility = isChecked
-                            pregnancyElement.disabled = !isChecked
+                        pregnancyElement.visibility = isChecked
+                        pregnancyElement.disabled = !isChecked
                     }
                     for (pregnancyElement in inputContainer.pregnancyElements) {
                             pregnancyElement.visibility = isChecked
                     }
-                    disableAadaat(inputContainer, inputContainer.isDuration)
+                    if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
                 }
             }
         }
@@ -599,6 +650,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
             }
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
+                name = Ids.MUSTABEEN_CHECKBOX
                 classes = setOfNotNull(
                     "preg-checked",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
@@ -613,7 +665,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
-        div {
+        div(classes = "row preg-checked invisible aadat_inputs") {
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
                 classes = setOfNotNull(
@@ -639,6 +691,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
                 )
                 id = Ids.PREG_START_TIME_INPUT
+                name = Ids.PREG_START_TIME_INPUT
                 onChangeFunction = { event ->
                     findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
                 }
@@ -649,7 +702,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
-        div {
+        div(classes = "row preg-checked invisible aadat_inputs") {
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
                 classes = setOfNotNull(
@@ -675,6 +728,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
                 )
                 id = Ids.PREG_END_TIME_INPUT
+                name = Ids.PREG_END_TIME_INPUT
                 onChangeFunction = { event ->
                     findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
                 }
@@ -711,6 +765,7 @@ private fun FlowContent.calculateButton() {
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
     p {
+        id = "content"
         style = "white-space: pre-wrap;"
         block()
     }
@@ -784,12 +839,14 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
         td {
             input(type = InputType.number) {
                 id = Ids.DurationRow.INPUT_DURATION
+                name = Ids.DurationRow.INPUT_DURATION
                 disabled = disable
             }
         }
         td {
             select {
                 id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                name = Ids.DurationRow.INPUT_TYPE_OF_DURATION
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
@@ -1239,6 +1296,13 @@ private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
                     input.disabled = disable
                 }
         }
+    if (!inputContainer.isPregnancy) {
+        for (pregnancyElement in inputContainer.pregnancyInputs) {
+            pregnancyElement.visibility = false
+            pregnancyElement.disabled = true
+
+        }
+    }
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
@@ -1311,17 +1375,22 @@ private fun parseEntries(inputContainer: HTMLElement) {
             isDuration
         )
         contentContainer.visibility = true
-        if (languageSelecterValue == "english") {
-            contentElement.innerHTML = output.englishText
-            contentElement.classList.toggle("rtl", false)
-        } else {
-            contentElement.innerHTML = output.urduText
-            contentElement.classList.toggle("rtl", true)
-        }
+//        if (languageSelecterValue == "english") {
+            contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
+//            contentElement.classList.toggle("rtl", false)
+//        } else {
+            contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
+//            contentElement.classList.toggle("rtl", true)
+//        }
         contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
+}
+
+fun replaceBoldTagWithBoldAndStar(string: String): String {
+    return string.replace("<b>", "<b><span class='invisible'>*</span>")
+        .replace("</b>", "<span class='invisible'>*</span></b>")
 }
 
 private fun compareResults() {
