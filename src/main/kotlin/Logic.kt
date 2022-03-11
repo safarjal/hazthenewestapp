@@ -811,19 +811,19 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>){
     //so, for example 15B could have a first 3 days of istihaza before, then
     // 7 days of haiz, then 3 days of istihaza after. this will make all those duration.
 
-    //currently, this doesn't handle istimrar
-
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM &&
             fixedDurations[i].days>10 &&
             fixedDurations[i].biggerThanTen!!.qism==Soortain.A_3 &&
-            i==fixedDurations.lastIndex){
+            i==fixedDurations.lastIndex){//A-3 switching to aadat
             val ayyameQabliyyah = fixedDurations[i].biggerThanTen!!.gp-fixedDurations[i].biggerThanTen!!.mp
-            if(fixedDurations[i].timeInMilliseconds>ayyameQabliyyah){
+            if(fixedDurations[i].timeInMilliseconds>=ayyameQabliyyah){
                 fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,ayyameQabliyyah,fixedDurations[i].startDate)
-                val haizStartDate = addTimeToDate(fixedDurations[i].startDate, ayyameQabliyyah)
-                val haizDuration = fixedDurations[i].timeInMilliseconds-ayyameQabliyyah
-                fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.LESS_THAN_3_HAIZ,haizDuration, haizStartDate)
+                if(ayyameQabliyyah > fixedDurations[i].timeInMilliseconds){
+                    val haizStartDate = addTimeToDate(fixedDurations[i].startDate, ayyameQabliyyah)
+                    val haizDuration = fixedDurations[i].timeInMilliseconds-ayyameQabliyyah
+                    fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.LESS_THAN_3_HAIZ,haizDuration, haizStartDate)
+                }
                 return
             }
         }
@@ -1327,6 +1327,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                     if (endDateOfHaiz.getTime()<startOfAadat.getTime()){
                         futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_HAIZ)
                         futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IHTIYATI_GHUSL)
                     }
                     if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
                         var threeDays=addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
@@ -1345,13 +1346,20 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER&&lastDuration.timeInMilliseconds==aadats.aadatTuhr){
                     var endDateOfHaiz = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, aadats.aadatHaiz)
                     if(endDateOfHaiz.getTime()<startOfAadat.getTime()){
-                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_TUHR)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                        futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.IHTIYATI_GHUSL)
                     }
                 }
 
             }else if(startOfAadat.getTime()<=fixedDurations.last().endDate.getTime()){//A-3 entered into aadat
-                val lessThanThreeDate = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
-                futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
+                if(lastDuration.type==DurationType.HAIZ){
+                    val lessThanThreeDate = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
+                    futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
+                }else{
+                    val lessThanThreeDate = addTimeToDate(lastDuration.endDate, 3*MILLISECONDS_IN_A_DAY)
+                    futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
+                }
                 val endofHaiz = addTimeToDate(startOfAadat, fixedDurations.last().biggerThanTen!!.haiz)
                 futureDatesList+= FutureDateType(endofHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 val icForbiddenDate = endofHaiz
