@@ -217,9 +217,13 @@ fun outputStringUrduFilHaalLine(filHaalPaki:Boolean):String{
 
 fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):String{
     var strUrdu = ""
+    println(futureDates.size)
+    println("started ask again lines")
     for(futureDate in futureDates){
         val date = futureDate.date
         val type= futureDate.futureDates
+        println(date)
+        println(type)
         if(type==TypesOfFutureDates.END_OF_AADAT_HAIZ){
             strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", "${urduDateFormat(date, isDateOnly)}")
         }else if(type==TypesOfFutureDates.END_OF_AADAT_TUHR){
@@ -241,7 +245,7 @@ fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<F
         }
     }
 
-
+    println(strUrdu)
     return strUrdu
 }
 fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):String{
