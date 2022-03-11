@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Haidh and Istihadha Calculator</title>
@@ -9,7 +10,7 @@
     <script src="https://www.googletagmanager.com/gtag/js?id=G-RGMD55PENZ" defer></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-RGMD55PENZ');
@@ -20,25 +21,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="rtl">
-<!--<div id="root"></div>-->
-<header>
-    <h1>
-        <!-- <a href="./home.html">Home</a> -->
-        <span class="english lang-invisible">Haidh and Istihadha Calculator</span>
-        <span class="urdu">حيض و استحاضہ کیلکولیٹر</span>
-<!--        <a class="english lang-invisible" href="./instructions-english.html">i</a>-->
-<!--        <a class="urdu" href="./instructions-urdu.html">i</a>-->
-    </h1>
-    <div id="language-selection">
-        <select name="language" id="language">
-            <option class="rtl" selected="selected" value="urdu">اردو</option>
-            <option value="english">English</option>
-        </select>
-        <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
-        <label class="urdu" for="language">Select Language</label>
-    </div>
-    <hr>
-</header>
+    <!--<div id="root"></div>-->
+    <header>
+        <a class="nav-link" href="./instructions-urdu.html">🛈</a>
+        <h1>
+            <span class="english lang-invisible">Haidh and Istihadha Calculator</span>
+            <span class="urdu">حيض و استحاضہ کیلکولیٹر</span>
+            <!-- <a class="english lang-invisible" href="./instructions-english.html">🛈</a> -->
+        </h1>
+        <div id="language-selection">
+            <select name="language" id="language">
+                <option class="rtl" selected="selected" value="urdu">اردو</option>
+                <option value="english">English</option>
+            </select>
+            <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
+            <label class="urdu" for="language">Select Language</label>
+        </div>
+        <hr>
+    </header>
 </body>
+
 </html>

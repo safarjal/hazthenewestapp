@@ -48,11 +48,38 @@ h1 {
   text-align: center;
 }
 
+a {
+  text-decoration: none;
+}
+
+.nav-link {
+  margin: 0.5rem;
+  position: fixed;
+  top: 0.2rem;
+  left: 0.7rem;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
 #how-to,
 #language-selection {
   text-align: center;
   width: 90vw;
   margin: auto;
+}
+
+main.instructions {
+  width: clamp(min(50vw, 400px), 400px, 100vw);
+  margin: 0 auto;
+}
+
+details {
+  margin: 1rem;
+}
+
+summary {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 hr {
