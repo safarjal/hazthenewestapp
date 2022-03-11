@@ -170,23 +170,7 @@ fun main() {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                 }
             })
-            languageSelecter.onchange = {
-                for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecterValue == "urdu")
-                for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecterValue == "english")
-                document.body!!.classList.toggle("rtl", languageSelecterValue == "urdu")
-                document.querySelectorAll("select")
-                    .asList()
-                    .map { it as HTMLSelectElement }
-                    .forEach { select ->
-                        select.children
-                            .asList()
-                            .map { it as HTMLOptionElement }
-                            .firstOrNull { option ->
-                                option.value == select.value && option.classList.contains(languageSelecterValue)
-                            }
-                            ?.selected = true
-                    }
-            }
+            languageSelecter.onchange = { languageChange() }
         }else{
             askPassword()
         }
@@ -202,6 +186,24 @@ fun askPassword():Boolean{
         return true
     }
     else return askPassword()
+}
+
+fun languageChange() {
+    for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecterValue == "urdu")
+    for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecterValue == "english")
+    document.body!!.classList.toggle("rtl", languageSelecterValue == "urdu")
+    document.querySelectorAll("select")
+        .asList()
+        .map { it as HTMLSelectElement }
+        .forEach { select ->
+            select.children
+                .asList()
+                .map { it as HTMLOptionElement }
+                .firstOrNull { option ->
+                    option.value == select.value && option.classList.contains(languageSelecterValue)
+                }
+                ?.selected = true
+        }
 }
 
 fun Node.addInputLayout() {
@@ -321,7 +323,7 @@ private fun TagConsumer<HTMLElement>.content() {
                 small(classes = "rtl") { }
                 button(classes = "rtl") {
                     onClickFunction = { event -> copyText(event) }
-                    +"Copy"
+                    +"Copy ⎙"
                 }
             }
             content {
@@ -335,7 +337,7 @@ private fun TagConsumer<HTMLElement>.content() {
                 small { }
                 button {
                     onClickFunction = { event -> copyText(event) }
-                    +"Copy"
+                    +"Copy ⎙"
                 }
             }
             div(classes = "content") {
