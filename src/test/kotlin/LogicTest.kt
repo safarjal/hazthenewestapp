@@ -231,11 +231,11 @@ class LogicTest {
             assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
             assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
         }
-        val expectedEndingOutputValues = EndingOutputValues(true, AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2021,2,15), TypesOfFutureDates.END_OF_AADAT_TUHR))
+        val expectedEndingOutputValues = EndingOutputValues(true, AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY), mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
 
     }
     @Test
@@ -271,11 +271,11 @@ class LogicTest {
             assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
         }
 
-        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY,24*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2021,2,17), TypesOfFutureDates.END_OF_AADAT_HAIZ))
+        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY,24*MILLISECONDS_IN_A_DAY), mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
     }
     @Test
     fun mashqiSawal3(){
@@ -312,7 +312,7 @@ class LogicTest {
         }
 
         val expectedEndingOutputValues =
-            EndingOutputValues(true, AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY,64*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2021,2,17), TypesOfFutureDates.END_OF_AADAT_HAIZ))
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY,64*MILLISECONDS_IN_A_DAY), mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         //since no future date was provided, it won't be part of the test
@@ -357,11 +357,14 @@ class LogicTest {
         }
 
         val expectedEndingOutputValues =
-            EndingOutputValues(true, AadatsOfHaizAndTuhr(9*MILLISECONDS_IN_A_DAY,62*MILLISECONDS_IN_A_DAY), FutureDateType(Date(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2))
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(9*MILLISECONDS_IN_A_DAY,62*MILLISECONDS_IN_A_DAY),
+//                FutureDateType(Date(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2)
+                mutableListOf()
+            )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
     }
     @Test
     fun mashqiSawal5() {
@@ -416,18 +419,19 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(10 * MILLISECONDS_IN_A_DAY, 22 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(Date(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
+            mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun mashqiSawal6() {
@@ -472,18 +476,19 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(Date(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun mashqiSawal7() {
@@ -527,18 +532,19 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 35 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2021, 4, 6), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(Date(2021, 4, 6), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun mashqiSawal8() {
@@ -596,18 +602,19 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(3 * MILLISECONDS_IN_A_DAY, 19 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun mashqiSawal9() {
@@ -654,20 +661,22 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(8 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
+
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         //this answer doesn't provide aadat
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun bugMasla1() {
@@ -719,20 +728,20 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println(output.fixedDurations)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.date.getTime(),
-            output.endingOutputValues.futureDateType!!.date.getTime()
-        )
-        assertEquals(
-            expectedEndingOutputValues.futureDateType!!.futureDates,
-            output.endingOutputValues.futureDateType!!.futureDates
-        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.date.getTime(),
+//            output.endingOutputValues.futureDateType!!.date.getTime()
+//        )
+//        assertEquals(
+//            expectedEndingOutputValues.futureDateType!!.futureDates,
+//            output.endingOutputValues.futureDateType!!.futureDates
+//        )
     }
     @Test
     fun testingAadatCase1() {
@@ -755,7 +764,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(-1, -1),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -782,7 +791,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -811,7 +820,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, -1),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -844,7 +853,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 27*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -874,7 +883,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, -1),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -904,7 +913,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -939,7 +948,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -972,7 +981,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 24*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1001,7 +1010,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1030,7 +1039,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(3*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1059,7 +1068,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1088,7 +1097,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1115,7 +1124,7 @@ class LogicTest {
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
         println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
@@ -1144,7 +1153,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
         println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
@@ -1173,7 +1182,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
         println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
@@ -1202,7 +1211,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
         println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
@@ -1232,7 +1241,7 @@ class LogicTest {
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
-                FutureDateType(Date(2022, 0, 15), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                mutableListOf()
             )
         println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
         println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
