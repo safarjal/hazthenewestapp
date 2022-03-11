@@ -346,10 +346,10 @@ private fun TagConsumer<HTMLElement>.content() {
             }
         }
         hr()
-//        content {
-//            id = Ids.CONTENT_DATES
-//        }
-//        hr()
+        content {
+            id = Ids.CONTENT_DATES
+        }
+        hr()
     }
 }
 
@@ -384,6 +384,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         calculateButton()
         hr()
         onSubmitFunction = { event ->
+            println("submit")
             parseEntries(findInputContainer(event))
         }
     }
@@ -1363,7 +1364,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             contentUrdu.innerHTML = output.urduText
 //            contentElement.classList.toggle("rtl", true)
 //        }
-//        contentDatesElement.innerHTML = output.haizDatesText
+        contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
