@@ -615,16 +615,6 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
         }
     }
 }
-//private fun FlowContent.mubtadiaCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-//    label() {
-//        htmlFor = Ids.MUBTADIA_CHECKBOX
-//        +"Mubtadia"
-//    }
-//    checkBoxInput() {
-//        id = Ids.MUBTADIA_CHECKBOX
-//        checked = inputContainerToCopyFrom?.isPregnancy == true
-//    }
-//}
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible") {

@@ -284,7 +284,7 @@ fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):
             println("aadat of haiz is ${daysHoursMinutesDigital(aadatHaiz,isDateOnly)}")
             strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
         }else{
-            strUrdu+= StringsOfLanguages.URDU.habit.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
+            strUrdu+= StringsOfLanguages.URDU.habit.replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}").replace("b>", "b><span class='invisible'>*</span>")
         }
         strUrdu
     }
