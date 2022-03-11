@@ -605,7 +605,6 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                     for (pregnancyElement in inputContainer.pregnancyInputs) {
                         pregnancyElement.visibility = isChecked
                         pregnancyElement.disabled = !isChecked
-                        console.log("preg-check", pregnancyElement.id, pregnancyElement.disabled)
                     }
                     for (pregnancyElement in inputContainer.pregnancyElements) {
                             pregnancyElement.visibility = isChecked
@@ -1286,7 +1285,6 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
 }
 
 private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
-    kotlin.js.console.log("Disable!", disable)
     inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
@@ -1296,16 +1294,12 @@ private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
                 .map { input ->
                     input as HTMLInputElement
                     input.disabled = disable
-                    kotlin.js.console.log("input.id:", input.id, input.disabled)
                 }
         }
     if (!inputContainer.isPregnancy) {
-        val isPregnancy = inputContainer.isPregnancy
-        console.log("preg-check in disable", isPregnancy)
         for (pregnancyElement in inputContainer.pregnancyInputs) {
-            pregnancyElement.visibility = isPregnancy
-            pregnancyElement.disabled = !isPregnancy
-            console.log("preg-check in disable", pregnancyElement.id, pregnancyElement.disabled)
+            pregnancyElement.visibility = false
+            pregnancyElement.disabled = true
 
         }
     }
