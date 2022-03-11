@@ -479,6 +479,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
+            name = Ids.AADAT_HAIZ_INPUT
             value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
@@ -494,6 +495,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
+            name = Ids.AADAT_TUHR_INPUT
             value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
@@ -509,6 +511,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input(classes = "aadat") {
             id = Ids.MAWJOODA_TUHR_INPUT
+            name = Ids.MAWJOODA_TUHR_INPUT
             value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..10000) }
             //TODO: Find out how to do infinity, rather than 10000
@@ -525,6 +528,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
             input(type = InputType.checkBox) {
                 id = Ids.MAWJOODA_FASID_CHECKBOX
+                name = Ids.MAWJOODA_FASID_CHECKBOX
                 checked = false
             }
         }
@@ -552,6 +556,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         input {
             id = Ids.AADAT_NIFAS_INPUT
+            name = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
                 "preg-checked",
                 "aadat",
@@ -592,18 +597,20 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
             }
             checkBoxInput {
                 id = Ids.PREGNANCY_CHECKBOX
+                name = Ids.PREGNANCY_CHECKBOX
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
                     val isChecked = (event.currentTarget as HTMLInputElement).checked
                     val inputContainer = findInputContainer(event)
                     for (pregnancyElement in inputContainer.pregnancyInputs) {
-                            pregnancyElement.visibility = isChecked
-                            pregnancyElement.disabled = !isChecked
+                        pregnancyElement.visibility = isChecked
+                        pregnancyElement.disabled = !isChecked
+                        console.log("preg-check", pregnancyElement.id, pregnancyElement.disabled)
                     }
                     for (pregnancyElement in inputContainer.pregnancyElements) {
                             pregnancyElement.visibility = isChecked
                     }
-                    disableAadaat(inputContainer, inputContainer.isDuration)
+                    if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
                 }
             }
         }
@@ -644,6 +651,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
             }
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
+                name = Ids.MUSTABEEN_CHECKBOX
                 classes = setOfNotNull(
                     "preg-checked",
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
@@ -658,7 +666,7 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
-        div {
+        div(classes = "row preg-checked invisible aadat_inputs") {
             label {
                 htmlFor = Ids.PREG_START_TIME_INPUT
                 classes = setOfNotNull(
@@ -684,6 +692,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
                 )
                 id = Ids.PREG_START_TIME_INPUT
+                name = Ids.PREG_START_TIME_INPUT
                 onChangeFunction = { event ->
                     findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
                 }
@@ -694,7 +703,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
-        div {
+        div(classes = "row preg-checked invisible aadat_inputs") {
             label {
                 htmlFor = Ids.PREG_END_TIME_INPUT
                 classes = setOfNotNull(
@@ -720,6 +729,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
                     if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
                 )
                 id = Ids.PREG_END_TIME_INPUT
+                name = Ids.PREG_END_TIME_INPUT
                 onChangeFunction = { event ->
                     findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
                 }
@@ -830,12 +840,14 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
         td {
             input(type = InputType.number) {
                 id = Ids.DurationRow.INPUT_DURATION
+                name = Ids.DurationRow.INPUT_DURATION
                 disabled = disable
             }
         }
         td {
             select {
                 id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                name = Ids.DurationRow.INPUT_TYPE_OF_DURATION
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
@@ -1274,6 +1286,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
 }
 
 private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
+    kotlin.js.console.log("Disable!", disable)
     inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
@@ -1283,8 +1296,19 @@ private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
                 .map { input ->
                     input as HTMLInputElement
                     input.disabled = disable
+                    kotlin.js.console.log("input.id:", input.id, input.disabled)
                 }
         }
+    if (!inputContainer.isPregnancy) {
+        val isPregnancy = inputContainer.isPregnancy
+        console.log("preg-check in disable", isPregnancy)
+        for (pregnancyElement in inputContainer.pregnancyInputs) {
+            pregnancyElement.visibility = isPregnancy
+            pregnancyElement.disabled = !isPregnancy
+            console.log("preg-check in disable", pregnancyElement.id, pregnancyElement.disabled)
+
+        }
+    }
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
