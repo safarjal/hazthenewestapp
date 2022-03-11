@@ -1626,8 +1626,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 4), TypesOfFutureDates.END_OF_AADAT_TUHR),
-
+                    FutureDateType(Date(2022,3, 18), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IHTIYATI_GHUSL)
                     )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)

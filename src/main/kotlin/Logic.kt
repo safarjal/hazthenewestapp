@@ -1549,9 +1549,17 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
     if(fixedDurations.last().type==DurationType.DAM&&fixedDurations.last().days>10) {
         val lastDurationOfBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
 
-        return if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
+        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
+                fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=fixedDurations.last().timeInMilliseconds){
+            return AadatsOfHaizAndTuhr(
+                fixedDurations.last().biggerThanTen!!.haiz,
+                fixedDurations.last().biggerThanTen!!.gp
+            )
+        }
+
+        if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
             //if it ended in paki
-            AadatsOfHaizAndTuhr(
+            return AadatsOfHaizAndTuhr(
                 fixedDurations.last().biggerThanTen!!.haiz,
                 fixedDurations.last().biggerThanTen!!.aadatTuhr
             )
