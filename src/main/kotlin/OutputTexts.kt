@@ -215,59 +215,38 @@ fun outputStringUrduFilHaalLine(filHaalPaki:Boolean):String{
 //    return strUrdu
 }
 
-fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDateType: FutureDateType?):String{
+fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):String{
     var strUrdu = ""
-    if (futureDateType==null){
-        return ""
+    println(futureDates.size)
+    println("started ask again lines")
+    for(futureDate in futureDates){
+        val date = futureDate.date
+        val type= futureDate.futureDates
+        println(date)
+        println(type)
+        if(type==TypesOfFutureDates.END_OF_AADAT_HAIZ){
+            strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.END_OF_AADAT_TUHR){
+            strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.IC_FORBIDDEN_DATE){
+            strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.AFTER_TEN_DAYS){
+            strUrdu += StringsOfLanguages.URDU.aftertendays.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.FORTY_DAYS){
+            strUrdu += StringsOfLanguages.URDU.afterfortydays.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE){
+            strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethreemaslachanges.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.BEFORE_THREE_DAYS){
+            strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethree.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.IHTIYATI_GHUSL){
+            strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.A3_CHANGING_TO_A2){
+            strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }
     }
-    val futureDate= futureDateType.date
-    val futureDatesType = futureDateType.futureDates
-    if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
-        strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
-    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
-        strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
-        strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
-        //sex line
-        strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
-    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
-        strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", "${urduDateFormat(futureDate, isDateOnly)}")
 
-    }
+    println(strUrdu)
     return strUrdu
-
-//    //my understanding is, that ask again line only gets generated if the fil haal is istihazaAfter
-//    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
-//    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
-//    var aadatTuhr = fixedDurations[index].biggerThanTen?.aadatTuhr ?: return ""
-//
-//
-//    if(istihazaAfter!=0L){//if there is an istihaza after
-//        var endDateOfBleeding = fixedDurations[index].startDate?.let { addTimeToDate(it, fixedDurations[index].timeInMilliseconds) }
-//        var askAgainDate:Date? = null
-//        if(istihazaAfter>=aadatTuhr+3){//if istihazaAfter is long
-//            //find remainder
-//            var remainder = istihazaAfter%(aadatHaiz+aadatTuhr)
-//            if (remainder < aadatTuhr+3){//it ended in istihaza
-//                var startTimeOfIstihaza = endDateOfBleeding?.let { addTimeToDate(it, -remainder) }
-//                askAgainDate = startTimeOfIstihaza?.let { addTimeToDate(it, aadatTuhr) }!!
-//            }else{//it ended in haiz
-//
-//            }
-//
-//        }else{//short istihazaAfter
-//            if(fixedDurations[index].biggerThanTen?.qism==Soortain.A_3){
-//                //this can change to A2. gotta figure out when. set ask again to then.
-//            }else{
-//                var endDateOfHaiz = endDateOfBleeding?.let { addTimeToDate(it, -(istihazaAfter)) }
-//                askAgainDate = endDateOfHaiz?.let { addTimeToDate(it, (aadatTuhr)) }!!
-//            }
-//        }
-//        if(askAgainDate!=null){
-//            strUrdu = "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> ${urduDateFormat(askAgainDate, isDateOnly)} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n"
-//        }
-//    }
-//
-//    return strUrdu
 }
 fun outputStringUrduAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):String{
     var strUrdu = ""
@@ -1076,26 +1055,34 @@ fun outputStringEnglishFilHaalLine(filHaalPaki:Boolean):String{
     }
 }
 
-fun outputStringEnglishAskAgainLine(isDateOnly: Boolean, futureDateType: FutureDateType?):String{
+fun outputStringEnglishAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):String{
     var strEnglish = ""
-    if (futureDateType==null){
-        return ""
+    for(futureDate in futureDates){
+        val date = futureDate.date
+        val type= futureDate.futureDates
+        if(type==TypesOfFutureDates.END_OF_AADAT_HAIZ){
+            strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.END_OF_AADAT_TUHR){
+            strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.IC_FORBIDDEN_DATE){
+            strEnglish += StringsOfLanguages.ENGLISH.sexnotallowed.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.AFTER_TEN_DAYS){
+            strEnglish += StringsOfLanguages.ENGLISH.aftertendays.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.FORTY_DAYS){
+            strEnglish += StringsOfLanguages.ENGLISH.afterfortydays.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE){
+            strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethreemaslachanges.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.BEFORE_THREE_DAYS){
+            strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethree.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.IHTIYATI_GHUSL){
+            strEnglish += StringsOfLanguages.ENGLISH.ihtiyatighusl.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.A3_CHANGING_TO_A2){
+            strEnglish += StringsOfLanguages.ENGLISH.situationmaychange.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }
     }
-    val futureDate= futureDateType.date
-    val futureDatesType = futureDateType.futureDates
-    if(futureDatesType==TypesOfFutureDates.A3_CHANGING_TO_A2){
-        strEnglish += StringsOfLanguages.ENGLISH.situationmaychange.replace("date1", "${parseDate(futureDate, isDateOnly)}")
-    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_HAIZ){
-        strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", "${parseDate(futureDate, isDateOnly)}")
-        strEnglish += StringsOfLanguages.ENGLISH.ihtiyatighusl.replace("date1", "${parseDate(futureDate, isDateOnly)}")
-        //sex line
-        strEnglish += StringsOfLanguages.ENGLISH.sexnotallowed.replace("date1", "${parseDate(futureDate, isDateOnly)}")
-    }else if(futureDatesType==TypesOfFutureDates.END_OF_AADAT_TUHR){
-        strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", "${parseDate(futureDate, isDateOnly)}")
 
-    }
+
     return strEnglish
-
 }
 fun outputStringEnglishAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):String{
     var strEnglish = ""

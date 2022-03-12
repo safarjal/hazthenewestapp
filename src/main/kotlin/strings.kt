@@ -6,7 +6,7 @@ val urduStrings = Strings(
     "جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n",
     "<b>واللہ تعالی اعلم بالصواب</b>\n\n",
     "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n",
-    "فی الحال آپ کے حیض کے دن ہیں۔ خون جاری رہنے کی صورت میں نمازیں نہ پڑھیں۔\n\n",
+    "فی الحال آپ کے حیض کے دن ہیں۔ خون جاری رہنے کی صورت میں عبادات سے رکیں۔\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> date1 کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n",
     "اگر خون اسی طرح جاری رہے تب پھر<b> date1 تک آپ کے حیض کے دن ہونگے۔</b>\n\n",
     "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
@@ -55,7 +55,7 @@ val urduStrings = Strings(
     "اگر نفاس کا مسئلہ ہے تو ادھر کلک کیجیے!",
     "مستبين الخلقہ: ",
     "مسئلہ حل کرنے کے لیے حیض و طہر کی \"عادت صحیح\" لکھیے",
-    "موجودہ طہر(حل کیے جانے والےدم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
+    "موجودہ طہر(حل کیے جانے والے دم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
     "نفاس کی عادت لکھیے! اگر پہلا بچہ ہے تو 40 کا عدد لکھیے!",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
     "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!",
@@ -77,7 +77,11 @@ val urduStrings = Strings(
     "۔\n\n",
     "ولادت\n\n",
     "حمل\n\n",
-    "شروع کے duration1 نفاس"
+    "شروع کے duration1 نفاس",
+    "اگر خون date1 یعنی 3 دن سے پہلے رک جاتا ہے،اور پھر مکمل 15 دن کی پاکی مل گیٔ تو یہ سب استحاضہ بن جاۓ گا۔\n\n",
+    "اگر خون date1 سے پہلے رک جاۓ اور پھر مکمل 15 دن کی پاکی مل گی تو مسئلہ ضرور دوبارہ پوچھیے، اس لیے کے مسئلے کی صورت تبدیل ہو جاۓ گی۔\n\n",
+    "اگر خون date1 یعنی 40 دن کے بعد بھی جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
+    "اگر خون date1 یعنی 10 دن کے بعد بھی جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
 
 )
 val englishStrings = Strings(
@@ -158,7 +162,11 @@ val englishStrings = Strings(
     ".\n\n",
     "birth\n\n",
     "pregnancy\n\n",
-    "The first duration1 are nifas"
+    "The first duration1 are nifas",
+    "If bleeding stops before date1 (3 days), and is followed by a 15 day or more period of purity, then all of this will become istehaza.\n\n",
+    "If bleeding stops before date1 (3 days), then please ask again, as the masla will change.\n\n",
+    "If bleeding continues after date1 (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
+    "If bleeding continues after date1 (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
 
 
 )
