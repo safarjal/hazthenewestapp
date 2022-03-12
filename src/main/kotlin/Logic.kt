@@ -16,6 +16,12 @@ lateinit var firstStartTime:Date
 
 fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy, isMubtadia:Boolean, language:String, isDuration:Boolean=false): OutputTexts {
 
+    //these are 3 ikhtilafi masail that we can solve according to
+    val isEndOfDaurHaizIkhtilaf = true
+    val isIztirariAadatRealIkhtilaf = true
+    val isTuhrInHamlAadatInGhairMustabeenIkhtilaf = true
+
+
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
@@ -45,7 +51,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
     if(isPregnancy){
         addStartDateToFixedDurations(fixedDurations)
 
-        markAllTuhrsInPregnancyAsHaml(fixedDurations, pregnancy)
+        markAllTuhrsInPregnancyAsHaml(fixedDurations, pregnancy, isTuhrInHamlAadatInGhairMustabeenIkhtilaf)
         //the above also added start of pregnancy
 
         if(!pregnancy.mustabeenUlKhilqat){
@@ -54,7 +60,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             removeTuhrLessThan15InPregnancy(fixedDurations)
             removeDamLessThan3(fixedDurations)
             addStartDateToFixedDurations(fixedDurations)
-            val mawjoodahIsNotAadat = checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations, pregnancy, inputtedMawjoodaTuhr,isMawjoodaFasid)
+            val mawjoodahIsNotAadat = checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations, pregnancy, inputtedMawjoodaTuhr,isMawjoodaFasid,isTuhrInHamlAadatInGhairMustabeenIkhtilaf)
             if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, mawjoodahIsNotAadat, language,adatsOfHaizList,adatsOfTuhrList)){return noOutput}
             addDurationsToDams(fixedDurations)
             addWiladat(fixedDurations, pregnancy)
@@ -101,11 +107,14 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         return generateOutputStringMutadah(fixedDurations, durations, isDateOnly, endingOutputValues, isDuration)
     }
 }
-fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>, pregnancy:Pregnancy, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean):Boolean{
+fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>, pregnancy:Pregnancy, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean,isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean):Boolean{
     if(isMawjoodaFasid){
         return true
     }
     else if(inputtedMawjoodaTuhr == null){
+        return false
+    }
+    else if(isTuhrInHamlAadatInGhairMustabeenIkhtilaf){
         return false
     }
     else{
@@ -342,16 +351,18 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
 }
 
 
-fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
+fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy, isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean){
     for (i in fixedDurations.indices){
         val endDateOfFixedDuration = fixedDurations[i].endDate
-
         if(fixedDurations[i].type == DurationType.TUHR &&
             fixedDurations[i].startDate.getTime() < pregnancy.birthTime.getTime() &&
             endDateOfFixedDuration.getTime() > pregnancy.pregStartTime.getTime()){
+            if(isTuhrInHamlAadatInGhairMustabeenIkhtilaf && !pregnancy.mustabeenUlKhilqat){
+                //in non mustabeen ulkhilqah, when the ikhtilafi masla is on, do not mark tuhr as tuhr in haml
+            }else{
+                fixedDurations[i].type = DurationType.TUHR_IN_HAML
 
-            fixedDurations[i].type = DurationType.TUHR_IN_HAML
-
+            }
         }
     }
 }
