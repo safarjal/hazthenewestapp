@@ -1991,8 +1991,4 @@ class LogicTest {
         val expectedentime = Date(2021,3,29, 3,0)
         assertEquals(endtime.getTime(), expectedentime.getTime())
     }
-
 }
-
-
-
