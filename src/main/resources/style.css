@@ -100,6 +100,11 @@ input[type='datetime-local'] {
   direction: ltr;
 }
 
+input[type='datetime-local'] {
+  font-size: min(2vw, 13px);
+}
+
+
 label {
   margin: 0.5rem 0.5rem 0 0.5rem;
   flex: 1;
@@ -132,7 +137,7 @@ label {
 }
 
 .date_and_time {
-  width: 517px;
+  width: clamp(min(517px, 100vw), 100vw, 517px);
 }
 
 .time {
