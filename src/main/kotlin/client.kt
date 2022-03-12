@@ -754,11 +754,11 @@ private fun FlowContent.ikhtilafiMasle() {
     div(classes = "row") {
         details {
             summary {
-                span(classes = "english lang-invisible") { +"Ikhtilafi Masail" }
-                span(classes = "urdu") { +"Ikhtilafi Masail U" }
+                span(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
+                span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
             }
-            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, "First Iktilaf", "First U Ikhtilaf")
-            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, "First Iktilaf", "First U Ikhtilaf")
+            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
+            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)
         }
     }
 }
@@ -1402,7 +1402,9 @@ private fun parseEntries(inputContainer: HTMLElement) {
             ),
             false,
             languageSelecterValue,
-            isDuration
+            isDuration,
+            ikhtilaf1,
+            ikhtilaf2
         )
         contentContainer.visibility = true
 //        if (languageSelecterValue == "english") {
