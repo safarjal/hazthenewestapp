@@ -280,7 +280,7 @@ p {
 
 #contact-form input,
 #contact-form textarea {
-  flex: 5;
+  flex: 4;
 }
 
 #contact-form textarea {
