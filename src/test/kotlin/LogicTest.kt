@@ -1906,6 +1906,50 @@ class LogicTest {
         }
     }
     @Test
+    fun BugMaslaDescribedInIssue58() {
+        //A-3 changing to A-1
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 8, 24), Date(2021, 8, 30))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 9, 18), Date(2021, 9, 24))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 11, 17), Date(2021, 11, 22))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 0, 21), Date(2022, 1, 14))
+
+        val output = handleEntries(
+            entries,
+            -1L,
+            -1L, -1L,false,
+            isDateOnly = true,
+            isPregnancy = false,
+            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+            , isMubtadia = false,
+            language = "urdu")
+        val haizDateList = output.hazDatesList
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 54*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,1, 17), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
     fun calculateEndTime(){
         val fixedDuration1=
             FixedDuration(type=DurationType.DAM,
