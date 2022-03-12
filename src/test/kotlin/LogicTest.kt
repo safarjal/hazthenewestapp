@@ -1906,6 +1906,48 @@ class LogicTest {
         }
     }
     @Test
+    fun BugMaslaDescribedInIssue103() {
+        //pregnancy
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 4, 4), Date(2021, 4, 12))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 5, 2), Date(2021, 5, 10))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 2, 5), Date(2022, 3, 23))
+
+        val output = handleEntries(
+            entries,
+            null,
+            null, null,false,
+            isDateOnly = true,
+            isPregnancy = true,
+            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
+                40*MILLISECONDS_IN_A_DAY,
+                mustabeenUlKhilqat = true)
+            , isMubtadia = false,
+            language = "urdu")
+        val haizDateList = output.hazDatesList
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+
+    @Test
     fun calculateEndTime(){
         val fixedDuration1=
             FixedDuration(type=DurationType.DAM,
