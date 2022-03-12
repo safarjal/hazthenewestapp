@@ -1470,15 +1470,15 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 }
                 if(mp!=-1L && aadats.aadatTuhr!=-1L && aadats.aadatHaiz!=-1L){
                     var ihtiyatiGhuslTime:Date
-                    if(mp>=gp){//aadat has already started, and may have ended
-                        if(hz-(mp-gp)>=3*MILLISECONDS_IN_A_DAY){
+                    if(mp>gp){//aadat has already started, and may have ended B types
+                        if(hz-(mp-gp)>=3*MILLISECONDS_IN_A_DAY){ //B-2
                             ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, hz-(mp-gp))//B-2
                         }else{
-                            ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, hz)
+                            ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, hz)//B-3
                         }
-                    }else{//A
+                    }else{//A guzishat is bigger than mawjoodah
                         val crossingTen = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
-                        if(crossingTen.getTime()>=gp-mp){
+                        if(crossingTen.getTime()>=addTimeToDate(fixedDurations.last().startDate, gp-mp).getTime()){
                             //crossing 10 puts it in aadat or after it
                             ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, (gp-mp+hz))
                         }else{//A-3
@@ -1510,7 +1510,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                         }
                     }else{//A
                         val crossingTen = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
-                        if(crossingTen.getTime()>=gp-mp){
+                        if(crossingTen.getTime()>=addTimeToDate(fixedDurations.last().startDate, gp-mp).getTime()){
                             //crossing 10 puts it in aadat or after it
                             ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, (gp-mp+hz))
                         }else{//A-3
