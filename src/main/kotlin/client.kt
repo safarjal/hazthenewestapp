@@ -751,7 +751,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 }
 
 private fun FlowContent.ikhtilafiMasle() {
-    div(classes = "row") {
+    div {
         details {
             summary {
                 span(classes = "english lang-invisible") { +"Ikhtilafi Masail" }
@@ -765,19 +765,21 @@ private fun FlowContent.ikhtilafiMasle() {
 
 private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
     div(classes = "row") {
-        label(classes = "english lang-invisible") {
-            htmlFor = inputId
-            +englishText
-        }
-        label(classes = "urdu") {
-            htmlFor = inputId
-            +urduText
-        }
-        label(classes = "switch") {
-            checkBoxInput {
-                id = inputId
+        div {
+            label(classes = "english lang-invisible") {
+                htmlFor = inputId
+                +englishText
             }
-            span(classes = "slider round")
+            label(classes = "urdu") {
+                htmlFor = inputId
+                +urduText
+            }
+            label(classes = "switch") {
+                checkBoxInput {
+                    id = inputId
+                }
+                span(classes = "slider round")
+            }
         }
     }
 }
