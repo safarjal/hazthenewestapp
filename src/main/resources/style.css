@@ -86,17 +86,18 @@ hr {
   margin: 1rem 0 0 0;
 }
 
+textarea,
 input {
   margin: 0.5rem;
   padding: 0.5rem;
   flex: 1;
 }
 
-input[type="date"],
-input[type="datetime-local"] {
+input[type='date'],
+input[type='datetime-local'] {
   margin-left: 0;
   margin-right: 0;
-  direction: ltr
+  direction: ltr;
 }
 
 label {
@@ -123,7 +124,7 @@ label {
   margin: 0 auto;
   /* width: min(100vw, 410px); */
   width: clamp(min(301px, 100vw), 100vw, 375px);
-  border:1px;
+  border: 1px;
 }
 
 #fasid {
@@ -178,6 +179,7 @@ button:hover {
   direction: rtl;
   font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
+  font-size: larger;
 }
 
 .plus {
@@ -205,9 +207,9 @@ tbody > tr:nth-child(odd) {
 
 .calc-btn {
   padding: 0.4rem;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin: 0.5rem;
-  background: var(--primary3)
+  background: var(--primary3);
 }
 
 #content_container {
@@ -228,7 +230,9 @@ tbody > tr:nth-child(odd) {
   right: 0;
 }
 
-small { margin: 0.2rem; }
+small {
+  margin: 0.2rem;
+}
 
 select {
   padding: 0.2rem;
@@ -243,9 +247,48 @@ table {
 }
 
 .flex {
-    display: flex;
+  display: flex;
 }
 
 .zero-flex {
-    flex: 0;
+  flex: 0;
+}
+
+/* FAQ faqs */
+
+details {
+  margin-top: 2rem;
+}
+p {
+  margin-top: 0.5rem;
+}
+
+/* FAQ Contact Form */
+#contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#contact-form ul {
+  padding: 0;
+}
+
+#contact-form li {
+  display: flex;
+  list-style: none;
+}
+
+#contact-form input,
+#contact-form textarea {
+  flex: 4;
+}
+
+#contact-form textarea {
+  height: 7rem;
+}
+
+#contact-form button {
+  margin: 0.5rem 0.5rem 3rem 0.5rem;
+  padding: 0.5rem;
+  font-size: 1.1rem;
 }
