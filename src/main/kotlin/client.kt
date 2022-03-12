@@ -57,9 +57,7 @@ object Ids {
     const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
     const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
-    const val DATE_ONLY_RADIO = "date_only_radio"
-    const val DATE_TIME_RADIO = "date_time_radio"
-    const val DATE_AND_OR_RADIO = "date_and_or_time"
+    const val INPUT_TYPE_SELECT = "input_type_select"
 //    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 
@@ -85,9 +83,9 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
 //private val HTMLElement.isDateOnly get() = (getChildById(Ids.DATE_ONLY_RADIO) as HTMLInputElement).checked
-private val HTMLElement.isDateTime get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateTime"
-private val HTMLElement.isDateOnly get() = (getChildById("typePicker") as HTMLSelectElement).value == "dateOnly"
-private val HTMLElement.isDuration get() = (getChildById("typePicker") as HTMLSelectElement).value == "duration"
+private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "dateTime"
+private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "dateOnly"
+private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "duration"
 //private val HTMLElement.isIstimrar get() = (getChildById(Ids.ISTIMRAR_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
@@ -398,19 +396,34 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
+private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, preg: Boolean = false) {
+    label {
+        htmlFor = inputId
+        classes = setOfNotNull(
+            "english",
+            "lang-invisible",
+            if (preg) "preg-checked" else null,
+            if (preg) "invisible" else null,
+        )
+        +englishText
+    }
+    label {
+        htmlFor = inputId
+        classes = setOfNotNull(
+            "urdu",
+            if (preg) "preg-checked" else null,
+            if (preg) "invisible" else null,
+        )
+        +urduText
+    }
+}
+
 private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
-        label(classes = "english lang-invisible") {
-            htmlFor = Ids.DATE_TIME_RADIO
-            +StringsOfLanguages.ENGLISH.typeOfInput
-        }
-        label(classes = "urdu") {
-            htmlFor = Ids.DATE_TIME_RADIO
-            +StringsOfLanguages.URDU.typeOfInput
-        }
+        makeLabel(Ids.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
         select {
-            id = "typePicker"
+            id = Ids.INPUT_TYPE_SELECT
             onChangeFunction = { event ->
                 onClickTypeConfigurationSelectDropdown(findInputContainer(event))
             }
@@ -440,51 +453,12 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
                 +StringsOfLanguages.URDU.duration
             }
         }
-//        div(classes = "flex") {
-//            radioInput(classes = "zero-flex") {
-//                id = Ids.DATE_TIME_RADIO
-//                name = Ids.DATE_AND_OR_RADIO
-//                checked = !isDateOnly
-//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-//            }
-//            label(classes = "english lang-invisible") {
-//                htmlFor = Ids.DATE_TIME_RADIO
-//                +"Date and Time"
-//            }
-//            label(classes = "urdu") {
-//                htmlFor = Ids.DATE_TIME_RADIO
-//                +"تاریخ اور وقت"
-//            }
-//        }
-//        div(classes = "flex") {
-//            radioInput(classes = "zero-flex") {
-//                id = Ids.DATE_ONLY_RADIO
-//                name = Ids.DATE_AND_OR_RADIO
-//                checked = isDateOnly
-//                onChangeFunction = { event -> onClickDateConfigurationRadioButton(findInputContainer(event)) }
-//            }
-//            label(classes = "english lang-invisible") {
-//                htmlFor = Ids.DATE_ONLY_RADIO
-//                +"Date only"
-//            }
-//            label(classes = "urdu") {
-//                htmlFor = Ids.DATE_ONLY_RADIO
-//                +"صرف تاریخیں"
-//            }
-//        }
     }
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row aadat_inputs") {
-        label(classes = "english lang-invisible") {
-            htmlFor = Ids.AADAT_HAIZ_INPUT
-            +(StringsOfLanguages.ENGLISH.haizAadat)
-        }
-        label(classes = "urdu") {
-            htmlFor = Ids.AADAT_HAIZ_INPUT
-            +(StringsOfLanguages.URDU.haizAadat)
-        }
+        makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
             name = Ids.AADAT_HAIZ_INPUT
@@ -493,14 +467,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     div(classes = "row aadat_inputs") {
-        label(classes = "english lang-invisible") {
-            htmlFor = Ids.AADAT_TUHR_INPUT
-            +(StringsOfLanguages.ENGLISH.tuhrAadat)
-        }
-        label(classes = "urdu") {
-            htmlFor = Ids.AADAT_TUHR_INPUT
-            +(StringsOfLanguages.URDU.tuhrAadat)
-        }
+        makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
             name = Ids.AADAT_TUHR_INPUT
@@ -509,14 +476,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     div(classes = "row aadat_inputs") {
-        label(classes = "english lang-invisible") {
-            htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +(StringsOfLanguages.ENGLISH.mawjoodahTuhr)
-        }
-        label(classes = "urdu") {
-            htmlFor = Ids.MAWJOODA_TUHR_INPUT
-            +(StringsOfLanguages.URDU.mawjoodahTuhr)
-        }
+        makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
         input(classes = "aadat") {
             id = Ids.MAWJOODA_TUHR_INPUT
             name = Ids.MAWJOODA_TUHR_INPUT
@@ -526,14 +486,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
         div {
             id = "fasid"
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
-                +(StringsOfLanguages.ENGLISH.faasid)
-            }
-            label(classes = "urdu") {
-                htmlFor = Ids.MAWJOODA_FASID_CHECKBOX
-                +(StringsOfLanguages.URDU.faasid)
-            }
+            makeLabel(Ids.MAWJOODA_FASID_CHECKBOX, StringsOfLanguages.ENGLISH.faasid, StringsOfLanguages.URDU.faasid)
             input(type = InputType.checkBox) {
                 id = Ids.MAWJOODA_FASID_CHECKBOX
                 name = Ids.MAWJOODA_FASID_CHECKBOX
@@ -543,25 +496,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
     pregnancyCheckBox(inputContainerToCopyFrom)
     div(classes = "row preg-checked invisible") {
-        label {
-            htmlFor = Ids.AADAT_NIFAS_INPUT
-            classes = setOfNotNull(
-                "preg-checked",
-                "english",
-                "lang-invisible",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-            )
-            +(StringsOfLanguages.ENGLISH.nifasAadat)
-        }
-        label {
-            htmlFor = Ids.AADAT_NIFAS_INPUT
-            classes = setOfNotNull(
-                "preg-checked",
-                "urdu",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-            )
-            +(StringsOfLanguages.URDU.nifasAadat)
-        }
+        makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat, true)
         input {
             id = Ids.AADAT_NIFAS_INPUT
             name = Ids.AADAT_NIFAS_INPUT
@@ -595,14 +530,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row") {
         div {
-            label(classes = "english lang-invisible") {
-                htmlFor = Ids.PREGNANCY_CHECKBOX
-                +(StringsOfLanguages.ENGLISH.nifas)
-            }
-            label(classes = "urdu") {
-                htmlFor = Ids.PREGNANCY_CHECKBOX
-                +(StringsOfLanguages.URDU.nifas)
-            }
+            makeLabel(Ids.PREGNANCY_CHECKBOX, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
             checkBoxInput {
                 id = Ids.PREGNANCY_CHECKBOX
                 name = Ids.PREGNANCY_CHECKBOX
@@ -627,25 +555,9 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible") {
         div {
-            label {
-                htmlFor = Ids.MUSTABEEN_CHECKBOX
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "english",
-                    "lang-invisible",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.ENGLISH.mustabeenUlKhilqa
-            }
-            label {
-                htmlFor = Ids.MUSTABEEN_CHECKBOX
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "urdu",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.URDU.mustabeenUlKhilqa
-            }
+            makeLabel(Ids.MUSTABEEN_CHECKBOX,
+                StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
+                StringsOfLanguages.URDU.mustabeenUlKhilqa, true)
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
                 name = Ids.MUSTABEEN_CHECKBOX
@@ -664,25 +576,9 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
         div(classes = "row preg-checked invisible aadat_inputs") {
-            label {
-                htmlFor = Ids.PREG_START_TIME_INPUT
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "english",
-                    "lang-invisible",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.ENGLISH.pregnancyStartTime
-            }
-            label {
-                htmlFor = Ids.PREG_START_TIME_INPUT
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "urdu",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.URDU.pregnancyStartTime
-            }
+            makeLabel(Ids.PREG_START_TIME_INPUT,
+                StringsOfLanguages.ENGLISH.pregnancyStartTime,
+                StringsOfLanguages.URDU.pregnancyStartTime, true)
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
                     "preg-checked",
@@ -701,25 +597,7 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row preg-checked invisible aadat_inputs") {
         div(classes = "row preg-checked invisible aadat_inputs") {
-            label {
-                htmlFor = Ids.PREG_END_TIME_INPUT
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "english",
-                    "lang-invisible",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.ENGLISH.birthMiscarrriageTime
-            }
-            label {
-                htmlFor = Ids.PREG_END_TIME_INPUT
-                classes = setOfNotNull(
-                    "preg-checked",
-                    "urdu",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null,
-                )
-                +StringsOfLanguages.URDU.birthMiscarrriageTime
-            }
+            makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
                     "preg-checked",
@@ -751,7 +629,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 }
 
 private fun FlowContent.ikhtilafiMasle() {
-    div(classes = "row") {
+    div {
         details {
             summary {
                 span(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
@@ -765,19 +643,14 @@ private fun FlowContent.ikhtilafiMasle() {
 
 private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
     div(classes = "row") {
-        label(classes = "english lang-invisible") {
-            htmlFor = inputId
-            +englishText
-        }
-        label(classes = "urdu") {
-            htmlFor = inputId
-            +urduText
-        }
-        label(classes = "switch") {
-            checkBoxInput {
-                id = inputId
+        div {
+            makeLabel(inputId, englishText, urduText)
+            label(classes = "switch") {
+                checkBoxInput {
+                    id = inputId
+                }
+                span(classes = "slider round")
             }
-            span(classes = "slider round")
         }
     }
 }
