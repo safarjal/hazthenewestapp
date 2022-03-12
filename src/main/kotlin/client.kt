@@ -2,11 +2,9 @@ import kotlinx.html.dom.append
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.*
-import kotlinx.html.consumers.delayed
 import kotlinx.html.dom.prepend
 import kotlinx.html.form
 import kotlinx.html.js.*
-import kotlinx.html.stream.createHTML
 import kotlinx.html.tr
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
@@ -34,6 +32,10 @@ object Ids {
         const val DURATION_BUTTON_ADD_BEFORE = "duration_button_add_before"
     }
 
+    object Ikhtilafat {
+        const val IKHTILAF1 = "ikhtilaf1"
+        const val IKHTILAF2 = "ikhtilaf2"
+    }
 
     const val CONTENT_CONTAINER = "content_container"
     const val CONTENT = "content"
@@ -104,6 +106,9 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DAT
 //    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
+
+private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
+private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -379,6 +384,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
+        ikhtilafiMasle()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -744,6 +750,38 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
     }
 }
 
+private fun FlowContent.ikhtilafiMasle() {
+    div(classes = "row") {
+        details {
+            summary {
+                span(classes = "english lang-invisible") { +"Ikhtilafi Masail" }
+                span(classes = "urdu") { +"Ikhtilafi Masail U" }
+            }
+            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, "First Iktilaf", "First U Ikhtilaf")
+            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, "First Iktilaf", "First U Ikhtilaf")
+        }
+    }
+}
+
+private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
+    div(classes = "row") {
+        label(classes = "english lang-invisible") {
+            htmlFor = inputId
+            +englishText
+        }
+        label(classes = "urdu") {
+            htmlFor = inputId
+            +urduText
+        }
+        label(classes = "switch") {
+            checkBoxInput {
+                id = inputId
+            }
+            span(classes = "slider round")
+        }
+    }
+}
+
 private fun FlowContent.calculateButton() {
     button(classes = "english lang-invisible calc-btn") {
         +StringsOfLanguages.ENGLISH.calculate
@@ -842,8 +880,8 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
-                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                     row.durationInput.value = "0"
+                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                 }
                 option(classes = "english lang-invisible") {
                     selected = !urdu && !lastWasDam
