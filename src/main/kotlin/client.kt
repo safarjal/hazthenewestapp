@@ -1374,7 +1374,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
 //            contentElement.classList.toggle("rtl", true)
 //        }
-        contentDatesElement.innerHTML = output.haizDatesText
+//        contentDatesElement.innerHTML = output.haizDatesText
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()

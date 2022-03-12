@@ -178,7 +178,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = true,
             pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu", false)
         val haizDateList = output.hazDatesList
 
@@ -217,7 +217,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -255,7 +255,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -292,7 +292,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -336,7 +336,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -395,7 +395,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(1, 1, 1), Date(1, 1, 1), null, mustabeenUlKhilqat = false)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -420,7 +420,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(10 * MILLISECONDS_IN_A_DAY, 22 * MILLISECONDS_IN_A_DAY),
 //                FutureDateType(Date(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
-            mutableListOf()
+                mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
@@ -452,7 +452,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = true,
             pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -510,7 +510,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -571,7 +571,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = false,
             pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -637,7 +637,7 @@ class LogicTest {
             isDateOnly = true,
             isPregnancy = true,
             pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-        , isMubtadia = false,
+            , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
@@ -1556,7 +1556,7 @@ class LogicTest {
                 mutableListOf(
                     FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
 
-                )
+                    )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1630,7 +1630,7 @@ class LogicTest {
                     FutureDateType(Date(2022,3, 20), TypesOfFutureDates.END_OF_AADAT_HAIZ),
                     FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IHTIYATI_GHUSL)
-                    )
+                )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
@@ -1906,38 +1906,35 @@ class LogicTest {
         }
     }
     @Test
-    fun BugMaslaDescribedInIssue58() {
-        //A-3 changing to A-1
+    fun BugMaslaDescribedInIssue103() {
+        //pregnancy
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 8, 24), Date(2021, 8, 30))
+            Entry(Date(2021, 4, 4), Date(2021, 4, 12))
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 9, 18), Date(2021, 9, 24))
+            Entry(Date(2021, 5, 2), Date(2021, 5, 10))
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 11, 17), Date(2021, 11, 22))
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 21), Date(2022, 1, 14))
+            Entry(Date(2022, 2, 5), Date(2022, 3, 23))
 
         val output = handleEntries(
             entries,
-            -1L,
-            -1L, -1L,false,
+            null,
+            null, null,false,
             isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+            isPregnancy = true,
+            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
+                40*MILLISECONDS_IN_A_DAY,
+                mustabeenUlKhilqat = true)
             , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
 
         val expectedEndingOutputValues =
             EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 54*MILLISECONDS_IN_A_DAY),
+                true,
+                AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,1, 17), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
-                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,1, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1949,6 +1946,7 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+
     @Test
     fun calculateEndTime(){
         val fixedDuration1=
@@ -1993,8 +1991,4 @@ class LogicTest {
         val expectedentime = Date(2021,3,29, 3,0)
         assertEquals(endtime.getTime(), expectedentime.getTime())
     }
-
 }
-
-
-

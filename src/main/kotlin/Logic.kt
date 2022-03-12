@@ -1524,22 +1524,19 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
         }
     }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD){
         val lastDuration=fixedDurations.last().biggerThanForty!!.durationsList.last()
-        if(fixedDurations.last().istihazaAfter>=aadats.aadatTuhr){//daur
-            if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<aadats.aadatTuhr){
-                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
-                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
-            }else if(lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<aadats.aadatHaiz){
-                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
-                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
-                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
-            }else if(lastDuration.type==DurationType.HAIZ){
-                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
-                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
-            }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
-                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
-                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
-            }
-
+        if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<aadats.aadatTuhr){
+            val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+            futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+        }else if(lastDuration.type==DurationType.HAIZ && lastDuration.timeInMilliseconds<aadats.aadatHaiz){
+            val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+        }else if(lastDuration.type==DurationType.HAIZ){
+            val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+            futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+        }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
+            val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
         }
     }else if(fixedDurations.last().type==DurationType.DAM_IN_NIFAAS_PERIOD&&
         fixedDurations.last().days<=40){

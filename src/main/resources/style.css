@@ -108,7 +108,7 @@ hr {
 }
 
 .date_and_time {
-  width: 517px;
+  width: clamp(min(517px, 100vw), 100vw, 517px);
 }
 
 
@@ -207,6 +207,7 @@ tbody > tr:nth-child(odd) {
 /* Results */
 #content_container {
   padding: 1rem;
+  max-width: 100vw;
 }
 
 #content_wrapper {
