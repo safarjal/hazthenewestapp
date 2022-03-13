@@ -133,6 +133,15 @@ hr {
 }
 
 /* Haz Inputs */
+details > summary.ikhtilaf {
+  list-style-type: '⚙';
+  margin: 1rem 1rem 0 1rem;
+}
+
+details > b {
+  margin: 1rem;
+}
+
 textarea,
 input {
   margin: 0.5rem;

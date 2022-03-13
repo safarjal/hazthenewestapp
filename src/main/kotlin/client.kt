@@ -374,6 +374,8 @@ private fun copyText(event: Event) {
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
         autoComplete = false
+        ikhtilafiMasle()
+        br()
         div(classes = "label-input") {
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
@@ -383,7 +385,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
-        ikhtilafiMasle()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -632,7 +633,8 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 private fun FlowContent.ikhtilafiMasle() {
     div {
         details {
-            summary {
+            summary(classes = "ikhtilaf")
+            b {
                 span(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
             }
