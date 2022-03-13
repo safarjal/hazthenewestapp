@@ -27,7 +27,7 @@
   padding: 10px;
 }
 
-a {
+a.main-circle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,4 +123,19 @@ a:active {
 .urdu {
   font-family: 'Nastaleeq', serif;
   direction: rtl;
+}
+
+footer {
+  position: fixed;
+  right: 0;
+  bottom: 0.5rem;
+  left: 0;
+  text-align: center;
+}
+
+footer a {
+  font-weight: bold;
+  font-size: larger;
+  text-decoration: none;
+  border-radius: 25px;
 }
