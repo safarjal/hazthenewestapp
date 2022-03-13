@@ -352,9 +352,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(20px);
-  -ms-transform: translateX(20px);
-  transform: translateX(20px);
+  -webkit-transform: translateX(var(--diameter));
+  -ms-transform: translateX(var(--diameter));
+  transform: translateX(var(--diameter));
 }
 
 /* Rounded sliders */
