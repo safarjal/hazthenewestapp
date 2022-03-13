@@ -258,15 +258,16 @@ main {
   font-size: 1.2rem;
 }
 
-/* details {
+details.faq-det {
   margin: 2rem 1rem 1rem 1rem;
-} */
+}
 
 summary {
   font-weight: bold;
 }
 
 p {
+  font-size: 1.1rem;
   margin-top: 0.5rem;
 }
 
@@ -282,12 +283,13 @@ p {
 
 #contact-form li {
   display: flex;
+  flex-direction: column;
   list-style: none;
 }
 
 #contact-form input,
 #contact-form textarea {
-  flex: 4;
+  flex: 3;
 }
 
 #contact-form textarea {
