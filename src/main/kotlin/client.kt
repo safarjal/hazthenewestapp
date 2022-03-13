@@ -373,6 +373,9 @@ private fun copyText(event: Event) {
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
+        autoComplete = false
+        ikhtilafiMasle()
+        br()
         div(classes = "label-input") {
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
@@ -631,7 +634,8 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 private fun FlowContent.ikhtilafiMasle() {
     div {
         details {
-            summary {
+            summary(classes = "ikhtilaf")
+            b {
                 span(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
             }
@@ -740,10 +744,12 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
     val urdu = languageSelecterValue == "urdu"
     tr {
         td {
-            input(type = InputType.number) {
+            input {
                 id = Ids.DurationRow.INPUT_DURATION
                 name = Ids.DurationRow.INPUT_DURATION
                 disabled = disable
+                required = true
+                onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
             }
         }
         td {
