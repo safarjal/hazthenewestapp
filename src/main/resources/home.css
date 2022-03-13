@@ -8,7 +8,11 @@
   margin: 0;
 }
 
-header {
+.invisible {
+  display: none !important;
+}
+
+/* header {
   display: flex;
   flex-wrap: wrap;
   position: fixed;
@@ -16,42 +20,54 @@ header {
   top: 0.5rem;
   left: 0;
   right: 0;
+} */
+
+#outer-circle {
+  z-index: 50;
+  position: absolute;
+  top: max(50%, 250px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 0 0 15px #746b88;
+  padding: 10px;
 }
 
 a {
-  z-index: 50;
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  /* flex-direction: column; */
   align-items: center;
+  justify-content: center;
   text-align: center;
-  margin: 1rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  text-align: center;
+  margin: min(2vw, 1rem);
   text-decoration: none;
   color: rgb(61, 14, 60);
+  font-family: 'Mea Culpa', cursive;
   font-weight: bold;
-  /* font-family: 'Mea Culpa', cursive; */
-  background: rgba(145, 120, 142, 0.6);
-  background: radial-gradient(
-    circle,
-    rgba(145, 120, 142, 0.9) 30%,
-    transparent 100%
-  );
-  box-shadow: 0 0 15px 5px;
+  font-size: min(9vw, 3rem);
+  background: #724a6d;
   border-radius: 50%;
-  padding: 1rem;
-  width: 69px;
-  height: 69px;
+  --radius: min(45vw, 250px);
+  width: var(--radius);
+  height: var(--radius);
 }
 
+a.urdu {
+  font-size: min(9vw, 5rem);
+}
+
+button.selected,
 a:hover,
 a:active {
   background: rgb(203, 182, 201);
   box-shadow: 0 0 5px 5px;
-}
-
-.urdu {
-  font-family: Nastaleeq, serif;
-  font-size: larger;
 }
 
 .icon {
@@ -61,18 +77,8 @@ a:active {
   max-height: 36px;
 }
 
-.bg {
-  z-index: -1;
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  --diameter: calc(clamp(380px, 50vw, 470px));
-}
-
 .bg-image {
+  z-index: -10;
   position: fixed;
   top: 0;
   left: 0;
@@ -83,8 +89,9 @@ a:active {
   background-blend-mode: multiply;
   background-position: top;
   background-repeat: no-repeat;
-  background-size: 100vw clamp(65vh, 640px, 100vw);
-  filter: blur(10px);
+  background-size: 100vw clamp(67vh, 640px, 100vw);
+  border: 8px groove #724a6d;
+  filter: blur(1px);
 }
 
 #main-pic {
@@ -96,12 +103,37 @@ a:active {
 }
 
 .semicircle {
-  z-index: 1;
+  z-index: -10;
   position: fixed;
   bottom: 0;
+  right: -25vw;
+  left: -25vw;
   height: 38.5vh;
-  width: 150vw;
   background-color: rgb(203, 182, 201);
   border-radius: 50% 50% 0 0;
-  filter: blur(10px);
+  filter: blur(2px);
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  border-radius: 0 0 15px 0;
+  background: rgb(145, 120, 142);
+  border: none;
+  border-right: 4px solid #724a6d;
+  border-bottom: 4px solid #3d0e3c;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.english {
+  font-family: 'Mea Culpa', cursive;
+}
+
+.urdu {
+  font-family: 'Nastaleeq', serif;
+  direction: rtl;
 }
