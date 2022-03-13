@@ -18,65 +18,85 @@
   <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
   <link rel="manifest" href="images/manifest.json">
 
-  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home2.css">
   <script src="./language-change.js" defer></script>
-  <title>Home: Haidh and Nifas Calculator</title>
+  <title>Haidh and Nifas Calculator</title>
 </head>
 
 <body>
   <header>
-    <!-- <a href="./hazapp.html">
-      <img class="icon" src="./images/calendar.svg"
-      alt="Haidh and Istihadha Calculator" title="Haidh and Istihadha Calculator">
-      <span class="urdu">حيض و نفاس</span>
-    </a>
-    <a href="./instructions.html">
-      <img class="icon" src="./images/instructions.svg"
-      alt="FAQ Page" title="FAQ Page">
-      <span class="urdu">ہدایات</span>
-    </a>
-    <a href="./other-calcs.html">
-      <img class="icon" src="./images/calculator.svg"
-      alt="Other Calcutations Page" title="Other Calcutations Page">
-      <span class="urdu">دیگر حسابات</span>
-    </a> -->
-    <div class="tabs">
-      <button class="tab english selected" id="english-tab" onclick="onClickFunction('english')">
+    <div class="tabs" style="direction: ltr;">
+      <button class="tab selected" id="english-tab" onclick="onChangeFunction('english')">
         English
       </button>
-      <button class="tab urdu" id="urdu-tab" onclick="onClickFunction('urdu')">اردو</button>
+      <button class="tab rtl" id="urdu-tab" onclick="onChangeFunction('urdu')">اردو</button>
     </div>
   </header>
   <main>
-    <div class="bg-image"></div>
-    <div class="semicircle"></div>
-    <!-- <img id="main-pic" src="./images/cover_img.jpeg" alt="bg-image"> -->
-    <div id="outer-circle">
-      <a class="english-switch english main-circle" href="./home.html?lang=en">
-          Haidh and
-          <br>
-          Nifas
-          <br>
-          Calculator
-      </a>
-      <a class="urdu-switch urdu invisible main-circle" href="./home.html?lang=ur">
-        حيض و نفاس کیلکولیٹر
-    </a>
-    </div>
+    <h1 class="english">Haidh and Nifas Calculator</h1>
+    <h1 class="urdu lang-invisible">حيض و نفاس کیلکولیٹر</h1>
+    <section class="side right">
+      <div class="english">
+        <a class="page-link" href="./hazapp.html?lang=en">
+        <div class="row">
+            <img class="icon" src="./images/calendar.svg" alt="Haidh and Istihadha Calculator"
+              title="Haidh and Istihadha Calculator">
+            <h2>Haidh and Nifas</h2>
+          </div>
+        </a>
+        <a class="page-link" href="./other-calcs.html?lang=en">
+        <div class="row">
+            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page"
+              title="Other Calcutations Page">
+            <h2>Calculations</h2>
+          </div>
+        </a>
+        <a class="page-link" href="./instructions.html?lang=en">
+        <div class="row">
+            <img class="icon" src="./images/instructions.svg" alt="FAQ Page" title="FAQ Page">
+            <h2>Instructions</h2>
+          </div>
+        </a>
+      </div>
+      <div class="urdu lang-invisible">
+        <div class="row">
+          <a class="page-link" href="./hazapp.html">
+            <img class="icon" src="./images/calendar.svg" alt="Haidh and Istihadha Calculator"
+              title="Haidh and Istihadha Calculator">
+            <h2>
+              <span class="urdu lang-invisible">حيض و نفاس کیلکولیٹر</span>
+              <span class="english">Haidh and Nifas</span>
+            </h2>
+          </a>
+        </div>
+        <div class="row">
+          <a class="page-link" href="./other-calcs.html">
+            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page"
+              title="Other Calcutations Page">
+            <h2>
+              <span class="urdu lang-invisible">دیگر حساب</span>
+              <span class="english">Calculations</span>
+            </h2>
+          </a>
+        </div>
+        <div class="row">
+          <a class="page-link" href="./instructions.html">
+            <img class="icon" src="./images/instructions.svg" alt="FAQ Page" title="FAQ Page">
+            <h2>
+              <span class="urdu lang-invisible">ہدایات</span>
+              <span class="english">Instructions</span>
+            </h2>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
   <footer>
-    <span class="english-switch english">
-      From the combined efforts of
-      <a href="" class="title">Suffa Online</a>
-      and
-      <a href="" class="title">Zainab Accademy</a>
-    </span>
-    <span class="urdu-switch urdu invisible">
-      From the combined efforts of
-      <a href="" class="title">Suffa Online</a>
-      and
-      <a href="" class="title">Zainab Accademy</a>
-    </span>
+    A combined effort of
+    <br>
+    <a href="" class="title">Suffa&nbsp;Islamic&nbsp;Research&nbsp;Center</a>
+    &
+    <a href="" class="title">Zainab&nbsp;Accademy</a>
   </footer>
 </body>
 
