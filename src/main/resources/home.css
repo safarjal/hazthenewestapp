@@ -12,16 +12,6 @@
   display: none !important;
 }
 
-/* header {
-  display: flex;
-  flex-wrap: wrap;
-  position: fixed;
-  justify-content: center;
-  top: 0.5rem;
-  left: 0;
-  right: 0;
-} */
-
 #outer-circle {
   z-index: 50;
   position: absolute;
@@ -39,7 +29,6 @@
 
 a {
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -60,7 +49,7 @@ a {
 }
 
 a.urdu {
-  font-size: min(9vw, 5rem);
+  font-size: min(12vw, 4rem);
 }
 
 button.selected,
