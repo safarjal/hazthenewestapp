@@ -373,6 +373,7 @@ private fun copyText(event: Event) {
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
+        autoComplete = false
         div(classes = "label-input") {
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
