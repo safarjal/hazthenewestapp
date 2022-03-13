@@ -53,8 +53,16 @@ header {
   width: 100vw;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 h1 {
   text-align: center;
+  flex: 5;
 }
 
 a {
@@ -63,10 +71,7 @@ a {
 
 .nav-link {
   display: flex;
-  margin: 0.5rem;
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
+  margin: 1rem;
   color: rgb(61, 14, 60);
   box-shadow: 2px 2px 4px 0.5px;
   border-radius: 12px;
