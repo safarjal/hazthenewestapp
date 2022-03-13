@@ -34,11 +34,9 @@ a {
   text-align: center;
   padding: 2rem;
   flex-wrap: wrap;
-  text-align: center;
   margin: min(2vw, 1rem);
   text-decoration: none;
   color: rgb(61, 14, 60);
-  font-family: 'Mea Culpa', cursive;
   font-weight: bold;
   font-size: min(9vw, 3rem);
   background: #724a6d;
