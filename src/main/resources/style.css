@@ -258,15 +258,16 @@ main {
   font-size: 1.2rem;
 }
 
-/* details {
+details.faq-det {
   margin: 2rem 1rem 1rem 1rem;
-} */
+}
 
 summary {
   font-weight: bold;
 }
 
 p {
+  font-size: 1.1rem;
   margin-top: 0.5rem;
 }
 
