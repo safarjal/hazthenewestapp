@@ -23,15 +23,15 @@
   <header>
     <div class="nav">
       <a class="nav-link" href="./index.html" title="Home">
-        <img class="nav-icon" src="images/home.svg">
+        <img class="icon" src="images/home.svg">
       </a>
       <h1>
         <span class="english lang-invisible">Instructions</span>
-        <span class="urdu" target="_blank">ہدایات</span>
+        <span class="urdu">ہدایات</span>
       </h1>
     </div>
     <div id="language-selection">
-      <select name="language" id="language" onchange="onChangeFunction(this)">
+      <select name="language" id="language" onchange="onChangeFunction(this.value)">
         <option class="rtl" selected="selected" value="urdu">اردو</option>
         <option value="english">English</option>
       </select>

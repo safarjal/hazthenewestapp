@@ -78,7 +78,7 @@ a {
   padding: 0.3rem;
 }
 
-.nav-icon {
+.icon {
   width: 36px;
   height: 36px;
 }
@@ -251,7 +251,7 @@ small {
 }
 
 /* FAQ faqs */
-main.instructions {
+main {
   width: clamp(min(50vw, 400px), 400px, 100vw);
   margin: 0 auto;
   padding: 1rem;
@@ -368,4 +368,22 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Home Page */
+.page-link {
+  display: flex;
+  align-items: center;
+}
+
+.page-link .icon {
+  margin: 0.5rem;
+}
+
+.page-link h2 {
+  color: rgb(61, 14, 60);
+}
+
+.row p {
+  font-size: 1rem;
 }

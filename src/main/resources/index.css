@@ -1,0 +1,128 @@
+@font-face {
+  font-family: Nastaleeq;
+  src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.lang-invisible {
+  display: none !important;
+}
+
+body {
+  position: relative;
+  background-color: #cbb6c7;
+  border: 8px groove #724a6d;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+body * {
+  font-family: 'Mea Culpa', cursive;
+}
+
+.rtl,
+.urdu {
+  direction: rtl;
+  font-family: Nastaleeq, serif;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  border-radius: 0 0 15px 0;
+  background: rgb(145, 120, 142);
+  border: none;
+  border-right: 4px solid #724a6d;
+  border-bottom: 4px solid #3d0e3c;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+button.selected {
+  background: rgb(203, 182, 201);
+  box-shadow: 0 0 5px 5px;
+}
+
+/* Main content */
+h1 {
+  color: #3d0e3c;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 4rem;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-image: url(./images/side-img.jpeg);
+  background-size: 30vw 100%;
+  background-repeat: no-repeat;
+  margin-bottom: 8rem;
+}
+
+section.right {
+  background-position: right;
+}
+
+.row {
+  display: flex;
+  width: 50vw;
+  padding: 1.5rem;
+}
+
+.icon {
+  width: 15vw;
+  height: 15vw;
+  max-width: 36px;
+  max-height: 36px;
+}
+
+h2 {
+  margin: 0 0.5rem;
+  font-size: clamp(13px, 6vw, 1.8rem);
+}
+
+.page-link {
+  margin: 1.5rem 15vw;
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  color: black;
+  background: #6e4a6e;
+}
+
+.page-link:nth-child(2n) {
+  background: #ae8a98;
+  margin-top: 1.5rem;
+}
+
+.page-link:nth-child(3n) {
+  background: #dbcfd9;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+footer {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  left: 10px;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+a {
+  font-weight: bold;
+  font-size: larger;
+  text-decoration: none;
+  /* border-radius: 25px; */
+}
