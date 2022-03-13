@@ -15,6 +15,9 @@
 body {
   position: relative;
   background-color: #cbb6c7;
+  /* background-image: url(./images/cover2.jpg);
+  background-size: contain;
+  background-repeat: no-repeat; */
   border: 8px groove #724a6d;
   min-height: 100vh;
   box-sizing: border-box;
@@ -51,6 +54,10 @@ button.selected {
 }
 
 /* Main content */
+/* main {
+
+} */
+
 h1 {
   color: #3d0e3c;
   font-size: 2rem;
@@ -92,8 +99,8 @@ h2 {
 }
 
 .page-link {
-  margin: 1.5rem 15vw;
-  margin-top: 2.5rem;
+  margin: 0.5rem 15vw;
+  margin-top: 0.75rem;
   display: flex;
   align-items: center;
   color: black;
@@ -102,13 +109,13 @@ h2 {
 
 .page-link:nth-child(2n) {
   background: #ae8a98;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 .page-link:nth-child(3n) {
   background: #dbcfd9;
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 5.5rem;
 }
 
 footer {
