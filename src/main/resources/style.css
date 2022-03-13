@@ -133,6 +133,15 @@ hr {
 }
 
 /* Haz Inputs */
+details > summary.ikhtilaf {
+  list-style-type: '⚙';
+  margin: 1rem 1rem 0 1rem;
+}
+
+details > b {
+  margin: 1rem;
+}
+
 textarea,
 input {
   margin: 0.5rem;
@@ -244,9 +253,9 @@ main.instructions {
   font-size: 1.2rem;
 }
 
-details {
+/* details {
   margin: 2rem 1rem 1rem 1rem;
-}
+} */
 
 summary {
   font-weight: bold;
@@ -290,8 +299,14 @@ p {
  .switch {
   position: relative;
   display: inline-block;
-  width: 34px;
-  height: 19px;
+  --diameter: 20px;
+  --margin: 3px;
+  width: calc(
+    calc(var(--diameter) * 2) + calc(var(--margin) * 2)
+    );
+  height: calc(
+    var(--diameter) + calc(var(--margin) * 2)
+    );
   margin: 0.3rem 2rem;
 }
 
@@ -318,10 +333,10 @@ p {
 .slider:before {
   position: absolute;
   content: "";
-  height: 15px;
-  width: 15px;
-  left: 2px;
-  bottom: 2px;
+  height: var(--diameter);
+  width: var(--diameter);
+  left: var(--margin);
+  bottom: var(--margin);
   background-color: var(--primary1);
   -webkit-transition: .4s;
   transition: .4s;
@@ -336,9 +351,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(15px);
-  -ms-transform: translateX(15px);
-  transform: translateX(15px);
+  -webkit-transform: translateX(var(--diameter));
+  -ms-transform: translateX(var(--diameter));
+  transform: translateX(var(--diameter));
 }
 
 /* Rounded sliders */
