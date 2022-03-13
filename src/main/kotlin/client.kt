@@ -740,10 +740,12 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
     val urdu = languageSelecterValue == "urdu"
     tr {
         td {
-            input(type = InputType.number) {
+            input {
                 id = Ids.DurationRow.INPUT_DURATION
                 name = Ids.DurationRow.INPUT_DURATION
                 disabled = disable
+                required = true
+                onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
             }
         }
         td {
