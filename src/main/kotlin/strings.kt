@@ -82,6 +82,9 @@ val urduStrings = Strings(
     "اگر خون date1 سے پہلے رک جاۓ اور پھر مکمل 15 دن کی پاکی مل گی تو مسئلہ ضرور دوبارہ پوچھیے، اس لیے کے مسئلے کی صورت تبدیل ہو جاۓ گی۔\n\n",
     "اگر خون date1 یعنی 40 دن کے بعد بھی جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
     "اگر خون date1 یعنی 10 دن کے بعد بھی جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
+    "کیا غیر مستبین الخلقہ اسقاط کے مسئلے میں حمل والا طہر عادت بن سکتا ہے؟",
+    "اختلافی مسائل",
+    "کیا دور کے اخیر میں عادت سے زیادہ دن حیض بن سکتے ہیں؟"
 
 )
 val englishStrings = Strings(
@@ -167,6 +170,9 @@ val englishStrings = Strings(
     "If bleeding stops before date1 (3 days), then please ask again, as the masla will change.\n\n",
     "If bleeding continues after date1 (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
     "If bleeding continues after date1 (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
+    "Is tuhr during pregnancy to be considered habit in an unformed miscarriage?",
+    "Differences of opinion",
+    "Can more days than habit become haiz at the end of daur?"
 
 
 )

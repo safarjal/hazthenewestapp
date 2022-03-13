@@ -117,7 +117,10 @@ data class Strings(
     val bleedingstopsbeforethree:String,
     val bleedingstopsbeforethreemaslachanges: String,
     val afterfortydays:String,
-    val aftertendays:String
+    val aftertendays:String,
+    val considerTuhrInGhiarMustabeenIsqaatIkhtilaf:String,
+    val ikhtilafimasail: String,
+    val aadatIncreasingAtEndOfDaurIkhtilaf:String
 
 )
 
