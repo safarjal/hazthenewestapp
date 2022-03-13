@@ -283,12 +283,13 @@ p {
 
 #contact-form li {
   display: flex;
+  flex-direction: column;
   list-style: none;
 }
 
 #contact-form input,
 #contact-form textarea {
-  flex: 4;
+  flex: 3;
 }
 
 #contact-form textarea {
