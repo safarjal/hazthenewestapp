@@ -3,6 +3,7 @@
   src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
 }
 
+/* General */
 * {
   box-sizing: border-box;
 }
@@ -28,6 +29,13 @@ body {
   font-family: var(--urdu-font);
 }
 
+.urdu {
+  direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
+  font-size: larger;
+}
+
 .invisible {
   display: none !important;
 }
@@ -40,6 +48,7 @@ body {
   display: none !important;
 }
 
+/* Header */
 header {
   width: 100vw;
 }
@@ -53,64 +62,33 @@ a {
 }
 
 .nav-link {
+  display: flex;
   margin: 0.5rem;
   position: absolute;
-  top: 0.2rem;
-  left: 0.7rem;
-  font-size: 3rem;
-  font-weight: bold;
+  top: 1rem;
+  left: 1rem;
+  color: rgb(61, 14, 60);
+  box-shadow: 2px 2px 4px 0.5px;
+  border-radius: 12px;
+  padding: 0.3rem;
 }
 
-#how-to,
+.nav-icon {
+  width: 36px;
+  height: 36px;
+}
+
 #language-selection {
   text-align: center;
   width: 90vw;
   margin: auto;
 }
 
-main.instructions {
-  width: clamp(min(50vw, 400px), 400px, 100vw);
-  margin: 0 auto;
-  padding: 1rem;
-  font-size: 1.2rem;
-}
-
-summary {
-  font-weight: bold;
-}
-
 hr {
   margin: 1rem 0 0 0;
 }
 
-textarea,
-input {
-  margin: 0.5rem;
-  padding: 0.5rem;
-  flex: 1;
-}
-
-input[type='date'],
-input[type='datetime-local'] {
-  margin-left: 0;
-  margin-right: 0;
-  direction: ltr;
-}
-
-input[type='datetime-local'] {
-  font-size: clamp(min(2vw, 13px), 2.1vw, 13px);
-}
-
-
-label {
-  margin: 0.5rem 0.5rem 0 0.5rem;
-  flex: 1;
-}
-
-#fasid {
-  margin: 0 0.5rem;
-}
-
+/* Haz Input Containers */
 #input_containers_container {
   display: grid;
   grid-auto-flow: column;
@@ -129,21 +107,10 @@ label {
   border: 1px;
 }
 
-#fasid {
-  margin: 0 0.5rem;
-}
-
 .date_and_time {
   width: clamp(min(517px, 100vw), 100vw, 517px);
 }
 
-.time {
-  min-width: 605px;
-}
-
-.vertical {
-  margin: 0 0.5rem;
-}
 
 .label-input {
   display: flex;
@@ -151,8 +118,8 @@ label {
 }
 
 .row {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   width: 100%;
   border: 2px groove;
 }
@@ -163,6 +130,47 @@ label {
 
 .row:nth-child(odd) {
   background: var(--primary2);
+}
+
+/* Haz Inputs */
+details > summary.ikhtilaf {
+  list-style-type: '⚙';
+  margin: 1rem 1rem 0 1rem;
+}
+
+details > b {
+  margin: 1rem;
+}
+
+textarea,
+input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  flex: 1;
+}
+
+input[type='date'],
+input[type='datetime-local'] {
+  margin-left: 0;
+  margin-right: 0;
+  direction: ltr;
+}
+
+select {
+  padding: 0.2rem;
+  font-size: 1rem;
+  margin: 0.5rem;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
+}
+
+label {
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  flex: 1;
+}
+
+#fasid {
+  margin: 0 0.5rem;
 }
 
 button {
@@ -177,26 +185,17 @@ button:hover {
   margin: 0;
 }
 
-.urdu {
-  direction: rtl;
-  font-family: 'Noto Nastaliq Urdu', serif;
-  font-family: var(--urdu-font);
-  font-size: larger;
-}
-
 .plus {
-  color: black;
   background-color: var(--add);
 }
 
-.clone {
-  font-weight: bold;
-  font-size: 14px;
+.minus {
+  background-color: var(--delete);
 }
 
-.minus {
-  color: red;
-  background-color: var(--delete);
+/* Table */
+table {
+  width: 100%;
 }
 
 tbody > tr:nth-child(even) {
@@ -214,6 +213,7 @@ tbody > tr:nth-child(odd) {
   background: var(--primary3);
 }
 
+/* Results */
 #content_container {
   padding: 1rem;
   max-width: 100vw;
@@ -237,18 +237,6 @@ small {
   margin: 0.2rem;
 }
 
-select {
-  padding: 0.2rem;
-  font-size: 1rem;
-  margin: 0.5rem;
-  font-family: 'Noto Nastaliq Urdu', serif;
-  font-family: var(--urdu-font);
-}
-
-table {
-  width: 100%;
-}
-
 .flex {
   display: flex;
 }
@@ -259,8 +247,19 @@ table {
 
 /* FAQ faqs */
 
-details {
-  margin-top: 2rem;
+main.instructions {
+  width: clamp(min(50vw, 400px), 400px, 100vw);
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+/* details {
+  margin: 2rem 1rem 1rem 1rem;
+} */
+
+summary {
+  font-weight: bold;
 }
 
 p {
@@ -301,8 +300,14 @@ p {
  .switch {
   position: relative;
   display: inline-block;
-  width: 34px;
-  height: 19px;
+  --diameter: 20px;
+  --margin: 3px;
+  width: calc(
+    calc(var(--diameter) * 2) + calc(var(--margin) * 2)
+    );
+  height: calc(
+    var(--diameter) + calc(var(--margin) * 2)
+    );
   margin: 0.3rem 2rem;
 }
 
@@ -329,10 +334,10 @@ p {
 .slider:before {
   position: absolute;
   content: "";
-  height: 15px;
-  width: 15px;
-  left: 2px;
-  bottom: 2px;
+  height: var(--diameter);
+  width: var(--diameter);
+  left: var(--margin);
+  bottom: var(--margin);
   background-color: var(--primary1);
   -webkit-transition: .4s;
   transition: .4s;
@@ -347,9 +352,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(15px);
-  -ms-transform: translateX(15px);
-  transform: translateX(15px);
+  -webkit-transform: translateX(var(--diameter));
+  -ms-transform: translateX(var(--diameter));
+  transform: translateX(var(--diameter));
 }
 
 /* Rounded sliders */

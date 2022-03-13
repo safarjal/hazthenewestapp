@@ -21,7 +21,9 @@
 
 <body class="rtl">
   <header>
-    <a class="nav-link" href="./index.html" title="Home">⌂</a>
+    <a class="nav-link" href="./home.html" title="Home">
+      <img class="nav-icon" src="images/home.svg">
+    </a>
     <h1>
       <span class="english lang-invisible">Instructions</span>
       <span class="urdu" target="_blank">ہدایات</span>
@@ -281,6 +283,11 @@
             <label class="form-label urdu" for="comment">پیغام:</label>
             <label class="form-label english lang-invisible" for="comment">Message:</label>
             <textarea name="msg" id="comment" required></textarea>
+          </li>
+          <li class="contact-form">
+            <label class="form-label urdu" for="upload-file">منسلکہ:</label>
+            <label class="form-label english lang-invisible" for="upload-file">Attachment</label>
+            <input type="file" id="upload-file" name="Attachment">
           </li>
         </ul>
         <button type="submit">
