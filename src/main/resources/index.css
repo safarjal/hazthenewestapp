@@ -15,9 +15,6 @@
 body {
   position: relative;
   background-color: #cbb6c7;
-  /* background-image: url(./images/cover2.jpg); */
-  /* background-size: contain; */
-  /* background-repeat: no-repeat; */
   border: 8px groove #724a6d;
   min-height: 100vh;
   box-sizing: border-box;
@@ -53,10 +50,25 @@ button.selected {
   box-shadow: 0 0 5px 5px;
 }
 
-/* Main content */
-/* main {
+.bg-i {
+  background-image: url(./images/side-img.jpeg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 36vh;
+  right: calc(100vw - calc(55vh * 0.3));
+  bottom: 14vh;
+  left: 0;
+}
 
-} */
+@media (min-width: 900px) {
+  .bg-i {
+    top: 36vh;
+    right: calc(100vw - calc(55vh * 0.3));
+    bottom: 14vh;
+    left: 0;
+  }
+}
 
 h1 {
   color: #3d0e3c;
@@ -67,51 +79,11 @@ h1 {
 }
 
 section {
-  /* position: relative; */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* background-image: url(./images/side-img.jpeg);
-  background-size: auto 100%;
-  background-repeat: no-repeat; */
   margin-top: 95px;
   margin-bottom: 65px;
-}
-
-section.right {
-  background-position: right;
-}
-
-.bg-i {
-  background-image: url(./images/side-img.jpeg);
-  background-size: auto 100%;
-  background-repeat: no-repeat;
-  /* height: 100%;
-  width: 30%; */
-  background-size: 100% 100%;
-  position: absolute;
-  top: 36vh;
-  right: calc(100vw - calc(55vh * 0.3));
-  bottom: 14vh;
-  left: 0;
-}
-
-.row {
-  display: flex;
-  width: 50vw;
-  padding: 1.5rem;
-}
-
-.icon {
-  width: 15vw;
-  height: 15vw;
-  max-width: 36px;
-  max-height: 36px;
-}
-
-h2 {
-  margin: 0 0.5rem;
-  font-size: clamp(13px, 6vw, 1.8rem);
 }
 
 .page-link {
@@ -127,24 +99,33 @@ h2 {
 
 #second-row {
   background: #ae8a98;
-  margin-top: 9.25rem;
+  margin-top: calc(3.25rem + calc(clamp(13px, 6vw, 1.8rem) * 3));
 }
 
 #third-row {
   background: #dbcfd9;
-  margin-top: 15.5rem;
+  margin-top: calc(4.5rem + calc(clamp(13px, 6vw, 1.8rem) * 6));
   margin-bottom: 5.5rem;
 }
 
-@media (min-width: 900px) {
-  .bg-i {
-    top: 36vh;
-    right: calc(100vw - calc(55vh * 0.3));
-    bottom: 14vh;
-    left: 0;
-  }
+.row {
+  display: flex;
+  align-items: center;
+  width: 50vw;
+  padding: clamp(13px, 6vw, 1.5rem);
 }
 
+.icon {
+  width: clamp(13px, 6vw, 1.8rem);
+  height: clamp(13px, 6vw, 1.8rem);
+  max-width: 36px;
+  max-height: 36px;
+}
+
+h2 {
+  margin: 0 0.5rem;
+  font-size: clamp(13px, 6vw, 1.8rem);
+}
 
 footer {
   position: absolute;
