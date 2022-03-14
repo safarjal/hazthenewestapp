@@ -15,23 +15,12 @@
 body {
   position: relative;
   background-color: #cbb6c7;
-  background-image: url(./images/cover2.jpg);
-  background-size: contain;
-  background-repeat: no-repeat;
+  /* background-image: url(./images/cover2.jpg); */
+  /* background-size: contain; */
+  /* background-repeat: no-repeat; */
   border: 8px groove #724a6d;
   min-height: 100vh;
   box-sizing: border-box;
-}
-
-body::before {
-  content: "";
-
-  height: 100vh;
-  width: 100vw;
-}
-
-body::before.right {
-  transform: scaleX(-1);
 }
 
 body * {
@@ -65,19 +54,46 @@ button.selected {
 }
 
 /* Main content */
+/* main {
+
+} */
+
 h1 {
   color: #3d0e3c;
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  margin: 4rem;
+  margin: 4rem 1rem;
 }
 
 section {
+  /* position: relative; */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 8rem;
+  /* background-image: url(./images/side-img.jpeg);
+  background-size: auto 100%;
+  background-repeat: no-repeat; */
+  margin-top: 95px;
+  margin-bottom: 65px;
+}
+
+section.right {
+  background-position: right;
+}
+
+.bg-i {
+  background-image: url(./images/side-img.jpeg);
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  /* height: 100%;
+  width: 30%; */
+  background-size: 100% 100%;
+  position: absolute;
+  top: 36vh;
+  right: calc(100vw - calc(55vh * 0.3));
+  bottom: 14vh;
+  left: 0;
 }
 
 .row {
@@ -99,33 +115,49 @@ h2 {
 }
 
 .page-link {
-  margin: 0.5rem 15vw;
-  margin-top: 5rem;
+  margin-top: 2rem;
   display: flex;
   align-items: center;
   color: black;
+  background: #6e4a6e;
+  position: absolute;
+  top: 35vh;
+  left: calc(calc(55vh * 0.3) - calc(calc(55vh * 0.3) * 0.2));
 }
 
-.page-link:nth-child(2n) {
-  margin-top: 0.5rem;
+#second-row {
+  background: #ae8a98;
+  margin-top: 9.25rem;
 }
 
-.page-link:nth-child(3n) {
-  margin-top: 0.5rem;
+#third-row {
+  background: #dbcfd9;
+  margin-top: 15.5rem;
   margin-bottom: 5.5rem;
 }
 
+@media (min-width: 900px) {
+  .bg-i {
+    top: 36vh;
+    right: calc(100vw - calc(55vh * 0.3));
+    bottom: 14vh;
+    left: 0;
+  }
+}
+
+
 footer {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: 10px;
+  bottom: 8px;
+  left: 10px;
+  margin-top: 2rem;
   text-align: center;
 }
 
 a {
-  color: #3d0e3c;
   font-weight: bold;
   font-size: larger;
   text-decoration: none;
+  /* border-radius: 25px; */
 }
