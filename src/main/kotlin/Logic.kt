@@ -104,7 +104,6 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         removeDamLessThan3(fixedDurations)
         addStartDateToFixedDurations(fixedDurations)
         if(!dealWithBiggerThan10Dam(fixedDurations, inputtedAadatHaz,inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, language, adatsOfHaizList, adatsOfTuhrList, isEndOfDaurHaizIkhtilaf)){return noOutput}
-        println("going to add Durations now")
         addDurationsToDams(fixedDurations,isEndOfDaurHaizIkhtilaf)
         checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList,-1L)
@@ -830,13 +829,6 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
 fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?){
     //figure out aadat for the last fixed duration
     //for that, we need aadats befor it
-    println("checking for ayyame qabliyyah")
-    for (adat in adatsOfHaizList){
-        println("Adat of haiz is ${ adat.aadat/MILLISECONDS_IN_A_DAY } at index ${adat.index}")
-    }
-    for (adat in adatsOfTuhrList){
-        println("Adat of tuhr is ${ adat.aadat/MILLISECONDS_IN_A_DAY } at index ${adat.index}")
-    }
     //we need to find out what aadats were, at this point.
     var hz = adatsOfHaizList[0].aadat
     var gp = adatsOfTuhrList[0].aadat
@@ -854,9 +846,6 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHai
             break
         }
     }
-
-    println("aadat tuhr is ${gp /MILLISECONDS_IN_A_DAY}")
-    println("aadat haiz is ${hz /MILLISECONDS_IN_A_DAY}")
     //now we have aadaat
     var mp = inputtedMawjoodaTuhr
     if(fixedDurations.size>1){
@@ -868,7 +857,6 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHai
         if(ayyaameqabliyyah+hz>10*MILLISECONDS_IN_A_DAY &&
             ayyaameqabliyyah<18*MILLISECONDS_IN_A_DAY&&
             fixedDurations.last().timeInMilliseconds<ayyaameqabliyyah){//hasn't entered into aadat yet
-            println("this is a case of ayyam-e-qabliyya")
             fixedDurations.last().type = DurationType.ISTEHAZA_AYYAMEQABLIYYA
             fixedDurations.last().ayyameqabliyya=AyyameQabliyya(ayyaameqabliyyah, hz, gp)
         }
@@ -1379,11 +1367,10 @@ fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
 
 fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMubtadia: Boolean, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, aadatNifas:Long?):EndingOutputValues{
     val filHaalPaki = calculateFilHaal(fixedDurations)
-    println("done filhaal")
     val aadaat = finalAadats(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
-    println("done aadats")
+
     val futureDates = futureDatesOfInterest(fixedDurations, aadaat, filHaalPaki, aadatNifas, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
-    println(futureDates)
+
         return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
@@ -1518,7 +1505,6 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                         if(crossingTen.getTime()>=addTimeToDate(fixedDurations.last().startDate, gp-mp).getTime()){
                             //crossing 10 puts it in aadat or after it
                             ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, (gp-mp+hz))
-                            println("not A-3")
                         }else{//A-3
                             ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, hz)
                         }
@@ -1684,7 +1670,6 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
             } else if (lastDurationOfBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
                 //it ended in a haiz less than 3, no tension
                 if (fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3){
-                    println("!!!!!!GOT HERE !!!!!")
                     haizAadat=fixedDurations.last().biggerThanTen!!.hz
                     tuhrAadat=fixedDurations.last().biggerThanTen!!.gp
                 }else{
@@ -1730,8 +1715,6 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
             aadatTuhr=-1
             return AadatsOfHaizAndTuhr(aadatHaiz,aadatTuhr)
         }
-        println("${adatsOfHaizList.last().aadat}")
-        println("${adatsOfTuhrList.last().aadat}")
         return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
 //        var i = fixedDurations.lastIndex
 //        while (i>0){
@@ -1861,7 +1844,6 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
             }
         }
     }else if(fixedDurations.last().type == DurationType.ISTEHAZA_AYYAMEQABLIYYA) {
-        println("ayyame qabliyya detected")
         if(fixedDurations.last().timeInMilliseconds>=fixedDurations.last().ayyameqabliyya!!.ayyameqabliyya) {
             filHaalPaki = false
         }else {
