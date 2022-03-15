@@ -6,6 +6,8 @@
 /* General */
 * {
   box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  text-align: justify;
 }
 
 body {
@@ -29,11 +31,12 @@ body {
   font-family: var(--urdu-font);
 }
 
-.urdu {
+.urdu,
+.urdu * {
   direction: rtl;
   font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
-  font-size: larger;
+  /* font-size: larger; */
 }
 
 .invisible {

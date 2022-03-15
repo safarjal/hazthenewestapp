@@ -172,6 +172,10 @@ fun main() {
                 }
             })
             languageSelecter.onchange = { languageChange() }
+            if (window.location.href.contains("lang=en")) {
+                languageSelecter.value = "english"
+                languageChange()
+            } else { languageSelecter.value = "urdu" }
         }else{
             askPassword()
         }
