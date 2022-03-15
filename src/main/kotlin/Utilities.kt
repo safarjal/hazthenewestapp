@@ -25,14 +25,14 @@ object Events {
 }
 
 object UnicodeChars {
-    const val RED_CIRCLE = "♦️"
-    const val WHITE_CIRCLE = "\uD83D\uDCA0"
-    const val YELLOW_CIRCLE = "\uD83D\uDD38"
-    const val GREEN_CIRCLE = "❄️"
+    const val RED_CIRCLE = "&#9830;&#65039;"        // RED_DIAMOND
+    const val WHITE_CIRCLE = "&#128160;"            // WHITE_DIAMOND
+    const val YELLOW_CIRCLE = "&#x1F538;"           // ORANGE_DIAMOND
+    const val GREEN_CIRCLE = "&#10052;&#65039;"     // SNOWFLAKE
     const val BLACK_SQUARE = "&#9642;"
     const val FAT_DASH = "&#x2796;"
-    const val ROSE = "&#x1F339;"
-    const val RAINBOW = "✍️ "
+    const val ROSE = "&#128221;"                    // MEMO
+    const val RAINBOW = "&#9997;&#65039;"           // HAND_WRITING
 
 }
 
