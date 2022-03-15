@@ -255,7 +255,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     return(returnStatement)
 }
 
-fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
+fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
     val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
 //    println(days)
     var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
@@ -285,7 +285,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, isDateOnly: Boolean):Stri
     }
     return(returnStatement)
 }
- fun parseDate(date: Date, isDateOnly: Boolean):String{
+ fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT
      val dateStr = (date.toUTCString()).dropLast(18).drop(5)
      if(dateStr.startsWith("0")){
