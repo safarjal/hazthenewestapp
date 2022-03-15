@@ -1696,16 +1696,25 @@ class LogicTest {
             , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
-
+// these expected output values ain't correct cuz ayyame qabliyya
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+//                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+//                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
         val expectedEndingOutputValues =
             EndingOutputValues(
-                false,
+                true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1720,6 +1729,7 @@ class LogicTest {
     @Test
     fun testingFinalDatesCase9part3() {
         //ihtiyati ghusl dam less than 3 - A-3
+        //another ayyame qabliyyah
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
@@ -1737,13 +1747,11 @@ class LogicTest {
 
         val expectedEndingOutputValues =
             EndingOutputValues(
-                false,
+                true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(Date(2022,2, 12), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
