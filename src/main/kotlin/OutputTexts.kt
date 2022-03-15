@@ -242,6 +242,10 @@ fun outputStringUrduAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<F
             strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", "${urduDateFormat(date, isDateOnly)}")
         }else if(type==TypesOfFutureDates.A3_CHANGING_TO_A2){
             strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH){
+            strUrdu += StringsOfLanguages.URDU.beforetendaysayyameqabliyyaallconsideredhaiz.replace("date1", "${urduDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA){
+            strUrdu += StringsOfLanguages.URDU.endofistehazaayyameqabliyya.replace("date1", "${urduDateFormat(date, isDateOnly)}")
         }
     }
 
@@ -532,6 +536,8 @@ fun outputStringUrduHeaderLineDuration(fixedDurations: MutableList<FixedDuration
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputString = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+    }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+
     }
     return outputString
 }
@@ -623,6 +629,10 @@ fun outputStringUrduHeaderLine(fixedDurations: MutableList<FixedDuration>,index:
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputString = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+    }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+        val sd = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        outputString = StringsOfLanguages.URDU.daysayyameqabliyya.replace("date1", "${urduDateFormat(sd, isDateOnly)}").replace("date2", "${urduDateFormat(et,isDateOnly)}").replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,et)), isDateOnly)}")
     }
     return outputString
 }

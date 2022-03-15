@@ -120,7 +120,10 @@ data class Strings(
     val aftertendays:String,
     val considerTuhrInGhiarMustabeenIsqaatIkhtilaf:String,
     val ikhtilafimasail: String,
-    val aadatIncreasingAtEndOfDaurIkhtilaf:String
+    val aadatIncreasingAtEndOfDaurIkhtilaf:String,
+    val beforetendaysayyameqabliyyaallconsideredhaiz:String,
+    val endofistehazaayyameqabliyya:String,
+    val daysayyameqabliyya:String,
 
 )
 
@@ -142,7 +145,10 @@ enum class TypesOfFutureDates {
     AFTER_TEN_DAYS,
     FORTY_DAYS,
     IC_FORBIDDEN_DATE,
-    IHTIYATI_GHUSL
+    IHTIYATI_GHUSL,
+    BEFORE_TEN_DAYS_AYYAMEQABLIYYAH,
+    START_OF_AADAT_AYYAMEQABLIYYA
+
 }
 
 class FutureDateType(
@@ -198,7 +204,9 @@ enum class DurationType {
     TUHR_MUBTADIA,
     TUHREFAASID_MUBTADIA,
     TUHREFAASID_MUBTADIA_WITH_ISTEHAZA,
-    TUHREFAASID_WITH_ISTEHAZA
+    TUHREFAASID_WITH_ISTEHAZA,
+    ISTEHAZA_AYYAMEQABLIYYA,
+    START_OF_AADAT_AYYAMEQABLIYYA
 }
 
 class DateTypeList (
@@ -232,6 +240,7 @@ data class FixedDuration(
     var timeInMilliseconds: Long,
     var indices: MutableList<Int> = mutableListOf(),
     var istihazaAfter: Long = 0,
+    var ayyameqabliyya:AyyameQabliyya? = null,
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Date = Date(1,1,1),
@@ -239,6 +248,12 @@ data class FixedDuration(
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = addTimeToDate(this.startDate, this.timeInMilliseconds)
 }
+
+data class AyyameQabliyya(
+    var ayyameqabliyya: Long,
+    var aadatHaiz: Long,
+    var aadatTuhr: Long
+)
 
 data class BiggerThanTenDm(
     var mp: Long, //mawjooda paki
