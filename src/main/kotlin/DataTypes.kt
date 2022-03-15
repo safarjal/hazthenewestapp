@@ -292,3 +292,8 @@ data class AadatAfterIndexOfFixedDuration(
     var aadat: Long,
     var index: Int
 )
+
+data class OutputStringsLanguages(
+    var urduString:String,
+    var englishString: String
+)
