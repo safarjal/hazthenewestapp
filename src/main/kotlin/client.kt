@@ -461,7 +461,7 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
 }
 
 private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row aadat_inputs") {
+    div(classes = "row") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
@@ -470,7 +470,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
     }
-    div(classes = "row aadat_inputs") {
+    div(classes = "row") {
         makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
