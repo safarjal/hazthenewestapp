@@ -1,0 +1,145 @@
+@font-face {
+  font-family: Nastaleeq;
+  src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.lang-invisible {
+  display: none !important;
+}
+
+body {
+  position: relative;
+  background-color: #cbb6c7;
+  border: 8px groove #724a6d;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+body * {
+  font-family: 'Mea Culpa', cursive;
+}
+
+.rtl,
+.urdu {
+  direction: rtl;
+  font-family: Nastaleeq, serif;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  border-radius: 0 0 15px 0;
+  background: rgb(145, 120, 142);
+  border: none;
+  border-right: 4px solid #724a6d;
+  border-bottom: 4px solid #3d0e3c;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+button.selected {
+  background: rgb(203, 182, 201);
+  box-shadow: 0 0 5px 5px;
+}
+
+.bg-i {
+  background-image: url(./images/side-img.jpeg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 36vh;
+  right: calc(100vw - calc(55vh * 0.3));
+  bottom: 14vh;
+  left: 0;
+}
+
+@media (min-width: 900px) {
+  .bg-i {
+    top: 36vh;
+    right: calc(100vw - calc(55vh * 0.3));
+    bottom: 14vh;
+    left: 0;
+  }
+}
+
+h1 {
+  color: #3d0e3c;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 4rem 1rem;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 95px;
+  margin-bottom: 65px;
+}
+
+.page-link {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  color: black;
+  background: #6e4a6e;
+  position: absolute;
+  top: 35vh;
+  left: calc(calc(55vh * 0.3) - calc(calc(55vh * 0.3) * 0.2));
+}
+
+#second-row {
+  background: #ae8a98;
+  margin-top: calc(3.25rem + calc(clamp(13px, 6vw, 1.8rem) * 3));
+}
+
+#third-row {
+  background: #dbcfd9;
+  margin-top: calc(4.5rem + calc(clamp(13px, 6vw, 1.8rem) * 6));
+  margin-bottom: 5.5rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  width: 50vw;
+  padding: clamp(13px, 6vw, 1.5rem);
+}
+
+.icon {
+  width: clamp(13px, 6vw, 1.8rem);
+  height: clamp(13px, 6vw, 1.8rem);
+  max-width: 36px;
+  max-height: 36px;
+}
+
+h2 {
+  margin: 0 0.5rem;
+  font-size: clamp(13px, 6vw, 1.8rem);
+}
+
+footer {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  left: 10px;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+a {
+  font-weight: bold;
+  font-size: larger;
+  text-decoration: none;
+  color: #3d0e3c;
+  /* border-radius: 25px; */
+}

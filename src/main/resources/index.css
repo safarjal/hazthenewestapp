@@ -6,137 +6,123 @@
 * {
   padding: 0;
   margin: 0;
-}
-
-.lang-invisible {
-  display: none !important;
-}
-
-body {
-  position: relative;
-  background-color: #cbb6c7;
-  border: 8px groove #724a6d;
-  min-height: 100vh;
+  font-family: 'Mea Culpa', cursive;
   box-sizing: border-box;
 }
 
-body * {
-  font-family: 'Mea Culpa', cursive;
+.invisible {
+  display: none !important;
 }
 
-.rtl,
-.urdu {
-  direction: rtl;
-  font-family: Nastaleeq, serif;
-}
-
-.tabs {
+main {
+  height: 100vh;
+  width: 100vw;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.tab {
-  flex: 1;
-  border-radius: 0 0 15px 0;
-  background: rgb(145, 120, 142);
-  border: none;
-  border-right: 4px solid #724a6d;
-  border-bottom: 4px solid #3d0e3c;
-  font-size: 1.5rem;
-  cursor: pointer;
+#pics { position: relative; }
+
+.bg-image {
+  z-index: -10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('./images/branch-of-small-flowers.jpeg'),
+    rgba(203, 182, 201, 0.42);
+  background-blend-mode: multiply;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 100vw clamp(67vh, 640px, 100vw);
+  border: 8px groove #724a6d;
+  filter: blur(5px);
 }
 
-button.selected {
+#main-pic {
+  /* z-index: 100; */
+  max-width: 100vw;
+  max-height: 100vh;
+  border: 4px groove #724a6d;
+  /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+}
+
+#outer-circle {
+  /* z-index: 50; */
+  top: 0;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0px;
+  --pic-width: min(100vw, calc(100vh * 0.5625));
+  --pic-height: min(100vh, calc(100vw * 1.7778));
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: calc(var(--pic-height) * 0.338);
+}
+
+a.main-circle {
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* text-align: center; */
+  padding: 2rem;
+  flex-wrap: wrap;
+  /* text-decoration: none; */
+  /* color: rgb(61, 14, 60); */
+  /* font-weight: bold; */
+  /* font-size: min(9vw, 3rem); */
+  /* background: #724a6d; */
+  border-radius: 50%;
+  margin: min(1vw, 1rem);
+  font-size: calc(3rem - calc(var(--pic-width) * 0.01));
+  --radius: calc(var(--pic-width) - calc(var(--pic-width) * 0.27));
+  width: var(--radius);
+  height: var(--radius);
+}
+
+a.urdu {
+  font-size: min(12vw, 4rem);
+}
+
+a:hover,
+a:active {
   background: rgb(203, 182, 201);
   box-shadow: 0 0 5px 5px;
 }
 
-.bg-i {
-  background-image: url(./images/side-img.jpeg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  position: absolute;
-  top: 36vh;
-  right: calc(100vw - calc(55vh * 0.3));
-  bottom: 14vh;
-  left: 0;
-}
-
-@media (min-width: 900px) {
-  .bg-i {
-    top: 36vh;
-    right: calc(100vw - calc(55vh * 0.3));
-    bottom: 14vh;
-    left: 0;
-  }
-}
-
-h1 {
-  color: #3d0e3c;
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  margin: 4rem 1rem;
-}
-
-section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 95px;
-  margin-bottom: 65px;
-}
-
-.page-link {
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  color: black;
-  background: #6e4a6e;
-  position: absolute;
-  top: 35vh;
-  left: calc(calc(55vh * 0.3) - calc(calc(55vh * 0.3) * 0.2));
-}
-
-#second-row {
-  background: #ae8a98;
-  margin-top: calc(3.25rem + calc(clamp(13px, 6vw, 1.8rem) * 3));
-}
-
-#third-row {
-  background: #dbcfd9;
-  margin-top: calc(4.5rem + calc(clamp(13px, 6vw, 1.8rem) * 6));
-  margin-bottom: 5.5rem;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  width: 50vw;
-  padding: clamp(13px, 6vw, 1.5rem);
-}
-
-.icon {
-  width: clamp(13px, 6vw, 1.8rem);
-  height: clamp(13px, 6vw, 1.8rem);
-  max-width: 36px;
-  max-height: 36px;
-}
-
-h2 {
-  margin: 0 0.5rem;
-  font-size: clamp(13px, 6vw, 1.8rem);
+.semicircle {
+  z-index: -10;
+  position: fixed;
+  bottom: 0;
+  right: -25vw;
+  left: -25vw;
+  height: 40.5vh;
+  background-color: rgb(203, 182, 201);
+  border-radius: 50% 50% 0 0;
+  filter: blur(2px);
 }
 
 footer {
-  position: absolute;
-  right: 10px;
-  bottom: 8px;
-  left: 10px;
-  margin-top: 2rem;
+  /* position: absolute; */
+  /* right: 10px; */
+  /* bottom: 8px; */
+  /* left: 10px; */
+  margin-top: calc(
+    calc(calc(100vh - min(100vh, calc(100vw * 1.778))) * -0.5) - 82px
+  );
   text-align: center;
 }
 
-a {
+footer a {
   font-weight: bold;
   font-size: larger;
   text-decoration: none;
