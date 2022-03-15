@@ -891,7 +891,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
     }
     @Test
-    fun testingAadatCase3part2() {
+    fun testingAadatCase3Part2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 0, 1), Date(2022, 0, 5))
