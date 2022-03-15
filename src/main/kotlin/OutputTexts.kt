@@ -818,30 +818,30 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
 //    }
 //   return str
 //}
-//fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String{
-//    var str = ""
-//    for( durationType in durationTypes){
-//        var type = ""
-//        if (durationType.type==DateTypes.YAQEENI_PAKI){type="yaqeeni paki"}
-//        else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){type="yaqeeni na paki"}
-//        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){type="shakk fil khurooj"}
-//        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){type="shakk fil dukhool"}
-//        val startTime=durationType.startTime
-//        val endTime = durationType.endTime
-//
-//        if(durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){
-//            str += "${UnicodeChars.YELLOW_CIRCLE} <b><em>From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}</em></b>\n\n"
-//        }else if (durationType.type==DateTypes.YAQEENI_PAKI){
-//            str += "${UnicodeChars.WHITE_CIRCLE} From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}\n\n"
-//        }else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){
-//            str += "${UnicodeChars.RED_CIRCLE} From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}\n\n"
-//        }else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){
-//            str += "${UnicodeChars.GREEN_CIRCLE} <b><em>From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}</em></b>\n\n"
-//        }
-//
-//    }
-//    return str
-//}
+fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String{
+    var str = ""
+    for( durationType in durationTypes){
+        var type = ""
+        if (durationType.type==DateTypes.YAQEENI_PAKI){type="yaqeeni paki"}
+        else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){type="yaqeeni na paki"}
+        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){type="shakk fil khurooj"}
+        else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){type="shakk fil dukhool"}
+        val startTime=durationType.startTime
+        val endTime = durationType.endTime
+
+        if(durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){
+            str += "${UnicodeChars.YELLOW_CIRCLE} <b><em>From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}</em></b>\n\n"
+        }else if (durationType.type==DateTypes.YAQEENI_PAKI){
+            str += "${UnicodeChars.WHITE_CIRCLE} From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}\n\n"
+        }else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){
+            str += "${UnicodeChars.RED_CIRCLE} From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}\n\n"
+        }else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){
+            str += "${UnicodeChars.GREEN_CIRCLE} <b><em>From ${englishDateFormat(startTime,true)} to ${englishDateFormat(endTime,true)} is ${type}</em></b>\n\n"
+        }
+
+    }
+    return str
+}
 
 
 
