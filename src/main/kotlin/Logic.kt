@@ -1371,8 +1371,7 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMu
     val aadaat = finalAadats(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
 
     val futureDates = futureDatesOfInterest(fixedDurations, aadaat, filHaalPaki, aadatNifas, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
-
-        return EndingOutputValues(filHaalPaki,aadaat,futureDates)
+    return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
 fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: AadatsOfHaizAndTuhr, fillHaalPaki:Boolean, aadatNifas: Long?, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
