@@ -373,7 +373,7 @@ fun outputStringBiggerThan10HallDurations(fixedDurations: MutableList<FixedDurat
                     strEnglish+= StringsOfLanguages.ENGLISH.startingFromHaiz.replace("duration1", "${daysHoursMinutesDigitalEnglish(duration.timeInMilliseconds, isDateOnly)}")
                 }else{
                     strUrdu+= StringsOfLanguages.URDU.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds, isDateOnly)}")
-                    strUrdu+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigitalEnglish(duration.timeInMilliseconds, isDateOnly)}")
+                    strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigitalEnglish(duration.timeInMilliseconds, isDateOnly)}")
                 }
             }else if(duration.type == DurationType.ISTIHAZA_AFTER){
                 strUrdu+= StringsOfLanguages.URDU.followedByistehazaAfter.replace("duration1", "${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds, isDateOnly)}")
