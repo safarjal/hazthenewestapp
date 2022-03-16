@@ -224,12 +224,12 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //        hours = 0.0
 //        days += 1.0
 //    }
-    var strHours = "$hours گھنٹے "
-    var strMinutes = "$minutes منٹ "
+    var strHours = "$hours گھنٹے"
+    var strMinutes = "$minutes منٹ"
     var strDays = "$days دن"
 
     if(hours==1.0){
-        strHours = "$hours گھنٹہ "
+        strHours = "$hours گھنٹہ"
     }
 
     if(hours==0.0){
@@ -247,7 +247,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //    if(minutes<10){
 //        strMinutes = "0${minutes}";
 //    }
-    var returnStatement = "${strDays}${strHours}${strMinutes}"
+    var returnStatement = "${strDays} ${strHours} ${strMinutes}"
 //    println(returnStatement)
     if(isDateOnly){
         returnStatement = strDays
