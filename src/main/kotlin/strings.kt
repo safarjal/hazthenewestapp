@@ -88,7 +88,7 @@ val urduStrings = Strings(
     "اگر date1 سے پہلے یا date1 کو  خون رک گیا اور 15 دن کی کامل پاکی مل گیٔ، تو یہ سب حیض شمار ہو گا اور اس دوران میں کی گیی عبادات کالعدم ہو جائں گی۔\n\n" +
             "اور اگر date1 کے بعد بھی خون جاری رہا تو سب عبادات درست رہیں گی۔\n\n",
     "<b> date1 تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
-    "date1 تا date2 کل duration1 استحاضہ کے ہیں۔\n\n",
+    "date1 تا date2 کل duration1 استحاضہ کے ہیں۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
 
 )
 val englishStrings = Strings(
@@ -180,7 +180,7 @@ val englishStrings = Strings(
     "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n " +
             "If bleeding continues past date1, all ibadaat will remain valid.\n\n",
     "<b>Till date1 are the days of your definitive purity.</b>\n\n",
-    "date1 to date2, a total of duration1 of definitive purity (istihadha).\n\n",
+    "date1 to date2, a total of duration1 of definitive purity (istihadha). (This is a case of Ayyam-e-Qabliyya).\n\n",
 
 )
 

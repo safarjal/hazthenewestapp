@@ -1461,14 +1461,17 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
                 val endOfHaiz = addTimeToDate(lastDuration.endDate, aadats.aadatHaiz)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
             }else if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
 //                println("got here")
                 val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
             }
 
         }else{//not daur
-            if(qism==Soortain.A_1||qism==Soortain.B_2||qism==Soortain.B_3){
+            if((qism==Soortain.A_1&&fixedDurations.last().biggerThanTen!!.istihazaAfter>0L) ||qism==Soortain.B_2||qism==Soortain.B_3){
+                //these all end on istihaza
                 val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
                 if(endOfTuhr.getTime()!=lastDuration.endDate.getTime()){
                     futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
@@ -1481,6 +1484,10 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
+            }else if(qism==Soortain.A_1&&fixedDurations.last().biggerThanTen!!.istihazaAfter==0L){
+                val endOfTuhr = addTimeToDate(lastDuration.endDate, aadats.aadatTuhr)
+                futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
+
             }
         }
     }else if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
