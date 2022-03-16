@@ -219,7 +219,7 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean):OutputStringsLanguages{
     val filHaalPakiStrUrdu = StringsOfLanguages.URDU.currentpaki
     val filHaalPakiStrEnglish = StringsOfLanguages.ENGLISH.currentpaki
     val filHaalHaizStrUrdu = StringsOfLanguages.URDU.currenthaiz
-    val filHaalHaizStrEnglish = StringsOfLanguages.URDU.currenthaiz
+    val filHaalHaizStrEnglish = StringsOfLanguages.ENGLISH.currenthaiz
     return if(filHaalPaki){
         OutputStringsLanguages(filHaalPakiStrUrdu,filHaalPakiStrEnglish)
     }else{
