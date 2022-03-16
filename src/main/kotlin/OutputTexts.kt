@@ -254,13 +254,9 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean):OutputStringsLanguages{
 fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
-    println(futureDates.size)
-    println("started ask again lines")
     for(futureDate in futureDates){
         val date = futureDate.date
         val type= futureDate.futureDates
-        println(date)
-        println(type)
         if(type==TypesOfFutureDates.END_OF_AADAT_HAIZ){
             strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", "${urduDateFormat(date, isDateOnly)}")
             strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", "${englishDateFormat(date, isDateOnly)}")
@@ -296,8 +292,6 @@ fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<Futur
             strEnglish += StringsOfLanguages.ENGLISH.endofistehazaayyameqabliyya.replace("date1", "${englishDateFormat(date, isDateOnly)}")
         }
     }
-
-    println(strUrdu)
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):OutputStringsLanguages{
@@ -305,7 +299,6 @@ fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):Outp
     var strEnglish = ""
 
     return if(aadats==null){
-        println("aadats were null")
         OutputStringsLanguages("","")
     }else{
         val aadatTuhr = aadats.aadatTuhr
@@ -314,7 +307,6 @@ fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):Outp
             strUrdu+= StringsOfLanguages.URDU.thereisnoaadat
             strEnglish+= StringsOfLanguages.ENGLISH.thereisnoaadat
         }else if(aadatHaiz!=-1L && aadatTuhr==-1L){
-            println("aadat of haiz is ${daysHoursMinutesDigitalEnglish(aadatHaiz,isDateOnly)}")
             strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly
                 .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
             strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
