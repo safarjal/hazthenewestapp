@@ -552,7 +552,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             outputStringUrdu = StringsOfLanguages.URDU.durationHaiz.replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,et)), isDateOnly)}")
-            outputStringEnglish = StringsOfLanguages.URDU.durationHaiz.replace("duration1", "${daysHoursMinutesDigitalEnglish((difference(sd,et)), isDateOnly)}")
+            outputStringEnglish = StringsOfLanguages.ENGLISH.durationHaiz.replace("duration1", "${daysHoursMinutesDigitalEnglish((difference(sd,et)), isDateOnly)}")
         }else{//bigger than 10
             outputStringUrdu = StringsOfLanguages.URDU.durationDam.replace("duration1", "${daysHoursMinutesDigitalUrdu((difference(sd,et)), isDateOnly)}")
             outputStringEnglish = StringsOfLanguages.ENGLISH.durationDam.replace("duration1", "${daysHoursMinutesDigitalEnglish((difference(sd,et)), isDateOnly)}")
@@ -592,7 +592,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
 
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputStringUrdu = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
-        outputStringEnglish = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
+        outputStringEnglish = StringsOfLanguages.ENGLISH.twomonthstuhr.replace("duration1", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].timeInMilliseconds,isDateOnly)}")
     }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
 
     }
