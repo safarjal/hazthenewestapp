@@ -1456,10 +1456,10 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 }else if(lastDuration.type==DurationType.HAIZ){
-                val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
+                val endOfTuhr = addTimeToDate(lastDuration.endDate, aadats.aadatTuhr)
                 futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
             }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
-                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                val endOfHaiz = addTimeToDate(lastDuration.endDate, aadats.aadatHaiz)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
             }else if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
 //                println("got here")
