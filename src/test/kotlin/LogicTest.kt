@@ -1641,44 +1641,44 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
-    @Test
-    fun testingFinalDatesCase9() {
-        //ihtiyati ghusl dam less than 3
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
-
-        val output = handleEntries(
-            entries,
-            5*MILLISECONDS_IN_A_DAY,
-            18*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY),
-                mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
+//    @Test
+//    fun testingFinalDatesCase9() {
+//        //ihtiyati ghusl dam less than 3
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+//
+//        val output = handleEntries(
+//            entries,
+//            5*MILLISECONDS_IN_A_DAY,
+//            18*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
+//            isDateOnly = true,
+//            isPregnancy = false,
+//            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+//            , isMubtadia = false,
+//            language = "urdu")
+//        val haizDateList = output.hazDatesList
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+//                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+//                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
     @Test
     fun testingFinalDatesCase9part2() {
         //ihtiyati ghusl dam less than 3 - A-2 or A-1
