@@ -1374,7 +1374,7 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>, isMu
     return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
-fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: AadatsOfHaizAndTuhr, fillHaalPaki:Boolean, aadatNifas: Long?, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
+fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: AadatsOfHaizAndTuhr, fillHaalPaki:Boolean?, aadatNifas: Long?, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
 //    println("got to future dates")
     var futureDatesList = mutableListOf<FutureDateType>()
 //    println(fixedDurations.last())
@@ -1778,9 +1778,9 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
     return AadatsOfHaizAndTuhr(-1L,-1L)
 }
 
-fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
+fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean?{
     //calculate filHaal status
-    var filHaalPaki:Boolean = false
+    var filHaalPaki:Boolean? = false
 
     if(fixedDurations.last().type==DurationType.DAM){
 
@@ -1871,7 +1871,7 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean{
         if(fixedDurations.last().timeInMilliseconds>=fixedDurations.last().ayyameqabliyya!!.ayyameqabliyya) {
             filHaalPaki = false
         }else {
-            filHaalPaki=true
+            filHaalPaki=null
         }
     }else {
         filHaalPaki = false

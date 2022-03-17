@@ -156,7 +156,7 @@ class FutureDateType(
     val futureDates:TypesOfFutureDates
 )
 class EndingOutputValues(
-    val filHaalPaki:Boolean,
+    val filHaalPaki:Boolean?,
     val aadats:AadatsOfHaizAndTuhr?,
     val futureDateType: MutableList<FutureDateType>
 )

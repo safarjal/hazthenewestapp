@@ -215,16 +215,19 @@ fun outputStringFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutput
 
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun outputStringFilHaalLine(filHaalPaki:Boolean):OutputStringsLanguages{
+fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
     val filHaalPakiStrUrdu = StringsOfLanguages.URDU.currentpaki
     val filHaalPakiStrEnglish = StringsOfLanguages.ENGLISH.currentpaki
     val filHaalHaizStrUrdu = StringsOfLanguages.URDU.currenthaiz
     val filHaalHaizStrEnglish = StringsOfLanguages.ENGLISH.currenthaiz
-    return if(filHaalPaki){
-        OutputStringsLanguages(filHaalPakiStrUrdu,filHaalPakiStrEnglish)
-    }else{
-        OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
+    if(filHaalPaki==true){
+        return OutputStringsLanguages(filHaalPakiStrUrdu,filHaalPakiStrEnglish)
+    }else if(filHaalPaki==false){
+        return OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
+    }else if(filHaalPaki==null){
+        return OutputStringsLanguages("","")
     }
+    return OutputStringsLanguages("","")
 //    //right now, we are just going to check to see what last halat is
 //    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
 //    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""

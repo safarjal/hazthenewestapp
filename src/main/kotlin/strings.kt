@@ -87,8 +87,9 @@ val urduStrings = Strings(
     "کیا دور کے اخیر میں عادت سے زیادہ دن حیض بن سکتے ہیں؟",
     "اگر date1 سے پہلے یا date1 کو  خون رک گیا اور 15 دن کی کامل پاکی مل گیٔ، تو یہ سب حیض شمار ہو گا اور اس دوران میں کی گیی عبادات کالعدم ہو جائں گی۔\n\n" +
             "اور اگر date1 کے بعد بھی خون جاری رہا تو سب عبادات درست رہیں گی۔\n\n",
-    "<b> date1 تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
-    "date1 تا date2 کل duration1 استحاضہ کے ہیں۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
+    "اس وقت آپ کے لیے خون دیکھتے ہی نماز چھوڑنا درست نہیں ہے۔ آپ کو چاہیے کہ date1 تک عبادات جاری رکھیں۔\n\n" +
+            "آپ کے عادت کے دن date1 کو شروع ہو رہے ہیں۔ اگر خون تب تک جاری رہے تو date1 سے عابدات چھوڑ دیجیے۔\n\n",
+    "date1 تا date2 کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
 
 )
 val englishStrings = Strings(
@@ -177,14 +178,15 @@ val englishStrings = Strings(
     "Is tuhr during pregnancy to be considered habit in an unformed miscarriage?",
     "Differences of opinion",
     "Can more days than habit become haiz at the end of daur?",
-    "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n " +
+    "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n" +
             "If bleeding continues past date1, all ibadaat will remain valid.\n\n",
-    "<b>Till date1 are the days of your definitive purity.</b>\n\n",
-    "date1 to date2, a total of duration1 of definitive purity (istihadha). (This is a case of Ayyam-e-Qabliyya).\n\n",
+    "It is not correct for you to stop ibadaat when your bleeding starts. You should continue idadaat till date1, the start of your habit.\n\n" +
+            "Your habit days are beginning from date1. If bleeding continues till then, then you shoul      d stop praying from date1.\n\n",
+    "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
 
 )
 
-object StringsOfLanguages{
+object StringsOfLanguages{   
     val URDU: Strings = urduStrings
     val ENGLISH: Strings = englishStrings
 }
