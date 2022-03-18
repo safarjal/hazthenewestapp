@@ -181,12 +181,12 @@ val englishStrings = Strings(
     "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n" +
             "If bleeding continues past date1, all ibadaat will remain valid.\n\n",
     "It is not correct for you to stop ibadaat when your bleeding starts. You should continue idadaat till date1, the start of your habit.\n\n" +
-            "Your habit days are beginning from date1. If bleeding continues till then, then you shoul      d stop praying from date1.\n\n",
+            "Your habit days are beginning from date1. If bleeding continues till then, then you should stop praying from date1.\n\n",
     "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
 
 )
 
-object StringsOfLanguages{   
+object StringsOfLanguages{
     val URDU: Strings = urduStrings
     val ENGLISH: Strings = englishStrings
 }
