@@ -58,7 +58,8 @@ object Ids {
     const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val INPUT_TYPE_SELECT = "input_type_select"
-//    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+    const val INPUT_QUESTION = "input_question"
+    //    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 
     val pregnancyElementIds = listOf(
@@ -76,6 +77,7 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
+private val root_hazapp get() = document.getElementById("root-hazapp") as HTMLDivElement
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
 
@@ -162,22 +164,28 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
-        if(askPassword()){
-            document.body!!.addInputLayout()
-            setupRows(inputsContainers.first())
-            setupFirstDurationRow(inputsContainers.first())
-            document.addEventListener(Events.VISIBILITY_CHANGE, {
-                if (!document.isHidden) {
-                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+        if (root_hazapp != null) {
+            if (askPassword()) {
+                document.body!!.addInputLayout()
+                setupRows(inputsContainers.first())
+                setupFirstDurationRow(inputsContainers.first())
+                document.addEventListener(Events.VISIBILITY_CHANGE, {
+                    if (!document.isHidden) {
+                        setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+                    }
+                })
+                languageSelecter.onchange = { languageChange() }
+                if (window.location.href.contains("lang=en")) {
+                    languageSelecter.value = "english"
+                    languageChange()
+                } else {
+                    languageSelecter.value = "urdu"
                 }
-            })
-            languageSelecter.onchange = { languageChange() }
-            if (window.location.href.contains("lang=en")) {
-                languageSelecter.value = "english"
-                languageChange()
-            } else { languageSelecter.value = "urdu" }
-        }else{
-            askPassword()
+            } else {
+                askPassword()
+            }
+        } else {
+            println("???")
         }
     }
 }
@@ -387,6 +395,8 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             pregnancyStartTimeInput(inputContainerToCopyFrom)
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
+        hr()
+        questionInput(inputContainerToCopyFrom)
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -676,6 +686,20 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
         id = "content"
         style = "white-space: pre-wrap;"
         block()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+    details {
+        summary {
+            span(classes = "Urdu") {  }
+        }
+        div(classes = "row") {
+            makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
+            textArea {
+                id = Ids.INPUT_QUESTION
+            }
+        }
     }
 }
 
