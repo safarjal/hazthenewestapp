@@ -21,7 +21,7 @@
 
     <script src="./language-change.js" defer></script>
     <title>Other: Haidh and Nifas Calculator</title>
-  </head>
+</head>
 
 <body class="rtl">
     <header>
@@ -35,7 +35,7 @@
             </h1>
         </div>
         <div id="language-selection">
-            <select name="language" id="language">
+            <select name="language" id="language" onchange="onChangeFunction(this.value)">
                 <option class="rtl" selected="selected" value="urdu">اردو</option>
                 <option value="english">English</option>
             </select>
@@ -44,6 +44,60 @@
         </div>
         <hr>
     </header>
+
+    <main>
+        <section class="calc-duration">
+            <form action="">
+                <h2>
+                    <span class="urdu">Calculate Duration</span>
+                    <span class="english lang-invisible">Calculate Duration</span>
+                </h2>
+                <div class="row">
+                    <label class="urdu" for="start_date">Start Date</label>
+                    <label class="english lang-invisible" for="start_date">Start Date</label>
+                    <input type="date" name="start_date" id="start_date">
+                </div>
+                <div class="row">
+                    <label class="urdu" for="end_date">End Date</label>
+                    <label class="english lang-invisible" for="end_date">End Date</label>
+                    <input type="date" name="end_date" id="end_date">
+                </div>
+                <input type="button" value="Submit">
+            </form>
+        </section>
+        <hr>
+        <section class="add_time_date">
+            <form action="">
+                <h2>
+                    <span class="urdu">Add Time to Date</span>
+                    <span class="english lang-invisible">Add Time to Date</span>
+                </h2>
+                <div class="row">
+                    <div>
+                        <input type="radio" name="only_date" id="only_date">
+                        <label class="urdu" for="only_date">صرف تاریخ</label>
+                        <label class="english lang-invisible" for="only_date">Date Only</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="time_date" id="time_date">
+                        <label class="urdu" for="time_date">تاریخ اور وقت</label>
+                        <label class="english lang-invisible" for="time_date">Date and Time</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="urdu" for="date_to_add_to">تاریخ</label>
+                    <label class="english lang-invisible" for="date_to_add_to">Date</label>
+                    <input type="datetime-local" name="date_to_add_to" id="date_to_add_to">
+                </div>
+                <div class="row">
+                    <label class="urdu" for="time_to_add">وقت</label>
+                    <label class="english lang-invisible" for="time_to_add">Time</label>
+                    <input type="datetime-local" name="time_to_add" id="time_to_add">
+                </div>
+                <input type="button" value="Submit">
+            </form>
+        </section>
+    </main>
 </body>
 
 </html>
