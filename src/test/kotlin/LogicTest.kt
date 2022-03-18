@@ -231,7 +231,10 @@ class LogicTest {
             assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
             assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
         }
-        val expectedEndingOutputValues = EndingOutputValues(true, AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY), mutableListOf())
+        val expectedEndingOutputValues = EndingOutputValues(
+            true,
+            AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY),
+            mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
 //        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
@@ -1684,7 +1687,7 @@ class LogicTest {
     }
     @Test
     fun testingFinalDatesCase9part2() {
-        //ihtiyati ghusl dam less than 3 - A-2 or A-1
+        //ayyame qabliyya
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
@@ -1713,7 +1716,7 @@ class LogicTest {
 //            )
         val expectedEndingOutputValues =
             EndingOutputValues(
-                true,
+                null,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
                     FutureDateType(Date(2022,2, 11), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
@@ -1750,7 +1753,7 @@ class LogicTest {
 
         val expectedEndingOutputValues =
             EndingOutputValues(
-                true,
+                null,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
                     FutureDateType(Date(2022,2, 12), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
