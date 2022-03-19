@@ -17,12 +17,16 @@ object Ids {
     const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
     object AddTimeToDate {
+        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
         const val DATE_TO_ADD_TO = "date_to_add_to"
         const val TIME_TO_ADD = "time_to_add"
+        const val OUTOUT_FIELD = "add_time_date_output"
     }
     object CalcDuration {
+        const val IS_DATE_ONLY = "get_duration_is_date_only"
         const val STRT_DATE = "start_date"
         const val END_DATE = "end_date"
+        const val OUTPUT_FIELD = "calc_duration_output"
     }
 
     object Row {
@@ -116,9 +120,13 @@ private val HTMLElement.inputsContainerRemoveButton get() =
 
 private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
 private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
+private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLParagraphElement
+private val addCalcsIsDateOnlyDate get() = (document.getElementById(Ids.AddTimeToDate.IS_DATE_ONLY) as HTMLSelectElement).value
+
 private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
 private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
-
+private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLParagraphElement
+private val addCalcsIsDateOnlyDuration get() = (document.getElementById(Ids.CalcDuration.IS_DATE_ONLY) as HTMLSelectElement).value
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -205,9 +213,8 @@ fun main() {
         }
     }
 }
-
-fun addCalcsAddTimeToDate():OutputStringsLanguages{
-    var isDateOnly =true
+fun addCalcsAddTimeToDate(){
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDate=="date_only"
     var date = Date(addCalcsDateToAddTo)
     var duration = parseDays(addCalcsDurationToAdd)
     var strResultUrdu = ""
@@ -217,11 +224,12 @@ fun addCalcsAddTimeToDate():OutputStringsLanguages{
         strResultEnglish = englishDateFormat(result,isDateOnly)
         strResultUrdu = urduDateFormat(result,isDateOnly)
     }
-    return OutputStringsLanguages(strResultUrdu,strResultEnglish)
+    var resultStrings = OutputStringsLanguages(strResultUrdu,strResultEnglish)
+    addCalcsOutputDate.innerHTML = resultStrings.urduString+resultStrings.englishString
 }
 
-fun addCalcsGetDuration():OutputStringsLanguages{
-    var isDateOnly = true
+fun addCalcsGetDuration(){
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDuration=="date_only"
     var startDate = Date(addCalcsStrtDate)
     var endDate = Date(addCalcsEndDate)
     var strUrdu = ""
@@ -231,7 +239,9 @@ fun addCalcsGetDuration():OutputStringsLanguages{
         strUrdu = daysHoursMinutesDigitalUrdu(result,isDateOnly)
         strEnglish = daysHoursMinutesDigitalEnglish(result, isDateOnly)
     }
-    return OutputStringsLanguages(strUrdu,strEnglish)
+    var resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
+    addCalcsOutputDuration.innerHTML = resultStrings.urduString+resultStrings.englishString
+
 }
 
 fun askPassword():Boolean{
