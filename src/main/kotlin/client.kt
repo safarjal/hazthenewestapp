@@ -90,7 +90,7 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
-private val root_hazapp get() = document.getElementById("root-hazapp") as HTMLDivElement
+private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
 
@@ -187,8 +187,8 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
-        if (root_hazapp != null) {
-            if (askPassword()) {
+        handleLanguage()
+        if (root_hazapp.isNotEmpty() && askPassword()) {
                 document.body!!.addInputLayout()
                 setupRows(inputsContainers.first())
                 setupFirstDurationRow(inputsContainers.first())
@@ -197,19 +197,10 @@ fun main() {
                         setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                     }
                 })
-                languageSelecter.onchange = { languageChange() }
-                if (window.location.href.contains("lang=en")) {
-                    languageSelecter.value = "english"
-                    languageChange()
-                } else {
-                    languageSelecter.value = "urdu"
-                }
-            } else {
-                askPassword()
-            }
-        } else {
 
+        } else {
             println("???")
+            println(root_hazapp)
         }
     }
 }
@@ -244,7 +235,7 @@ fun addCalcsGetDuration(){
 
 }
 
-fun askPassword():Boolean{
+fun askPassword():Boolean {
     val pass1 = "786"
     val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
@@ -253,6 +244,16 @@ fun askPassword():Boolean{
         return true
     }
     else return askPassword()
+}
+
+fun handleLanguage() {
+    languageSelecter.onchange = { languageChange() }
+    if (window.location.href.contains("lang=en")) {
+        languageSelecter.value = "english"
+        languageChange()
+    } else {
+        languageSelecter.value = "urdu"
+    }
 }
 
 fun languageChange() {
