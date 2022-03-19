@@ -16,6 +16,15 @@ object Ids {
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
     const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
+    object AddTimeToDate {
+        const val DATE_TO_ADD_TO = "date_to_add_to"
+        const val TIME_TO_ADD = "time_to_add"
+    }
+    object CalcDuration {
+        const val STRT_DATE = "start_date"
+        const val END_DATE = "end_date"
+    }
+
     object Row {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
@@ -105,6 +114,12 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DAT
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
+private val HTMLElement.addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
+private val HTMLElement.addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
+private val HTMLElement.addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
+private val HTMLElement.addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
+
+
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
 
@@ -185,9 +200,14 @@ fun main() {
                 askPassword()
             }
         } else {
+            calculateValues()
             println("???")
         }
     }
+}
+
+fun calculateValues(){
+    var date = addCalcsDateToAddTo
 }
 
 fun askPassword():Boolean{
