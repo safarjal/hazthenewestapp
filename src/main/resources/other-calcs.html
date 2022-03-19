@@ -53,16 +53,29 @@
                     <span class="english lang-invisible">Calculate Duration</span>
                 </h2>
                 <div class="row">
+                    <div>
+                        <input type="radio" name="only_date" id="only_date" onchange="">
+                        <label class="urdu" for="only_date">صرف تاریخ</label>
+                        <label class="english lang-invisible" for="only_date">Date Only</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="time_date" id="time_date" onchange="">
+                        <label class="urdu" for="time_date">تاریخ اور وقت</label>
+                        <label class="english lang-invisible" for="time_date">Date and Time</label>
+                    </div>
+                </div>
+                <div class="row">
                     <label class="urdu" for="start_date">Start Date</label>
                     <label class="english lang-invisible" for="start_date">Start Date</label>
-                    <input type="date" name="start_date" id="start_date">
+                    <input type="date" name="start_date" id="start_date" onchange="">
                 </div>
                 <div class="row">
                     <label class="urdu" for="end_date">End Date</label>
                     <label class="english lang-invisible" for="end_date">End Date</label>
-                    <input type="date" name="end_date" id="end_date">
+                    <input type="date" name="end_date" id="end_date" onchange="">
                 </div>
-                <input type="button" value="Submit">
+                <input type="button" value="Next" onclick="">
+                <div class="output" id="calc_duration_output"></div>
             </form>
         </section>
         <hr>
@@ -74,12 +87,12 @@
                 </h2>
                 <div class="row">
                     <div>
-                        <input type="radio" name="only_date" id="only_date">
+                        <input type="radio" name="only_date" id="only_date" onchange="">
                         <label class="urdu" for="only_date">صرف تاریخ</label>
                         <label class="english lang-invisible" for="only_date">Date Only</label>
                     </div>
                     <div>
-                        <input type="radio" name="time_date" id="time_date">
+                        <input type="radio" name="time_date" id="time_date" onchange="">
                         <label class="urdu" for="time_date">تاریخ اور وقت</label>
                         <label class="english lang-invisible" for="time_date">Date and Time</label>
                     </div>
@@ -87,14 +100,15 @@
                 <div class="row">
                     <label class="urdu" for="date_to_add_to">تاریخ</label>
                     <label class="english lang-invisible" for="date_to_add_to">Date</label>
-                    <input type="datetime-local" name="date_to_add_to" id="date_to_add_to">
+                    <input type="datetime-local" name="date_to_add_to" id="date_to_add_to" onchange="">
                 </div>
                 <div class="row">
                     <label class="urdu" for="time_to_add">وقت</label>
                     <label class="english lang-invisible" for="time_to_add">Time</label>
-                    <input type="datetime-local" name="time_to_add" id="time_to_add">
+                    <input type="datetime-local" name="time_to_add" id="time_to_add" onchange="">
                 </div>
-                <input type="button" value="Submit">
+                <input type="button" value="name" onclick="">
+                <div class="output" id="add_time_date_output"></div>
             </form>
         </section>
     </main>
