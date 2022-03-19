@@ -120,13 +120,13 @@ private val HTMLElement.inputsContainerRemoveButton get() =
 
 private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
 private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
-private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLParagraphElement
-private val addCalcsIsDateOnlyDate get() = (document.getElementById(Ids.AddTimeToDate.IS_DATE_ONLY) as HTMLSelectElement).value
+private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLDivElement
+private val addCalcsIsDateOnlyDate get() = (document.getElementsByName(Ids.AddTimeToDate.IS_DATE_ONLY) as HTMLInputElement).value
 
 private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
 private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
-private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLParagraphElement
-private val addCalcsIsDateOnlyDuration get() = (document.getElementById(Ids.CalcDuration.IS_DATE_ONLY) as HTMLSelectElement).value
+private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLDivElement
+private val addCalcsIsDateOnlyDuration get() = (document.getElementsByName(Ids.CalcDuration.IS_DATE_ONLY) as HTMLInputElement).value
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
