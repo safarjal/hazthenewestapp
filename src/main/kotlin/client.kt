@@ -253,6 +253,7 @@ fun handleLanguage() {
         languageChange()
     } else {
         languageSelecter.value = "urdu"
+        languageChange()
     }
 }
 
@@ -753,6 +754,11 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
             makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
             textArea {
                 id = Ids.INPUT_QUESTION
+                onInputFunction = { event ->
+                    val txtarea = event.currentTarget as HTMLTextAreaElement
+                    txtarea.style.height = "auto"
+                    txtarea.style.height = "${txtarea.scrollHeight}px"
+                }
             }
         }
     }
