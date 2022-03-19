@@ -748,16 +748,17 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
     details {
         summary {
-            span(classes = "Urdu") {  }
+            span(classes = "Urdu") { +"سوال" }
+            span(classes = "english lang-invisible") { +"Question" }
         }
+//        makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
         div(classes = "row") {
-            makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
             textArea {
                 id = Ids.INPUT_QUESTION
                 onInputFunction = { event ->
                     val txtarea = event.currentTarget as HTMLTextAreaElement
                     txtarea.style.height = "auto"
-                    txtarea.style.height = "${txtarea.scrollHeight}px"
+                    txtarea.style.height = "${txtarea.scrollHeight + 6}px"
                 }
             }
         }
