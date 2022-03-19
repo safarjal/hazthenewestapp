@@ -121,12 +121,12 @@ private val HTMLElement.inputsContainerRemoveButton get() =
 private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
 private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
 private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLDivElement
-private val addCalcsIsDateOnlyDate get() = (document.getElementsByName(Ids.AddTimeToDate.IS_DATE_ONLY) as HTMLInputElement).value
+private val addCalcsIsDateOnlyDate get() = (document.getElementById("get_duration_only_date") as HTMLInputElement).checked
 
 private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
 private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
 private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLDivElement
-private val addCalcsIsDateOnlyDuration get() = (document.getElementsByName(Ids.CalcDuration.IS_DATE_ONLY) as HTMLInputElement).value
+private val addCalcsIsDateOnlyDuration get() = (document.getElementById("add_time_to_date_only_date") as HTMLInputElement).checked
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -214,7 +214,7 @@ fun main() {
     }
 }
 fun addCalcsAddTimeToDate(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyDate=="date_only"
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDate
     var date = Date(addCalcsDateToAddTo)
     var duration = parseDays(addCalcsDurationToAdd)
     var strResultUrdu = ""
@@ -229,7 +229,7 @@ fun addCalcsAddTimeToDate(){
 }
 
 fun addCalcsGetDuration(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyDuration=="date_only"
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDuration
     var startDate = Date(addCalcsStrtDate)
     var endDate = Date(addCalcsEndDate)
     var strUrdu = ""
