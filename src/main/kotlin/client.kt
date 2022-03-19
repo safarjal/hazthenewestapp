@@ -118,15 +118,15 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DAT
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
-private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
-private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
+private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement)
+private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement)
 private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLDivElement
-private val addCalcsIsDateOnlyDate get() = (document.getElementById("get_duration_only_date") as HTMLInputElement).checked
+private val addCalcsIsDateOnlyDate get() = (document.getElementById("get_duration_only_date") as HTMLInputElement)
 
-private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
-private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
+private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement)
+private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement)
 private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLDivElement
-private val addCalcsIsDateOnlyDuration get() = (document.getElementById("add_time_to_date_only_date") as HTMLInputElement).checked
+private val addCalcsIsDateOnlyDuration get() = (document.getElementById("add_time_to_date_only_date") as HTMLInputElement)
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -199,15 +199,22 @@ fun main() {
                 })
 
         } else {
-            println("???")
-            println(root_hazapp)
+            addOnChangeListners()
         }
     }
 }
+fun addOnChangeListners(){
+    println("adding on change")
+    addCalcsDateToAddTo.onchange = { addCalcsAddTimeToDate()}
+    addCalcsDurationToAdd.onchange = { addCalcsAddTimeToDate()}
+    addCalcsStrtDate.onchange = {addCalcsGetDuration()}
+    addCalcsEndDate.onchange = {addCalcsGetDuration()}
+}
 fun addCalcsAddTimeToDate(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyDate
-    var date = Date(addCalcsDateToAddTo)
-    var duration = parseDays(addCalcsDurationToAdd)
+    println("started here")
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDate.checked
+    var date = Date(addCalcsDateToAddTo.valueAsNumber)
+    var duration = parseDays(addCalcsDurationToAdd.value)
     var strResultUrdu = ""
     var strResultEnglish = ""
     if(duration!=null&&date!=null){
@@ -216,22 +223,30 @@ fun addCalcsAddTimeToDate(){
         strResultUrdu = urduDateFormat(result,isDateOnly)
     }
     var resultStrings = OutputStringsLanguages(strResultUrdu,strResultEnglish)
-    addCalcsOutputDate.innerHTML = resultStrings.urduString+resultStrings.englishString
+    if(languageSelecter.value=="urdu"){
+        addCalcsOutputDate.innerHTML = resultStrings.urduString
+    }else if(languageSelecter.value=="english"){
+        addCalcsOutputDate.innerHTML = resultStrings.englishString
+    }
 }
 
 fun addCalcsGetDuration(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyDuration
-    var startDate = Date(addCalcsStrtDate)
-    var endDate = Date(addCalcsEndDate)
+    var isDateOnly:Boolean = addCalcsIsDateOnlyDuration.checked
+    var startDate = Date(addCalcsStrtDate.valueAsNumber)
+    var endDate = Date(addCalcsEndDate.valueAsNumber)
     var strUrdu = ""
     var strEnglish = ""
     if(startDate!=null && endDate!=null && startDate.getTime()<endDate.getTime()){
-        var result = (startDate.getTime()-endDate.getTime()).toLong()
+        var result = (endDate.getTime()-startDate.getTime()).toLong()
         strUrdu = daysHoursMinutesDigitalUrdu(result,isDateOnly)
         strEnglish = daysHoursMinutesDigitalEnglish(result, isDateOnly)
     }
     var resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
-    addCalcsOutputDuration.innerHTML = resultStrings.urduString+resultStrings.englishString
+    if(languageSelecter.value=="urdu"){
+        addCalcsOutputDuration.innerHTML = resultStrings.urduString
+    }else if(languageSelecter.value=="english"){
+        addCalcsOutputDuration.innerHTML = resultStrings.englishString
+    }
 
 }
 

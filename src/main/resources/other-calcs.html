@@ -55,12 +55,12 @@
                 </h2>
                 <div class="row">
                     <div>
-                        <input type="radio" name="get_duration_is_date_only" id="get_duration_only_date" onchange="addCalcsGetDuration()" value="date_only">
+                        <input type="radio" checked name="get_duration_is_date_only" id="get_duration_only_date" value="date_only">
                         <label class="urdu" for="get_duration_only_date">صرف تاریخ</label>
                         <label class="english lang-invisible" for="get_duration_only_date">Date Only</label>
                     </div>
                     <div>
-                        <input type="radio" name="get_duration_is_date_only" id="get_duration_time_date" onchange="addCalcsGetDuration()" value="date_time">
+                        <input type="radio" name="get_duration_is_date_only" id="get_duration_time_date" value="date_time">
                         <label class="urdu" for="get_duration_time_date">تاریخ اور وقت</label>
                         <label class="english lang-invisible" for="get_duration_time_date">Date and Time</label>
                     </div>
@@ -88,7 +88,7 @@
                 </h2>
                 <div class="row">
                     <div>
-                        <input type="radio" name="is_date_only_add_time_to_date" id="add_time_to_date_only_date" onchange="" value="date_only">
+                        <input type="radio" checked name="is_date_only_add_time_to_date" id="add_time_to_date_only_date" value="date_only">
                         <label class="urdu" for="add_time_to_date_only_date">صرف تاریخ</label>
                         <label class="english lang-invisible" for="add_time_to_date_only_date">Date Only</label>
                     </div>
@@ -101,12 +101,12 @@
                 <div class="row">
                     <label class="urdu" for="date_to_add_to">تاریخ</label>
                     <label class="english lang-invisible" for="date_to_add_to">Date</label>
-                    <input type="datetime-local" name="date_to_add_to" id="date_to_add_to" onchange="addCalcsAddTimeToDate()">
+                    <input type="datetime-local" name="date_to_add_to" id="date_to_add_to">
                 </div>
                 <div class="row">
                     <label class="urdu" for="time_to_add">وقت</label>
                     <label class="english lang-invisible" for="time_to_add">Time</label>
-                    <input type="text" name="time_to_add" id="time_to_add" onchange="addCalcsAddTimeToDate()">
+                    <input type="text" name="time_to_add" id="time_to_add" >
                 </div>
                 <input type="button" value="name" onclick="">
                 <div class="output" id="add_time_date_output"></div>
