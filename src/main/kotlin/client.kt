@@ -114,10 +114,10 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DAT
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
-private val HTMLElement.addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
-private val HTMLElement.addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
-private val HTMLElement.addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
-private val HTMLElement.addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
+private val addCalcsDateToAddTo get() = (document.getElementById(Ids.AddTimeToDate.DATE_TO_ADD_TO) as HTMLInputElement).valueAsNumber
+private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeToDate.TIME_TO_ADD) as HTMLInputElement).value
+private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement).valueAsNumber
+private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement).valueAsNumber
 
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
@@ -200,14 +200,38 @@ fun main() {
                 askPassword()
             }
         } else {
-            calculateValues()
+
             println("???")
         }
     }
 }
 
-fun calculateValues(){
-    var date = addCalcsDateToAddTo
+fun addCalcsAddTimeToDate():OutputStringsLanguages{
+    var isDateOnly =true
+    var date = Date(addCalcsDateToAddTo)
+    var duration = parseDays(addCalcsDurationToAdd)
+    var strResultUrdu = ""
+    var strResultEnglish = ""
+    if(duration!=null&&date!=null){
+        var result = addTimeToDate(date,duration)
+        strResultEnglish = englishDateFormat(result,isDateOnly)
+        strResultUrdu = urduDateFormat(result,isDateOnly)
+    }
+    return OutputStringsLanguages(strResultUrdu,strResultEnglish)
+}
+
+fun addCalcsGetDuration():OutputStringsLanguages{
+    var isDateOnly = true
+    var startDate = Date(addCalcsStrtDate)
+    var endDate = Date(addCalcsEndDate)
+    var strUrdu = ""
+    var strEnglish = ""
+    if(startDate!=null && endDate!=null && startDate.getTime()<endDate.getTime()){
+        var result = (startDate.getTime()-endDate.getTime()).toLong()
+        strUrdu = daysHoursMinutesDigitalUrdu(result,isDateOnly)
+        strEnglish = daysHoursMinutesDigitalEnglish(result, isDateOnly)
+    }
+    return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
 fun askPassword():Boolean{
