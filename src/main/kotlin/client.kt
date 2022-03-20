@@ -72,7 +72,7 @@ object Ids {
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val INPUT_TYPE_SELECT = "input_type_select"
     const val INPUT_QUESTION = "input_question"
-    //    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 
     val pregnancyElementIds = listOf(
@@ -113,8 +113,8 @@ private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAI
 private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
-//private val HTMLElement.inputsContainerCloneButton get() =
-//    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
+private val HTMLElement.inputsContainerCloneButton get() =
+    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
@@ -132,6 +132,7 @@ private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id
 private val HTMLElement.pregnancyElements get() = getElementsByClassName("preg-checked").asList()
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
+private val devElements get() = document.getElementsByClassName("dev").asList()
 
 private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
     get() {
@@ -179,6 +180,7 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 fun main() {
     window.onload = {
         handleLanguage()
+        devMode()
         if (root_hazapp.isNotEmpty() && askPassword()) {
                 document.body!!.addInputLayout()
                 setupRows(inputsContainers.first())
@@ -215,6 +217,11 @@ fun handleLanguage() {
         languageSelecter.value = "urdu"
         languageChange()
     }
+}
+fun devMode() {
+    println("Development Mode Activated")
+    println(window.location.href.contains("dev"))
+    for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
 
 fun languageChange() {
@@ -253,29 +260,29 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
 }
 
-//private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
-//    comparisonContainer?.remove()
-//    if (inputsContainers.size == 1) {
-//        addRemoveInputsContainerButton(inputsContainerToCopyFrom)
-//    }
-//    val clonedInputsContainer = inputsContainerToCopyFrom.after {
-//        inputFormDiv(inputsContainerToCopyFrom)
-//    }.single()
-//    setupFirstRow(clonedInputsContainer)
-//}
+private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
+    comparisonContainer?.remove()
+    if (inputsContainers.size == 1) {
+        addRemoveInputsContainerButton(inputsContainerToCopyFrom)
+    }
+    val clonedInputsContainer = inputsContainerToCopyFrom.after {
+        inputFormDiv(inputsContainerToCopyFrom)
+    }.single()
+    setupFirstRow(clonedInputsContainer)
+}
 
-//private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
-//    inputContainer.inputsContainerCloneButton.before {
-//        button(type = ButtonType.button, classes = "minus") {
-//            +"\u274C"
-//            id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
-//            style = "float: right"
-//            onClickFunction = { event ->
-//                removeInputsContainer(findInputContainer(event))
-//            }
-//        }
-//    }
-//}
+private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
+    inputContainer.inputsContainerCloneButton.before {
+        button(type = ButtonType.button, classes = "minus dev invisible") {
+            +"\u274C"
+            id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
+            style = "float: right"
+            onClickFunction = { event ->
+                removeInputsContainer(findInputContainer(event))
+            }
+        }
+    }
+}
 
 private fun addCompareButtonIfNeeded() {
     if (comparisonContainer != null ||
@@ -308,22 +315,22 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
             removeInputsContainerButton()
         }
         classes = setOf(Ids.INPUT_CONTAINER, "date_only")
-//        addInputsContainerButton()
+        addInputsContainerButton()
         inputForm(inputContainerToCopyFrom)
         content()
     }
 }
 
-//private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
-//    inputsContainerAddRemoveButton {
-//        +"Clone"
-//        classes = setOf("plus", "clone")
-//        id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
-//        onClickFunction = { event ->
-//            cloneInputsContainer(findInputContainer(event))
-//        }
-//    }
-//}
+private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
+    inputsContainerAddRemoveButton {
+        +"Clone"
+        classes = setOf("plus", "clone", "dev", "invisible")
+        id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
+        onClickFunction = { event ->
+            cloneInputsContainer(findInputContainer(event))
+        }
+    }
+}
 
 private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
     inputsContainerAddRemoveButton {
