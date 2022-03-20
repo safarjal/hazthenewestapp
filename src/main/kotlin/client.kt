@@ -544,7 +544,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 }
 
-private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelecterValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()

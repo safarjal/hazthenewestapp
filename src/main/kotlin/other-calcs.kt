@@ -1,4 +1,5 @@
 import kotlinx.browser.document
+import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
@@ -46,6 +47,10 @@ fun addCalcsGetDuration(){
 
 fun addListeners(){
     addCalcsDateToAddTo.onchange = { addCalcsAddTimeToDate()}
+    addCalcsDurationToAdd.oninput = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
+
+//        addCalcsAddTimeToDate()
+//    }
     addCalcsDurationToAdd.onchange = { addCalcsAddTimeToDate()}
     addCalcsStrtDate.onchange = {addCalcsGetDuration()}
     addCalcsEndDate.onchange = {addCalcsGetDuration()}
@@ -55,9 +60,8 @@ fun addListeners(){
     addCalcsIsDateTimeGetDuration.onchange = {switchDateTime("calculate-duration")}
     addCalcsButtonAddTimeToDate.onclick = {addTimeToDateButtonClick()}
     addCalcsButtonGetDuration.onclick = {getDurationButtonClick()}
+
 }
-
-
 
 fun addCalcsAddTimeToDate(){
     var isDateOnly:Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
