@@ -178,8 +178,6 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
-        handleLanguage()
-        devMode()
         if (root_hazapp.isNotEmpty() && askPassword()) {
                 document.body!!.addInputLayout()
                 setupRows(inputsContainers.first())
@@ -189,10 +187,11 @@ fun main() {
                         setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                     }
                 })
-
         } else {
             mainOtherCalcs()
         }
+        handleLanguage()
+        devMode()
     }
 }
 
@@ -211,15 +210,12 @@ fun handleLanguage() {
     languageSelecter.onchange = { languageChange() }
     if (window.location.href.contains("lang=en")) {
         languageSelecter.value = "english"
-        languageChange()
     } else {
         languageSelecter.value = "urdu"
-        languageChange()
     }
+    languageChange()
 }
 fun devMode() {
-    println("Development Mode Activated")
-    println(window.location.href.contains("dev"))
     for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
 
@@ -380,7 +376,7 @@ private fun TagConsumer<HTMLElement>.content() {
             div(classes = "content") {
                 content {
                     id = Ids.CONTENT_ENGLISH
-                    classes = setOfNotNull("english", "lang_invisible")
+                    classes = setOfNotNull("english")
                 }
             }
         }
@@ -732,7 +728,7 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
     details {
         summary {
-            span(classes = "Urdu") { +"سوال" }
+            span(classes = "urdu") { +"سوال" }
             span(classes = "english lang-invisible") { +"Question" }
         }
 //        makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
