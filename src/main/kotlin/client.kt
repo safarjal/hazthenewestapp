@@ -16,6 +16,19 @@ object Ids {
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
     const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
+    object AddTimeToDate {
+        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
+        const val DATE_TO_ADD_TO = "date_to_add_to"
+        const val TIME_TO_ADD = "time_to_add"
+        const val OUTOUT_FIELD = "add_time_date_output"
+    }
+    object CalcDuration {
+        const val IS_DATE_ONLY = "get_duration_is_date_only"
+        const val STRT_DATE = "start_date"
+        const val END_DATE = "end_date"
+        const val OUTPUT_FIELD = "calc_duration_output"
+    }
+
     object Row {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
@@ -58,6 +71,7 @@ object Ids {
     const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val INPUT_TYPE_SELECT = "input_type_select"
+    const val INPUT_QUESTION = "input_question"
     const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 
@@ -76,6 +90,7 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
+private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
 
@@ -102,6 +117,7 @@ private val HTMLElement.inputsContainerCloneButton get() =
     getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
+
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -163,28 +179,25 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
-        if(askPassword()){
-            document.body!!.addInputLayout()
-            setupRows(inputsContainers.first())
-            setupFirstDurationRow(inputsContainers.first())
-            document.addEventListener(Events.VISIBILITY_CHANGE, {
-                if (!document.isHidden) {
-                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-                }
-            })
-            devMode()
-            languageSelecter.onchange = { languageChange() }
-            if (window.location.href.contains("lang=en")) {
-                languageSelecter.value = "english"
-                languageChange()
-            } else { languageSelecter.value = "urdu" }
-        }else{
-            askPassword()
+        handleLanguage()
+        devMode()
+        if (root_hazapp.isNotEmpty() && askPassword()) {
+                document.body!!.addInputLayout()
+                setupRows(inputsContainers.first())
+                setupFirstDurationRow(inputsContainers.first())
+                document.addEventListener(Events.VISIBILITY_CHANGE, {
+                    if (!document.isHidden) {
+                        setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+                    }
+                })
+
+        } else {
+            mainOtherCalcs()
         }
     }
 }
 
-fun askPassword():Boolean{
+fun askPassword():Boolean {
     val pass1 = "786"
     val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
@@ -195,6 +208,16 @@ fun askPassword():Boolean{
     else return askPassword()
 }
 
+fun handleLanguage() {
+    languageSelecter.onchange = { languageChange() }
+    if (window.location.href.contains("lang=en")) {
+        languageSelecter.value = "english"
+        languageChange()
+    } else {
+        languageSelecter.value = "urdu"
+        languageChange()
+    }
+}
 fun devMode() {
     println("Development Mode Activated")
     println(window.location.href.contains("dev"))
@@ -396,6 +419,8 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             pregnancyEndTimeInput(inputContainerToCopyFrom)
         }
         hr()
+        questionInput(inputContainerToCopyFrom)
+        hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
 //        istimrarCheckBox(inputContainerToCopyFrom)
@@ -526,7 +551,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 }
 
-private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelecterValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
@@ -684,6 +709,26 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
         id = "content"
         style = "white-space: pre-wrap;"
         block()
+    }
+}
+
+private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+    details {
+        summary {
+            span(classes = "Urdu") { +"سوال" }
+            span(classes = "english lang-invisible") { +"Question" }
+        }
+//        makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
+        div(classes = "row") {
+            textArea {
+                id = Ids.INPUT_QUESTION
+                onInputFunction = { event ->
+                    val txtarea = event.currentTarget as HTMLTextAreaElement
+                    txtarea.style.height = "auto"
+                    txtarea.style.height = "${txtarea.scrollHeight + 6}px"
+                }
+            }
+        }
     }
 }
 
