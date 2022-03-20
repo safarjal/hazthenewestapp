@@ -11,12 +11,18 @@ private val addCalcsDurationToAdd get() = (document.getElementById(Ids.AddTimeTo
 private val addCalcsOutputDate get() = document.getElementById(Ids.AddTimeToDate.OUTOUT_FIELD) as HTMLDivElement
 private val addCalcsIsDateOnlyAddTimeToDate get() = (document.getElementById("add_time_to_date_only_date") as HTMLInputElement)
 private val addCalcsIsDateTimeAddTimeToDate get() = (document.getElementById("add_time_to_date_time_date") as HTMLInputElement)
+private val addCalcsButtonAddTimeToDate get() = (document.getElementById("add_time_to_date_button") as HTMLInputElement)
 
 private val addCalcsStrtDate get() = (document.getElementById(Ids.CalcDuration.STRT_DATE) as HTMLInputElement)
 private val addCalcsEndDate get() = (document.getElementById(Ids.CalcDuration.END_DATE) as HTMLInputElement)
 private val addCalcsOutputDuration get() = document.getElementById(Ids.CalcDuration.OUTPUT_FIELD) as HTMLDivElement
 private val addCalcsIsDateOnlyGetDuration get() = (document.getElementById("get_duration_only_date") as HTMLInputElement)
 private val addCalcsIsDateTimeGetDuration get() = (document.getElementById("get_duration_time_date") as HTMLInputElement)
+private val addCalcsButtonGetDuration get() = (document.getElementById("get_duration_button") as HTMLInputElement)
+
+fun mainOtherCalcs(){
+    addListeners()
+}
 
 fun addCalcsGetDuration(){
     var isDateOnly:Boolean = addCalcsIsDateOnlyGetDuration.checked
@@ -38,8 +44,7 @@ fun addCalcsGetDuration(){
 
 }
 
-fun addOnChangeListners(){
-    println("adding on change")
+fun addListeners(){
     addCalcsDateToAddTo.onchange = { addCalcsAddTimeToDate()}
     addCalcsDurationToAdd.onchange = { addCalcsAddTimeToDate()}
     addCalcsStrtDate.onchange = {addCalcsGetDuration()}
@@ -48,9 +53,13 @@ fun addOnChangeListners(){
     addCalcsIsDateTimeAddTimeToDate.onchange = {switchDateTime("add-time-to-date")}
     addCalcsIsDateOnlyGetDuration.onchange = {switchDateTime("calculate-duration")}
     addCalcsIsDateTimeGetDuration.onchange = {switchDateTime("calculate-duration")}
+    addCalcsButtonAddTimeToDate.onclick = {addTimeToDateButtonClick()}
+    addCalcsButtonGetDuration.onclick = {getDurationButtonClick()}
 }
+
+
+
 fun addCalcsAddTimeToDate(){
-    println("started here")
     var isDateOnly:Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
     var date = Date(addCalcsDateToAddTo.valueAsNumber)
     var duration = parseDays(addCalcsDurationToAdd.value)
@@ -85,5 +94,19 @@ fun switchDateTime(calcType:String){
         }else{
             addCalcsDateToAddTo.type = "datetime-local"
         }
+    }
+}
+
+fun getDurationButtonClick(){
+    addCalcsStrtDate.value = addCalcsEndDate.value
+    addCalcsGetDuration()
+}
+
+fun addTimeToDateButtonClick(){
+    if(addCalcsDurationToAdd!=null && addCalcsDateToAddTo.valueAsNumber!=null){
+        val result = addTimeToDate(Date(addCalcsDateToAddTo.valueAsNumber), parseDays(addCalcsDurationToAdd.value!!)!!)
+        addCalcsDateToAddTo.value=result.toDateInputString(addCalcsIsDateOnlyAddTimeToDate.checked)
+        addCalcsDurationToAdd.value=""
+        addCalcsAddTimeToDate()
     }
 }

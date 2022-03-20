@@ -190,7 +190,7 @@ fun main() {
                 })
 
         } else {
-            addOnChangeListners()
+            mainOtherCalcs()
         }
     }
 }
