@@ -51,7 +51,6 @@ object Ids {
     }
 
     const val CONTENT_CONTAINER = "content_container"
-    const val CONTENT = "content"
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
@@ -100,6 +99,7 @@ private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DUR
 private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "dateTime"
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "dateOnly"
 private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "duration"
+
 private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
@@ -109,15 +109,16 @@ private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as 
 private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
+
 private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
 private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
+
 private val HTMLElement.inputsContainerCloneButton get() =
     getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() =
     getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
-
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -160,10 +161,8 @@ private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPU
 private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
 private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
-private val HTMLTableRowElement.buttonsContainer get() = getChildById(Ids.Row.BUTTONS_CONTAINER)!!
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
-private val HTMLTableRowElement.addBeforeButton get() = getChildById(Ids.Row.BUTTON_ADD_BEFORE) as HTMLButtonElement?
 private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
 private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
 
@@ -179,8 +178,6 @@ private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
 fun main() {
     window.onload = {
-        handleLanguage()
-        devMode()
         if (root_hazapp.isNotEmpty() && askPassword()) {
                 document.body!!.addInputLayout()
                 setupRows(inputsContainers.first())
@@ -190,10 +187,11 @@ fun main() {
                         setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                     }
                 })
-
         } else {
             mainOtherCalcs()
         }
+        handleLanguage()
+        devMode()
     }
 }
 
@@ -212,15 +210,12 @@ fun handleLanguage() {
     languageSelecter.onchange = { languageChange() }
     if (window.location.href.contains("lang=en")) {
         languageSelecter.value = "english"
-        languageChange()
     } else {
         languageSelecter.value = "urdu"
-        languageChange()
     }
+    languageChange()
 }
 fun devMode() {
-    println("Development Mode Activated")
-    println(window.location.href.contains("dev"))
     for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
 
@@ -269,11 +264,13 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     setupFirstRow(clonedInputsContainer)
+    languageChange()
+    invisPregnancy(clonedInputsContainer)
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
     inputContainer.inputsContainerCloneButton.before {
-        button(type = ButtonType.button, classes = "minus dev invisible") {
+        button(type = ButtonType.button, classes = "minus dev") {
             +"\u274C"
             id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
             style = "float: right"
@@ -324,7 +321,7 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
 private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
     inputsContainerAddRemoveButton {
         +"Clone"
-        classes = setOf("plus", "clone", "dev", "invisible")
+        classes = setOf("plus", "clone", "dev")
         id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
         onClickFunction = { event ->
             cloneInputsContainer(findInputContainer(event))
@@ -367,7 +364,7 @@ private fun TagConsumer<HTMLElement>.content() {
                 classes = setOfNotNull("urdu")
             }
         }
-        div(classes = "english lang-invisible") {
+        div(classes = "english") {
             id = "content_wrapper"
             div(classes = "right") {
                 small { }
@@ -379,7 +376,7 @@ private fun TagConsumer<HTMLElement>.content() {
             div(classes = "content") {
                 content {
                     id = Ids.CONTENT_ENGLISH
-                    classes = setOfNotNull("english", "lang_invisible")
+                    classes = setOfNotNull("english")
                 }
             }
         }
@@ -396,7 +393,7 @@ private fun copyText(event: Event) {
     val para = div?.querySelector("p")
     val small = div?.querySelector("small")
     para?.textContent?.let { window.navigator.clipboard.writeText(it) }
-    small?.innerHTML?.let { small.innerHTML = "Copied!" }
+    small?.innerHTML?.let { small.innerHTML = " Copied! " }
     window.setTimeout({
         if (small != null) {
             small.innerHTML = ""
@@ -423,7 +420,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
-//        istimrarCheckBox(inputContainerToCopyFrom)
         calculateButton()
         hr()
         onSubmitFunction = { event ->
@@ -438,7 +434,6 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
         htmlFor = inputId
         classes = setOfNotNull(
             "english",
-            "lang-invisible",
             if (preg) "preg-checked" else null,
             if (preg) "invisible" else null,
         )
@@ -456,7 +451,9 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
 }
 
 private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
+    val isDateTime = inputContainerToCopyFrom?.isDateTime ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
+    val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = "row") {
         makeLabel(Ids.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
         select {
@@ -464,28 +461,33 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
             onChangeFunction = { event ->
                 onClickTypeConfigurationSelectDropdown(findInputContainer(event))
             }
-            option(classes = "english lang-invisible") {
+            option(classes = "english") {
+                selected = isDateOnly
                 value = "dateOnly"
                 +StringsOfLanguages.ENGLISH.dateOnly
             }
             option(classes = "urdu") {
-                selected = true
+                selected = isDateOnly
                 value = "dateOnly"
                 +StringsOfLanguages.URDU.dateOnly
             }
-            option(classes = "english lang-invisible") {
+            option(classes = "english") {
+                selected = isDateTime
                 value = "dateTime"
                 +StringsOfLanguages.ENGLISH.dateAndTime
             }
             option(classes = "urdu") {
+                selected = isDateTime
                 value = "dateTime"
                 +StringsOfLanguages.URDU.dateAndTime
             }
-            option(classes = "english lang-invisible") {
+            option(classes = "english") {
+                selected = isDuration
                 value = "duration"
                 +StringsOfLanguages.ENGLISH.duration
             }
             option(classes = "urdu") {
+                selected = isDuration
                 value = "duration"
                 +StringsOfLanguages.URDU.duration
             }
@@ -527,7 +529,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             input(type = InputType.checkBox) {
                 id = Ids.MAWJOODA_FASID_CHECKBOX
                 name = Ids.MAWJOODA_FASID_CHECKBOX
-                checked = false
+                checked = inputContainerToCopyFrom?.isMawjoodaFasid?.or(false) == true
             }
         }
     }
@@ -573,19 +575,30 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 name = Ids.PREGNANCY_CHECKBOX
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
-                    val isChecked = (event.currentTarget as HTMLInputElement).checked
+//                    val isChecked = (event.currentTarget as HTMLInputElement).checked
                     val inputContainer = findInputContainer(event)
-                    for (pregnancyElement in inputContainer.pregnancyInputs) {
-                        pregnancyElement.visibility = isChecked
-                        pregnancyElement.disabled = !isChecked
-                    }
-                    for (pregnancyElement in inputContainer.pregnancyElements) {
-                            pregnancyElement.visibility = isChecked
-                    }
+//                    for (pregnancyElement in inputContainer.pregnancyInputs) {
+//                        pregnancyElement.visibility = isChecked
+//                        pregnancyElement.disabled = !isChecked
+//                    }
+//                    for (pregnancyElement in inputContainer.pregnancyElements) {
+//                            pregnancyElement.visibility = isChecked
+//                    }
+                    invisPregnancy(inputContainer)
                     if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
                 }
             }
         }
+    }
+}
+
+fun invisPregnancy(inputContainer: HTMLElement) {
+    for (pregnancyElement in inputContainer.pregnancyInputs) {
+        pregnancyElement.visibility = inputContainer.isPregnancy
+        pregnancyElement.disabled = !inputContainer.isPregnancy
+    }
+    for (pregnancyElement in inputContainer.pregnancyElements) {
+        pregnancyElement.visibility = inputContainer.isPregnancy
     }
 }
 
@@ -670,7 +683,7 @@ private fun FlowContent.ikhtilafiMasle() {
         details {
             summary(classes = "ikhtilaf")
             b {
-                span(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
+                span(classes = "english") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
             }
             isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
@@ -694,7 +707,7 @@ private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, u
 }
 
 private fun FlowContent.calculateButton() {
-    button(classes = "english lang-invisible calc-btn") {
+    button(classes = "english calc-btn") {
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
@@ -715,7 +728,7 @@ private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
     details {
         summary {
-            span(classes = "Urdu") { +"سوال" }
+            span(classes = "urdu") { +"سوال" }
             span(classes = "english lang-invisible") { +"Question" }
         }
 //        makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
@@ -737,8 +750,8 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
         id = Ids.HAIZ_INPUT_TABLE
         thead {
             tr {
-                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.startTime }
-                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.endTime }
+                th(classes = "english") { +StringsOfLanguages.ENGLISH.startTime }
+                th(classes = "english") { +StringsOfLanguages.ENGLISH.endTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
                 th {addBeforeButton()}
@@ -765,8 +778,8 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
         id = Ids.HAIZ_DURATION_INPUT_TABLE
         thead {
             tr {
-                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.duration }
-                th(classes = "english lang-invisible") { +StringsOfLanguages.ENGLISH.damOrTuhr }
+                th(classes = "english") { +StringsOfLanguages.ENGLISH.duration }
+                th(classes = "english") { +StringsOfLanguages.ENGLISH.damOrTuhr }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.duration }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
                 th {durationAddBeforeButton()}
@@ -816,12 +829,12 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     row.durationInput.value = "0"
                     row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                 }
-                option(classes = "english lang-invisible") {
+                option(classes = "english") {
                     selected = !urdu && !lastWasDam
                     value = "dam"
                     + StringsOfLanguages.ENGLISH.dam
                 }
-                option(classes = "english lang-invisible") {
+                option(classes = "english") {
                     selected = !urdu && lastWasDam
                     value = "tuhr"
                     + StringsOfLanguages.ENGLISH.tuhr
@@ -829,17 +842,15 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 option {
                     classes = setOfNotNull(
                         "english",
-                        "lang-invisible",
                         "preg-checked",
                         if (!preg) "invisible" else null,
                     )
                     value = "haml"
                     + StringsOfLanguages.ENGLISH.preg
                 }
-                option(classes = "english lang-invisible preg-checked invisible") {
+                option(classes = "english preg-checked invisible") {
                     classes = setOfNotNull(
                         "english",
-                        "lang-invisible",
                         "preg-checked",
                         if (!preg) "invisible" else null,
                     )
@@ -1100,23 +1111,12 @@ private fun setupFirstRow(inputContainer: HTMLElement) {
     inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
-//private fun updateRemoveButtonDisabledStateForFirstDurationRow(inputContainer: HTMLElement) {
+
 private fun setupFirstDurationRow(inputContainer: HTMLElement) {
     val inputDatesRows = inputContainer.haizDurationInputDatesRows
     inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
     inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
 }
-
-
-//private fun ensureAddFirstButtonOnlyShownInFirstRow(inputContainer: HTMLElement) {
-//    for ((index, row) in inputContainer.haizInputDatesRows.withIndex()) {
-//        if (index > 0) {
-//            row.addBeforeButton?.remove()
-//        } else if (row.addBeforeButton == null) {
-//            row.buttonsContainer.append { addBeforeButton() }
-//        }
-//    }
-//}
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
     val currentTime = currentTimeString(inputContainer.isDateOnly)
@@ -1247,7 +1247,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
     disableAadaat(inputContainer, disable)
 }
 
-private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean) {
+private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
     inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
