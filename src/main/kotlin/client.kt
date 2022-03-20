@@ -208,13 +208,11 @@ fun askPassword():Boolean {
 
 fun handleLanguage() {
     languageSelecter.onchange = { languageChange() }
-    if (window.location.href.contains("lang=en")) {
-        languageSelecter.value = "english"
-    } else {
-        languageSelecter.value = "urdu"
-    }
+    if (window.location.href.contains("lang=en")) languageSelecter.value = "english"
+    else languageSelecter.value = "urdu"
     languageChange()
 }
+
 fun devMode() {
     for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
@@ -575,15 +573,7 @@ private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?
                 name = Ids.PREGNANCY_CHECKBOX
                 checked = inputContainerToCopyFrom?.isPregnancy == true
                 onChangeFunction = { event ->
-//                    val isChecked = (event.currentTarget as HTMLInputElement).checked
                     val inputContainer = findInputContainer(event)
-//                    for (pregnancyElement in inputContainer.pregnancyInputs) {
-//                        pregnancyElement.visibility = isChecked
-//                        pregnancyElement.disabled = !isChecked
-//                    }
-//                    for (pregnancyElement in inputContainer.pregnancyElements) {
-//                            pregnancyElement.visibility = isChecked
-//                    }
                     invisPregnancy(inputContainer)
                     if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
                 }
