@@ -801,7 +801,7 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
                 th(classes = "english") { +StringsOfLanguages.ENGLISH.damOrTuhr }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.duration }
                 th(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
-                th {durationAddBeforeButton()}
+                th {addBeforeButton(true)}
             }
         }
         tbody {
@@ -1058,37 +1058,29 @@ private fun FlowContent.addButton(duration: Boolean = false) {
     }
 }
 
-private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
+private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u25B2"
         title = "Add at Start"
-        id = Ids.Row.BUTTON_ADD_BEFORE
+        id = if (duration) Ids.DurationRow.DURATION_BUTTON_ADD_BEFORE else Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
-            val inputDatesRows = inputContainer.haizDurationInputDatesRows
-            val firstIsDam = inputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
+            if (duration) {
+                val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
+                inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas) }
+                setupFirstDurationRow(inputContainer)
+            } else {
+                val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
 
-            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas) }
-            setupFirstDurationRow(inputContainer)
-        }
-    }
-}
-
-private fun TagConsumer<HTMLElement>.addBeforeButton() {
-    button(type = ButtonType.button, classes = "plus") {
-        +"\u2795 \u25B2"
-        title = "Add at Start"
-        id = Ids.DurationRow.DURATION_BUTTON_ADD_BEFORE
-        onClickFunction = { event ->
-            val inputContainer = findInputContainer(event)
-            val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
-
-            inputContainer.hazInputTableBody.prepend { inputRow(
-                inputContainer.isDateOnly,
-                minTimeInput = "",
-                maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
-            ) }
-            setupRows(inputContainer)
+                inputContainer.hazInputTableBody.prepend {
+                    inputRow(
+                        inputContainer.isDateOnly,
+                        minTimeInput = "",
+                        maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
+                    )
+                }
+                setupRows(inputContainer)
+            }
         }
     }
 }
