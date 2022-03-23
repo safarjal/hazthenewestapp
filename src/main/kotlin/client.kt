@@ -167,7 +167,7 @@ private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_
 private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
 private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
-private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
+private val HTMLTableRowElement.damOrTuhr get() = durationTypeInput.value
 private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
@@ -815,8 +815,102 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
             }
         }
         tbody {
-            durationInputRow(false, !isDuration)
+            if (inputContainerToCopyFrom != null) {
+                for (inputDateRow in inputContainerToCopyFrom.haizDurationInputDatesRows) {
+                    copyDurationInputRow(
+                        aadat = inputDateRow.durationInput.value,
+                        selectedOption = inputDateRow.damOrTuhr,
+                        disable = !isDuration,
+                        preg = inputContainerToCopyFrom.isNifas)
+                }
+            } else {
+                durationInputRow(false, !isDuration)
+            }
         }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.copyDurationInputRow(aadat: String, selectedOption: String, disable: Boolean, preg: Boolean) {
+    tr {
+        td {
+            input {
+                id = Ids.DurationRow.INPUT_DURATION
+                name = Ids.DurationRow.INPUT_DURATION
+                disabled = disable
+                required = true
+                value = aadat
+                onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
+            }
+        }
+        td {
+            select {
+                id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                name = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+                disabled = disable
+                onChangeFunction = { event ->
+                    val row = findRow(event)
+                    row.durationInput.value = "0"
+                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                }
+                option(classes = "english") {
+                    value = "dam"
+                    selected = selectedOption == value
+                    +StringsOfLanguages.ENGLISH.dam
+                }
+                option(classes = "english") {
+                    value = "tuhr"
+                    selected = selectedOption == value
+                    +StringsOfLanguages.ENGLISH.tuhr
+                }
+                option {
+                    classes = setOfNotNull(
+                        "english",
+                        "is-nifas",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "haml"
+                    +StringsOfLanguages.ENGLISH.preg
+                }
+                option(classes = "english is-nifas invisible") {
+                    classes = setOfNotNull(
+                        "english",
+                        "is-nifas",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "wiladat"
+                    +StringsOfLanguages.ENGLISH.birthduration
+                }
+                option(classes = "urdu") {
+                    value = "dam"
+                    selected = selectedOption == value
+                    +StringsOfLanguages.URDU.dam
+                }
+                option(classes = "urdu") {
+                    value = "tuhr"
+                    selected = selectedOption == value
+                    +StringsOfLanguages.URDU.tuhr
+                }
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "is-nifas",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "haml"
+                    +StringsOfLanguages.URDU.pregduration
+                }
+                option {
+                    classes = setOfNotNull(
+                        "urdu",
+                        "is-nifas",
+                        if (!preg) "invisible" else null,
+                    )
+                    value = "wiladat"
+                    +StringsOfLanguages.URDU.birthduration
+                }
+            }
+        }
+        addRemoveButtonsTableData(true)
     }
 }
 
