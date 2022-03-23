@@ -187,7 +187,6 @@ fun main() {
         if (root_hazapp.isNotEmpty() && askPassword()) {
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
-            setupFirstRow(inputsContainers.first(), true)
             document.addEventListener(Events.VISIBILITY_CHANGE, {
                 if (!document.isHidden) {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
@@ -269,7 +268,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-    setupFirstRow(clonedInputsContainer, false)
+    setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
     languageChange()
     invisPregnancy(clonedInputsContainer)
 }
@@ -1088,6 +1087,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
 private fun setupRows(inputContainer: HTMLElement) {
     setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer, false)
+    setupFirstRow(inputContainer, true)
 }
 
 private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
@@ -1163,52 +1163,22 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
 private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) {
     val isDateOnly = inputContainer.isDateOnly
     val isDateTime = inputContainer.isDateTime
-    val isDuration = inputContainer.isDuration
-    if (isDateOnly || isDateTime) {
-        disableDateTable(inputContainer, false)
-        inputContainer.haizInputTable.visibility = true
-        inputContainer.haizDurationInputTable.visibility = false
-        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-            val newValue = convertInputValue(timeInput.value, isDateOnly)
-            val newMin = convertInputValue(timeInput.min, isDateOnly)
-            val newMax = convertInputValue(timeInput.max, isDateOnly)
+    for (timeInput in inputContainer.timeInputsGroups.flatten()) {
+        val newValue = convertInputValue(timeInput.value, isDateOnly)
+        val newMin = convertInputValue(timeInput.min, isDateOnly)
+        val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-            timeInput.type = dateInputType.realValue
+        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+        timeInput.type = dateInputType.realValue
 
-            timeInput.value = newValue
-            timeInput.min = newMin
-            timeInput.max = newMax
-        }
-
-        inputContainer.classList.toggle("date_only", isDateOnly)
-        inputContainer.classList.toggle("date_and_time", !isDateOnly)
-        inputContainer.classList.toggle("duration", false)
-
-        if (isDateTime) {
-            setMaxToCurrentTimeForTimeInputs(inputContainer)
-        }
-    } else if (isDuration) {
-        for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-            val newValue = convertInputValue(timeInput.value, isDateOnly)
-            val newMin = convertInputValue(timeInput.min, isDateOnly)
-            val newMax = convertInputValue(timeInput.max, isDateOnly)
-
-            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-            timeInput.type = dateInputType.realValue
-
-            timeInput.value = newValue
-            timeInput.min = newMin
-            timeInput.max = newMax
-        }
-        inputContainer.classList.toggle("date_only", false)
-        inputContainer.classList.toggle("date_and_time", false)
-        inputContainer.classList.toggle("duration", true)
-
-        disableDateTable(inputContainer, true)
-        inputContainer.haizInputTable.visibility = false
-        inputContainer.haizDurationInputTable.visibility = true
+        timeInput.value = newValue
+        timeInput.min = newMin
+        timeInput.max = newMax
     }
+    if (isDateTime) {
+        setMaxToCurrentTimeForTimeInputs(inputContainer)
+    }
+    switchTables(inputContainer)
 }
 
 private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
@@ -1218,7 +1188,14 @@ private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement)
     disableAllAadaat(inputContainer)
 }
 
-private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
+private fun switchTables(inputContainer: HTMLElement) {
+    val isDuration = inputContainer.isDuration
+    disableDateTable(inputContainer, isDuration)
+    inputContainer.haizInputTable.visibility = !isDuration
+    inputContainer.haizDurationInputTable.visibility = isDuration
+}
+
+private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
     for (timeInput in inputContainer.timeInputsGroups) {
         for (input in timeInput) {
             input.disabled = disable
