@@ -39,15 +39,10 @@ body {
   /* font-size: larger; */
 }
 
+.mubtadia-invis,
+.duration-invis,
+.lang-invisible,
 .invisible {
-  display: none !important;
-}
-
-.lang-invisible {
-  display: none !important;
-}
-
-.duration-invis {
   display: none !important;
 }
 
