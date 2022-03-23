@@ -687,7 +687,7 @@ private fun FlowContent.ikhtilafiMasle() {
                 span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
             }
             isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
-            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)
+            div(classes = "invisible"){isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)}
         }
     }
 }
