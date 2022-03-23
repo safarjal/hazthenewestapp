@@ -124,6 +124,9 @@ data class Strings(
     val beforetendaysayyameqabliyyaallconsideredhaiz:String,
     val endofistehazaayyameqabliyya:String,
     val daysayyameqabliyya:String,
+    val mubtadia:String,
+    val mutada:String,
+    val typeOfMasla:String
 
 )
 
