@@ -378,7 +378,7 @@ fun outputStringBiggerThan10HallDurations(fixedDurations: MutableList<FixedDurat
                 strUrdu+= StringsOfLanguages.URDU.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds, isDateOnly)}")
                 strEnglish+= StringsOfLanguages.ENGLISH.followedByHaizAfter.replace("duration1", "${daysHoursMinutesDigitalEnglish(duration.timeInMilliseconds, isDateOnly)}")
                 //maybe we'll wanna add something about itibaar bil khawateem
-            }else if(duration.type == DurationType.NIFAAS){
+            }else if(duration.type == DurationType.NIFAS){
                 strUrdu+= StringsOfLanguages.URDU.startingFromNifas
                 strEnglish+= StringsOfLanguages.ENGLISH.startingFromNifas
             }
@@ -453,11 +453,11 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
 fun outputStringBiggerThan40HallDuration(fixedDurations: MutableList<FixedDuration>, index: Int, isDateOnly: Boolean):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
-    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAS_PERIOD){
         strUrdu+=TAB
         strEnglish+=TAB
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
-            if(duration.type==DurationType.NIFAAS){
+            if(duration.type==DurationType.NIFAS){
                 strUrdu+= StringsOfLanguages.URDU.startingFromNifas.replace("duration1", "${daysHoursMinutesDigitalUrdu(duration.timeInMilliseconds, isDateOnly)}")
                 strEnglish+= StringsOfLanguages.ENGLISH.startingFromNifas.replace("duration1", "${daysHoursMinutesDigitalEnglish(duration.timeInMilliseconds, isDateOnly)}")
             }else if(duration.type==DurationType.ISTIHAZA_AFTER){
@@ -503,14 +503,14 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
         )
     }
 
-    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAAS_PERIOD){
+    if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAS_PERIOD){
         strUrdu += StringsOfLanguages.URDU.dashesline
         strEnglish += StringsOfLanguages.ENGLISH.dashesline
         strUrdu += StringsOfLanguages.URDU.solution
         strEnglish += StringsOfLanguages.ENGLISH.solution
 
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
-            if(duration.type==DurationType.NIFAAS){
+            if(duration.type==DurationType.NIFAS){
                 strUrdu+= nifasLine(duration.startTime,duration.endDate, isDateOnly).urduString
                 strEnglish+= nifasLine(duration.startTime,duration.endDate, isDateOnly).englishString
             }else if(duration.type==DurationType.ISTIHAZA_AFTER){
@@ -571,7 +571,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         outputStringUrdu =  StringsOfLanguages.URDU.durationTuhreFasidWithAddition.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
         outputStringEnglish =  StringsOfLanguages.ENGLISH.durationTuhreFasidWithAddition.replace("duration1", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalEnglish((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
-    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){
@@ -631,7 +631,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         outputStringUrdu =  StringsOfLanguages.URDU.tuhrfasidwithaddition.replace("duration1", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalUrdu(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalUrdu((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
         outputStringEnglish =  StringsOfLanguages.ENGLISH.tuhrfasidwithaddition.replace("duration1", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].istihazaAfter, isDateOnly)}").replace("duration2", "${daysHoursMinutesDigitalEnglish(fixedDurations[index].timeInMilliseconds, isDateOnly)}").replace("duration3", "${daysHoursMinutesDigitalEnglish((fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), isDateOnly)}")
-    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAAS_PERIOD){
+    }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){

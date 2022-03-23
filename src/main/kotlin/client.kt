@@ -1343,7 +1343,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     else if(row.damOrTuhr == "tuhr"){DurationType.TUHR}
                     else if(row.damOrTuhr == "haml"){DurationType.HAML}
                     else if(row.damOrTuhr == "wiladat"){DurationType.WILADAT_ISQAT}
-                            else{DurationType.NIFAAS},
+                            else{DurationType.NIFAS},
                     timeInMilliseconds = parseDays(row.duration.value)!!,
                     startTime = arbitraryDate
                 ) }

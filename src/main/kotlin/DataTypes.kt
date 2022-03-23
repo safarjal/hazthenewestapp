@@ -1,4 +1,3 @@
-import kotlinx.html.attributes.StringSetEncoder
 import kotlin.js.Date
 
 
@@ -189,9 +188,9 @@ enum class DurationType {
     TUHR,
     TUHREFAASID,
     TUHR_IN_HAML,
-    NIFAAS,
+    NIFAS,
     DAM_IN_HAML,
-    DAM_IN_NIFAAS_PERIOD,
+    DAM_IN_NIFAS_PERIOD,
     ISTIHAZA_BEFORE,
     ISTIHAZA_AFTER,
     HAIZ,
