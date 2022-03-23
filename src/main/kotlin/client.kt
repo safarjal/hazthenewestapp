@@ -489,7 +489,7 @@ private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFro
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     div(classes = "row") {
-        makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
+        makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
             id = Ids.MASLA_TYPE_SELECT
             onChangeFunction = { event ->
@@ -498,32 +498,32 @@ private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFro
             option(classes = "english") {
                 selected = isMutada
                 value = "muatada"
-                +"Mutada"
+                +StringsOfLanguages.ENGLISH.mutada
             }
             option(classes = "urdu") {
                 selected = isMutada
-                value = "dateOnly"
-                +"Mutada"
+                value = "muatada"
+                +StringsOfLanguages.URDU.mutada
             }
             option(classes = "english") {
                 selected = isNifas
                 value = "nifas"
-                +"Nifas"
+                +StringsOfLanguages.ENGLISH.nifas
             }
             option(classes = "urdu") {
                 selected = isNifas
                 value = "nifas"
-                +"Nifas"
+                +StringsOfLanguages.URDU.nifas
             }
             option(classes = "english dev") {
                 selected = isMubtadia
                 value = "mubtadia"
-                +"Mubtadia"
+                +StringsOfLanguages.ENGLISH.mubtadia
             }
             option(classes = "urdu dev") {
                 selected = isMubtadia
                 value = "mubtadia"
-                +"Mubtadia"
+                +StringsOfLanguages.URDU.mubtadia
             }
         }
     }

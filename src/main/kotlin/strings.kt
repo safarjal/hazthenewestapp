@@ -52,7 +52,7 @@ val urduStrings = Strings(
     "انتہائے خون",
     "حساب لگائیں",
     "عادت درست نہیں، عادت صحیح لکھیے!",
-    "اگر نفاس کا مسئلہ ہے تو ادھر کلک کیجیے!",
+    "نفاس",
     "مستبين الخلقہ: ",
     "مسئلہ حل کرنے کے لیے حیض و طہر کی \"عادت صحیح\" لکھیے",
     "موجودہ طہر(حل کیے جانے والے دم سے قبل متصل طہر) کا دورانیہ(duration) لکھیے۔",
@@ -90,6 +90,9 @@ val urduStrings = Strings(
     "اس وقت آپ کے لیے خون دیکھتے ہی نماز چھوڑنا درست نہیں ہے۔ آپ کو چاہیے کہ date1 تک عبادات جاری رکھیں۔\n\n" +
             "آپ کے عادت کے دن date1 کو شروع ہو رہے ہیں۔ اگر خون تب تک جاری رہے تو date1 سے عابدات چھوڑ دیجیے۔\n\n",
     "date1 تا date2 کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
+    "مبتداہ",
+    "معتادہ",
+    "مسئلے کی نوعیت"
 
 )
 val englishStrings = Strings(
@@ -160,29 +163,32 @@ val englishStrings = Strings(
     "duration1 dam\n\n",
     "duration1 tuhr\n\n",
     "duraion1 tuhr-e-faasid\n\n",
-    "duration1 istehaza + duration2 tuhr = duration3 tuhr-e-faasid\n\n",
-    "duration1 haiz\n\n",
+    "duration1 istehadha + duration2 tuhr = duration3 tuhr-e-faasid\n\n",
+    "duration1 haidh\n\n",
     "duration1 nifas\n\n",
-    "The first duration1 are istehaza",
-    "The first duration1 are haiz",
-    ", then the next duration1 are istehaza",
-    ", then the next duration1 are haiz",
+    "The first duration1 are istehadha",
+    "The first duration1 are haidh",
+    ", then the next duration1 are istehadha",
+    ", then the next duration1 are haidh",
     ".\n\n",
     "birth\n\n",
     "pregnancy\n\n",
     "The first duration1 are nifas",
-    "If bleeding stops before date1 (3 days), and is followed by a 15 day or more period of purity, then all of this will become istehaza.\n\n",
+    "If bleeding stops before date1 (3 days), and is followed by a 15 day or more period of purity, then all of this will become istehadha.\n\n",
     "If bleeding stops before date1 (3 days), then please ask again, as the masla will change.\n\n",
     "If bleeding continues after date1 (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
     "If bleeding continues after date1 (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
     "Can the purity during pregnancy be used as a habit in case of miscarriage of an unformed foetus?",
     "Differences of opinion",
-    "Can more days than habit become haiz at the end of daur?",
-    "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n" +
+    "Can more days than habit become haidh at the end of daur?",
+    "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haidh, and ibadaat performed in this time will become null and void.\n\n" +
             "If bleeding continues past date1, all ibadaat will remain valid.\n\n",
     "It is not correct for you to stop ibadaat when your bleeding starts. You should continue idadaat till date1, the start of your habit.\n\n" +
             "Your habit days are beginning from date1. If bleeding continues till then, then you should stop praying from date1.\n\n",
     "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
+    "Mubtadia",
+    "Mu'tada",
+    "Type of Masla"
 
 )
 
