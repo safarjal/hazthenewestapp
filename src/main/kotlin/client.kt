@@ -41,8 +41,6 @@ object Ids {
     object DurationRow {
         const val INPUT_DURATION = "input_duration"
         const val INPUT_TYPE_OF_DURATION = "input_duration_type"
-        const val DURATION_BUTTONS_CONTAINER = "duration_button_add_before_container"
-        const val DURATION_BUTTON_ADD_BEFORE = "duration_button_add_before"
     }
 
     object Ikhtilafat {
@@ -59,8 +57,6 @@ object Ids {
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
-//    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
-//    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
@@ -166,9 +162,8 @@ private val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPU
 private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
 private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
 private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
-private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.damOrTuhr get() = durationTypeInput.value
-private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
+private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
 private val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
     listOf(row.startTimeInput, row.endTimeInput)
@@ -268,9 +263,10 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-    setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
     languageChange()
-    invisPregnancy(clonedInputsContainer)
+    onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
+    onClickMaslaConfigurationSelectDropdown(clonedInputsContainer)
+    setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
@@ -1169,7 +1165,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795 \u25B2"
         title = "Add at Start"
-        id = if (duration) Ids.DurationRow.DURATION_BUTTON_ADD_BEFORE else Ids.Row.BUTTON_ADD_BEFORE
+        id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
             val inputContainer = findInputContainer(event)
             if (duration) {
@@ -1205,7 +1201,7 @@ private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false
 }
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
-    val currentTime = currentTimeString(inputContainer.isDateOnly)
+//    val currentTime = currentTimeString(inputContainer.isDateOnly)
     for (timeInputsGroup in inputContainer.timeInputsGroups) {
         for (timeInput in timeInputsGroup.asReversed()) {
 //            timeInput.max = currentTime
@@ -1364,7 +1360,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     else if(row.damOrTuhr == "haml"){DurationType.HAML}
                     else if(row.damOrTuhr == "wiladat"){DurationType.WILADAT_ISQAT}
                             else{DurationType.NIFAS},
-                    timeInMilliseconds = parseDays(row.duration.value)!!,
+                    timeInMilliseconds = parseDays(row.durationInput.value)!!,
                     startTime = arbitraryDate
                 ) }
             for (index in durations.indices){
