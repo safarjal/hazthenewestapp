@@ -941,7 +941,7 @@ private fun TR.addRemoveButtonsTableData() {
 private fun TR.addRemoveButtonsDurationData() {
     td {
         id = Ids.DurationRow.DURATION_BUTTONS_CONTAINER
-        durationAddButton()
+        addButton(true)
         removeButton(true)
     }
 }
@@ -1031,37 +1031,29 @@ private fun FlowContent.removeButton(duration: Boolean = false) {
     }
 }
 
-private fun FlowContent.addButton() {
+private fun FlowContent.addButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = "plus") {
         +"\u2795"
         title = "Add"
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
-            row.after {
-                inputRow(
-                    inputContainer.isDateOnly,
-                    minTimeInput = row.endTimeInput.run { value.takeUnless(String::isEmpty) ?: min },
-                    maxTimeInput = row.endTimeInput.max
-                )
+            if (duration) {
+                val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
+                row.after {
+                    durationInputRow(rowIsDam, false, inputContainer.isNifas)
+                }
+                setupFirstDurationRow(inputContainer)
+            } else {
+                row.after {
+                    inputRow(
+                        inputContainer.isDateOnly,
+                        minTimeInput = row.endTimeInput.run { value.takeUnless(String::isEmpty) ?: min },
+                        maxTimeInput = row.endTimeInput.max
+                    )
+                }
+                setupRows(inputContainer)
             }
-            setupRows(inputContainer)
-        }
-    }
-}
-
-private fun FlowContent.durationAddButton() {
-    button(type = ButtonType.button, classes = "plus") {
-        +"\u2795"
-        title = "Add"
-        onClickFunction = { event ->
-            val row = findRow(event)
-            val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
-            val inputContainer = findInputContainer(event)
-            row.after {
-                durationInputRow(rowIsDam, false, inputContainer.isNifas)
-            }
-            setupFirstDurationRow(inputContainer)
         }
     }
 }
