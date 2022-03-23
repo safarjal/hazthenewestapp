@@ -430,7 +430,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
-        questionInput(inputContainerToCopyFrom)
+        questionInput()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -741,7 +741,7 @@ private fun FlowContent.calculateButton() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+private fun TagConsumer<HTMLElement>.questionInput() {
     details {
         summary {
             span(classes = "urdu") { +"سوال" }
@@ -762,27 +762,34 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
 }
 
 private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFrom: HTMLElement?) {
+    val isDuration = inputContainerToCopyFrom?.isDuration ?: false
     table {
         id = Ids.HAIZ_INPUT_TABLE
+        classes = setOf( if (isDuration) "invisible" else "" )
         thead {
             tr {
-                th(classes = "english") { +StringsOfLanguages.ENGLISH.startTime }
-                th(classes = "english") { +StringsOfLanguages.ENGLISH.endTime }
-                th(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
-                th(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
-                th {addBeforeButton()}
+                th {
+                    span(classes = "english") { +StringsOfLanguages.ENGLISH.startTime }
+                    span(classes = "urdu") { +StringsOfLanguages.URDU.startTime }
+                }
+                th {
+                    span(classes = "english") { +StringsOfLanguages.ENGLISH.endTime }
+                    span(classes = "urdu") { +StringsOfLanguages.URDU.endTime }
+                }
+                th { addBeforeButton() }
             }
         }
         tbody {
             if (inputContainerToCopyFrom != null) {
                 for (inputDateRow in inputContainerToCopyFrom.haizInputDatesRows) {
-                    inputRow(inputContainerToCopyFrom, inputDateRow.startTimeInput, inputDateRow.endTimeInput)
+                    inputRow(inputContainerToCopyFrom, inputDateRow.startTimeInput, inputDateRow.endTimeInput, isDuration)
                 }
             } else {
                 inputRow(
                     isDateOnlyLayout = IS_DEFAULT_INPUT_MODE_DATE_ONLY,
                     minTimeInput = "",
-                    maxTimeInput = ""//currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+                    maxTimeInput = "", //currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+                    disable = isDuration
                 )
             }
         }
@@ -790,33 +797,45 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
 }
 
 private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
-    table(classes = "invisible") {
+    val isDuration = inputContainerToCopyFrom?.isDuration ?: false
+    table {
         id = Ids.HAIZ_DURATION_INPUT_TABLE
+        classes = setOf( if (!isDuration) "invisible" else "" )
         thead {
             tr {
-                th(classes = "english") { +StringsOfLanguages.ENGLISH.duration }
-                th(classes = "english") { +StringsOfLanguages.ENGLISH.damOrTuhr }
-                th(classes = "urdu") { +StringsOfLanguages.URDU.duration }
-                th(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
-                th {addBeforeButton(true)}
+                th {
+                    span(classes = "english") { +StringsOfLanguages.ENGLISH.duration }
+                    span(classes = "urdu") { +StringsOfLanguages.URDU.duration }
+                }
+                th {
+                    span(classes = "english") { +StringsOfLanguages.ENGLISH.damOrTuhr }
+                    span(classes = "urdu") { +StringsOfLanguages.URDU.damOrTuhr }
+                }
+                th { addBeforeButton(true) }
             }
         }
         tbody {
-            durationInputRow(false, true)
+            durationInputRow(false, !isDuration)
         }
     }
 }
 
-private fun TagConsumer<HTMLElement>.inputRow(isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String) {
+private fun TagConsumer<HTMLElement>.inputRow(
+    isDateOnlyLayout: Boolean,
+    minTimeInput: String,
+    maxTimeInput: String,
+    disable: Boolean = false) {
     tr {
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
                 id = Ids.Row.INPUT_START_TIME
+                disabled = disable
             }
         }
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
                 id = Ids.Row.INPUT_END_TIME
+                disabled = disable
             }
         }
         addRemoveButtonsTableData()
@@ -903,43 +922,38 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 }
             }
         }
-        addRemoveButtonsDurationData()
+        addRemoveButtonsTableData(true)
     }
 }
 
 private fun TagConsumer<HTMLElement>.inputRow(
     inputContainerToCopyFrom: HTMLElement,
     startTimeInputToCopyFrom: HTMLInputElement,
-    endTimeInputToCopyFrom: HTMLInputElement
+    endTimeInputToCopyFrom: HTMLInputElement,
+    disable: Boolean = false
 ) {
     tr {
         td {
             timeInput(inputContainerToCopyFrom, startTimeInputToCopyFrom, indexWithinRow = 0) {
                 id = Ids.Row.INPUT_START_TIME
+                disabled = disable
             }
         }
         td {
             timeInput(inputContainerToCopyFrom, endTimeInputToCopyFrom, indexWithinRow = 1) {
                 id = Ids.Row.INPUT_END_TIME
+                disabled = disable
             }
         }
         addRemoveButtonsTableData()
     }
 }
 
-private fun TR.addRemoveButtonsTableData() {
+private fun TR.addRemoveButtonsTableData(duration: Boolean = false) {
     td {
         id = Ids.Row.BUTTONS_CONTAINER
-        addButton()
-        removeButton(false)
-    }
-}
-
-private fun TR.addRemoveButtonsDurationData() {
-    td {
-        id = Ids.DurationRow.DURATION_BUTTONS_CONTAINER
-        addButton(true)
-        removeButton(true)
+        addButton(duration)
+        removeButton(duration)
     }
 }
 
@@ -1178,18 +1192,15 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
     if (isDateTime) {
         setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
-    switchTables(inputContainer)
+    switchToDurationTable(inputContainer)
 }
 
 private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
-//    val isMutada = inputContainer.isMutada
-//    val isMubtadia = inputContainer.isMubtadia
     invisPregnancy(inputContainer)
     disableAllAadaat(inputContainer)
 }
 
-private fun switchTables(inputContainer: HTMLElement) {
-    val isDuration = inputContainer.isDuration
+private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
     disableDateTable(inputContainer, isDuration)
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
@@ -1209,12 +1220,11 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
     disableUndurationAadaat(inputContainer, disable)
 }
 
-
-private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isMubtadia) {
-    inputContainer.getElementsByClassName("mutada")
+private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
+    inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
-            row.classList.toggle("mubtadia-invis", disable)
+            row.classList.toggle("duration-invis", disable)
             row.querySelectorAll("input")
                 .asList()
                 .map { input ->
@@ -1225,12 +1235,11 @@ private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inp
     invisPregnancy(inputContainer)
 }
 
-
-private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
-    inputContainer.getElementsByClassName("aadat_inputs")
+private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isMubtadia) {
+    inputContainer.getElementsByClassName("mutada")
         .asList()
         .forEach { row ->
-            row.classList.toggle("duration-invis", disable)
+            row.classList.toggle("mubtadia-invis", disable)
             row.querySelectorAll("input")
                 .asList()
                 .map { input ->
