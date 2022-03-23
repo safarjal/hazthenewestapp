@@ -154,7 +154,7 @@ val englishStrings = Strings(
     "Please enter a duration for Mawjooda Tuhr",
     "Please enter Nifas Habit to solve this. If this is a first baby, please enter 40.",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
-    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifaas, and understand the minutae of the information required to solve this.",
+    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifas, and understand the minutae of the information required to solve this.",
     "Type of input: ",
     "Duration",
     "Dam/Tuhr",
