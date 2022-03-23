@@ -60,8 +60,8 @@ object Ids {
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
-    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
-    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
+//    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
+//    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
@@ -531,12 +531,12 @@ private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFro
                 value = "nifas"
                 +"Nifas"
             }
-            option(classes = "english") {
+            option(classes = "english dev") {
                 selected = isMubtadia
                 value = "mubtadia"
                 +"Mubtadia"
             }
-            option(classes = "urdu") {
+            option(classes = "urdu dev") {
                 selected = isMubtadia
                 value = "mubtadia"
                 +"Mubtadia"
