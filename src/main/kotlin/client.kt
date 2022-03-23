@@ -934,7 +934,7 @@ private fun TR.addRemoveButtonsTableData() {
     td {
         id = Ids.Row.BUTTONS_CONTAINER
         addButton()
-        removeButton()
+        removeButton(false)
     }
 }
 
@@ -942,7 +942,7 @@ private fun TR.addRemoveButtonsDurationData() {
     td {
         id = Ids.DurationRow.DURATION_BUTTONS_CONTAINER
         durationAddButton()
-        durationRemoveButton()
+        removeButton(true)
     }
 }
 
@@ -1012,31 +1012,21 @@ private fun FlowContent.timeInput(
     }
 }
 
-private fun FlowContent.removeButton() {
+private fun FlowContent.removeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = "minus") {
         +"\u274C"
         title = "Remove"
-        id = Ids.Row.BUTTON_REMOVE
-        onClickFunction = { event ->
-            val row = findRow(event)
-            val inputContainer = findInputContainer(event)
-            updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer, row.rowIndexWithinTableBody)
-            row.remove()
-            setupFirstRow(inputContainer)
-        }
-    }
-}
-
-private fun FlowContent.durationRemoveButton() {
-    button(type = ButtonType.button, classes = "minus") {
-        +"\u274C"
-        title = "Remove"
-        id = Ids.DurationRow.DURATION_BUTTON_REMOVE
+        id = if (duration) Ids.DurationRow.DURATION_BUTTON_REMOVE else Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
             row.remove()
-            setupFirstDurationRow(inputContainer)
+            if (duration) {
+                setupFirstDurationRow(inputContainer)
+            } else {
+                updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer, row.rowIndexWithinTableBody)
+                setupFirstRow(inputContainer)
+            }
         }
     }
 }
