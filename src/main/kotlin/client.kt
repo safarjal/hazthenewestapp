@@ -42,7 +42,6 @@ object Ids {
         const val INPUT_DURATION = "input_duration"
         const val INPUT_TYPE_OF_DURATION = "input_duration_type"
         const val DURATION_BUTTONS_CONTAINER = "duration_button_add_before_container"
-        const val DURATION_BUTTON_REMOVE = "duration_button_remove"
         const val DURATION_BUTTON_ADD_BEFORE = "duration_button_add_before"
     }
 
@@ -168,7 +167,6 @@ private val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_
 private val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
 private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
-private val HTMLTableRowElement.removeDurationButton get() = getChildById(Ids.DurationRow.DURATION_BUTTON_REMOVE) as HTMLButtonElement
 private val HTMLTableRowElement.damOrTuhr get() = (getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement?)?.value
 private val HTMLTableRowElement.duration get() = (getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement)
 
@@ -271,7 +269,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-    setupFirstRow(clonedInputsContainer)
+    setupFirstRow(clonedInputsContainer, false)
     languageChange()
     invisPregnancy(clonedInputsContainer)
 }
@@ -1020,14 +1018,14 @@ private fun FlowContent.removeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = "minus") {
         +"\u274C"
         title = "Remove"
-        id = if (duration) Ids.DurationRow.DURATION_BUTTON_REMOVE else Ids.Row.BUTTON_REMOVE
+        id = Ids.Row.BUTTON_REMOVE
         onClickFunction = { event ->
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
-            row.remove()
             if (!duration) {
                 updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer, row.rowIndexWithinTableBody)
             }
+            row.remove()
             setupFirstRow(inputContainer, duration)
         }
     }
@@ -1089,19 +1087,13 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
 
 private fun setupRows(inputContainer: HTMLElement) {
     setMaxToCurrentTimeForTimeInputs(inputContainer)
-    setupFirstRow(inputContainer)
+    setupFirstRow(inputContainer, false)
 }
 
 private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
-    if (duration) {
-        val inputDatesRows = inputContainer.haizDurationInputDatesRows
-        inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
-        inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
-    } else {
-        val inputDatesRows = inputContainer.haizInputDatesRows
-        inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
-        inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
-    }
+    val inputDatesRows = if (duration) inputContainer.haizDurationInputDatesRows else inputContainer.haizInputDatesRows
+    inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
+    inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
