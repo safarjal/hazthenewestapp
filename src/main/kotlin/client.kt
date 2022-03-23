@@ -189,7 +189,7 @@ fun main() {
         if (root_hazapp.isNotEmpty() && askPassword()) {
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
-            setupFirstDurationRow(inputsContainers.first())
+            setupFirstRow(inputsContainers.first(), true)
             document.addEventListener(Events.VISIBILITY_CHANGE, {
                 if (!document.isHidden) {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
@@ -1012,6 +1012,10 @@ private fun FlowContent.timeInput(
     }
 }
 
+private fun findInputContainer(event: Event) =
+    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER)}!!
+private fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
+
 private fun FlowContent.removeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = "minus") {
         +"\u274C"
@@ -1021,12 +1025,10 @@ private fun FlowContent.removeButton(duration: Boolean = false) {
             val row = findRow(event)
             val inputContainer = findInputContainer(event)
             row.remove()
-            if (duration) {
-                setupFirstDurationRow(inputContainer)
-            } else {
+            if (!duration) {
                 updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer, row.rowIndexWithinTableBody)
-                setupFirstRow(inputContainer)
             }
+            setupFirstRow(inputContainer, duration)
         }
     }
 }
@@ -1043,7 +1045,7 @@ private fun FlowContent.addButton(duration: Boolean = false) {
                 row.after {
                     durationInputRow(rowIsDam, false, inputContainer.isNifas)
                 }
-                setupFirstDurationRow(inputContainer)
+                setupFirstRow(inputContainer, true)
             } else {
                 row.after {
                     inputRow(
@@ -1068,7 +1070,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
             if (duration) {
                 val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
                 inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas) }
-                setupFirstDurationRow(inputContainer)
+                setupFirstRow(inputContainer, true)
             } else {
                 val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
 
@@ -1085,30 +1087,21 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
     }
 }
 
-private fun findInputContainer(event: Event) =
-    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER)}!!
-private fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
-
 private fun setupRows(inputContainer: HTMLElement) {
     setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer)
 }
 
-//private fun setupFirstRow(inputContainer: HTMLElement) {
-//    ensureAddFirstButtonOnlyShownInFirstRow(inputContainer)
-//}
-
-//private fun updateRemoveButtonDisabledStateForFirstRow(inputContainer: HTMLElement) {
-private fun setupFirstRow(inputContainer: HTMLElement) {
-    val inputDatesRows = inputContainer.haizInputDatesRows
-    inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
-    inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
-}
-
-private fun setupFirstDurationRow(inputContainer: HTMLElement) {
-    val inputDatesRows = inputContainer.haizDurationInputDatesRows
-    inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
-    inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
+private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
+    if (duration) {
+        val inputDatesRows = inputContainer.haizDurationInputDatesRows
+        inputDatesRows.first().removeDurationButton.visibility = inputDatesRows.size != 1
+        inputDatesRows.getOrNull(1)?.removeDurationButton?.visibility = true
+    } else {
+        val inputDatesRows = inputContainer.haizInputDatesRows
+        inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
+        inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
+    }
 }
 
 private fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
