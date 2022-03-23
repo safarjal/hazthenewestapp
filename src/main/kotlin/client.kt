@@ -11,6 +11,7 @@ import org.w3c.dom.events.Event
 import kotlin.js.Date
 
 private const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
+private const val IS_DEFAULT_INPUT_MODE_MUTADA = true
 
 object Ids {
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
@@ -59,8 +60,8 @@ object Ids {
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
-    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
-    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
+//    const val PREGNANCY_CHECKBOX = "pregnancy_checkbox"
+//    const val MUBTADIA_CHECKBOX = "mubtadia_checkbox"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
@@ -70,6 +71,7 @@ object Ids {
     const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
     const val INPUT_TYPE_SELECT = "input_type_select"
+    const val MASLA_TYPE_SELECT = "masla_type_select"
     const val INPUT_QUESTION = "input_question"
     const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
@@ -100,7 +102,11 @@ private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) 
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "dateOnly"
 private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == "duration"
 
-private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
+private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == "mutada"
+private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == "nifas"
+private val HTMLElement.isMubtadia get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == "mubtadia"
+
+//private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -130,7 +136,7 @@ private var HTMLElement.haizDatesList: List<Entry>?
 private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id ->
     getChildById(id) as HTMLInputElement
 }
-private val HTMLElement.pregnancyElements get() = getElementsByClassName("preg-checked").asList()
+private val HTMLElement.pregnancyElements get() = getElementsByClassName("is-nifas").asList()
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
 private val devElements get() = document.getElementsByClassName("dev").asList()
@@ -208,13 +214,11 @@ fun askPassword():Boolean {
 
 fun handleLanguage() {
     languageSelecter.onchange = { languageChange() }
-    if (window.location.href.contains("lang=en")) {
-        languageSelecter.value = "english"
-    } else {
-        languageSelecter.value = "urdu"
-    }
+    if (window.location.href.contains("lang=en")) languageSelecter.value = "english"
+    else languageSelecter.value = "urdu"
     languageChange()
 }
+
 fun devMode() {
     for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
@@ -408,6 +412,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         br()
         div(classes = "label-input") {
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
+            maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
             aadatInputs(inputContainerToCopyFrom)
 //            mubtadiaCheckBox(inputContainerToCopyFrom)
 //            pregnancyCheckBox(inputContainerToCopyFrom)
@@ -434,7 +439,7 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
         htmlFor = inputId
         classes = setOfNotNull(
             "english",
-            if (preg) "preg-checked" else null,
+            if (preg) "is-nifas" else null,
             if (preg) "invisible" else null,
         )
         +englishText
@@ -443,7 +448,7 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
         htmlFor = inputId
         classes = setOfNotNull(
             "urdu",
-            if (preg) "preg-checked" else null,
+            if (preg) "is-nifas" else null,
             if (preg) "invisible" else null,
         )
         +urduText
@@ -495,8 +500,53 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
     }
 }
 
-private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
+private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
+    val isMutada = inputContainerToCopyFrom?.isMutada ?: IS_DEFAULT_INPUT_MODE_MUTADA
+    val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
+    val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     div(classes = "row") {
+        makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
+        select {
+            id = Ids.MASLA_TYPE_SELECT
+            onChangeFunction = { event ->
+                onClickMaslaConfigurationSelectDropdown(findInputContainer(event))
+            }
+            option(classes = "english") {
+                selected = isMutada
+                value = "muatada"
+                +"Mutada"
+            }
+            option(classes = "urdu") {
+                selected = isMutada
+                value = "dateOnly"
+                +"Mutada"
+            }
+            option(classes = "english") {
+                selected = isNifas
+                value = "nifas"
+                +"Nifas"
+            }
+            option(classes = "urdu") {
+                selected = isNifas
+                value = "nifas"
+                +"Nifas"
+            }
+            option(classes = "english dev") {
+                selected = isMubtadia
+                value = "mubtadia"
+                +"Mubtadia"
+            }
+            option(classes = "urdu dev") {
+                selected = isMubtadia
+                value = "mubtadia"
+                +"Mubtadia"
+            }
+        }
+    }
+}
+
+private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
+    div(classes = "row mutada") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
@@ -505,7 +555,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(3..10) }
         }
     }
-    div(classes = "row") {
+    div(classes = "row mutada") {
         makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_TUHR_INPUT
@@ -514,7 +564,7 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
     }
-    div(classes = "row aadat_inputs") {
+    div(classes = "row aadat_inputs mutada") {
         makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
         input(classes = "aadat") {
             id = Ids.MAWJOODA_TUHR_INPUT
@@ -533,20 +583,19 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    pregnancyCheckBox(inputContainerToCopyFrom)
-    div(classes = "row preg-checked invisible") {
+//    pregnancyCheckBox(inputContainerToCopyFrom)
+    div(classes = "row is-nifas invisible") {
         makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat, true)
         input {
             id = Ids.AADAT_NIFAS_INPUT
             name = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
-                "preg-checked",
+                "is-nifas",
                 "aadat",
-                if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
             )
             step = "any"
             required = false
-            disabled = inputContainerToCopyFrom?.isPregnancy != true
+            disabled = inputContainerToCopyFrom?.isNifas != true
             value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
         }
@@ -566,44 +615,36 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     })
 }
 
-private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row") {
-        div {
-            makeLabel(Ids.PREGNANCY_CHECKBOX, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
-            checkBoxInput {
-                id = Ids.PREGNANCY_CHECKBOX
-                name = Ids.PREGNANCY_CHECKBOX
-                checked = inputContainerToCopyFrom?.isPregnancy == true
-                onChangeFunction = { event ->
-//                    val isChecked = (event.currentTarget as HTMLInputElement).checked
-                    val inputContainer = findInputContainer(event)
-//                    for (pregnancyElement in inputContainer.pregnancyInputs) {
-//                        pregnancyElement.visibility = isChecked
-//                        pregnancyElement.disabled = !isChecked
-//                    }
-//                    for (pregnancyElement in inputContainer.pregnancyElements) {
-//                            pregnancyElement.visibility = isChecked
-//                    }
-                    invisPregnancy(inputContainer)
-                    if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
-                }
-            }
-        }
-    }
-}
+//private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
+//    div(classes = "row") {
+//        div {
+//            makeLabel(Ids.PREGNANCY_CHECKBOX, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
+//            checkBoxInput {
+//                id = Ids.PREGNANCY_CHECKBOX
+//                name = Ids.PREGNANCY_CHECKBOX
+//                checked = inputContainerToCopyFrom?.isNifas == true
+//                onChangeFunction = { event ->
+//                    val inputContainer = findInputContainer(event)
+//                    invisPregnancy(inputContainer)
+//                    if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
+//                }
+//            }
+//        }
+//    }
+//}
 
 fun invisPregnancy(inputContainer: HTMLElement) {
     for (pregnancyElement in inputContainer.pregnancyInputs) {
-        pregnancyElement.visibility = inputContainer.isPregnancy
-        pregnancyElement.disabled = !inputContainer.isPregnancy
+        pregnancyElement.visibility = inputContainer.isNifas
+        pregnancyElement.disabled = !inputContainer.isNifas
     }
     for (pregnancyElement in inputContainer.pregnancyElements) {
-        pregnancyElement.visibility = inputContainer.isPregnancy
+        pregnancyElement.visibility = inputContainer.isNifas
     }
 }
 
 private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible") {
+    div(classes = "row is-nifas invisible") {
         div {
             makeLabel(Ids.MUSTABEEN_CHECKBOX,
                 StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
@@ -612,27 +653,25 @@ private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?
                 id = Ids.MUSTABEEN_CHECKBOX
                 name = Ids.MUSTABEEN_CHECKBOX
                 classes = setOfNotNull(
-                    "preg-checked",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                    "is-nifas",
                 )
                 checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
                 checked = inputContainerToCopyFrom?.mustabeen != false
-                disabled = inputContainerToCopyFrom?.isPregnancy != true
+                disabled = inputContainerToCopyFrom?.isNifas != true
             }
         }
     }
 }
 
 private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible aadat_inputs") {
-        div(classes = "row preg-checked invisible aadat_inputs") {
+    div(classes = "row is-nifas invisible aadat_inputs") {
+        div(classes = "row is-nifas aadat_inputs") {
             makeLabel(Ids.PREG_START_TIME_INPUT,
                 StringsOfLanguages.ENGLISH.pregnancyStartTime,
                 StringsOfLanguages.URDU.pregnancyStartTime, true)
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
-                    "preg-checked",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                    "is-nifas",
                 )
                 id = Ids.PREG_START_TIME_INPUT
                 name = Ids.PREG_START_TIME_INPUT
@@ -645,13 +684,12 @@ private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLEl
 }
 
 private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row preg-checked invisible aadat_inputs") {
-        div(classes = "row preg-checked invisible aadat_inputs") {
+    div(classes = "row is-nifas invisible aadat_inputs") {
+        div(classes = "row is-nifas aadat_inputs") {
             makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
-                    "preg-checked",
-                    if (inputContainerToCopyFrom?.isPregnancy != true) "invisible" else null
+                    "is-nifas",
                 )
                 id = Ids.PREG_END_TIME_INPUT
                 name = Ids.PREG_END_TIME_INPUT
@@ -666,7 +704,7 @@ private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElem
 private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
     if (inputContainerToCopyFrom != null) {
         timeInput(inputContainerToCopyFrom) {
-            disabled = !inputContainerToCopyFrom.isPregnancy
+            disabled = !inputContainerToCopyFrom.isNifas
             block()
         }
     } else {
@@ -842,16 +880,16 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 option {
                     classes = setOfNotNull(
                         "english",
-                        "preg-checked",
+                        "is-nifas",
                         if (!preg) "invisible" else null,
                     )
                     value = "haml"
                     + StringsOfLanguages.ENGLISH.preg
                 }
-                option(classes = "english preg-checked invisible") {
+                option(classes = "english is-nifas invisible") {
                     classes = setOfNotNull(
                         "english",
-                        "preg-checked",
+                        "is-nifas",
                         if (!preg) "invisible" else null,
                     )
                     value = "wiladat"
@@ -870,7 +908,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 option {
                     classes = setOfNotNull(
                         "urdu",
-                        "preg-checked",
+                        "is-nifas",
                         if (!preg) "invisible" else null,
                     )
                     value = "haml"
@@ -879,7 +917,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 option {
                     classes = setOfNotNull(
                         "urdu",
-                        "preg-checked",
+                        "is-nifas",
                         if (!preg) "invisible" else null,
                     )
                     value = "wiladat"
@@ -1050,7 +1088,7 @@ private fun FlowContent.durationAddButton() {
             val rowIsDam = row.damOrTuhr in setOf("dam", "haml")
             val inputContainer = findInputContainer(event)
             row.after {
-                durationInputRow(rowIsDam, false, inputContainer.isPregnancy)
+                durationInputRow(rowIsDam, false, inputContainer.isNifas)
             }
             setupFirstDurationRow(inputContainer)
         }
@@ -1067,7 +1105,7 @@ private fun TagConsumer<HTMLElement>.durationAddBeforeButton() {
             val inputDatesRows = inputContainer.haizDurationInputDatesRows
             val firstIsDam = inputDatesRows.first().damOrTuhr in setOf("dam", "wiladat")
 
-            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isPregnancy) }
+            inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas) }
             setupFirstDurationRow(inputContainer)
         }
     }
@@ -1233,6 +1271,13 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
     }
 }
 
+private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
+//    val isMutada = inputContainer.isMutada
+//    val isMubtadia = inputContainer.isMubtadia
+    invisPregnancy(inputContainer)
+    disableAllAadaat(inputContainer)
+}
+
 private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
     for (timeInput in inputContainer.timeInputsGroups) {
         for (input in timeInput) {
@@ -1244,10 +1289,27 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean) {
             input.asDynamic().disabled = !disable
         }
     }
-    disableAadaat(inputContainer, disable)
+    disableUndurationAadaat(inputContainer, disable)
 }
 
-private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
+
+private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isMubtadia) {
+    inputContainer.getElementsByClassName("mutada")
+        .asList()
+        .forEach { row ->
+            row.classList.toggle("mubtadia-invis", disable)
+            row.querySelectorAll("input")
+                .asList()
+                .map { input ->
+                    input as HTMLInputElement
+                    input.disabled = disable
+                }
+        }
+    invisPregnancy(inputContainer)
+}
+
+
+private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
     inputContainer.getElementsByClassName("aadat_inputs")
         .asList()
         .forEach { row ->
@@ -1259,13 +1321,7 @@ private fun disableAadaat(inputContainer: HTMLElement, disable: Boolean = inputC
                     input.disabled = disable
                 }
         }
-    if (!inputContainer.isPregnancy) {
-        for (pregnancyElement in inputContainer.pregnancyInputs) {
-            pregnancyElement.visibility = false
-            pregnancyElement.disabled = true
-
-        }
-    }
+    invisPregnancy(inputContainer)
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
@@ -1273,7 +1329,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
 
     with(inputContainer) {
         var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
-        var pregnancyIs = isPregnancy
+        var pregnancyIs = isNifas
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
 
