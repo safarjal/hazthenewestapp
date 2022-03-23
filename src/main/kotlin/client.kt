@@ -182,17 +182,19 @@ private val HTMLElement.haizDurationInputs get() = haizDurationInputDatesRows.fl
 private val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
 private val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)
 
+// START PROGRAM
+
 fun main() {
     window.onload = {
         if (root_hazapp.isNotEmpty() && askPassword()) {
-                document.body!!.addInputLayout()
-                setupRows(inputsContainers.first())
-                setupFirstDurationRow(inputsContainers.first())
-                document.addEventListener(Events.VISIBILITY_CHANGE, {
-                    if (!document.isHidden) {
-                        setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-                    }
-                })
+            document.body!!.addInputLayout()
+            setupRows(inputsContainers.first())
+            setupFirstDurationRow(inputsContainers.first())
+            document.addEventListener(Events.VISIBILITY_CHANGE, {
+                if (!document.isHidden) {
+                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+                }
+            })
         } else {
             mainOtherCalcs()
         }
@@ -212,15 +214,15 @@ fun askPassword():Boolean {
     else return askPassword()
 }
 
+fun devMode() {
+    for (element in devElements) element.visibility = window.location.href.contains("dev")
+}
+
 fun handleLanguage() {
     languageSelecter.onchange = { languageChange() }
     if (window.location.href.contains("lang=en")) languageSelecter.value = "english"
     else languageSelecter.value = "urdu"
     languageChange()
-}
-
-fun devMode() {
-    for (element in devElements) element.visibility = window.location.href.contains("dev")
 }
 
 fun languageChange() {
@@ -240,6 +242,8 @@ fun languageChange() {
                 ?.selected = true
         }
 }
+
+// CLONING
 
 fun Node.addInputLayout() {
     append {
@@ -351,6 +355,8 @@ private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTT
     }
 }
 
+// ANSWER
+
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = "invisible") {
         id = Ids.CONTENT_CONTAINER
@@ -405,20 +411,18 @@ private fun copyText(event: Event) {
     }, 1000)
 }
 
+// MAIN PROGRAM DRAWN HERE
+
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
         autoComplete = false
         ikhtilafiMasle()
         br()
         div(classes = "label-input") {
-            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
-            aadatInputs(inputContainerToCopyFrom)
-//            mubtadiaCheckBox(inputContainerToCopyFrom)
-//            pregnancyCheckBox(inputContainerToCopyFrom)
-            mustabeenCheckBox(inputContainerToCopyFrom)
-            pregnancyStartTimeInput(inputContainerToCopyFrom)
-            pregnancyEndTimeInput(inputContainerToCopyFrom)
+            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
+            nifasInputs(inputContainerToCopyFrom)
+            mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
         questionInput(inputContainerToCopyFrom)
@@ -427,10 +431,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         haizDurationInputTable(inputContainerToCopyFrom)
         calculateButton()
         hr()
-        onSubmitFunction = { event ->
-            println("submit")
-            parseEntries(findInputContainer(event))
-        }
+        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
     }
 }
 
@@ -455,46 +456,29 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
     }
 }
 
-private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
-    val isDateTime = inputContainerToCopyFrom?.isDateTime ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
-    val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
-    val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
+private fun FlowContent.ikhtilafiMasle() {
+    div {
+        details {
+            summary(classes = "ikhtilaf")
+            b {
+                span(classes = "english") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
+                span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
+            }
+            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
+            div(classes = "invisible"){isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)}
+        }
+    }
+}
+
+private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
     div(classes = "row") {
-        makeLabel(Ids.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
-        select {
-            id = Ids.INPUT_TYPE_SELECT
-            onChangeFunction = { event ->
-                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
-            }
-            option(classes = "english") {
-                selected = isDateOnly
-                value = "dateOnly"
-                +StringsOfLanguages.ENGLISH.dateOnly
-            }
-            option(classes = "urdu") {
-                selected = isDateOnly
-                value = "dateOnly"
-                +StringsOfLanguages.URDU.dateOnly
-            }
-            option(classes = "english") {
-                selected = isDateTime
-                value = "dateTime"
-                +StringsOfLanguages.ENGLISH.dateAndTime
-            }
-            option(classes = "urdu") {
-                selected = isDateTime
-                value = "dateTime"
-                +StringsOfLanguages.URDU.dateAndTime
-            }
-            option(classes = "english") {
-                selected = isDuration
-                value = "duration"
-                +StringsOfLanguages.ENGLISH.duration
-            }
-            option(classes = "urdu") {
-                selected = isDuration
-                value = "duration"
-                +StringsOfLanguages.URDU.duration
+        div {
+            makeLabel(inputId, englishText, urduText)
+            label(classes = "switch") {
+                checkBoxInput {
+                    id = inputId
+                }
+                span(classes = "slider round")
             }
         }
     }
@@ -545,7 +529,149 @@ private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFro
     }
 }
 
-private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
+private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
+    val isDateTime = inputContainerToCopyFrom?.isDateTime ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
+    val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
+    val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
+    div(classes = "row") {
+        makeLabel(Ids.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
+        select {
+            id = Ids.INPUT_TYPE_SELECT
+            onChangeFunction = { event ->
+                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
+            }
+            option(classes = "english") {
+                selected = isDateOnly
+                value = "dateOnly"
+                +StringsOfLanguages.ENGLISH.dateOnly
+            }
+            option(classes = "urdu") {
+                selected = isDateOnly
+                value = "dateOnly"
+                +StringsOfLanguages.URDU.dateOnly
+            }
+            option(classes = "english") {
+                selected = isDateTime
+                value = "dateTime"
+                +StringsOfLanguages.ENGLISH.dateAndTime
+            }
+            option(classes = "urdu") {
+                selected = isDateTime
+                value = "dateTime"
+                +StringsOfLanguages.URDU.dateAndTime
+            }
+            option(classes = "english") {
+                selected = isDuration
+                value = "duration"
+                +StringsOfLanguages.ENGLISH.duration
+            }
+            option(classes = "urdu") {
+                selected = isDuration
+                value = "duration"
+                +StringsOfLanguages.URDU.duration
+            }
+        }
+    }
+}
+
+private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
+    div(classes = "row is-nifas invisible aadat_inputs") {
+        div(classes = "row is-nifas aadat_inputs") {
+            makeLabel(Ids.PREG_START_TIME_INPUT,
+                StringsOfLanguages.ENGLISH.pregnancyStartTime,
+                StringsOfLanguages.URDU.pregnancyStartTime, true)
+            pregnancyTimeInput(inputContainerToCopyFrom) {
+                classes = setOfNotNull(
+                    "is-nifas",
+                )
+                id = Ids.PREG_START_TIME_INPUT
+                name = Ids.PREG_START_TIME_INPUT
+                onChangeFunction = { event ->
+                    findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
+                }
+            }
+        }
+    }
+
+    div(classes = "row is-nifas invisible aadat_inputs") {
+        div(classes = "row is-nifas aadat_inputs") {
+            makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
+            pregnancyTimeInput(inputContainerToCopyFrom) {
+                classes = setOfNotNull(
+                    "is-nifas",
+                )
+                id = Ids.PREG_END_TIME_INPUT
+                name = Ids.PREG_END_TIME_INPUT
+                onChangeFunction = { event ->
+                    findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
+                }
+            }
+        }
+    }
+
+    div(classes = "row is-nifas invisible") {
+        div {
+            makeLabel(Ids.MUSTABEEN_CHECKBOX,
+                StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
+                StringsOfLanguages.URDU.mustabeenUlKhilqa, true)
+            checkBoxInput {
+                id = Ids.MUSTABEEN_CHECKBOX
+                name = Ids.MUSTABEEN_CHECKBOX
+                classes = setOfNotNull(
+                    "is-nifas",
+                )
+                checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
+                checked = inputContainerToCopyFrom?.mustabeen != false
+                disabled = inputContainerToCopyFrom?.isNifas != true
+            }
+        }
+    }
+
+    div(classes = "row is-nifas invisible") {
+        makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat, true)
+        input {
+            id = Ids.AADAT_NIFAS_INPUT
+            name = Ids.AADAT_NIFAS_INPUT
+            classes = setOfNotNull(
+                "is-nifas",
+                "aadat",
+            )
+            step = "any"
+            required = false
+            disabled = inputContainerToCopyFrom?.isNifas != true
+            value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
+            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
+        }
+    }
+
+}
+
+private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
+    if (inputContainerToCopyFrom != null) {
+        timeInput(inputContainerToCopyFrom) {
+            disabled = !inputContainerToCopyFrom.isNifas
+            block()
+        }
+    } else {
+        timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
+            disabled = true
+//            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
+            block()
+        }
+    }
+}
+
+private fun invisPregnancy(inputContainer: HTMLElement) {
+    for (pregnancyElement in inputContainer.pregnancyInputs) {
+        pregnancyElement.visibility = inputContainer.isNifas
+        pregnancyElement.disabled = !inputContainer.isNifas
+    }
+    for (pregnancyElement in inputContainer.pregnancyElements) {
+        pregnancyElement.visibility = inputContainer.isNifas
+    }
+}
+
+private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row mutada") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input(classes = "aadat") {
@@ -584,22 +710,6 @@ private fun FlowContent.aadatInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
 //    pregnancyCheckBox(inputContainerToCopyFrom)
-    div(classes = "row is-nifas invisible") {
-        makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat, true)
-        input {
-            id = Ids.AADAT_NIFAS_INPUT
-            name = Ids.AADAT_NIFAS_INPUT
-            classes = setOfNotNull(
-                "is-nifas",
-                "aadat",
-            )
-            step = "any"
-            required = false
-            disabled = inputContainerToCopyFrom?.isNifas != true
-            value = inputContainerToCopyFrom?.aadatNifas?.value.orEmpty()
-            onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
-        }
-    }
 }
 
 fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
@@ -613,135 +723,6 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     } catch (e: IllegalArgumentException) {
         e.message ?: errormessage
     })
-}
-
-//private fun FlowContent.pregnancyCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-//    div(classes = "row") {
-//        div {
-//            makeLabel(Ids.PREGNANCY_CHECKBOX, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
-//            checkBoxInput {
-//                id = Ids.PREGNANCY_CHECKBOX
-//                name = Ids.PREGNANCY_CHECKBOX
-//                checked = inputContainerToCopyFrom?.isNifas == true
-//                onChangeFunction = { event ->
-//                    val inputContainer = findInputContainer(event)
-//                    invisPregnancy(inputContainer)
-//                    if (inputContainer.isDuration) disableAadaat(inputContainer, inputContainer.isDuration)
-//                }
-//            }
-//        }
-//    }
-//}
-
-fun invisPregnancy(inputContainer: HTMLElement) {
-    for (pregnancyElement in inputContainer.pregnancyInputs) {
-        pregnancyElement.visibility = inputContainer.isNifas
-        pregnancyElement.disabled = !inputContainer.isNifas
-    }
-    for (pregnancyElement in inputContainer.pregnancyElements) {
-        pregnancyElement.visibility = inputContainer.isNifas
-    }
-}
-
-private fun FlowContent.mustabeenCheckBox(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row is-nifas invisible") {
-        div {
-            makeLabel(Ids.MUSTABEEN_CHECKBOX,
-                StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
-                StringsOfLanguages.URDU.mustabeenUlKhilqa, true)
-            checkBoxInput {
-                id = Ids.MUSTABEEN_CHECKBOX
-                name = Ids.MUSTABEEN_CHECKBOX
-                classes = setOfNotNull(
-                    "is-nifas",
-                )
-                checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
-                checked = inputContainerToCopyFrom?.mustabeen != false
-                disabled = inputContainerToCopyFrom?.isNifas != true
-            }
-        }
-    }
-}
-
-private fun FlowContent.pregnancyStartTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row is-nifas invisible aadat_inputs") {
-        div(classes = "row is-nifas aadat_inputs") {
-            makeLabel(Ids.PREG_START_TIME_INPUT,
-                StringsOfLanguages.ENGLISH.pregnancyStartTime,
-                StringsOfLanguages.URDU.pregnancyStartTime, true)
-            pregnancyTimeInput(inputContainerToCopyFrom) {
-                classes = setOfNotNull(
-                    "is-nifas",
-                )
-                id = Ids.PREG_START_TIME_INPUT
-                name = Ids.PREG_START_TIME_INPUT
-                onChangeFunction = { event ->
-                    findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
-                }
-            }
-        }
-    }
-}
-
-private fun FlowContent.pregnancyEndTimeInput(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row is-nifas invisible aadat_inputs") {
-        div(classes = "row is-nifas aadat_inputs") {
-            makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
-            pregnancyTimeInput(inputContainerToCopyFrom) {
-                classes = setOfNotNull(
-                    "is-nifas",
-                )
-                id = Ids.PREG_END_TIME_INPUT
-                name = Ids.PREG_END_TIME_INPUT
-                onChangeFunction = { event ->
-                    findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
-                }
-            }
-        }
-    }
-}
-
-private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
-    if (inputContainerToCopyFrom != null) {
-        timeInput(inputContainerToCopyFrom) {
-            disabled = !inputContainerToCopyFrom.isNifas
-            block()
-        }
-    } else {
-        timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-            disabled = true
-//            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
-            block()
-        }
-    }
-}
-
-private fun FlowContent.ikhtilafiMasle() {
-    div {
-        details {
-            summary(classes = "ikhtilaf")
-            b {
-                span(classes = "english") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
-                span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
-            }
-            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
-            div(classes = "invisible"){isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)}
-        }
-    }
-}
-
-private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
-    div(classes = "row") {
-        div {
-            makeLabel(inputId, englishText, urduText)
-            label(classes = "switch") {
-                checkBoxInput {
-                    id = inputId
-                }
-                span(classes = "slider round")
-            }
-        }
-    }
 }
 
 private fun FlowContent.calculateButton() {
