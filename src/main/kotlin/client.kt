@@ -662,16 +662,6 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
     }
 }
 
-private fun invisPregnancy(inputContainer: HTMLElement) {
-    for (pregnancyElement in inputContainer.pregnancyInputs) {
-        pregnancyElement.visibility = inputContainer.isNifas
-        pregnancyElement.disabled = !inputContainer.isNifas
-    }
-    for (pregnancyElement in inputContainer.pregnancyElements) {
-        pregnancyElement.visibility = inputContainer.isNifas
-    }
-}
-
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row mutada") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
@@ -1288,6 +1278,16 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
 private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
     invisPregnancy(inputContainer)
     disableAllAadaat(inputContainer)
+}
+
+private fun invisPregnancy(inputContainer: HTMLElement) {
+    for (pregnancyElement in inputContainer.pregnancyInputs) {
+        pregnancyElement.visibility = inputContainer.isNifas
+        pregnancyElement.disabled = !inputContainer.isNifas
+    }
+    for (pregnancyElement in inputContainer.pregnancyElements) {
+        pregnancyElement.visibility = inputContainer.isNifas
+    }
 }
 
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
