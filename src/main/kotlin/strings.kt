@@ -175,7 +175,7 @@ val englishStrings = Strings(
     "If bleeding stops before date1 (3 days), then please ask again, as the masla will change.\n\n",
     "If bleeding continues after date1 (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
     "If bleeding continues after date1 (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
-    "Is tuhr during pregnancy to be considered habit in an unformed miscarriage?",
+    "Can the purity during pregnancy be used as a habit in case of miscarriage of an unformed foetus?",
     "Differences of opinion",
     "Can more days than habit become haiz at the end of daur?",
     "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haiz, and ibadaat performed in this time will become null and void.\n\n" +
