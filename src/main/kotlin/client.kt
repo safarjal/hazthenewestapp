@@ -411,6 +411,14 @@ private fun copyText(event: Event) {
     }, 1000)
 }
 
+private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
+    p {
+        id = "content"
+        style = "white-space: pre-wrap;"
+        block()
+    }
+}
+
 // MAIN PROGRAM DRAWN HERE
 
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
@@ -733,14 +741,6 @@ private fun FlowContent.calculateButton() {
     button(classes = "urdu calc-btn") {
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
-    }
-}
-
-private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
-    p {
-        id = "content"
-        style = "white-space: pre-wrap;"
-        block()
     }
 }
 
