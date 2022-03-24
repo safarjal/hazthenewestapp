@@ -514,7 +514,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
             }
             makeDropdownOptions(isMutada, "mutada", StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, "nifas", StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
-            makeDropdownOptions(isMubtadia, "mubtadia", StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia)
+            makeDropdownOptions(isMubtadia, "mubtadia", StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
         }
     }
 }
