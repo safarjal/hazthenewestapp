@@ -116,10 +116,10 @@ private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH)
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 
-private val HTMLElement.inputsContainerCloneButton get() =
-    getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
-private val HTMLElement.inputsContainerRemoveButton get() =
-    getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
+private val HTMLElement.questionText get() = (getChildById(Ids.INPUT_QUESTION) as HTMLTextAreaElement)
+
+private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
+private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -423,7 +423,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
-        questionInput()
+        questionInput(inputContainerToCopyFrom)
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -684,18 +684,18 @@ private fun FlowContent.calculateButton() {
     }
 }
 
-private fun TagConsumer<HTMLElement>.questionInput() {
+private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
     details {
         summary {
             span(classes = "urdu") { +"سوال" }
             span(classes = "english lang-invisible") { +"Question" }
         }
-//        makeLabel(Ids.INPUT_QUESTION, "Question", "سوال")
         div(classes = "row") {
             textArea {
                 id = Ids.INPUT_QUESTION
                 onInputFunction = { event ->
                     val txtarea = event.currentTarget as HTMLTextAreaElement
+                    txtarea.dir = "auto"
                     txtarea.style.height = "auto"
                     txtarea.style.height = "${txtarea.scrollHeight + 6}px"
                 }
@@ -1262,7 +1262,8 @@ private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inp
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
-    var entries= listOf<Entry>()
+    val question = inputContainer.questionText.value
+    var entries = listOf<Entry>()
 
     with(inputContainer) {
         var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
@@ -1273,7 +1274,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
 
         if(isDuration){
             //take arbitrary date
-            val arbitraryDate= Date(0,0,0)
+            val arbitraryDate = Date(0,0,0)
             val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
                     type = when (row.damOrTuhr) {
@@ -1287,16 +1288,16 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     startTime = arbitraryDate
                 ) }
             for (index in durations.indices){
-                if(index>0){
+                if(index > 0){
                     durations[index].startTime = durations[index-1].endDate
                 }
             }
-            if(durations[0].type==DurationType.TUHR){mawjodahtuhreditable=durations[0].timeInMilliseconds}
+            if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
             println(durations)
             for(dur in durations){
                 when (dur.type) {
                     DurationType.DAM -> {
-                        entries+=Entry(dur.startTime, dur.endDate)
+                        entries += Entry(dur.startTime, dur.endDate)
                     }
                     DurationType.HAML -> {
                         pregnancyIs=true
@@ -1339,8 +1340,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf2
         )
         contentContainer.visibility = true
-        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
-        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
+        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar("${question}\n\n***\n${output.englishText}")
+        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar("${question}\n\n***\n${output.urduText}")
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
