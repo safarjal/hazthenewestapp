@@ -18,13 +18,13 @@ object Ids {
     const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
     object AddTimeToDate {
-        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
+//        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
         const val DATE_TO_ADD_TO = "date_to_add_to"
         const val TIME_TO_ADD = "time_to_add"
         const val OUTOUT_FIELD = "add_time_date_output"
     }
     object CalcDuration {
-        const val IS_DATE_ONLY = "get_duration_is_date_only"
+//        const val IS_DATE_ONLY = "get_duration_is_date_only"
         const val STRT_DATE = "start_date"
         const val END_DATE = "end_date"
         const val OUTPUT_FIELD = "calc_duration_output"
@@ -87,8 +87,8 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
-private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
-private val languageSelecterValue get() = (document.getElementById("language") as HTMLSelectElement).value
+private val languageSelector get() = document.getElementById("language") as HTMLSelectElement
+private val languageSelectorValue get() = languageSelector.value
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
@@ -200,10 +200,7 @@ fun askPassword():Boolean {
     val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
-    if (pass1 == password) {
-        return true
-    }
-    else return askPassword()
+    return if (pass1 == password) true else askPassword()
 }
 
 fun devMode() {
@@ -211,16 +208,16 @@ fun devMode() {
 }
 
 fun handleLanguage() {
-    languageSelecter.onchange = { languageChange() }
-    if (window.location.href.contains("lang=en")) languageSelecter.value = "english"
-    else languageSelecter.value = "urdu"
+    languageSelector.onchange = { languageChange() }
+    if (window.location.href.contains("lang=en")) languageSelector.value = "english"
+    else languageSelector.value = "urdu"
     languageChange()
 }
 
 fun languageChange() {
-    for (element in englishElements) element.classList.toggle("lang-invisible", languageSelecterValue == "urdu")
-    for (element in urduElements) element.classList.toggle("lang-invisible", languageSelecterValue == "english")
-    document.body!!.classList.toggle("rtl", languageSelecterValue == "urdu")
+    for (element in englishElements) element.classList.toggle("lang-invisible", languageSelectorValue == "urdu")
+    for (element in urduElements) element.classList.toggle("lang-invisible", languageSelectorValue == "english")
+    document.body!!.classList.toggle("rtl", languageSelectorValue == "urdu")
     document.querySelectorAll("select")
         .asList()
         .map { it as HTMLSelectElement }
@@ -229,13 +226,11 @@ fun languageChange() {
                 .asList()
                 .map { it as HTMLOptionElement }
                 .firstOrNull { option ->
-                    option.value == select.value && option.classList.contains(languageSelecterValue)
+                    option.value == select.value && option.classList.contains(languageSelectorValue)
                 }
                 ?.selected = true
         }
 }
-
-// CLONING
 
 fun Node.addInputLayout() {
     append {
@@ -248,6 +243,8 @@ fun Node.addInputLayout() {
         }
     }
 }
+
+// CLONING
 
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
@@ -392,7 +389,7 @@ private fun TagConsumer<HTMLElement>.content() {
 }
 
 private fun copyText(event: Event) {
-    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id.equals("content_wrapper") }
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
     val para = div?.querySelector("p")
     val small = div?.querySelector("small")
     para?.textContent?.let { window.navigator.clipboard.writeText(it) }
@@ -457,21 +454,7 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
     }
 }
 
-private fun FlowContent.ikhtilafiMasle() {
-    div {
-        details {
-            summary(classes = "ikhtilaf")
-            b {
-                span(classes = "english") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
-                span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
-            }
-            isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
-            div(classes = "invisible"){isIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)}
-        }
-    }
-}
-
-private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
+private fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduText: String) {
     div(classes = "row") {
         div {
             makeLabel(inputId, englishText, urduText)
@@ -485,7 +468,40 @@ private fun FlowContent.isIkhtilafiMasla(inputId: String, englishText: String, u
     }
 }
 
-private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
+private fun FlowContent.ikhtilafiMasle() {
+    div {
+        details {
+            summary(classes = "ikhtilaf")
+            b {
+                span(classes = "english") { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
+                span(classes = "urdu") { +StringsOfLanguages.URDU.ikhtilafimasail }
+            }
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf, StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
+            div(classes = "invisible"){makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf, StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf)}
+        }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.makeDropdownOptions(
+    isSelected: Boolean,
+    optionVal: String,
+    englishText: String,
+    urduText: String,
+    extraClasses: String = ""
+) {
+    option(classes = "english $extraClasses") {
+        selected = isSelected
+        value = optionVal
+        +englishText
+    }
+    option(classes = "urdu $extraClasses") {
+        selected = isSelected
+        value = optionVal
+        +urduText
+    }
+}
+
+private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
     val isMutada = inputContainerToCopyFrom?.isMutada ?: IS_DEFAULT_INPUT_MODE_MUTADA
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
@@ -496,41 +512,14 @@ private fun FlowContent.maslaConfigurationSelectDropdown(inputContainerToCopyFro
             onChangeFunction = { event ->
                 onClickMaslaConfigurationSelectDropdown(findInputContainer(event))
             }
-            option(classes = "english") {
-                selected = isMutada
-                value = "muatada"
-                +StringsOfLanguages.ENGLISH.mutada
-            }
-            option(classes = "urdu") {
-                selected = isMutada
-                value = "muatada"
-                +StringsOfLanguages.URDU.mutada
-            }
-            option(classes = "english") {
-                selected = isNifas
-                value = "nifas"
-                +StringsOfLanguages.ENGLISH.nifas
-            }
-            option(classes = "urdu") {
-                selected = isNifas
-                value = "nifas"
-                +StringsOfLanguages.URDU.nifas
-            }
-            option(classes = "english dev") {
-                selected = isMubtadia
-                value = "mubtadia"
-                +StringsOfLanguages.ENGLISH.mubtadia
-            }
-            option(classes = "urdu dev") {
-                selected = isMubtadia
-                value = "mubtadia"
-                +StringsOfLanguages.URDU.mubtadia
-            }
+            makeDropdownOptions(isMutada, "mutada", StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
+            makeDropdownOptions(isNifas, "nifas", StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
+            makeDropdownOptions(isMubtadia, "mubtadia", StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia)
         }
     }
 }
 
-private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
+private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
     val isDateTime = inputContainerToCopyFrom?.isDateTime ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
@@ -541,36 +530,9 @@ private fun FlowContent.typeConfigurationSelectDropdown(inputContainerToCopyFrom
             onChangeFunction = { event ->
                 onClickTypeConfigurationSelectDropdown(findInputContainer(event))
             }
-            option(classes = "english") {
-                selected = isDateOnly
-                value = "dateOnly"
-                +StringsOfLanguages.ENGLISH.dateOnly
-            }
-            option(classes = "urdu") {
-                selected = isDateOnly
-                value = "dateOnly"
-                +StringsOfLanguages.URDU.dateOnly
-            }
-            option(classes = "english") {
-                selected = isDateTime
-                value = "dateTime"
-                +StringsOfLanguages.ENGLISH.dateAndTime
-            }
-            option(classes = "urdu") {
-                selected = isDateTime
-                value = "dateTime"
-                +StringsOfLanguages.URDU.dateAndTime
-            }
-            option(classes = "english") {
-                selected = isDuration
-                value = "duration"
-                +StringsOfLanguages.ENGLISH.duration
-            }
-            option(classes = "urdu") {
-                selected = isDuration
-                value = "duration"
-                +StringsOfLanguages.URDU.duration
-            }
+            makeDropdownOptions(isDateOnly, "dateOnly", StringsOfLanguages.ENGLISH.dateOnly, StringsOfLanguages.URDU.dateOnly)
+            makeDropdownOptions(isDateTime, "dateTime", StringsOfLanguages.ENGLISH.dateAndTime, StringsOfLanguages.URDU.dateAndTime)
+            makeDropdownOptions(isDuration, "duration", StringsOfLanguages.ENGLISH.duration, StringsOfLanguages.URDU.duration)
         }
     }
 }
@@ -593,7 +555,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-
     div(classes = "row is-nifas invisible aadat_inputs") {
         div(classes = "row is-nifas aadat_inputs") {
             makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
@@ -609,7 +570,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-
     div(classes = "row is-nifas invisible") {
         div {
             makeLabel(Ids.MUSTABEEN_CHECKBOX,
@@ -621,13 +581,11 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
                 classes = setOfNotNull(
                     "is-nifas",
                 )
-                checked = inputContainerToCopyFrom == null || inputContainerToCopyFrom.mustabeen
                 checked = inputContainerToCopyFrom?.mustabeen != false
                 disabled = inputContainerToCopyFrom?.isNifas != true
             }
         }
     }
-
     div(classes = "row is-nifas invisible") {
         makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat, true)
         input {
@@ -644,7 +602,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(1..40) }
         }
     }
-
 }
 
 private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, block: INPUT.() -> Unit = {}) {
@@ -704,7 +661,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelecterValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if(languageSelectorValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
@@ -835,65 +792,26 @@ private fun TagConsumer<HTMLElement>.copyDurationInputRow(aadat: String, selecte
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
-                    row.durationInput.value = "0"
-                    row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                    val pregOpts = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                    row.durationInput.value = if (pregOpts) "0" else row.durationInput.value
+                    row.durationInput.disabled = pregOpts
                 }
-                option(classes = "english") {
-                    value = "dam"
-                    selected = selectedOption == value
-                    +StringsOfLanguages.ENGLISH.dam
-                }
-                option(classes = "english") {
-                    value = "tuhr"
-                    selected = selectedOption == value
-                    +StringsOfLanguages.ENGLISH.tuhr
-                }
-                option {
-                    classes = setOfNotNull(
-                        "english",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "haml"
-                    +StringsOfLanguages.ENGLISH.preg
-                }
-                option(classes = "english is-nifas invisible") {
-                    classes = setOfNotNull(
-                        "english",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "wiladat"
-                    +StringsOfLanguages.ENGLISH.birthduration
-                }
-                option(classes = "urdu") {
-                    value = "dam"
-                    selected = selectedOption == value
-                    +StringsOfLanguages.URDU.dam
-                }
-                option(classes = "urdu") {
-                    value = "tuhr"
-                    selected = selectedOption == value
-                    +StringsOfLanguages.URDU.tuhr
-                }
-                option {
-                    classes = setOfNotNull(
-                        "urdu",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "haml"
-                    +StringsOfLanguages.URDU.pregduration
-                }
-                option {
-                    classes = setOfNotNull(
-                        "urdu",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "wiladat"
-                    +StringsOfLanguages.URDU.birthduration
-                }
+                makeDropdownOptions((selectedOption == "dam"), "dam", StringsOfLanguages.ENGLISH.dam, StringsOfLanguages.URDU.dam)
+                makeDropdownOptions((selectedOption == "tuhr"), "tuhr", StringsOfLanguages.ENGLISH.tuhr, StringsOfLanguages.URDU.tuhr)
+                makeDropdownOptions(
+                    (selectedOption == "haml"),
+                    "haml",
+                    StringsOfLanguages.ENGLISH.preg,
+                    StringsOfLanguages.URDU.preg,
+                    "is-nifas ${if (!preg) "invisible" else null}"
+                )
+                makeDropdownOptions(
+                    (selectedOption == "wiladat"),
+                    "wiladat",
+                    StringsOfLanguages.ENGLISH.birthduration,
+                    StringsOfLanguages.URDU.birthduration,
+                    "is-nifas ${if (!preg) "invisible" else null}"
+                )
             }
         }
         addRemoveButtonsTableData(true)
@@ -923,7 +841,7 @@ private fun TagConsumer<HTMLElement>.inputRow(
 }
 
 private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
-    val urdu = languageSelecterValue == "urdu"
+    val urdu = languageSelectorValue == "urdu"
     tr {
         td {
             input {
@@ -941,7 +859,10 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 disabled = disable
                 onChangeFunction = { event ->
                     val row = findRow(event)
-                    row.durationInput.value = "0"
+                    val pregOct = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
+                    println("preg")
+                    println(pregOct)
+                    row.durationInput.value = if (pregOct) "0" else row.durationInput.value
                     row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                 }
                 option(classes = "english") {
@@ -1353,13 +1274,15 @@ private fun parseEntries(inputContainer: HTMLElement) {
         if(isDuration){
             //take arbitrary date
             val arbitraryDate= Date(0,0,0)
-            var durations = haizDurationInputDatesRows.map { row ->
+            val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
-                    type = if(row.damOrTuhr == "dam"){DurationType.DAM}
-                    else if(row.damOrTuhr == "tuhr"){DurationType.TUHR}
-                    else if(row.damOrTuhr == "haml"){DurationType.HAML}
-                    else if(row.damOrTuhr == "wiladat"){DurationType.WILADAT_ISQAT}
-                            else{DurationType.NIFAS},
+                    type = when (row.damOrTuhr) {
+                        "dam" -> {DurationType.DAM}
+                        "tuhr" -> {DurationType.TUHR}
+                        "haml" -> {DurationType.HAML}
+                        "wiladat" -> {DurationType.WILADAT_ISQAT}
+                        else -> {DurationType.NIFAS}
+                    },
                     timeInMilliseconds = parseDays(row.durationInput.value)!!,
                     startTime = arbitraryDate
                 ) }
@@ -1371,13 +1294,17 @@ private fun parseEntries(inputContainer: HTMLElement) {
             if(durations[0].type==DurationType.TUHR){mawjodahtuhreditable=durations[0].timeInMilliseconds}
             println(durations)
             for(dur in durations){
-                if(dur.type==DurationType.DAM){
-                    entries+=Entry(dur.startTime, dur.endDate)
-                }else if(dur.type==DurationType.HAML){
-                    pregnancyIs=true
-                    pregnancyStrt=dur.startTime
-                }else if(dur.type==DurationType.WILADAT_ISQAT){
-                    pregnancyEnd=dur.startTime
+                when (dur.type) {
+                    DurationType.DAM -> {
+                        entries+=Entry(dur.startTime, dur.endDate)
+                    }
+                    DurationType.HAML -> {
+                        pregnancyIs=true
+                        pregnancyStrt=dur.startTime
+                    }
+                    DurationType.WILADAT_ISQAT -> {
+                        pregnancyEnd=dur.startTime
+                    }
                 }
             }
         }else{
@@ -1406,20 +1333,14 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             ),
             false,
-            languageSelecterValue,
+            languageSelectorValue,
             isDuration,
             ikhtilaf1,
             ikhtilaf2
         )
         contentContainer.visibility = true
-//        if (languageSelecterValue == "english") {
-            contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
-//            contentElement.classList.toggle("rtl", false)
-//        } else {
-            contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
-//            contentElement.classList.toggle("rtl", true)
-//        }
-//        contentDatesElement.innerHTML = output.haizDatesText
+        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
+        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
