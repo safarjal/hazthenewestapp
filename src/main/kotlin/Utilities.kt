@@ -283,9 +283,9 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
 }
  fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT
-     val dateStr = (date.toUTCString()).dropLast(18).drop(5)
+     var dateStr = (date.toUTCString()).dropLast(18).drop(5)
      if(dateStr.startsWith("0")){
-         dateStr.trimStart()
+         dateStr=dateStr.drop(1)
      }
      var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
      val minutesStr = (date.toUTCString()).dropLast(7).drop(20)
@@ -297,19 +297,15 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
      if(hours == 0){
          hours = 12
      }
-     val hoursStr:String = if(hours<10){
-         "0${hours}"
-     }else{
-         hours.toString()
-     }
+     val hoursStr:String = hours.toString()
 
 
      return if(isDateOnly){
          dateStr
          //05 Jun 2021
      }else{
-         //05 Jun 2021 06:21
-         "$hoursStr:$minutesStr $ampm, on $dateStr"
+         //13 Dec at 7:30pm
+         "$dateStr at $hoursStr:$minutesStr $ampm"
      }
  }
 fun difference(date1:Date,date2:Date):Long{
