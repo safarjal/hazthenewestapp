@@ -1,6 +1,6 @@
 
 val urduStrings = Strings(
-    "${UnicodeChars.ROSE} <b>جواب ::</b>\n\n",
+    "${UnicodeChars.ROSE} <b>جواب:</b>\n\n",
     "اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "مبتداہ کو اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n",
@@ -17,14 +17,14 @@ val urduStrings = Strings(
     "اگر خون date1 سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا date1 کو بھی غسل کر لیجیے۔\n\n",
     "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\nاگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي date1 سے پہلے صحبت کي اجازت نہيں۔\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>date1 تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت:: حیض: duration1، طہر: duration2</b>\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: حیض: duration1، طہر: duration2</b>\n\n",
     "date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
     "${UnicodeChars.YELLOW_CIRCLE} date1 تا date2 کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
     "date1 تا date2 کل duration1 نفاس کے ہیں۔\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 تا date2 کل duration1 نفاس کے ہیں۔\n\n",
     "\n\ndate1 سے date2 تک کل duration1 خون۔\n\n",
-    "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل ::</b>\n\n",
+    "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل :</b>\n\n",
     "${UnicodeChars.BLACK_SQUARE} اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔\n\n",
     "${UnicodeChars.BLACK_SQUARE} date1 کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n",
     "\n\ndate1 سے date2 تک کل duration1 خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
@@ -96,42 +96,57 @@ val urduStrings = Strings(
 
 )
 val englishStrings = Strings(
-    "${UnicodeChars.ROSE}<b>Answer::</b>\n\n",
+    "${UnicodeChars.ROSE}<b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
-    "\"The bleeding and purity (tuh’r) has been in the following sequence for the menstruation beginner:\\n\\n\"",
-    "Kindly keep noting down your bleeding/spotting with time, date and month.\n\n",
+    "\"The bleeding and purity (tuh’r) has been in the following " +
+            "sequence for the menstruation beginner:\\n\\n\"",
+    "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\n",
-    "You are in the days of your purity (tuh’r) right now, so keep up your ritual worship as usual.\n\n",
-    "You are in the days of your period right now, so, if bleeding continues you cannot do any of your ritual worship.\n\n",
-    "In case this bleeding continues without gap, or, it continues with gaps less than 15 days at a stretch, then <b>kindly do contact us again on date1 as the current ruling may change accordingly.</b>\n\n",
+    "You are in the days of your purity (tuh’r) right now, so keep up your ritual " +
+            "worship as usual.\n\n",
+    "You are in the days of your period right now, so, if bleeding continues you" +
+            " cannot do any of your ritual worship.\n\n",
+    "In case this bleeding continues without gap, or, it continues with gaps " +
+            "less than 15 days at a stretch, then <b>kindly do contact us again on date1 as " +
+            "the current ruling may change accordingly.</b>\n\n",
     "If bleeding continues till date1, then you must <b>do ghusl on date1 and begin ibadaat.</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence before pregnancy:\n\n",
     "\nPregnancy\n",
     "\n<b>Date of delivery: date1</b>\n",
     "\n<b>The bleeding and purity (tuh’r) has been in the following sequence after delivery:</b>\n",
     "\n<b>Miscarriage of an undeveloped fetus confirmed on date1</b>\n",
-    "If the bleeding stops before date1 then take ghusl immediately and start saying your prayers but take ghusl on date1 too to be on the safe side.\n\n\n",
-    "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the bleeding stops and you perform ghusl and resume namaz, intimacy with husband remains prohibited till date1.\n\n",
-    "In case this bleeding continues without gap, or, it continues with gaps less than 15 days at a stretch, then <b>till date1 are the days of your definitive purity.</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit:: Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
+    "If the bleeding stops before date1 then take ghusl immediately and start saying" +
+            " your prayers but take ghusl on date1 too to be on the safe side.\n\n\n",
+    "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if " +
+            "the bleeding stops and she performs ghusl and resumes salah, intimacy with husband " +
+            "remains prohibited till date1.\n\n",
+    "In case this bleeding continues without complete 15 days of purity, " +
+            "then <b>until date1, are certainly the days of purity (tuhr)</b>\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
     "date1 to date2, a total of duration1 of period.\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of period.\n\n",
-    "${UnicodeChars.YELLOW_CIRCLE} date1 to date2, a total of duration1 of definitive purity (istihaadha).\n\n",
+    "${UnicodeChars.YELLOW_CIRCLE} date1 to date2, a total of duration1 of definitive" +
+            " purity (istihaadha).\n\n",
     "date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
     "\n\ndate1 to date2, a total of duration1 of blood.\n\n",
-    "${UnicodeChars.RAINBOW} <b>Solution::</b>\n\n",
-    "${UnicodeChars.BLACK_SQUARE} All salahs left in these days due to blood are to be made qadha of.\n\n",
-    "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on date1 then the salahs after that were valid, if not, then the salahs before your next ghusl have to be made qadha of.\n\n",
-    "\n\nduration1 of continued bleeding from date1 to date2 (since you haven’t had 15 or more blood-free days at a stretch in there)\n\n",
-    "duration1 of Purity (Tuh’r)\n\n",
-    "duration1 of Invalid Purity (Tuh’r Faasid)\n\n",
-    "duration1 of istihaadha + duration2 of purity (tuh’r) = duration3 of Invalid Purity (Tuh’r Faasid).\n\n",
-    "duration1 of Purity (Tuhr). (Since purity (tuh’r) is of more than 6 months, therefore 60 days shall be taken as habit of Purity (Tuh’r)\n\n",
+    "${UnicodeChars.RAINBOW} <b>Solution:</b>\n\n",
+    "${UnicodeChars.BLACK_SQUARE} Salah left in these days due to blood are to be" +
+            " made qadha of.\n\n",
+    "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on date1 then the salah after " +
+            "that were valid, if not, then the salah before your next ghusl have to be made qadha of.\n\n",
+    "\n\nduration1 of continued bleeding from date1 to date2 (since you haven’t had 15 " +
+            "or more blood-free days at a stretch in there)\n\n",
+    "duration1 of purity (tuh’r)\n\n",
+    "duration1 of invalid purity (tuh'r-e-faasid)\n\n",
+    "duration1 of istihaadha + duration2 of purity (tuh’r) = duration3 of invalid" +
+            " purity (tuh'r-e-faasid).\n\n",
+    "duration1 of purity (tuhr). (Since purity (tuh’r) is of more than 6 months, " +
+            "therefore 60 days shall be taken as habit of purity (tuh’r)\n\n",
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
-    "From now on, she is a Mutadah\n\n",
-    "Till now, there is no habit of Haidh or Purity (Tuh'r)\n\n",
-    "duration1 is the habit of Haidh. There is no habit of Purity (Tuh'r) yet.\n\n",
+    "From now on, she is a mutadah\n\n",
+    "Till now, there is no habit of haidh or purity (tuh'r)\n\n",
+    "duration1 is the habit of haidh. There is no habit of purity (tuh'r) yet.\n\n",
     "Select Language",
     "Date only",
     "Date and Time",
@@ -140,7 +155,7 @@ val englishStrings = Strings(
     "Habit in Haidh",
     "Habit in Purity (Tuh'r)",
     "Current Purity (Tuh'r)",
-    "Invalid Purity (Tuh'r Faasid)",
+    "Invalid Purity (Tuh'r e Fasid)",
     "Habit in Nifas",
     "Pregnancy Start Time",
     "Birth/Miscarriage Time",
@@ -150,11 +165,13 @@ val englishStrings = Strings(
     "Habit is incorrect",
     "Nifas",
     "Mustabeen ul Khilqat",
-    "Please enter aadaat of Haiz and Purity (Tuh'r) to solve this",
+    "Please enter habit of haidh and purity (tuh'r) to solve this",
     "Please enter a duration for Current Purity",
     "Please enter Nifas Habit to solve this. If this is a first baby, please enter 40.",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
-    "Attention!! This app is only for use by Ulema and Aalimaat who are Experts in solving the Masail of Haidh and Nifas, and understand the minutae of the information required to solve this.",
+    "Attention!! This app is only for use by Ulema and Aalimaat " +
+            "who are experts in solving the masail of haidh and nifas, and understand the " +
+            "minutae of the information required to solve this.",
     "Type of input: ",
     "Duration",
     "Dam/Purity",
@@ -162,7 +179,7 @@ val englishStrings = Strings(
     "Purity",
     "duration1 dam\n\n",
     "duration1 purity (tuh'r)\n\n",
-    "duraion1 invalid purity (tuhr-e-faasid)\n\n",
+    "duraion1 invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 of istehadha + duration2 of purity (tuh'r) = duration3 of invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 haidh\n\n",
     "duration1 nifas\n\n",
@@ -174,17 +191,26 @@ val englishStrings = Strings(
     "birth\n\n",
     "pregnancy\n\n",
     "The first duration1 are nifas",
-    "If bleeding stops before date1 (3 days), and is followed by a 15 day or more period of purity, then all of this will become istehadha.\n\n",
-    "If bleeding stops before date1 (3 days), then please ask again, as the masla will change.\n\n",
-    "If bleeding continues after date1 (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
-    "If bleeding continues after date1 (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
-    "Can the purity during pregnancy be used as a habit in case of miscarriage of an unformed foetus?",
+    "If bleeding stops before date1 (3 days), and is followed by a 15 day" +
+            " or more period of purity, then all of this will become istehadha.\n\n",
+    "If bleeding stops before date1 (3 days), then please ask again, " +
+            "as the masla will change.\n\n",
+    "If bleeding continues after date1 (40 days), or stops, but starts again with gaps " +
+            "of less than 15 days, then please ask the masla again.\n\n",
+    "If bleeding continues after date1 (10 days), or stops, but starts again " +
+            "with gaps of less than 15 days, then please ask the masla again.\n\n",
+    "Can the purity during pregnancy be used as a habit in case" +
+            " of miscarriage of an unformed foetus?",
     "Differences of opinion",
     "Can more days than habit become haidh at the end of daur?",
-    "If bleeding stopped at or before date1, and there was an interval of at 15 days of complete purity after it, all of this will become haidh, and ibadaat performed in this time will become null and void.\n\n" +
+    "If bleeding stopped at or before date1, and there was an" +
+            " interval of at 15 days of complete purity after it, all of this will become haidh, and " +
+            "ibadaat performed in this time will become null and void.\n\n" +
             "If bleeding continues past date1, all ibadaat will remain valid.\n\n",
-    "It is not correct for you to stop ibadaat when bleeding starts. You should continue idadaat till date1, the start of your habit.\n\n" +
-            "Your habit days are beginning from date1. If bleeding continues till then, then you should stop praying from date1.\n\n",
+    "It is not correct for you to stop ibadaat when bleeding starts. You should " +
+            "continue idadaat till date1, the start of your habit.\n\n" +
+            "Your habit days are beginning from date1. If bleeding continues till then, then you " +
+            "should stop praying from date1.\n\n",
     "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadia",
     "Mu'tada",
