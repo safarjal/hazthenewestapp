@@ -244,6 +244,9 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 //        strMinutes = "0${minutes}";
 //    }
     var returnStatement = "${strDays} ${strHours} ${strMinutes}"
+    if (strDays=="" && strHours == "" && strMinutes == ""){
+        returnStatement = "0 منٹ"
+    }
 //    println(returnStatement)
     if(isDateOnly){
         returnStatement = strDays
@@ -264,14 +267,53 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
 
     var strHours = hours.toString()
     var strMinutes = minutes.toString()
-    val strDays = days.toString()
-    if(hours<10){
-        strHours = "0${hours}"
+    var strDays = days.toString()
+    if (days==1.0){
+        strDays += " day"
+    }else if(days == 0.0){
+        strDays = ""
+    }else{
+        strDays += " days"
     }
-    if(minutes<10){
-        strMinutes = "0${minutes}"
+    if (hours == 1.0){
+        strHours += " hour"
+    }else if (hours == 0.0){
+        strHours = ""
+    }else{
+        strHours += " hours"
     }
-    var returnStatement = "${strDays}d:${strHours}h:${strMinutes}m"
+    if (minutes == 1.0){
+        strMinutes += " minute"
+    }else if (minutes == 0.0){
+        strMinutes = ""
+    }else{
+        strMinutes += " minutes"
+    }
+
+    var returnStatement = ""
+    if(strDays != ""&& strHours != "" && strMinutes!= "" ){
+        returnStatement = "${strDays}, ${strHours} and ${strMinutes}"
+    }else if(strDays!="" && strHours !=""){
+        returnStatement = "$strDays and $strHours"
+    }else if(strDays!="" && strMinutes != ""){
+        returnStatement = "$strDays and $strMinutes"
+    }else if(strHours!="" && strMinutes !=""){
+        returnStatement = "$strHours and $strMinutes"
+    }else if(strDays!=""){
+        returnStatement = strDays
+    }else if(strHours!=""){
+        returnStatement=strHours
+    }else if(strMinutes!=""){
+        returnStatement=strMinutes
+    }else if(strDays=="" && strHours == "" && strMinutes==""){
+        returnStatement = "0 minutes"
+    }else{
+        returnStatement = "error!!!"
+    }
+
+
+
+
     if(isDateOnly){
         if(days==1.0){
             returnStatement = "1 day"
