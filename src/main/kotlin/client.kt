@@ -399,6 +399,7 @@ private fun copyText(event: Event) {
     }else if(languageSelectorValue=="english"){
         dateStr += englishDateFormat(Date(Date.now()),true)
     }
+    dateStr+= " ${Date(Date.now()).getFullYear()}"
     val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
     val small = div?.querySelector("small")
     copyTxt.let { window.navigator.clipboard.writeText(it) }
