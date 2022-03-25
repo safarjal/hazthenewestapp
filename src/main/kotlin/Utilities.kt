@@ -318,7 +318,7 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
         if(days==1.0){
             returnStatement = "1 day"
         }else{
-            returnStatement = "$strDays days"
+            returnStatement = strDays
         }
     }
     return(returnStatement)
