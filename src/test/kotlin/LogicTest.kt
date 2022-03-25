@@ -2043,6 +2043,25 @@ class LogicTest {
         assertEquals(expectedOutput, parseDays(str))
     }
     @Test
+    fun parseDaysTest1(){
+        val str = "17:17"
+        val expectedOutput:Long = 1530000000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun parseDaysTest2(){
+        val str = "17"
+        val expectedOutput:Long = 1468800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun parseDaysTest3(){
+        val str = "17:17:30:9"
+        val expectedOutput:Long? = 1531800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+
+    @Test
     fun BugMaslaDescribedInIssue130() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
