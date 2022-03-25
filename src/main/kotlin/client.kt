@@ -393,7 +393,13 @@ private fun copyText(event: Event) {
     val questionTxt = findInputContainer(event).questionText.value
     val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
     val answerTxt = div?.querySelector("p")?.textContent
-    val copyTxt = "*${parseDays(Date.now().toString())}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
+    var dateStr = ""
+    if (languageSelectorValue=="urdu"){
+        dateStr += urduDateFormat(Date(Date.now()),true)
+    }else if(languageSelectorValue=="english"){
+        dateStr += englishDateFormat(Date(Date.now()),true)
+    }
+    val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
     val small = div?.querySelector("small")
     copyTxt.let { window.navigator.clipboard.writeText(it) }
     small?.innerHTML?.let { small.innerHTML = " Copied " }
