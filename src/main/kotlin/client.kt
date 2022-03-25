@@ -1316,7 +1316,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
             }
 
         }
-        println(entries)
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
             entries,

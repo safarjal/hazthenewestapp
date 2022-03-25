@@ -2006,8 +2006,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
-        println(entries[0].startTime)
-        println(entries[0].endTime)
         val output = handleEntries(
             entries,
             6*MILLISECONDS_IN_A_DAY,
@@ -2020,7 +2018,6 @@ class LogicTest {
             , isMubtadia = false,
             language = "urdu")
         val haizDateList = output.hazDatesList
-        println("got here")
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2039,6 +2036,48 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+    @Test
+    fun parseDaysTest(){
+        val str = "17:17:30"
+        val expectedOutput:Long = 1531800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun BugMaslaDescribedInIssue130() {
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
+        val output = handleEntries(
+            entries,
+            parseDays("7:20:30"),
+            parseDays("17:17:30"), parseDays("37:5:30"),true,
+            isDateOnly = false,
+            isPregnancy = false,
+            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
+                40*MILLISECONDS_IN_A_DAY,
+                mustabeenUlKhilqat = true)
+            , isMubtadia = false,
+            language = "urdu")
+        val haizDateList = output.hazDatesList
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("7:20:30")!!, parseDays("17:17:30")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,2, 30, 3,0), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+
 
     @Test
     fun calculateEndTime(){
