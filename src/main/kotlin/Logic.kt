@@ -21,7 +21,6 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
     val isIztirariAadatRealIkhtilaf = true
     val isTuhrInHamlAadatInGhairMustabeenIkhtilaf = ghairMustabeenIkhtilaf
 
-
     firstStartTime = entries[0].startTime
     val times = entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
