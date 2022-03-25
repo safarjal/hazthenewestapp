@@ -100,7 +100,7 @@ val englishStrings = Strings(
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
     "\"The bleeding and purity (tuh’r) has been in the following sequence for the menstruation beginner:\\n\\n\"",
     "Kindly keep noting down your bleeding/spotting with time, date and month.\n\n",
-    "<b>And Allah Ta’ala knows the best.</b>\n\n",
+    "<b>And Allah Ta’ala knows best.</b>\n\n",
     "You are in the days of your purity (tuh’r) right now, so keep up your ritual worship as usual.\n\n",
     "You are in the days of your period right now, so, if bleeding continues you cannot do any of your ritual worship.\n\n",
     "In case this bleeding continues without gap, or, it continues with gaps less than 15 days at a stretch, then <b>kindly do contact us again on date1 as the current ruling may change accordingly.</b>\n\n",
