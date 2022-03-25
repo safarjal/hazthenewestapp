@@ -353,7 +353,7 @@ private fun TagConsumer<HTMLElement>.content() {
         div(classes = "urdu") {
             id = "content_wrapper"
             div(classes = "left") {
-                small(classes = "rtl") { }
+                small(classes = "rtl")
                 button(classes = "rtl") {
                     onClickFunction = { event -> copyText(event) }
                     +"Copy ⎙"
@@ -390,15 +390,14 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
-    val para = div?.querySelector("p")
+    val questionTxt = findInputContainer(event).questionText.value
+    val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
+    val answerTxt = div?.querySelector("p")?.textContent
+    val copyTxt = "*${parseDays(Date.now().toString())}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
     val small = div?.querySelector("small")
-    para?.textContent?.let { window.navigator.clipboard.writeText(it) }
-    small?.innerHTML?.let { small.innerHTML = " Copied! " }
-    window.setTimeout({
-        if (small != null) {
-            small.innerHTML = ""
-        }
-    }, 1000)
+    copyTxt.let { window.navigator.clipboard.writeText(it) }
+    small?.innerHTML?.let { small.innerHTML = " Copied " }
+    window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
 }
 
 private fun TagConsumer<HTMLElement>.content(block : P.() -> Unit = {}) {
@@ -1262,7 +1261,6 @@ private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inp
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
-    val question = inputContainer.questionText.value
     var entries = listOf<Entry>()
 
     with(inputContainer) {
@@ -1270,7 +1268,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         var pregnancyIs = isNifas
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
-
+        var mubtadiaIs = isMubtadia
 
         if(isDuration){
             //take arbitrary date
@@ -1333,15 +1331,15 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 parseDays(aadatNifas.value),
                 mustabeen
             ),
-            false,
+            mubtadiaIs,
             languageSelectorValue,
             isDuration,
             ikhtilaf1,
             ikhtilaf2
         )
         contentContainer.visibility = true
-        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar("${question}\n\n***\n${output.englishText}")
-        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar("${question}\n\n***\n${output.urduText}")
+        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar("${output.englishText}")
+        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar("${output.urduText}")
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()

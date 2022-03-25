@@ -33,7 +33,7 @@ object UnicodeChars {
     const val FAT_DASH = "&#x2796;"
     const val ROSE = "&#128221;"                    // MEMO
     const val RAINBOW = "&#9997;&#65039;"           // HAND_WRITING
-
+    const val BLUE_SWIRL = "&#127744;"
 }
 
 object Styles {
