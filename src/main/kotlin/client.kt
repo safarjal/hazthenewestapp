@@ -626,7 +626,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 }
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row mutada") {
+    div(classes = "row") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input(classes = "aadat") {
             id = Ids.AADAT_HAIZ_INPUT
@@ -644,7 +644,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
     }
-    div(classes = "row aadat_inputs mutada") {
+    div(classes = "row aadat_inputs") {
         makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
         input(classes = "aadat") {
             id = Ids.MAWJOODA_TUHR_INPUT
