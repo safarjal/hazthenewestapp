@@ -157,7 +157,9 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizLi
     var i = 0
     while (i<fixedDurations.size){
         //iterate through the dimaa
-        if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10){
+        if(fixedDurations[i].type==DurationType.DAM &&
+            fixedDurations[i].days<=10 &&
+            fixedDurations[i].days>=3){
             //we have a haiz aadat!
             aadatHaz = fixedDurations[i].timeInMilliseconds
             adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
@@ -1613,6 +1615,14 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 }
 
             }
+        }else{//blood is less than 10 and adat of haiz doesn't exists
+            if(fixedDurations.last().type == DurationType.DAM_MUBTADIA){
+                val after10Days = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
+                futureDatesList+=FutureDateType(after10Days, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            }else{//mutadah or nifas
+                val after10Days = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
+                futureDatesList+=FutureDateType(after10Days, TypesOfFutureDates.AFTER_TEN_DAYS)
+            }
         }
     }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
         val lastDuration=fixedDurations.last().biggerThanForty!!.durationsList.last()
@@ -1745,10 +1755,15 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
     }else if(fixedDurations.last().days<=10 &&
         (fixedDurations.last().type==DurationType.DAM||fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
         //this portion is done
-        val aadatHaiz = fixedDurations.last().timeInMilliseconds
+        var aadatHaiz:Long
+        if(fixedDurations.last().timeInMilliseconds>=3*MILLISECONDS_IN_A_DAY){
+            aadatHaiz=fixedDurations.last().timeInMilliseconds
+        }else{
+            aadatHaiz=adatsOfHaizList.last().aadat
+        }
         var aadatTuhr:Long
         if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
-            aadatTuhr=-1
+            aadatTuhr=-1L
             return AadatsOfHaizAndTuhr(aadatHaiz,aadatTuhr)
         }
         return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
