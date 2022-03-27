@@ -126,20 +126,20 @@ val englishStrings = Strings(
     "date1 to date2, a total of duration1 of period.\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of period.\n\n",
     "${UnicodeChars.YELLOW_CIRCLE} date1 to date2, a total of duration1 of definitive" +
-            " purity (istihaadha).\n\n",
+            " purity (istihadha).\n\n",
     "date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
     "\n\ndate1 to date2, a total of duration1 of blood.\n\n",
     "${UnicodeChars.RAINBOW} <b>Solution:</b>\n\n",
-    "${UnicodeChars.BLACK_SQUARE} Salah left in these days due to blood are to be" +
-            " made qadha of.\n\n",
-    "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on date1 then the salah after " +
-            "that were valid, if not, then the salah before your next ghusl have to be made qadha of.\n\n",
+    "${UnicodeChars.BLACK_SQUARE} If you left any salah thinking of it as haidh and it turned " +
+            "out to be istihadha, then make qada of them.\n\n",
+    "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on date1, salah after " +
+            "it are all valid. If you didn't, then make qada of all the salah until you took ghusl.\n\n",
     "\n\nduration1 of continued bleeding from date1 to date2 (since you haven’t had 15 " +
             "or more blood-free days at a stretch in there)\n\n",
     "duration1 of purity (tuh’r)\n\n",
     "duration1 of invalid purity (tuh'r-e-faasid)\n\n",
-    "duration1 of istihaadha + duration2 of purity (tuh’r) = duration3 of invalid" +
+    "duration1 of istihadha + duration2 of purity (tuh’r) = duration3 of invalid" +
             " purity (tuh'r-e-faasid).\n\n",
     "duration1 of purity (tuhr). (Since purity (tuh’r) is of more than 6 months, " +
             "therefore 60 days shall be taken as habit of purity (tuh’r)\n\n",
