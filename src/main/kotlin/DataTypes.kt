@@ -191,6 +191,7 @@ enum class DurationType {
     TUHR,
     TUHREFAASID,
     TUHR_IN_HAML,
+    TUHREFAASID_IN_HAML,
     NIFAS,
     DAM_IN_HAML,
     DAM_IN_NIFAS_PERIOD,

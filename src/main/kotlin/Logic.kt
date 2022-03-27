@@ -715,7 +715,13 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
                 (fixedDurations[i+1].type==DurationType.TUHR||fixedDurations[i+1].type==DurationType.TUHREFAASID)){//there is a tuhur after this
                 fixedDurations[i+1].type=DurationType.TUHREFAASID
                 fixedDurations[i+1].istihazaAfter=remainder
+            }else if(i<fixedDurations.lastIndex && remainder>0 &&
+                (fixedDurations[i+1].type==DurationType.TUHR_IN_HAML||
+                        fixedDurations[i+1].type==DurationType.TUHREFAASID_IN_HAML)){//there is a tuhur after this
+                fixedDurations[i+1].type=DurationType.TUHREFAASID_IN_HAML
+                fixedDurations[i+1].istihazaAfter=remainder
             }
+
 
         }else{//it ended in less than haiz
             //change aadatHaiz
@@ -733,7 +739,13 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
             (fixedDurations[i+1].type==DurationType.TUHR||fixedDurations[i+1].type==DurationType.TUHREFAASID)){
             fixedDurations[i+1].type=DurationType.TUHREFAASID
             fixedDurations[i+1].istihazaAfter = istihazaAfter
+        }else if(i<fixedDurations.size-1 &&
+            (fixedDurations[i+1].type==DurationType.TUHR_IN_HAML||
+                    fixedDurations[i+1].type==DurationType.TUHREFAASID_IN_HAML)){
+            fixedDurations[i+1].type=DurationType.TUHREFAASID_IN_HAML
+            fixedDurations[i+1].istihazaAfter = istihazaAfter
         }
+
 
     }
     return returnAadatHaiz
