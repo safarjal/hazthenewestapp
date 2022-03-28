@@ -133,8 +133,6 @@ private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
 private val devElements get() = document.getElementsByClassName("dev").asList()
-private val HTMLElement.pregnancyElements get() = getElementsByClassName("is-nifas").asList()
-private val HTMLElement.aadatInput get() = getElementsByClassName("aadat_inputs").asList()
 
 private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
     get() {
@@ -262,7 +260,8 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     }.single()
     languageChange()
     onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
-    onClickMaslaConfigurationSelectDropdown(clonedInputsContainer)
+    disableByMasla(clonedInputsContainer)
+//    onClickMaslaConfigurationSelectDropdown(clonedInputsContainer)
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
 
@@ -526,7 +525,8 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         select {
             id = Ids.MASLA_TYPE_SELECT
             onChangeFunction = { event ->
-                onClickMaslaConfigurationSelectDropdown(findInputContainer(event))
+                disableByMasla(findInputContainer(event))
+//                onClickMaslaConfigurationSelectDropdown(findInputContainer(event))
             }
             makeDropdownOptions(isMutada, "mutada", StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, "nifas", StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
@@ -554,8 +554,8 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
 }
 
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row is-nifas invisible aadat_inputs") {
-        div(classes = "row is-nifas aadat_inputs") {
+    div(classes = "row is-nifas invisible nonduration-aadat") {
+        div(classes = "row is-nifas nonduration-aadat") {
             makeLabel(Ids.PREG_START_TIME_INPUT,
                 StringsOfLanguages.ENGLISH.pregnancyStartTime,
                 StringsOfLanguages.URDU.pregnancyStartTime, true)
@@ -571,8 +571,8 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = "row is-nifas invisible aadat_inputs") {
-        div(classes = "row is-nifas aadat_inputs") {
+    div(classes = "row is-nifas invisible nonduration-aadat") {
+        div(classes = "row is-nifas nonduration-aadat") {
             makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime, true)
             pregnancyTimeInput(inputContainerToCopyFrom) {
                 classes = setOfNotNull(
@@ -653,7 +653,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(15..6 * 30) }
         }
     }
-    div(classes = "row aadat_inputs") {
+    div(classes = "row nonduration-aadat") {
         makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
         input {
             id = Ids.MAWJOODA_TUHR_INPUT
@@ -1171,21 +1171,6 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
     switchToDurationTable(inputContainer)
 }
 
-private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
-    disableByClass("is-nifas", "invisible", inputContainer, !inputContainer.isNifas)
-    disableByClass("mutada", "invisible", inputContainer, !inputContainer.isMubtadia)
-}
-
-private fun invisPregnancy(inputContainer: HTMLElement) {
-    for (pregnancyElement in inputContainer.pregnancyInputs) {
-        pregnancyElement.visibility = inputContainer.isNifas
-        pregnancyElement.disabled = !inputContainer.isNifas
-    }
-    for (pregnancyElement in inputContainer.pregnancyElements) {
-        pregnancyElement.visibility = inputContainer.isNifas
-    }
-}
-
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
     disableDateTable(inputContainer, isDuration)
     inputContainer.haizInputTable.visibility = !isDuration
@@ -1203,21 +1188,8 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-    disableUndurationAadaat(inputContainer, disable)
-}
-
-private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
-    inputContainer.aadatInput
-        .forEach { row ->
-            row.classList.toggle("duration-invis", disable)
-            row.querySelectorAll("input")
-                .asList()
-                .map { input ->
-                    input as HTMLInputElement
-                    input.disabled = disable
-                }
-        }
-    invisPregnancy(inputContainer)
+    disableByClass("nonduration-aadat", "invisible", inputContainer, disable)
+    disableByMasla(inputContainer)
 }
 
 private fun disableByClass(classSelector: String, classInvis: String, inputContainer: HTMLElement, disable: Boolean) {
@@ -1232,6 +1204,11 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
                     input.disabled = disable
                 }
         }
+}
+
+private fun disableByMasla(inputContainer: HTMLElement) {
+    disableByClass("is-nifas", "invisible", inputContainer, !inputContainer.isNifas)
+    disableByClass("mutada", "invisible", inputContainer, !inputContainer.isMubtadia)
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
