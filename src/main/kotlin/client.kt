@@ -88,7 +88,6 @@ private val contentDatesDifferenceElement get() = document.getElementById(Ids.CO
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById("language") as HTMLSelectElement
-private val languageSelectorValue get() = languageSelector.value
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
@@ -127,11 +126,9 @@ private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
     set(value) { contentDatesElement.asDynamic().haizDatesList = value }
 
-private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id ->
-    getChildById(id) as HTMLInputElement
-}
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
+private val languageElements get() = listOf(englishElements, urduElements).flatten()
 private val devElements get() = document.getElementsByClassName("dev").asList()
 
 private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
@@ -185,6 +182,7 @@ fun main() {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                 }
             })
+            languageSelector.onchange = { languageChange() }
         } else {
             mainOtherCalcs()
         }
@@ -198,7 +196,7 @@ fun askPassword():Boolean {
     val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
-    return if (pass1 == password) true else askPassword()
+    return pass1 == password || askPassword()
 }
 
 fun devMode() {
@@ -206,16 +204,16 @@ fun devMode() {
 }
 
 fun handleLanguage() {
-    languageSelector.onchange = { languageChange() }
     if (window.location.href.contains("lang=en")) languageSelector.value = "english"
     else languageSelector.value = "urdu"
     languageChange()
 }
 
 fun languageChange() {
-    for (element in englishElements) element.classList.toggle("lang-invisible", languageSelectorValue == "urdu")
-    for (element in urduElements) element.classList.toggle("lang-invisible", languageSelectorValue == "english")
-    document.body!!.classList.toggle("rtl", languageSelectorValue == "urdu")
+    val lang = languageSelector.value
+    console.log(languageElements)
+    for (element in languageElements) element.classList.toggle("lang-invisible", !element.classList.contains(lang))
+    document.body!!.classList.toggle("rtl", lang == "urdu")
     document.querySelectorAll("select")
         .asList()
         .map { it as HTMLSelectElement }
@@ -224,7 +222,7 @@ fun languageChange() {
                 .asList()
                 .map { it as HTMLOptionElement }
                 .firstOrNull { option ->
-                    option.value == select.value && option.classList.contains(languageSelectorValue)
+                    option.value == select.value && option.classList.contains(lang)
                 }
                 ?.selected = true
         }
@@ -393,9 +391,9 @@ private fun copyText(event: Event) {
     val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
     val answerTxt = div?.querySelector("p")?.textContent
     var dateStr = ""
-    if (languageSelectorValue=="urdu"){
+    if (languageSelector.value=="urdu"){
         dateStr += urduDateFormat(Date(Date.now()),true)
-    }else if(languageSelectorValue=="english"){
+    }else if(languageSelector.value=="english"){
         dateStr += englishDateFormat(Date(Date.now()),true)
     }
     dateStr+= " ${Date(Date.now()).getFullYear()}"
@@ -676,7 +674,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelectorValue=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if(languageSelector.value=="english") {StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
     value = value.replace("[^0-9:]".toRegex(), "")
     val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
     setCustomValidity(try {
@@ -856,7 +854,7 @@ private fun TagConsumer<HTMLElement>.inputRow(
 }
 
 private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
-    val urdu = languageSelectorValue == "urdu"
+    val urdu = languageSelector.value == "urdu"
     tr {
         td {
             input {
@@ -1282,7 +1280,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 mustabeen
             ),
             mubtadiaIs,
-            languageSelectorValue,
+            languageSelector.value,
             isDuration,
             ikhtilaf1,
             ikhtilaf2
