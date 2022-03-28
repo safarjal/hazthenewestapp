@@ -101,7 +101,6 @@ private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as
 private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == "nifas"
 private val HTMLElement.isMubtadia get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == "mubtadia"
 
-//private val HTMLElement.isPregnancy get() = (getChildById(Ids.PREGNANCY_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -131,10 +130,11 @@ private var HTMLElement.haizDatesList: List<Entry>?
 private val HTMLElement.pregnancyInputs get() = Ids.pregnancyElementIds.map { id ->
     getChildById(id) as HTMLInputElement
 }
-private val HTMLElement.pregnancyElements get() = getElementsByClassName("is-nifas").asList()
 private val englishElements get() = document.getElementsByClassName("english").asList()
 private val urduElements get() = document.getElementsByClassName("urdu").asList()
 private val devElements get() = document.getElementsByClassName("dev").asList()
+private val HTMLElement.pregnancyElements get() = getElementsByClassName("is-nifas").asList()
+private val HTMLElement.aadatInput get() = getElementsByClassName("aadat_inputs").asList()
 
 private val HTMLElement.hazInputTableBody: HTMLTableSectionElement
     get() {
@@ -495,13 +495,23 @@ private fun TagConsumer<HTMLElement>.makeDropdownOptions(
     urduText: String,
     extraClasses: String = ""
 ) {
-    option(classes = "english $extraClasses") {
-        selected = isSelected
+    option {
+        classes = setOfNotNull(
+            "english",
+            extraClasses,
+            if (languageSelector.value != "english") "lang-invisible" else null
+        )
+        selected = isSelected && languageSelector.value == "english"
         value = optionVal
         +englishText
     }
-    option(classes = "urdu $extraClasses") {
-        selected = isSelected
+    option {
+        classes = setOfNotNull(
+            "urdu",
+            extraClasses,
+            if (languageSelector.value != "urdu") "lang-invisible" else null
+        )
+        selected = isSelected && languageSelector.value == "urdu"
         value = optionVal
         +urduText
     }
@@ -599,7 +609,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             name = Ids.AADAT_NIFAS_INPUT
             classes = setOfNotNull(
                 "is-nifas",
-                "aadat",
             )
             step = "any"
             required = false
@@ -628,7 +637,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     div(classes = "row") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
-        input(classes = "aadat") {
+        input {
             id = Ids.AADAT_HAIZ_INPUT
             name = Ids.AADAT_HAIZ_INPUT
             value = inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
@@ -637,7 +646,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
     div(classes = "row mutada") {
         makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
-        input(classes = "aadat") {
+        input {
             id = Ids.AADAT_TUHR_INPUT
             name = Ids.AADAT_TUHR_INPUT
             value = inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
@@ -646,7 +655,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
     div(classes = "row aadat_inputs") {
         makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
-        input(classes = "aadat") {
+        input {
             id = Ids.MAWJOODA_TUHR_INPUT
             name = Ids.MAWJOODA_TUHR_INPUT
             value = inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
@@ -694,7 +703,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
     details {
         summary {
             span(classes = "urdu") { +"سوال" }
-            span(classes = "english lang-invisible") { +"Question" }
+            span(classes = "english") { +"Question" }
         }
         div(classes = "row") {
             textArea {
@@ -871,62 +880,22 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                     row.durationInput.value = if (pregOct) "0" else row.durationInput.value
                     row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                 }
-                option(classes = "english") {
-                    selected = !urdu && !lastWasDam
-                    value = "dam"
-                    + StringsOfLanguages.ENGLISH.dam
-                }
-                option(classes = "english") {
-                    selected = !urdu && lastWasDam
-                    value = "tuhr"
-                    + StringsOfLanguages.ENGLISH.tuhr
-                }
-                option {
-                    classes = setOfNotNull(
-                        "english",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "haml"
-                    + StringsOfLanguages.ENGLISH.preg
-                }
-                option(classes = "english is-nifas invisible") {
-                    classes = setOfNotNull(
-                        "english",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "wiladat"
-                    + StringsOfLanguages.ENGLISH.birthduration
-                }
-                option(classes = "urdu") {
-                    selected = urdu && !lastWasDam
-                    value = "dam"
-                    + StringsOfLanguages.URDU.dam
-                }
-                option(classes = "urdu") {
-                    selected = urdu && lastWasDam
-                    value = "tuhr"
-                    + StringsOfLanguages.URDU.tuhr
-                }
-                option {
-                    classes = setOfNotNull(
-                        "urdu",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "haml"
-                    + StringsOfLanguages.URDU.pregduration
-                }
-                option {
-                    classes = setOfNotNull(
-                        "urdu",
-                        "is-nifas",
-                        if (!preg) "invisible" else null,
-                    )
-                    value = "wiladat"
-                    + StringsOfLanguages.URDU.birthduration
-                }
+                makeDropdownOptions(!lastWasDam, "dam", StringsOfLanguages.ENGLISH.dam, StringsOfLanguages.URDU.dam)
+                makeDropdownOptions(lastWasDam, "tuhr", StringsOfLanguages.ENGLISH.tuhr, StringsOfLanguages.URDU.tuhr)
+                makeDropdownOptions(
+                    false,
+                    "haml",
+                    StringsOfLanguages.ENGLISH.preg,
+                    StringsOfLanguages.URDU.preg,
+                    "is-nifas ${if (!preg) "invisible" else null}"
+                )
+                makeDropdownOptions(
+                    false,
+                    "wiladat",
+                    StringsOfLanguages.ENGLISH.birthduration,
+                    StringsOfLanguages.URDU.birthduration,
+                    "is-nifas ${if (!preg) "invisible" else null}"
+                )
             }
         }
         addRemoveButtonsTableData(true)
@@ -1203,8 +1172,8 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
 }
 
 private fun onClickMaslaConfigurationSelectDropdown(inputContainer: HTMLElement) {
-    invisPregnancy(inputContainer)
-    disableAllAadaat(inputContainer)
+    disableByClass("is-nifas", "invisible", inputContainer, !inputContainer.isNifas)
+    disableByClass("mutada", "invisible", inputContainer, !inputContainer.isMubtadia)
 }
 
 private fun invisPregnancy(inputContainer: HTMLElement) {
@@ -1238,8 +1207,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
 }
 
 private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
-    inputContainer.getElementsByClassName("aadat_inputs")
-        .asList()
+    inputContainer.aadatInput
         .forEach { row ->
             row.classList.toggle("duration-invis", disable)
             row.querySelectorAll("input")
@@ -1252,11 +1220,11 @@ private fun disableUndurationAadaat(inputContainer: HTMLElement, disable: Boolea
     invisPregnancy(inputContainer)
 }
 
-private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inputContainer.isMubtadia) {
-    inputContainer.getElementsByClassName("mutada")
+private fun disableByClass(classSelector: String, classInvis: String, inputContainer: HTMLElement, disable: Boolean) {
+    inputContainer.getElementsByClassName(classSelector)
         .asList()
         .forEach { row ->
-            row.classList.toggle("mubtadia-invis", disable)
+            row.classList.toggle(classInvis, disable)
             row.querySelectorAll("input")
                 .asList()
                 .map { input ->
@@ -1264,7 +1232,6 @@ private fun disableAllAadaat(inputContainer: HTMLElement, disable: Boolean = inp
                     input.disabled = disable
                 }
         }
-    invisPregnancy(inputContainer)
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
