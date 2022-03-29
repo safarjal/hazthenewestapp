@@ -2252,5 +2252,48 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+    @Test
+    fun testBugMaslaIssue136() {
+        //A-2 Masla
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 8, 15), Date(2021, 9,24))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 10, 8), Date(2021, 10, 24))
+
+        val output = handleEntries(
+            entries,
+            parseDays("6"),
+            parseDays("27"),
+            null,
+            false,
+            isDateOnly = true,
+            isPregnancy = true,
+            pregnancy = Pregnancy(Date(2021, 3, 15), Date(2021, 8, 15),
+                null, mustabeenUlKhilqat = true)
+            , isMubtadia = false,
+            language = "urdu")
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("4")!!, parseDays("27")!!),
+                mutableListOf(
+                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
+
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
 
 }

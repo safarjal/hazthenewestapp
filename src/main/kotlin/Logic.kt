@@ -1486,7 +1486,9 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             }
 
         }else{//not daur
-            if((qism==Soortain.A_1&&fixedDurations.last().biggerThanTen!!.istihazaAfter>0L) ||qism==Soortain.B_2||qism==Soortain.B_3){
+            if((qism==Soortain.A_1&&fixedDurations.last().biggerThanTen!!.istihazaAfter>0L) ||
+                qism==Soortain.B_2||
+                qism==Soortain.B_3){
                 //these all end on istihaza
                 val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
                 if(endOfTuhr.getTime()!=lastDuration.endDate.getTime()){
@@ -1498,7 +1500,8 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                     futureDatesList+= FutureDateType(endOfHaz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 }
             }else if(qism==Soortain.A_2){
-                val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
+                var previousHaizAadat = fixedDurations.last().biggerThanTen!!.hz
+                val endOfHaiz = addTimeToDate(lastDuration.startTime, previousHaizAadat)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
@@ -1889,18 +1892,18 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>):Boolean?{
 
         if(fixedDurations.last().days>10){
             val aadatTuhr = fixedDurations.last().biggerThanTen!!.aadatTuhr
-            val aadatHaz = fixedDurations.last().biggerThanTen!!.aadatHaiz
+            val aadatHaz = fixedDurations.last().biggerThanTen!!.hz //previous aadat
             val lastDurationType = fixedDurations.last().biggerThanTen!!.durationsList.last().type
             val lastDurationTime = fixedDurations.last().biggerThanTen!!.durationsList.last().timeInMilliseconds
             if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
                 filHaalPaki=false
-            }else if(lastDurationType==DurationType.HAIZ){
-                if(aadatHaz>lastDurationTime){
+            }else if(lastDurationType==DurationType.HAIZ){//A-2, A-1, daur
+                if(aadatHaz>lastDurationTime){//in A-2, and daur only
                     filHaalPaki=false
-                }else {
+                }else {//A-1, //daur
                     filHaalPaki = true
                 }
-            }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){
+            }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){//daur, A-3, B-3, B-2
                 if(aadatTuhr>lastDurationTime){
                     val qism = fixedDurations.last().biggerThanTen!!.qism
                     val ayyameQabliyya = fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp
