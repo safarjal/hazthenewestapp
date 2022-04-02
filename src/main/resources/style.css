@@ -168,6 +168,11 @@ hr {
 details > summary.ikhtilaf {
   list-style-type: '⚙';
   margin: 1rem 1rem 0 1rem;
+  transition: 0.4s;
+}
+
+details[open] > summary.ikhtilaf {
+  list-style-type: '⚛';
 }
 
 details > b {
@@ -332,7 +337,7 @@ p {
   --margin: 3px;
   width: calc(calc(var(--diameter) * 2) + calc(var(--margin) * 2));
   height: calc(var(--diameter) + calc(var(--margin) * 2));
-  margin: 0.3rem 2rem;
+  margin: 0.3rem;
 }
 
 /* Hide default HTML checkbox */
