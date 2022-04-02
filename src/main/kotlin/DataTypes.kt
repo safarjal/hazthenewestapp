@@ -1,72 +1,38 @@
 import kotlin.js.Date
 
-
 data class Strings(
     val answer: String,
-//    جواب: 
     val headerline: String,
-//    مندرجہ ذیل ترتیب سے دم و طہر آیا:
     val headerlinemubtadia: String,
-//    مبتداہ کو اس ترتیب سے دم و طہر آیا:
     val writedown: String,
-//    جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔
     val allahknows: String,
-//    واللہ تعالی اعلم بالصواب
     val currentpaki: String,
-//    فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔
     val currenthaiz: String,
-//    فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑھیں۔
     val situationmaychange:String,
-//    "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھرdate کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔
     val haizend: String,
-//    "اگر خون اسی طرح جاری رہے تب پھرdate تک آپ کے حیض کے دن ہونگے۔
     val beforepregheader: String,
-//    "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:
     val preg: String,
-//    حمل
     val birth: String,
-//     date ولادت
     val afterpregheader:String,
-//    ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:
     val earlymiscarriage: String,
-//    date کو اسقاط ہوا (غیر مستبین الخلقہ)
     val ihtiyatighusl: String,
-//    اگر خون date سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا date کو بھی غسل کر لیجیے۔
     val sexnotallowed: String,
-//    اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: 
-//    اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي date سے پہلے صحبت کي اجازت نہيں۔
     val endofpaki: String,
-//    اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھرdate تک آپ کے یقینی پاکی کے دن ہونگے۔
     val habit: String,
-//    عادت:: حیض: days, hours, minutes ، طہر: days, hours, minutes
     val haizdays: String,
-//    date تا date کل days, hours, minutes حیض کے ہیں۔
     val haizdaysinsolution:String,
-    //this will have the red circle
     val istihazadays: String,
-//    date تا date کل days, hours, minutes یقینی پاکی (استحاضہ) کے ہیں۔
     val nifasdays: String,
-//    date تا date کل days, hours, minutes نفاس کے ہیں۔
     val nifasdaysinsolution:String,
-    //these will have red circle
     val blooddays: String,
-//    date سے date تک کل days, hours, minutes خون۔
     val solution: String,
-//    مسئلہ کا حل ::
     val istihazadetailslineone: String,
-//    اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔
     val istihazadetailslinetwo: String,
-//    date کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔
-//    اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔
     val continuosbleeding: String,
-//    date سے date تک کل days, hours, minutes خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)
     val pakidays:String,
-//    days, hours, minutes پاکی۔
     val tuhrfasid:String,
     val tuhrfasidwithaddition:String,
-//    days, hours, minutes استحاضہ + days, hours, minutes پاکی = days, hours, minutes  طہر فاسد۔
     val twomonthstuhr: String,
-//    days, hours, minutes طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)
     val dashesline: String,
     val becamemutadah:String,
     val thereisnoaadat:String,
@@ -126,7 +92,6 @@ data class Strings(
     val mubtadia:String,
     val mutada:String,
     val typeOfMasla:String
-
 )
 
 
