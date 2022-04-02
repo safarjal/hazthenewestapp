@@ -850,7 +850,6 @@ private fun TagConsumer<HTMLElement>.inputRow(
 }
 
 private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
-    val urdu = languageSelector.value == "urdu"
     tr {
         td {
             input {
