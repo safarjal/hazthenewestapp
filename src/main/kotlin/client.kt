@@ -70,13 +70,6 @@ object Ids {
     const val INPUT_QUESTION = "input_question"
     const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
-
-    val pregnancyElementIds = listOf(
-        PREG_START_TIME_INPUT,
-        PREG_END_TIME_INPUT,
-        MUSTABEEN_CHECKBOX,
-        AADAT_NIFAS_INPUT
-    )
 }
 
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
@@ -259,7 +252,6 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     languageChange()
     onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
     disableByMasla(clonedInputsContainer)
-//    onClickMaslaConfigurationSelectDropdown(clonedInputsContainer)
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
 
@@ -387,6 +379,7 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
+
     val questionTxt = findInputContainer(event).questionText.value
     val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
     val answerTxt = div?.querySelector("p")?.textContent
@@ -397,10 +390,13 @@ private fun copyText(event: Event) {
         dateStr += englishDateFormat(Date(Date.now()),true)
     }
     dateStr+= " ${Date(Date.now()).getFullYear()}"
+
     val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
-    val small = div?.querySelector("small")
     copyTxt.let { window.navigator.clipboard.writeText(it) }
+
+    val small = div?.querySelector("small")
     small?.innerHTML?.let { small.innerHTML = " Copied " }
+
     window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
 }
 
@@ -1203,7 +1199,6 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
                 }
         }
 }
-
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass("is-nifas", "invisible", inputContainer, !inputContainer.isNifas)
     disableByClass("mutada", "invisible", inputContainer, !inputContainer.isMubtadia)
@@ -1217,7 +1212,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
         var pregnancyIs = isNifas
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
-        var mubtadiaIs = isMubtadia
+        val mubtadiaIs = isMubtadia
 
         if(isDuration){
             //take arbitrary date
@@ -1286,8 +1281,8 @@ private fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf2
         )
         contentContainer.visibility = true
-        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar("${output.englishText}")
-        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar("${output.urduText}")
+        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
+        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()

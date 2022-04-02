@@ -53,7 +53,6 @@ object Styles {
 
 val Document.isHidden get() = this["hidden"] as Boolean
 
-
 private fun insertRelative(
     ownerDocument: Document,
     block: TagConsumer<HTMLElement>.() -> Unit,
