@@ -1192,6 +1192,7 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
                 .map { input ->
                     input as HTMLInputElement
                     input.disabled = disable
+                    input.value = ""
                 }
         }
 }
