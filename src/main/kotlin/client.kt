@@ -175,10 +175,10 @@ fun main() {
                     setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
                 }
             })
-            languageSelector.onchange = { languageChange() }
         } else {
             mainOtherCalcs()
         }
+        languageSelector.onchange = { languageChange() }
         handleLanguage()
         devMode()
     }
