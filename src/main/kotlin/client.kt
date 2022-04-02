@@ -204,7 +204,6 @@ fun handleLanguage() {
 
 fun languageChange() {
     val lang = languageSelector.value
-    console.log(languageElements)
     for (element in languageElements) element.classList.toggle("lang-invisible", !element.classList.contains(lang))
     document.body!!.classList.toggle("rtl", lang == "urdu")
     document.querySelectorAll("select")
@@ -629,7 +628,7 @@ private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement
 }
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "row") {
+    div(classes = "row mutada") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         input {
             id = Ids.AADAT_HAIZ_INPUT
@@ -850,7 +849,6 @@ private fun TagConsumer<HTMLElement>.inputRow(
 }
 
 private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
-    val urdu = languageSelector.value == "urdu"
     tr {
         td {
             input {
@@ -869,8 +867,6 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 onChangeFunction = { event ->
                     val row = findRow(event)
                     val pregOct = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
-                    println("preg")
-                    println(pregOct)
                     row.durationInput.value = if (pregOct) "0" else row.durationInput.value
                     row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf("haml", "wiladat")
                 }
@@ -1196,12 +1192,13 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
                 .map { input ->
                     input as HTMLInputElement
                     input.disabled = disable
+                    input.value = ""
                 }
         }
 }
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass("is-nifas", "invisible", inputContainer, !inputContainer.isNifas)
-    disableByClass("mutada", "invisible", inputContainer, !inputContainer.isMubtadia)
+    disableByClass("mutada", "invisible", inputContainer, inputContainer.isMubtadia)
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
@@ -1235,7 +1232,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 }
             }
             if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
-            println(durations)
             for(dur in durations){
                 when (dur.type) {
                     DurationType.DAM -> {
