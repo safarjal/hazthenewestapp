@@ -250,8 +250,6 @@ fun handleLanguage() {
 
 fun languageChange() {
     val lang = languageSelector.value
-    kotlin.js.console.log(lang, Vls.Langs.ENGLISH, lang == Vls.Langs.ENGLISH)
-    kotlin.js.console.log(lang, Vls.Langs.URDU, lang == Vls.Langs.URDU)
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
     document.body!!.classList.toggle(CssC.RTL, lang == Vls.Langs.URDU)
     document.querySelectorAll("select")
