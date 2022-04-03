@@ -2257,7 +2257,7 @@ class LogicTest {
         //A-2 Masla
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 8, 15), Date(2021, 9,24))
+            Entry(Date(2021, 8, 15), Date(2021, 9, 24))
         entries +=//each month has to be one minus the real
             Entry(Date(2021, 10, 8), Date(2021, 10, 24))
 
@@ -2269,19 +2269,21 @@ class LogicTest {
             false,
             isDateOnly = true,
             isPregnancy = true,
-            pregnancy = Pregnancy(Date(2021, 3, 15), Date(2021, 8, 15),
-                null, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            pregnancy = Pregnancy(
+                Date(2021, 3, 15), Date(2021, 8, 15),
+                null, mustabeenUlKhilqat = true
+            ), isMubtadia = false,
+            language = "urdu"
+        )
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, parseDays("27")!!),
                 mutableListOf(
-                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2021,10, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
+                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
 
                 )
             )
@@ -2290,10 +2292,64 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
 
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        for (i in output.endingOutputValues.futureDateType.indices) {
+            assertEquals(
+                expectedEndingOutputValues.futureDateType[i].date.getTime(),
+                output.endingOutputValues.futureDateType[i].date.getTime()
+            )
+            assertEquals(
+                expectedEndingOutputValues.futureDateType[i].futureDates,
+                output.endingOutputValues.futureDateType[i].futureDates
+            )
         }
     }
+    @Test
+    fun testBugMaslaIssue138() {
+        //AyyameQabliyya
+        val entries = mutableListOf<Entry>(//each month has to be one minus the real
+            Entry(Date(2022, 0, 13), Date(2022, 0, 19)),
+            Entry(Date(2022, 1, 22), Date(2022, 1, 27)),
+            Entry(Date(2022, 2, 17), Date(2022, 2, 31)),
 
+        )
+
+        val output = handleEntries(
+            entries,
+            parseDays(""),
+            parseDays(""),
+            null,
+            false,
+            isDateOnly = true,
+            isPregnancy = false,
+            pregnancy = Pregnancy(
+                Date(2021, 3, 15), Date(2021, 8, 15),
+                null, mustabeenUlKhilqat = true
+            ), isMubtadia = false,
+            language = "urdu"
+        )
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                null,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("34")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022, 3, 2), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+
+        for (i in output.endingOutputValues.futureDateType.indices) {
+            assertEquals(
+                expectedEndingOutputValues.futureDateType[i].date.getTime(),
+                output.endingOutputValues.futureDateType[i].date.getTime()
+            )
+            assertEquals(
+                expectedEndingOutputValues.futureDateType[i].futureDates,
+                output.endingOutputValues.futureDateType[i].futureDates
+            )
+        }
+    }
 }
