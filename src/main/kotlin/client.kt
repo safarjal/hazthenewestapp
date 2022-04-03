@@ -77,29 +77,28 @@ object Ids {
 }
 
 object CssC {
-    const val ROW = "row "
-    const val NIFAS = "is-nifas "
-    const val MUTADA = "mutada "
-    const val DATETIME_AADAT = "nonduration-aadat "
-    const val IKHTILAF = "ikhtilaf "
+    const val ROW = "row"
+    const val NIFAS = "is-nifas"
+    const val MUTADA = "mutada"
+    const val DATETIME_AADAT = "nonduration-aadat"
+    const val IKHTILAF = "ikhtilaf"
 
-    const val INVIS = "invisible "
-    const val LANG_INVIS = "lang-invisible "
-    const val ENGLISH = "english "
-    const val URDU = "urdu "
-    const val DEV = "dev "
-    const val RTL = "rtl "
+    const val INVIS = "invisible"
+    const val LANG_INVIS = "lang-invisible"
+    const val ENGLISH = "english"
+    const val URDU = "urdu"
+    const val DEV = "dev"
+    const val RTL = "rtl"
 
-    const val LEFT = "left "
-    const val RIGHT = "right "
-    const val CALC_BTN = "calc-btn "
-    const val CONTENT = "content "
-    const val PLUS = "plus "
-    const val MINUS = "minus "
-    const val SWITCH = "switch "
-    const val SLIDER = "slider "
-    const val ROUND = "round "
-    const val LABEL_INPUT = "label-input "
+    const val LEFT = "left"
+    const val RIGHT = "right"
+    const val CALC_BTN = "calc-btn"
+    const val PLUS = "plus"
+    const val MINUS = "minus"
+    const val SWITCH = "switch"
+    const val SLIDER = "slider"
+    const val ROUND = "round"
+    const val LABEL_INPUT = "label-input"
 }
 
 object Vls {
@@ -251,6 +250,8 @@ fun handleLanguage() {
 
 fun languageChange() {
     val lang = languageSelector.value
+    kotlin.js.console.log(lang, Vls.Langs.ENGLISH, lang == Vls.Langs.ENGLISH)
+    kotlin.js.console.log(lang, Vls.Langs.URDU, lang == Vls.Langs.URDU)
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
     document.body!!.classList.toggle(CssC.RTL, lang == Vls.Langs.URDU)
     document.querySelectorAll("select")
@@ -301,7 +302,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
 
 private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
     inputContainer.inputsContainerCloneButton.before {
-        button(type = ButtonType.button, classes = CssC.MINUS + CssC.DEV) {
+        button(type = ButtonType.button, classes = "${CssC.MINUS} ${CssC.DEV}") {
             +"\u274C"
             id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
             style = "float: right"
@@ -500,7 +501,7 @@ private fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String,
                 checkBoxInput {
                     id = inputId
                 }
-                span(classes = CssC.SLIDER + CssC.ROUND)
+                span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
             }
         }
         block()
@@ -621,7 +622,7 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String, input
 }
 
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = CssC.ROW + CssC.NIFAS + CssC.INVIS + CssC.DATETIME_AADAT) {
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
         makeLabel(Ids.PREG_START_TIME_INPUT,
             StringsOfLanguages.ENGLISH.pregnancyStartTime,
             StringsOfLanguages.URDU.pregnancyStartTime)
@@ -633,7 +634,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = CssC.ROW + CssC.NIFAS + CssC.INVIS + CssC.DATETIME_AADAT) {
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
         makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
         pregnancyTimeInput(inputContainerToCopyFrom) {
             id = Ids.PREG_END_TIME_INPUT
@@ -651,7 +652,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = CssC.ROW + CssC.NIFAS + CssC.INVIS) {
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat)
         makeNumberInput(Ids.AADAT_NIFAS_INPUT, inputContainerToCopyFrom?.aadatNifas?.value.orEmpty(), (1..40)) {
             step = "any"
@@ -662,15 +663,15 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = CssC.ROW + CssC.MUTADA) {
+    div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10))
     }
-    div(classes = CssC.ROW + CssC.MUTADA) {
+    div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
         makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
         makeNumberInput(Ids.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30))
     }
-    div(classes = CssC.ROW + CssC.DATETIME_AADAT) {
+    div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT}") {
         makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
         makeNumberInput(Ids.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
         div {
@@ -698,11 +699,11 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 }
 
 private fun FlowContent.calculateButton() {
-    button(classes = CssC.ENGLISH + CssC.CALC_BTN) {
+    button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
-    button(classes = CssC.URDU + CssC.CALC_BTN) {
+    button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
