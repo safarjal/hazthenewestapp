@@ -190,8 +190,8 @@ val englishStrings = Strings(
     ", then the next duration1 are istehadha",
     ", then the next duration1 are haidh",
     ".\n\n",
-    "birth\n\n",
-    "pregnancy\n\n",
+    "Birth\n\n",
+    "Pregnancy\n\n",
     "The first duration1 are nifas",
     "If bleeding stops before date1 (3 days), and is followed by a 15 day" +
             " or more period of purity, then all of this will become istehadha.\n\n",
