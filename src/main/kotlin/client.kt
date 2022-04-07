@@ -479,14 +479,16 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
-private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, block: LABEL.() -> Unit = {}) {
-    label(classes = CssC.ENGLISH) {
+private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
+    label {
         htmlFor = inputId
+        classes = setOf(CssC.ENGLISH, extraClasses)
         block()
         +englishText
     }
-    label(classes = CssC.URDU) {
+    label {
         htmlFor = inputId
+        classes = setOf(CssC.URDU, extraClasses)
         block()
         +urduText
     }
@@ -633,9 +635,13 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
-        makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
+        makeLabel(
+            Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime,
+            CssC.DATETIME_AADAT
+        )
         pregnancyTimeInput(inputContainerToCopyFrom) {
+            classes = setOf(CssC.DATETIME_AADAT)
             id = Ids.PREG_END_TIME_INPUT
             name = Ids.PREG_END_TIME_INPUT
             onChangeFunction = { event ->
