@@ -810,16 +810,16 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(disable: Boolean, select
         makeDropdownOptions(
             selectedOption == Vls.Opts.HAML,
             Vls.Opts.HAML,
-            StringsOfLanguages.ENGLISH.preg,
-            StringsOfLanguages.URDU.preg,
-            CssC.NIFAS + if (!preg) CssC.INVIS else null
+            StringsOfLanguages.ENGLISH.pregduration,
+            StringsOfLanguages.URDU.pregduration,
+            CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
         )
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT,
             Vls.Opts.WILADAT,
             StringsOfLanguages.ENGLISH.birthduration,
             StringsOfLanguages.URDU.birthduration,
-            CssC.NIFAS + if (!preg) CssC.INVIS else null
+            CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
         )
     }
 }
