@@ -217,7 +217,7 @@ val englishStrings = Strings(
     "Mubtadia",
     "Mu'tada",
     "Type of Masla",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3 Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
 
 
     )
