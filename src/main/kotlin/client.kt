@@ -634,7 +634,11 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
-        makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
+        makeLabel(
+            Ids.PREG_END_TIME_INPUT,
+            StringsOfLanguages.ENGLISH.birthMiscarrriageTime,
+            StringsOfLanguages.URDU.birthMiscarrriageTime
+        )
         pregnancyTimeInput(inputContainerToCopyFrom) {
             id = Ids.PREG_END_TIME_INPUT
             name = Ids.PREG_END_TIME_INPUT
@@ -642,8 +646,14 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
         }
+    }
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
         div {
-            makeLabel(Ids.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
+            makeLabel(
+                Ids.MUSTABEEN_CHECKBOX,
+                StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
+                StringsOfLanguages.URDU.mustabeenUlKhilqa
+            )
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
                 name = Ids.MUSTABEEN_CHECKBOX
