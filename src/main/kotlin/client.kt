@@ -80,11 +80,12 @@ object CssC {
     const val ROW = "row"
     const val NIFAS = "is-nifas"
     const val MUTADA = "mutada"
-    const val DATETIME_AADAT = "nonduration-aadat"
+    const val DATETIME_AADAT = "datetime_aadat"
     const val IKHTILAF = "ikhtilaf"
 
     const val INVIS = "invisible"
     const val LANG_INVIS = "lang-invisible"
+    const val DUR_INVIS = "duration-invis"
     const val ENGLISH = "english"
     const val URDU = "urdu"
     const val DEV = "dev"
@@ -1160,8 +1161,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-    disableByClass(CssC.DATETIME_AADAT, CssC.INVIS, inputContainer, disable)
-    disableByMasla(inputContainer)
+    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
 }
 
 private fun disableByClass(classSelector: String, classInvis: String, inputContainer: HTMLElement, disable: Boolean) {
