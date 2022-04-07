@@ -479,14 +479,16 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
-private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, block: LABEL.() -> Unit = {}) {
-    label(classes = CssC.ENGLISH) {
+private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
+    label {
         htmlFor = inputId
+        classes = setOf(CssC.ENGLISH, extraClasses)
         block()
         +englishText
     }
-    label(classes = CssC.URDU) {
+    label {
         htmlFor = inputId
+        classes = setOf(CssC.URDU, extraClasses)
         block()
         +urduText
     }
@@ -633,27 +635,21 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(
-            Ids.PREG_END_TIME_INPUT,
-            StringsOfLanguages.ENGLISH.birthMiscarrriageTime,
-            StringsOfLanguages.URDU.birthMiscarrriageTime
+            Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime,
+            CssC.DATETIME_AADAT
         )
         pregnancyTimeInput(inputContainerToCopyFrom) {
+            classes = setOf(CssC.DATETIME_AADAT)
             id = Ids.PREG_END_TIME_INPUT
             name = Ids.PREG_END_TIME_INPUT
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
         }
-    }
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
         div {
-            makeLabel(
-                Ids.MUSTABEEN_CHECKBOX,
-                StringsOfLanguages.ENGLISH.mustabeenUlKhilqa,
-                StringsOfLanguages.URDU.mustabeenUlKhilqa
-            )
+            makeLabel(Ids.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
             checkBoxInput {
                 id = Ids.MUSTABEEN_CHECKBOX
                 name = Ids.MUSTABEEN_CHECKBOX
