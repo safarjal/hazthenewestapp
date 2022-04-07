@@ -250,7 +250,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     if(isDateOnly){
         returnStatement = strDays
     }
-    return(returnStatement)
+    return(returnStatement.trim().trimEnd())
 }
 
 fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
@@ -320,7 +320,7 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
             returnStatement = strDays
         }
     }
-    return(returnStatement)
+    return(returnStatement.trimEnd().trim())
 }
  fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT

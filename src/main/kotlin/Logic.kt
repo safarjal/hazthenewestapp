@@ -300,6 +300,7 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                     pregnancy.aadatNifas!!, istihazaAfter,-1, -1,
                     -1, mutableListOf())
                 fixedDurations[i].biggerThanForty=nifasInfo
+                pregnancy.newAadatNifas=pregnancy.aadatNifas
                 //the rest of this is dealt with in bigger than 10
                 //break it up into dam and tuhr?
                 //maybe do that later in bigger than 10
@@ -308,6 +309,10 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
             }else{//it is 40 or less
                 //do nothing to this. don't even bother to update aadat.
                 //maybe update aadat? if it's working, why fix?
+                //do update aadat
+                pregnancy.newAadatNifas = fixedDurations[i].timeInMilliseconds
+
+
             }
         }
 

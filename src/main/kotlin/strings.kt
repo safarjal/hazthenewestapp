@@ -92,9 +92,11 @@ val urduStrings = Strings(
     "date1 تا date2 کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
     "مبتداہ",
     "معتادہ",
-    "مسئلے کی نوعیت"
+    "مسئلے کی نوعیت",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
 
-)
+
+    )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
@@ -179,7 +181,7 @@ val englishStrings = Strings(
     "Purity",
     "duration1 dam\n\n",
     "duration1 purity (tuh'r)\n\n",
-    "duraion1 invalid purity (tuh'r-e-faasid)\n\n",
+    "duration1 invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 of istehadha + duration2 of purity (tuh'r) = duration3 of invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 haidh\n\n",
     "duration1 nifas\n\n",
@@ -214,9 +216,11 @@ val englishStrings = Strings(
     "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadia",
     "Mu'tada",
-    "Type of Masla"
+    "Type of Masla",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3 Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
 
-)
+
+    )
 
 object StringsOfLanguages{
     val URDU: Strings = urduStrings

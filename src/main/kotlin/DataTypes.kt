@@ -91,8 +91,10 @@ data class Strings(
     val daysayyameqabliyya:String,
     val mubtadia:String,
     val mutada:String,
-    val typeOfMasla:String
-)
+    val typeOfMasla:String,
+    val habitwithnifas: String,
+
+    )
 
 
 
@@ -148,7 +150,8 @@ data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
-    val mustabeenUlKhilqat:Boolean
+    val mustabeenUlKhilqat:Boolean,
+    var newAadatNifas: Long? = -1L
 )
 
 enum class DurationType {
