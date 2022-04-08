@@ -1,5 +1,6 @@
 
 val urduStrings = Strings(
+
     "${UnicodeChars.ROSE} <b>جواب:</b>\n\n",
     "اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "مبتداہ کو اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
@@ -60,7 +61,7 @@ val urduStrings = Strings(
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
     "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!",
     "کس طرح حل کرنا ہے؟",
-    "صرف دورانیہ",
+    "صرف دورانیہ کے ساتھ مسئلہ حل کیجیے",
     "دم و طہر",
     "دم",
     "طہر",
@@ -95,8 +96,10 @@ val urduStrings = Strings(
     "مسئلے کی نوعیت",
     "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
     "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n"
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
 
-)
+
+    )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
@@ -181,7 +184,7 @@ val englishStrings = Strings(
     "Purity",
     "duration1 dam\n\n",
     "duration1 purity (tuh'r)\n\n",
-    "duraion1 invalid purity (tuh'r-e-faasid)\n\n",
+    "duration1 invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 of istehadha + duration2 of purity (tuh'r) = duration3 of invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 haidh\n\n",
     "duration1 nifas\n\n",
@@ -190,8 +193,8 @@ val englishStrings = Strings(
     ", then the next duration1 are istehadha",
     ", then the next duration1 are haidh",
     ".\n\n",
-    "birth\n\n",
-    "pregnancy\n\n",
+    "Birth\n\n",
+    "Pregnancy\n\n",
     "The first duration1 are nifas",
     "If bleeding stops before date1 (3 days), and is followed by a 15 day" +
             " or more period of purity, then all of this will become istehadha.\n\n",
@@ -221,8 +224,10 @@ val englishStrings = Strings(
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haidh is 10 days, " +
             "and it is now ten days, please do ghusl and resume your ibadat./n/n"
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
 
-)
+
+    )
 
 object StringsOfLanguages{
     val URDU: Strings = urduStrings

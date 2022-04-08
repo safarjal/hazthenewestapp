@@ -9,7 +9,7 @@ import kotlin.time.toDuration
 
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
-const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+const val TAB:String = "&#x2800;&#x2800;&#x2800;&#x2800;&#x2800;"
 
 const val FORM_WIDTH_DATE_ONLY = 410
 const val FORM_WIDTH_DATE_TIME = 605
@@ -52,7 +52,6 @@ object Styles {
 }
 
 val Document.isHidden get() = this["hidden"] as Boolean
-
 
 private fun insertRelative(
     ownerDocument: Document,
@@ -251,7 +250,7 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     if(isDateOnly){
         returnStatement = strDays
     }
-    return(returnStatement)
+    return(returnStatement.trim().trimEnd())
 }
 
 fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
@@ -321,7 +320,7 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
             returnStatement = strDays
         }
     }
-    return(returnStatement)
+    return(returnStatement.trimEnd().trim())
 }
  fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
   //   Sat, 05 Jun 2021 06:21:59 GMT

@@ -22,7 +22,37 @@ body {
   --delete: rgb(145, 120, 142);
   --add: #0002;
   --urdu-font: Nastaleeq, serif;
+}
+
+#bg {
+  z-index: -100;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: var(--bg-color);
+  background: -moz-linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
+  background: -webkit-linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
+  background: linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
 }
 
 .rtl {
@@ -114,7 +144,6 @@ hr {
   width: clamp(min(517px, 100vw), 100vw, 517px);
 }
 
-
 .label-input {
   display: flex;
   flex-direction: column;
@@ -139,6 +168,11 @@ hr {
 details > summary.ikhtilaf {
   list-style-type: '⚙';
   margin: 1rem 1rem 0 1rem;
+  transition: 0.4s;
+}
+
+details[open] > summary.ikhtilaf {
+  list-style-type: '⚛';
 }
 
 details > b {
@@ -170,10 +204,6 @@ select {
 label {
   margin: 0.5rem 0.5rem 0 0.5rem;
   flex: 1;
-}
-
-#fasid {
-  margin: 0 0.5rem;
 }
 
 button {
@@ -295,19 +325,15 @@ p {
   font-size: 1.1rem;
 }
 
- /* The switch - the box around the slider */
- .switch {
+/* The switch - the box around the slider */
+.switch {
   position: relative;
   display: inline-block;
   --diameter: 20px;
   --margin: 3px;
-  width: calc(
-    calc(var(--diameter) * 2) + calc(var(--margin) * 2)
-    );
-  height: calc(
-    var(--diameter) + calc(var(--margin) * 2)
-    );
-  margin: 0.3rem 2rem;
+  width: calc(calc(var(--diameter) * 2) + calc(var(--margin) * 2));
+  height: calc(var(--diameter) + calc(var(--margin) * 2));
+  margin: 0.3rem;
 }
 
 /* Hide default HTML checkbox */
@@ -326,20 +352,20 @@ p {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: var(--diameter);
   width: var(--diameter);
   left: var(--margin);
   bottom: var(--margin);
   background-color: var(--primary1);
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
