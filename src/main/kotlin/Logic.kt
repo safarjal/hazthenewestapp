@@ -1763,11 +1763,15 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
 
     }else if(fixedDurations.last().type == DurationType.DAM_MUBTADIA&&
         fixedDurations.last().days>10){
-        var izitrariAadatHaiz=10*MILLISECONDS_IN_A_DAY
-        if(aadats.aadatHaiz!=-1L){
-            //we have aadat of haiz
-            izitrariAadatHaiz=aadats.aadatHaiz
+        var izitrariAadatHaiz=-1L
+        if(adatsOfHaizList.size>1){
+            if(adatsOfHaizList.last().index!=fixedDurations.lastIndex){
+                izitrariAadatHaiz=adatsOfHaizList.last().aadat
+            }else{
+                izitrariAadatHaiz=adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat
+            }
         }
+        if(izitrariAadatHaiz==-1L){izitrariAadatHaiz=10*MILLISECONDS_IN_A_DAY}
         val iztirariTuhrAadat = 30*MILLISECONDS_IN_A_DAY-izitrariAadatHaiz
         val lastDuration= fixedDurations.last().biggerThanTen!!.durationsList.last()
         if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<iztirariTuhrAadat){
@@ -1778,11 +1782,17 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
             futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
         }else if(lastDuration.type==DurationType.HAIZ){
-            val endOfTuhr = addTimeToDate(lastDuration.startTime, iztirariTuhrAadat)
+            val endOfTuhr = addTimeToDate(lastDuration.endDate, iztirariTuhrAadat)
             futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
         }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
             val endOfHaiz = addTimeToDate(lastDuration.endDate, izitrariAadatHaiz)
             val threeDays = addTimeToDate(lastDuration.endDate, 3*MILLISECONDS_IN_A_DAY)
+            futureDatesList+= FutureDateType(threeDays, TypesOfFutureDates.BEFORE_THREE_DAYS)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
+            futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
+        }else if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
+            val endOfHaiz = addTimeToDate(lastDuration.startTime, izitrariAadatHaiz)
+            val threeDays = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
             futureDatesList+= FutureDateType(threeDays, TypesOfFutureDates.BEFORE_THREE_DAYS)
             futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
             futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
@@ -1975,7 +1985,15 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList
     }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
         if(fixedDurations.last().days>10){
             var aadatTuhr:Long
-            var aadatHaz = fixedDurations.last().biggerThanTen!!.aadatHaiz
+            var aadatHaz = -1L
+            if(adatsOfHaizList.size>1){
+                if(adatsOfHaizList.last().index!=fixedDurations.lastIndex){
+                    aadatHaz=adatsOfHaizList.last().aadat
+                }else{
+                    aadatHaz=adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat
+                }
+            }
+
             val lastDurationType = fixedDurations.last().biggerThanTen!!.durationsList.last().type
             val lastDurationTime = fixedDurations.last().biggerThanTen!!.durationsList.last().timeInMilliseconds
             if(aadatHaz==-1L){
