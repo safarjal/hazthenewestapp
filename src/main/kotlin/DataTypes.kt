@@ -93,7 +93,7 @@ data class Strings(
     val mutada:String,
     val typeOfMasla:String,
     val askagainnodate:String,
-    val tendaysdoghusl:String
+    val tendaysdoghusl:String,
     val habitwithnifas: String,
 
     )

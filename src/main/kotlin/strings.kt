@@ -95,7 +95,7 @@ val urduStrings = Strings(
     "معتادہ",
     "مسئلے کی نوعیت",
     "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
-    "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n"
+    "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n",
     "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
 
 
@@ -223,7 +223,7 @@ val englishStrings = Strings(
     "If bleeding continues, or stops, but starts again " +
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haidh is 10 days, " +
-            "and it is now ten days, please do ghusl and resume your ibadat./n/n"
+            "and it is now ten days, please do ghusl and resume your ibadat./n/n",
     "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
 
 
