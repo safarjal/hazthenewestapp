@@ -1526,7 +1526,6 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
 
     }else if(fixedDurations.last().days<=10){
         if(aadats.aadatHaiz!=-1L){//if aadat of haiz exists
-            println("we got in this if")
             var endOfAadat = addTimeToDate(fixedDurations.last().startDate, aadats.aadatHaiz)
             val tenDays = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
             if(fixedDurations.last().days<3){//this is less than 3 dam, so prior aadat
@@ -1540,7 +1539,9 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 var gp = aadats.aadatTuhr
                 var hz = aadats.aadatHaiz
                 if(fixedDurations.size>1 &&
-                            (fixedDurations[fixedDurations.size-2].type==DurationType.TUHR||fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID)){
+                            (fixedDurations[fixedDurations.size-2].type==DurationType.TUHR||
+                                    fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID||
+                                    fixedDurations[fixedDurations.size-2].type==DurationType.TUHREFAASID_WITH_ISTEHAZA)){
                     mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds
                 }else if(inputtedMawjoodaTuhr!=null){
                     mp=inputtedMawjoodaTuhr
