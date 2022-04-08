@@ -1726,7 +1726,8 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             val aadatNifasEnd = addTimeToDate(fixedDurations.last().startDate, nifasAadat)
             futureDatesList+=FutureDateType(aadatNifasEnd,TypesOfFutureDates.IC_FORBIDDEN_DATE)
         }
-    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA && fixedDurations.last().days<=10){
+    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA &&
+        fixedDurations.last().days<=10){
         val tenDays = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
         futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
         if(aadats.aadatHaiz!=-1L){//we have a haiz aadat
@@ -1736,14 +1737,14 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             futureDatesList+=FutureDateType(endOfHaizAadat,TypesOfFutureDates.IHTIYATI_GHUSL)
         }
 
-    }else if(fixedDurations
-            .last().type == DurationType.DAM_MUBTADIA&& fixedDurations.last().days>10){
+    }else if(fixedDurations.last().type == DurationType.DAM_MUBTADIA&&
+        fixedDurations.last().days>10){
         var izitrariAadatHaiz=10*MILLISECONDS_IN_A_DAY
         if(aadats.aadatHaiz!=-1L){
             //we have aadat of haiz
             izitrariAadatHaiz=aadats.aadatHaiz
         }
-        val iztirariTuhrAadat = 30-izitrariAadatHaiz
+        val iztirariTuhrAadat = 30*MILLISECONDS_IN_A_DAY-izitrariAadatHaiz
         val lastDuration= fixedDurations.last().biggerThanTen!!.durationsList.last()
         if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<iztirariTuhrAadat){
             val endOfTuhr = addTimeToDate(lastDuration.startTime, iztirariTuhrAadat)
@@ -1954,9 +1955,9 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList
             val lastDurationType = fixedDurations.last().biggerThanTen!!.durationsList.last().type
             val lastDurationTime = fixedDurations.last().biggerThanTen!!.durationsList.last().timeInMilliseconds
             if(aadatHaz==-1L){
-                aadatHaz=10
+                aadatHaz=10*MILLISECONDS_IN_A_DAY
             }
-            aadatTuhr=30-aadatHaz
+            aadatTuhr=30*MILLISECONDS_IN_A_DAY-aadatHaz
             if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
                 filHaalPaki=false
             }else if(lastDurationType==DurationType.HAIZ){
