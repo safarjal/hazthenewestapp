@@ -294,8 +294,9 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     languageChange()
-    onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
-    disableByMasla(clonedInputsContainer)
+//    onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
+//    disableByMasla(clonedInputsContainer)
+    disableTree(clonedInputsContainer)
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
 
@@ -570,7 +571,8 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         select {
             id = Ids.MASLA_TYPE_SELECT
             onChangeFunction = { event ->
-                disableByMasla(findInputContainer(event))
+//                disableByMasla(findInputContainer(event))
+                disableTree(findInputContainer(event))
             }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
@@ -1167,7 +1169,8 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
+//    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
+    disableTree(inputContainer)
 }
 
 private fun disableByClass(classSelector: String, classInvis: String, inputContainer: HTMLElement, disable: Boolean) {
@@ -1187,6 +1190,18 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, CssC.INVIS, inputContainer, !inputContainer.isNifas)
     disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, inputContainer.isMubtadia)
+}
+
+private fun disableTree(inputContainer: HTMLElement) {
+    val isNifas = inputContainer.isNifas
+    val isMutada = inputContainer.isMutada
+    val isDateTime = !inputContainer.isDuration
+
+    disableByClass(CssC.DATETIME_AADAT, CssC.INVIS, inputContainer, !isDateTime)
+    disableByMasla(inputContainer)
+    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", CssC.INVIS, inputContainer, !isNifas || !isDateTime)
+    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, !isMutada || !isDateTime)
+
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
