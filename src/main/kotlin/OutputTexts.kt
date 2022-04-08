@@ -293,6 +293,11 @@ fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<Futur
         }else if(type==TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA){
             strUrdu += StringsOfLanguages.URDU.endofistehazaayyameqabliyya.replace("date1", "${urduDateFormat(date, isDateOnly)}")
             strEnglish += StringsOfLanguages.ENGLISH.endofistehazaayyameqabliyya.replace("date1", "${englishDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.TEN_DAYS_EXACTLY){
+            strUrdu+= StringsOfLanguages.URDU.tendaysdoghusl
+            strUrdu+= StringsOfLanguages.URDU.askagainnodate
+            strEnglish+= StringsOfLanguages.ENGLISH.tendaysdoghusl
+            strEnglish+=StringsOfLanguages.ENGLISH.askagainnodate
         }
     }
     return OutputStringsLanguages(strUrdu,strEnglish)
