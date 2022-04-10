@@ -208,9 +208,9 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizLi
             if(aadatHaz!=-1L&&mawjoodahTuhr==-1L){
                 //give error
                 if(language=="english"){
-                    window.alert("We need mawjooda tuhr to solve this masla")
+                    window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
                 }else if(language=="urdu"){
-                    window.alert("We need mawjooda tuhr to solve this masla")
+                    window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                 }
                 return null
             }
