@@ -91,8 +91,12 @@ data class Strings(
     val daysayyameqabliyya:String,
     val mubtadia:String,
     val mutada:String,
-    val typeOfMasla:String
-)
+    val typeOfMasla:String,
+    val askagainnodate:String,
+    val tendaysdoghusl:String,
+    val habitwithnifas: String,
+
+    )
 
 
 
@@ -114,13 +118,15 @@ enum class TypesOfFutureDates {
     IC_FORBIDDEN_DATE,
     IHTIYATI_GHUSL,
     BEFORE_TEN_DAYS_AYYAMEQABLIYYAH,
-    START_OF_AADAT_AYYAMEQABLIYYA
+    START_OF_AADAT_AYYAMEQABLIYYA,
+    TEN_DAYS_EXACTLY
 
 }
 
 class FutureDateType(
     val date:Date,
-    val futureDates:TypesOfFutureDates
+    val futureDates:TypesOfFutureDates,
+    val date2:Date? = null,
 )
 class EndingOutputValues(
     val filHaalPaki:Boolean?,
@@ -148,7 +154,8 @@ data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
-    val mustabeenUlKhilqat:Boolean
+    val mustabeenUlKhilqat:Boolean,
+    var newAadatNifas: Long? = -1L
 )
 
 enum class DurationType {

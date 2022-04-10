@@ -18,7 +18,7 @@ val urduStrings = Strings(
     "اگر خون date1 سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا date1 کو بھی غسل کر لیجیے۔\n\n",
     "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\nاگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي date1 سے پہلے صحبت کي اجازت نہيں۔\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>date1 تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: حیض: duration1، طہر: duration2</b>\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: حیض: duration1، پاکی: duration2</b>\n\n",
     "date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
     "${UnicodeChars.RED_CIRCLE} date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
     "${UnicodeChars.YELLOW_CIRCLE} date1 تا date2 کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
@@ -32,10 +32,10 @@ val urduStrings = Strings(
     "duration1 پاکی۔\n\n",
     "duration1 طہر فاسد۔\n\n",
     "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد۔\n\n",
-    "duration1 طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n",
+    "duration1 پاکی (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n",
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
     "اب سے  یہ معتادہ ہیں۔\n\n",
-    "ابھی حیض اور طہر کی کویٔ عادت نہیں۔\n\n",
+    "ابھی حیض اور پاکی کی کویٔ عادت نہیں۔\n\n",
     "حیض کی عادت duration1 ہے، البتہ ابھی پاکی کی کویٔ عادت نہیں۔\n\n",
     "زبان منتخب کریں:",
     "صرف تاریخ کے ساتھ مسئلہ حل کیجیے",
@@ -61,7 +61,7 @@ val urduStrings = Strings(
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
     "انتباہ: یہ ایپ صرف مسائل حیض میں ماہر علمائے کرام و عالمات کے استعمال کے لیے ہے، جو مسئلہ کے حل کے لیے درکار معلومات کی باریکیوں کو سمجھتے ہوں!",
     "کس طرح حل کرنا ہے؟",
-    "صرف دورانیہ",
+    "صرف دورانیہ کے ساتھ مسئلہ حل کیجیے",
     "دم و طہر",
     "دم",
     "طہر",
@@ -93,9 +93,13 @@ val urduStrings = Strings(
     "date1 تا date2 کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
     "مبتداہ",
     "معتادہ",
-    "مسئلے کی نوعیت"
+    "مسئلے کی نوعیت",
+    "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
+    "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
 
-)
+
+    )
 val englishStrings = Strings(
     "${UnicodeChars.ROSE}<b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
@@ -180,7 +184,7 @@ val englishStrings = Strings(
     "Purity",
     "duration1 dam\n\n",
     "duration1 purity (tuh'r)\n\n",
-    "duraion1 invalid purity (tuh'r-e-faasid)\n\n",
+    "duration1 invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 of istehadha + duration2 of purity (tuh'r) = duration3 of invalid purity (tuh'r-e-faasid)\n\n",
     "duration1 haidh\n\n",
     "duration1 nifas\n\n",
@@ -215,9 +219,15 @@ val englishStrings = Strings(
     "date1 to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadia",
     "Mu'tada",
-    "Type of Masla"
+    "Type of Masla",
+    "If bleeding continues, or stops, but starts again " +
+            "with gaps of less than 15 days, then please ask the masla again.\n\n",
+    "As the maximum duration for haidh is 10 days, " +
+            "and it is now ten days, please do ghusl and resume your ibadat./n/n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
 
-)
+
+    )
 
 object StringsOfLanguages{
     val URDU: Strings = urduStrings

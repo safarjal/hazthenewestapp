@@ -670,7 +670,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
-    div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
+    div(classes = "${CssC.ROW}") {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10))
     }

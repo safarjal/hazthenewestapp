@@ -105,8 +105,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             }
 
         }
-        strUrdu += outputStringFinalLines(isDateOnly, endingOutputValues, isDuration).urduString
-        strEnglish += outputStringFinalLines(isDateOnly, endingOutputValues, isDuration).englishString
+        strUrdu += outputStringFinalLines(isDateOnly, endingOutputValues, isDuration, pregnancy).urduString
+        strEnglish += outputStringFinalLines(isDateOnly, endingOutputValues, isDuration, pregnancy).englishString
 
 
 
@@ -190,13 +190,13 @@ fun generateUrduOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
     return str
 }
 
-fun outputStringFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutputValues, isDuration: Boolean):OutputStringsLanguages{
+fun outputStringFinalLines(isDateOnly: Boolean, endingOutputValues: EndingOutputValues, isDuration: Boolean, pregnancy: Pregnancy? = null):OutputStringsLanguages{
 
     var strUrdu = ""
     var strEnglish = ""
     val aadats = endingOutputValues.aadats
-    strUrdu+=outputStringAadatLine(isDateOnly, aadats).urduString
-    strEnglish+=outputStringAadatLine(isDateOnly, aadats).englishString
+    strUrdu+=outputStringAadatLine(isDateOnly, aadats, pregnancy).urduString
+    strEnglish+=outputStringAadatLine(isDateOnly, aadats, pregnancy).englishString
     if(isDuration){return OutputStringsLanguages(strUrdu,strEnglish)}
     val filHaal = endingOutputValues.filHaalPaki
     strUrdu+=outputStringFilHaalLine(filHaal).urduString
@@ -293,11 +293,16 @@ fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<Futur
         }else if(type==TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA){
             strUrdu += StringsOfLanguages.URDU.endofistehazaayyameqabliyya.replace("date1", "${urduDateFormat(date, isDateOnly)}")
             strEnglish += StringsOfLanguages.ENGLISH.endofistehazaayyameqabliyya.replace("date1", "${englishDateFormat(date, isDateOnly)}")
+        }else if(type==TypesOfFutureDates.TEN_DAYS_EXACTLY){
+            strUrdu+= StringsOfLanguages.URDU.tendaysdoghusl
+            strUrdu+= StringsOfLanguages.URDU.askagainnodate
+            strEnglish+= StringsOfLanguages.ENGLISH.tendaysdoghusl
+            strEnglish+=StringsOfLanguages.ENGLISH.askagainnodate
         }
     }
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):OutputStringsLanguages{
+fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?, pregnancy: Pregnancy?):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
 
@@ -315,12 +320,24 @@ fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?):Outp
             strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
                 .replace("duration1", "${daysHoursMinutesDigitalEnglish(aadatHaiz, isDateOnly)}")
         }else{
-            strUrdu+= StringsOfLanguages.URDU.habit
-                .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
-                .replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
-            strEnglish+= StringsOfLanguages.ENGLISH.habit
-                .replace("duration1", "${daysHoursMinutesDigitalEnglish(aadatHaiz, isDateOnly)}")
-                .replace("duration2", "${daysHoursMinutesDigitalEnglish(aadatTuhr, isDateOnly)}")
+            if(pregnancy!=null && pregnancy.newAadatNifas!=null && pregnancy.newAadatNifas!=-1L){
+                strUrdu+= StringsOfLanguages.URDU.habitwithnifas
+                    .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
+                    .replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
+                    .replace("duration3", "${daysHoursMinutesDigitalUrdu(pregnancy.newAadatNifas!!, isDateOnly)}")
+                strEnglish+= StringsOfLanguages.ENGLISH.habitwithnifas
+                    .replace("duration1", "${daysHoursMinutesDigitalEnglish(aadatHaiz, isDateOnly)}")
+                    .replace("duration2", "${daysHoursMinutesDigitalEnglish(aadatTuhr, isDateOnly)}")
+                    .replace("duration3", "${daysHoursMinutesDigitalEnglish(pregnancy.newAadatNifas!!, isDateOnly)}")
+            }
+            else{
+                strUrdu+= StringsOfLanguages.URDU.habit
+                    .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
+                    .replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
+                strEnglish+= StringsOfLanguages.ENGLISH.habit
+                    .replace("duration1", "${daysHoursMinutesDigitalEnglish(aadatHaiz, isDateOnly)}")
+                    .replace("duration2", "${daysHoursMinutesDigitalEnglish(aadatTuhr, isDateOnly)}")
+            }
         }
         OutputStringsLanguages(strUrdu, strEnglish)
     }
