@@ -1189,7 +1189,7 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
 }
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, CssC.INVIS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, inputContainer.isMubtadia)
+    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, !inputContainer.isMutada)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
