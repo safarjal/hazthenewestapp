@@ -2736,6 +2736,80 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+    @Test
+    fun testingMubtadiaFinalOutputsCase12() {
+        //dam >3,  >aadat
+        val entries = mutableListOf<Entry>(
+            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
+            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
+            Entry(Date(2022, 4, 7), Date(2022, 4, 12)),
+
+            )
+
+        val output = handleEntries(
+            entries,
+            null,
+            null, null,false,
+            isDateOnly = true,
+            isPregnancy = false,
+            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+            , isMubtadia = true,
+            language = "urdu")
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
+                mutableListOf(
+                    FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
+    fun testingMubtadiaFinalOutputsCase13() {
+        //dam 10 aadat
+        val entries = mutableListOf<Entry>(
+            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
+            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
+            Entry(Date(2022, 4, 7), Date(2022, 4, 17)),
+
+            )
+
+        val output = handleEntries(
+            entries,
+            null,
+            null, null,false,
+            isDateOnly = true,
+            isPregnancy = false,
+            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+            , isMubtadia = true,
+            language = "urdu")
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                null,
+                AadatsOfHaizAndTuhr(parseDays("10")!!, -1L),
+                mutableListOf(
+                    FutureDateType(Date(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
 
     
 }
