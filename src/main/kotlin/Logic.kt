@@ -88,7 +88,8 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
         removeTuhrLessThan15(fixedDurations)
         removeDamLessThan3(fixedDurations)
         addStartDateToFixedDurations(fixedDurations)
-        val aadats = dealWithMubtadiaDam(fixedDurations,adatsOfHaizList,adatsOfTuhrList, isEndOfDaurHaizIkhtilaf)
+        val aadats = dealWithMubtadiaDam(fixedDurations,adatsOfHaizList,adatsOfTuhrList, isEndOfDaurHaizIkhtilaf, inputtedAadatHaz, inputtedMawjoodaTuhr,language)
+        if(aadats==null){ return noOutput }
         markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations)
         //if we got aadats, the we run this portion
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
@@ -144,15 +145,23 @@ fun markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations:MutableList<FixedDurati
         }
     }
 }
-fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, endOfDaurIkhtilaf: Boolean):AadatsOfHaizAndTuhr{
+fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, endOfDaurIkhtilaf: Boolean, inputtedAadatHaz: Long?, inputtedMawjoodaTuhr: Long?, language: String):AadatsOfHaizAndTuhr?{
     //this is not in case of pregnancy
     //the job of this function is to just tell how much of it from the start is istehaza,
     // how much is haiz, and what the aadat at the end of this is
     //if we get an aadat, we return true, otherwise return false
-    var aadatHaz:Long = -1
-    var aadatTuhr:Long = -1
+    var aadatHaz:Long = -1L
+    var aadatTuhr:Long = -1L
     var iztirariAadatHaiz:Long = 10*MILLISECONDS_IN_A_DAY
     var iztirariAadatTuhr:Long = 20*MILLISECONDS_IN_A_DAY
+    if(inputtedAadatHaz!=null){
+        aadatHaz=inputtedAadatHaz
+        adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,-1)
+        iztirariAadatHaiz = aadatHaz
+        iztirariAadatTuhr = 30*MILLISECONDS_IN_A_DAY - iztirariAadatHaiz
+    }
+
+
 
     var i = 0
     while (i<fixedDurations.size){
@@ -185,14 +194,29 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizLi
             var istehazaAfter:Long
             //if there is an addat of tuhr, we would not be in mubtadia any more, so check iztirari
             var mawjoodahTuhr=-1L
-            if(i>0 && (fixedDurations[i-1].type==DurationType.TUHR||fixedDurations[i-1].type==DurationType.TUHREFAASID)){
+            if(i>0 &&
+                (fixedDurations[i-1].type==DurationType.TUHR||
+                        fixedDurations[i-1].type==DurationType.TUHREFAASID)){
 //                println("2")
 //                println("dam-e-fasid tuhr-e-fasid type 1")
                 //if there is a duration before this one, and it is either atuhr or a tuhr-e fasid
                 //then mawjoodah tuhr will be that + any istihaza after associated with it
                 mawjoodahTuhr = fixedDurations[i-1].timeInMilliseconds+fixedDurations[i-1].istihazaAfter
+            }else if(inputtedMawjoodaTuhr!=null){
+                mawjoodahTuhr=inputtedMawjoodaTuhr
             }
-            if(i>0 && mawjoodahTuhr < iztirariAadatTuhr && mawjoodahTuhr !=-1L){
+            if(aadatHaz!=-1L&&mawjoodahTuhr==-1L){
+                //give error
+                if(language=="english"){
+                    window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                }else if(language=="urdu"){
+                    window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
+                }
+                return null
+            }
+
+
+            if(mawjoodahTuhr < iztirariAadatTuhr && mawjoodahTuhr !=-1L){
 //                println("3")
 //                println("dam-e-fasid tuhr-e-fasid type2")
                 //if mawjoodah paki is less than iztirari aadat, then make the difference from the start istehaza
