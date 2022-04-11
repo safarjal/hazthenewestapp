@@ -1993,6 +1993,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
+                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(Date(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
                     FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
                     FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),

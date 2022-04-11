@@ -1554,7 +1554,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
-                }else if(lastDuration.type==DurationType.HAIZ){
+            }else if(lastDuration.type==DurationType.HAIZ){
                 val endOfTuhr = addTimeToDate(lastDuration.endDate, aadats.aadatTuhr)
                 futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
             }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER){
@@ -1563,7 +1563,8 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IC_FORBIDDEN_DATE)
             }else if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
-//                println("got here")
+                val threeDays = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
+                futureDatesList+= FutureDateType(threeDays, TypesOfFutureDates.BEFORE_THREE_DAYS)
                 val endOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 futureDatesList+= FutureDateType(endOfHaiz, TypesOfFutureDates.IHTIYATI_GHUSL)
