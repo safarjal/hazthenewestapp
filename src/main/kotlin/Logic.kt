@@ -1616,7 +1616,9 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             if(fixedDurations.last().days<3){//this is less than 3 dam, so prior aadat
                 val threeDays = addTimeToDate(fixedDurations.last().startDate, 3*MILLISECONDS_IN_A_DAY)
                 futureDatesList+=FutureDateType(threeDays, TypesOfFutureDates.BEFORE_THREE_DAYS)
-                futureDatesList+=FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                if(fixedDurations.last().type!=DurationType.DAM_MUBTADIA){
+                    futureDatesList+=FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                }
                 futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
 
                 //ihtiyati ghusl calculation
@@ -1628,10 +1630,11 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
             }else if(previousAadat!=-1L&&
                 fixedDurations.last().timeInMilliseconds<previousAadat){
                 //there is a prior aadat of haiz, and this is less than aadat, more than 3
-                println("in this if")
 
                 endOfAadat = addTimeToDate(fixedDurations.last().startDate, previousAadat)
-                futureDatesList+=FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                if(fixedDurations.last().type!=DurationType.DAM_MUBTADIA) {
+                    futureDatesList += FutureDateType(endOfAadat, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                }
                 futureDatesList+=FutureDateType(tenDays,TypesOfFutureDates.AFTER_TEN_DAYS)
 
                 //ihtiyati ghusl calculation

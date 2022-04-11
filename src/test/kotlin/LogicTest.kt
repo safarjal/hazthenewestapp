@@ -2648,7 +2648,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
                     FutureDateType(Date(2022,4, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
                     FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
@@ -2687,7 +2686,6 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("3")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
                     FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
