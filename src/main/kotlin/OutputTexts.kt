@@ -66,7 +66,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             strEnglish += StringsOfLanguages.ENGLISH.beforepregheader
         }
         for(index in fixedDurations.indices){
-            if(isDuration){
+            if(isDuration) {
                 strUrdu += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly).urduString
                 strEnglish += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly).englishString
                 strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index, isDateOnly).urduString
@@ -221,9 +221,9 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
     val filHaalHaizStrUrdu = StringsOfLanguages.URDU.currenthaiz
     val filHaalHaizStrEnglish = StringsOfLanguages.ENGLISH.currenthaiz
     when (filHaalPaki) {
-        true -> return OutputStringsLanguages(filHaalPakiStrUrdu,filHaalPakiStrEnglish)
+        true -> return OutputStringsLanguages(filHaalPakiStrUrdu, filHaalPakiStrEnglish)
         false -> return OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
-        null -> return OutputStringsLanguages("","")
+        null -> return OutputStringsLanguages("", "")
 
 //    //right now, we are just going to check to see what last halat is
 //    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
@@ -249,6 +249,7 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
 //    }
 
 //    return strUrdu
+    }
 }
 
 fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):OutputStringsLanguages{
@@ -844,7 +845,8 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
 //    }
 //   return str
 //}
-fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String{
+
+fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String {
     var str = ""
     for( durationType in durationTypes){
         var type = ""
