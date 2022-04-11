@@ -157,7 +157,7 @@ fun parseDays(input: String): Long? {
 
     val sections = input.split(':')
 
-    var days = sections[0].toLong()
+    val days = sections[0].toLong()
     var millisecs:Long = days * MILLISECONDS_IN_A_DAY
 
     val hours = sections.getOrNull(1)?.toInt() ?: return millisecs
@@ -168,9 +168,6 @@ fun parseDays(input: String): Long? {
     require(minutes in 0 until 60) { "Invalid minutes value" }
     millisecs += minutes * MILLISECONDS_IN_A_MINUTE
 
-    if (hours != null && minutes != null) {     // Still relevant? Can't we remove this?
-        return millisecs
-    }
     return millisecs
 }
 
@@ -192,13 +189,13 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
 
     val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
 
-    var strHours = when (hours) {
+    val strHours = when (hours) {
         1.0 -> "$hours گھنٹہ"
         0.0 -> ""
         else -> "$hours گھنٹے"
     }
-    var strMinutes = if (minutes == 0.0) "" else "$minutes منٹ"
-    var strDays = if (days == 0.0) "" else "$days دن"
+    val strMinutes = if (minutes == 0.0) "" else "$minutes منٹ"
+    val strDays = if (days == 0.0) "" else "$days دن"
 
 //    if(hours == 1.0){
 //        strHours = "$hours گھنٹہ"
@@ -303,7 +300,7 @@ fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTi
 //         10 -> urduMonth = "نومبر"
 //         11 -> urduMonth = "دسمبر"
 //     }
-     var urduMonth = urduMonthNames[month]
+     val urduMonth = urduMonthNames[month]
      val urduDay:String = if (day == "1") "یکم" else day
 
      if (isDateOnly) return ("$urduDay $urduMonth")
@@ -312,11 +309,12 @@ fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTi
          val minutes = date.getUTCMinutes()
          val strMinutes:String = if(minutes < 10) "0${minutes}" else minutes.toString()
 
-         var ampm:String = "رات" //7pm-3am
-
-         if (hours in 4..11) ampm = "صبح" //4am-11am
-         else if (hours in 12..14) ampm = "دوپہر" //12pm-2pm
-         else if(hours in 15..18) ampm = "شام" //3pm-6pm
+         val ampm = when (hours) {
+             in 4..11 -> "صبح" //4am-11am
+             in 12..14 -> "دوپہر" //12pm-2pm
+             in 15..18 -> "شام" //3pm-6pm
+             else -> "رات" //7pm-3am
+         }
 
          if (hours >=12) hours -= 12
          if (hours == 0) hours = 12
