@@ -157,8 +157,8 @@ fun parseDays(input: String): Long? {
 
     val sections = input.split(':')
 
-    var days = sections[0].toInt()
-    var millisecs:Long = days.toLong() * MILLISECONDS_IN_A_DAY
+    var days = sections[0].toLong()
+    var millisecs:Long = days * MILLISECONDS_IN_A_DAY
 
     val hours = sections.getOrNull(1)?.toInt() ?: return millisecs
     require(hours in 0 until 24) { "Invalid hours value" }
@@ -256,16 +256,13 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
         else if(strDays.isNotEmpty() && strMinutes.isNotEmpty()) "$strDays and $strMinutes"
         else if(strHours.isNotEmpty() && strMinutes.isNotEmpty()) "$strHours and $strMinutes"
 
-        else if(strDays.isNotEmpty()) strDays
-        else if(strHours.isNotEmpty()) strHours
-        else if(strMinutes.isNotEmpty()) strMinutes
-
         else if(strDays.isEmpty() && strHours.isEmpty() && strMinutes.isEmpty()) "0 minutes"
-        else "error!!!"
+
+        else strDays + strHours + strMinutes
 
     if(isDateOnly) returnStatement = if (days == 1.0) "1 day" else strDays
 
-    return(returnStatement.trimEnd().trim())
+    return returnStatement.trimEnd().trim()
 }
 
  fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
