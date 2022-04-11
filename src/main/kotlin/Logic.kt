@@ -1752,7 +1752,7 @@ fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: L
         fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
         fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=
         fixedDurations.last().timeInMilliseconds){
-        //A-3 shifting to A-2, has entered aadat, but not 3 days yet
+        //A-3 shifting to A-2, has entered aadat, but not 3 days into makan yet
         //we will give it previous aadat of haiz and tuhr, according to A-1, though it could remain A-3
         //as this is an unusual and unique thing, we deal with it first
         return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,

@@ -115,9 +115,9 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
         strEnglish += StringsOfLanguages.ENGLISH.headerline
 
         for(index in fixedDurations.indices){
-            strUrdu += outputStringHeaderLine(fixedDurations,index, isDateOnly, mustabeen).urduString
-            strEnglish += outputStringHeaderLine(fixedDurations,index, isDateOnly, mustabeen).englishString
             if(isDuration){
+                strUrdu += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly, mustabeen).urduString
+                strEnglish += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly, mustabeen).englishString
                 strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index, isDateOnly).urduString
                 strEnglish += outputStringBiggerThan10HallDurations(fixedDurations,index, isDateOnly).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
@@ -125,8 +125,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                     strEnglish += StringsOfLanguages.ENGLISH.preg
                 }
                 if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                    strUrdu += StringsOfLanguages.URDU.earlymiscarriage.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
-                    strEnglish += StringsOfLanguages.ENGLISH.earlymiscarriage.replace("date1", "${englishDateFormat(birthTime, isDateOnly)}")
+                    strUrdu += StringsOfLanguages.URDU.earlymiscarriageduration
+                    strEnglish += StringsOfLanguages.ENGLISH.earlymiscarriageduration
                     if(index<fixedDurations.size-2){//if there is something after wiladat
                         strUrdu += StringsOfLanguages.URDU.afterpregheader
                         strEnglish += StringsOfLanguages.ENGLISH.afterpregheader
@@ -134,6 +134,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
 
             }else{
+                strUrdu += outputStringHeaderLine(fixedDurations,index, isDateOnly, mustabeen).urduString
+                strEnglish += outputStringHeaderLine(fixedDurations,index, isDateOnly, mustabeen).englishString
                 strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, isDateOnly).urduString
                 strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, isDateOnly).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
