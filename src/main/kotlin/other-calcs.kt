@@ -1,5 +1,4 @@
 import kotlinx.browser.document
-import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
@@ -26,17 +25,17 @@ fun mainOtherCalcs(){
 }
 
 fun addCalcsGetDuration(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyGetDuration.checked
-    var startDate = Date(addCalcsStrtDate.valueAsNumber)
-    var endDate = Date(addCalcsEndDate.valueAsNumber)
+    val isDateOnly:Boolean = addCalcsIsDateOnlyGetDuration.checked
+    val startDate = Date(addCalcsStrtDate.valueAsNumber)
+    val endDate = Date(addCalcsEndDate.valueAsNumber)
     var strUrdu = ""
     var strEnglish = ""
-    if(startDate!=null && endDate!=null && startDate.getTime()<endDate.getTime()){
-        var result = (endDate.getTime()-startDate.getTime()).toLong()
+    if(startDate != null && endDate != null && startDate.getTime() < endDate.getTime()){
+        val result = (endDate.getTime()-startDate.getTime()).toLong()
         strUrdu = daysHoursMinutesDigitalUrdu(result,isDateOnly)
         strEnglish = daysHoursMinutesDigitalEnglish(result, isDateOnly)
     }
-    var resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
+    val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
     if(languageSelecter.value=="urdu"){
         addCalcsOutputDuration.innerHTML = resultStrings.urduString
     }else if(languageSelecter.value=="english"){
@@ -60,21 +59,20 @@ fun addListeners(){
     addCalcsIsDateTimeGetDuration.onchange = {switchDateTime("calculate-duration")}
     addCalcsButtonAddTimeToDate.onclick = {addTimeToDateButtonClick()}
     addCalcsButtonGetDuration.onclick = {getDurationButtonClick()}
-
 }
 
 fun addCalcsAddTimeToDate(){
-    var isDateOnly:Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
-    var date = Date(addCalcsDateToAddTo.valueAsNumber)
-    var duration = parseDays(addCalcsDurationToAdd.value)
+    val isDateOnly:Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
+    val date = Date(addCalcsDateToAddTo.valueAsNumber)
+    val duration = parseDays(addCalcsDurationToAdd.value)
     var strResultUrdu = ""
     var strResultEnglish = ""
     if(duration!=null&&date!=null){
-        var result = addTimeToDate(date,duration)
+        val result = addTimeToDate(date,duration)
         strResultEnglish = englishDateFormat(result,isDateOnly)
         strResultUrdu = urduDateFormat(result,isDateOnly)
     }
-    var resultStrings = OutputStringsLanguages(strResultUrdu,strResultEnglish)
+    val resultStrings = OutputStringsLanguages(strResultUrdu,strResultEnglish)
     if(languageSelecter.value=="urdu"){
         addCalcsOutputDate.innerHTML = resultStrings.urduString
     }else if(languageSelecter.value=="english"){
@@ -107,8 +105,8 @@ fun getDurationButtonClick(){
 }
 
 fun addTimeToDateButtonClick(){
-    if(addCalcsDurationToAdd!=null && addCalcsDateToAddTo.valueAsNumber!=null){
-        val result = addTimeToDate(Date(addCalcsDateToAddTo.valueAsNumber), parseDays(addCalcsDurationToAdd.value!!)!!)
+    if(addCalcsDurationToAdd != null && addCalcsDateToAddTo.valueAsNumber != null){
+        val result = addTimeToDate(Date(addCalcsDateToAddTo.valueAsNumber), parseDays(addCalcsDurationToAdd.value)!!)
         addCalcsDateToAddTo.value=result.toDateInputString(addCalcsIsDateOnlyAddTimeToDate.checked)
         addCalcsDurationToAdd.value=""
         addCalcsAddTimeToDate()

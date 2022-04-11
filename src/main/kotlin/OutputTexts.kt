@@ -66,7 +66,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             strEnglish += StringsOfLanguages.ENGLISH.beforepregheader
         }
         for(index in fixedDurations.indices){
-            if(isDuration){
+            if(isDuration) {
                 strUrdu += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly).urduString
                 strEnglish += outputStringHeaderLineDuration(fixedDurations,index, isDateOnly).englishString
                 strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index, isDateOnly).urduString
@@ -220,14 +220,11 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
     val filHaalPakiStrEnglish = StringsOfLanguages.ENGLISH.currentpaki
     val filHaalHaizStrUrdu = StringsOfLanguages.URDU.currenthaiz
     val filHaalHaizStrEnglish = StringsOfLanguages.ENGLISH.currenthaiz
-    if(filHaalPaki==true){
-        return OutputStringsLanguages(filHaalPakiStrUrdu,filHaalPakiStrEnglish)
-    }else if(filHaalPaki==false){
-        return OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
-    }else if(filHaalPaki==null){
-        return OutputStringsLanguages("","")
-    }
-    return OutputStringsLanguages("","")
+    when (filHaalPaki) {
+        true -> return OutputStringsLanguages(filHaalPakiStrUrdu, filHaalPakiStrEnglish)
+        false -> return OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
+        null -> return OutputStringsLanguages("", "")
+
 //    //right now, we are just going to check to see what last halat is
 //    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
 //    var aadatHaiz = fixedDurations[index].biggerThanTen?.aadatHaiz ?: return ""
@@ -252,6 +249,7 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
 //    }
 
 //    return strUrdu
+    }
 }
 
 fun outputStringAskAgainLine(isDateOnly: Boolean, futureDates: MutableList<FutureDateType>):OutputStringsLanguages{
@@ -306,21 +304,20 @@ fun outputStringAadatLine(isDateOnly: Boolean, aadats:AadatsOfHaizAndTuhr?, preg
     var strUrdu = ""
     var strEnglish = ""
 
-    return if(aadats==null){
-        OutputStringsLanguages("","")
-    }else{
+    return if (aadats==null) OutputStringsLanguages("","")
+    else {
         val aadatTuhr = aadats.aadatTuhr
         val aadatHaiz = aadats.aadatHaiz
         if(aadatHaiz==-1L && aadatTuhr==-1L){
-            strUrdu+= StringsOfLanguages.URDU.thereisnoaadat
-            strEnglish+= StringsOfLanguages.ENGLISH.thereisnoaadat
+            strUrdu += StringsOfLanguages.URDU.thereisnoaadat
+            strEnglish += StringsOfLanguages.ENGLISH.thereisnoaadat
         }else if(aadatHaiz!=-1L && aadatTuhr==-1L){
             strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly
                 .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
             strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
                 .replace("duration1", "${daysHoursMinutesDigitalEnglish(aadatHaiz, isDateOnly)}")
         }else{
-            if(pregnancy!=null && pregnancy.newAadatNifas!=null && pregnancy.newAadatNifas!=-1L){
+            if(pregnancy?.newAadatNifas != null && pregnancy.newAadatNifas!=-1L){
                 strUrdu+= StringsOfLanguages.URDU.habitwithnifas
                     .replace("duration1", "${daysHoursMinutesDigitalUrdu(aadatHaiz, isDateOnly)}")
                     .replace("duration2", "${daysHoursMinutesDigitalUrdu(aadatTuhr, isDateOnly)}")
@@ -848,7 +845,8 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
 //    }
 //   return str
 //}
-fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String{
+
+fun generateGetDifferenceString(durationTypes:MutableList<DurationTypes>):String {
     var str = ""
     for( durationType in durationTypes){
         var type = ""

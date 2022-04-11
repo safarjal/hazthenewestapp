@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import kotlin.js.Date
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,9 +19,9 @@ class LogicTest {
     @Test
     fun testRemoveDamLessThan3(){
         val durations = mutableListOf(
-            FixedDuration(DurationType.TUHR, timeInMilliseconds=(86400000*15).toLong()),
-            FixedDuration(DurationType.DAM, timeInMilliseconds=(86400000*2).toLong()),
-            FixedDuration(DurationType.TUHR, timeInMilliseconds=(86400000*15).toLong())
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*15)),
+            FixedDuration(DurationType.DAM, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*2)),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*15))
         )
         removeDamLessThan3(durations)
         //expected that the size will be 1
@@ -1886,7 +1888,7 @@ class LogicTest {
         }
     }
     @Test
-    fun BugMaslaDescribedInIssue67() {
+    fun bugMaslaDescribedInIssue67() {
         //A-3 changing to A-1
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
@@ -1923,7 +1925,7 @@ class LogicTest {
         }
     }
     @Test
-    fun BugMaslaDescribedInIssue103() {
+    fun bugMaslaDescribedInIssue103() {
         //pregnancy
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
@@ -1964,7 +1966,7 @@ class LogicTest {
         }
     }
     @Test
-    fun BugMaslaDescribedInIssue116() {
+    fun bugMaslaDescribedInIssue116() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2021, 11, 10), Date(2021, 11, 16))
@@ -2006,7 +2008,7 @@ class LogicTest {
         }
     }
     @Test
-    fun BugMaslaOccured17March2022() {
+    fun bugMaslaOccured17March2022() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
@@ -2061,12 +2063,12 @@ class LogicTest {
     @Test
     fun parseDaysTest3(){
         val str = "17:17:30:9"
-        val expectedOutput:Long? = 1531800000
+        val expectedOutput: Long = 1531800000
         assertEquals(expectedOutput, parseDays(str))
     }
 
     @Test
-    fun BugMaslaDescribedInIssue130() {
+    fun bugMaslaDescribedInIssue130() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
@@ -2306,7 +2308,7 @@ class LogicTest {
     @Test
     fun testBugMaslaIssue138() {
         //AyyameQabliyya
-        val entries = mutableListOf<Entry>(//each month has to be one minus the real
+        val entries = mutableListOf(//each month has to be one minus the real
             Entry(Date(2022, 0, 13), Date(2022, 0, 19)),
             Entry(Date(2022, 1, 22), Date(2022, 1, 27)),
             Entry(Date(2022, 2, 17), Date(2022, 2, 31)),
@@ -2355,7 +2357,7 @@ class LogicTest {
     @Test
     fun testBugMaslaIssue147() {
         //missing ihtiyati ghusl
-        val entries = mutableListOf<Entry>(//each month has to be one minus the real
+        val entries = mutableListOf(//each month has to be one minus the real
             Entry(Date(2021, 10, 8), Date(2021, 10, 13)),
             Entry(Date(2021, 10, 30), Date(2021, 11, 8)),
             Entry(Date(2021, 11, 28), Date(2022, 0, 2)),
@@ -2623,7 +2625,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase9() {
         //dam <3,  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 8)),
@@ -2663,7 +2665,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase10() {
         //dam >3,  <aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 10)),
@@ -2702,7 +2704,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase11() {
         //dam >3,  >aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 11)),
@@ -2739,7 +2741,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase12() {
         //dam >3,  >aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 12)),
@@ -2776,7 +2778,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase13() {
         //dam 10 aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 17)),
@@ -2813,7 +2815,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase14() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 4, 18)),
@@ -2850,7 +2852,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase15() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 5, 7)),
@@ -2889,7 +2891,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase16() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 5, 8)),
@@ -2928,7 +2930,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase17() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 5, 9)),
@@ -2966,7 +2968,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase18() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 5, 10)),
@@ -3003,7 +3005,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase19() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
             Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
             Entry(Date(2022, 4, 7), Date(2022, 5, 11)),
@@ -3040,7 +3042,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaUsingInputtedAadat() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
             )
 
@@ -3055,7 +3057,7 @@ class LogicTest {
             language = "urdu")
 
         val hazDatesList = output.hazDatesList
-        val expectedHazDatesList = mutableListOf<Entry>(
+        val expectedHazDatesList = mutableListOf(
             Entry(Date(2022, 2, 1), Date(2022,2,8))
         )
 
@@ -3083,7 +3085,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaUsingInputtedAadat2() {
         //dam bigger than 10  aadat
-        val entries = mutableListOf<Entry>(
+        val entries = mutableListOf(
             Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
         )
 
@@ -3098,7 +3100,7 @@ class LogicTest {
             language = "urdu")
 
         val hazDatesList = output.hazDatesList
-        val expectedHazDatesList = mutableListOf<Entry>(
+        val expectedHazDatesList = mutableListOf(
             Entry(Date(2022, 2, 2), Date(2022,2,9))
         )
 
