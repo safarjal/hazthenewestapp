@@ -11,7 +11,7 @@ import kotlin.time.toDuration
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
 const val MILLISECONDS_IN_AN_HOUR = 3600000
 const val MILLISECONDS_IN_A_MINUTE = 60000
-const val TAB:String = "&#x2800;&#x2800;&#x2800;&#x2800;&#x2800;"
+const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 val MonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -32,6 +32,7 @@ object UnicodeChars {
     const val ROSE = "&#128221;"                    // MEMO
     const val RAINBOW = "&#9997;&#65039;"           // HAND_WRITING
     const val BLUE_SWIRL = "\uD83C\uDF00"
+    const val ABACUS = "&#129518;"
 }
 
 object Styles {
