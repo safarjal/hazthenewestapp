@@ -294,8 +294,6 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     languageChange()
-//    onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
-//    disableByMasla(clonedInputsContainer)
     disableTree(clonedInputsContainer)
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
@@ -436,7 +434,7 @@ private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
 
     val questionTxt = findInputContainer(event).questionText.value
-    val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var dateStr = getNow()
 
@@ -570,10 +568,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
             id = Ids.MASLA_TYPE_SELECT
-            onChangeFunction = { event ->
-//                disableByMasla(findInputContainer(event))
-                disableTree(findInputContainer(event))
-            }
+            onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
@@ -619,6 +614,7 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String, input
         id = inputId
         name = inputId
         value = inputVal
+        placeholder = "DD:HH:MM"
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(inputRange) }
         block()
     }
@@ -1202,6 +1198,11 @@ private fun disableTree(inputContainer: HTMLElement) {
     disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", CssC.INVIS, inputContainer, !isNifas || !isDateTime)
     disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, !isMutada || !isDateTime)
 
+    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+    if (inputContainer.isMubtadia) {
+        mawjoodaFasidCheck.checked = true
+        mawjoodaFasidCheck.disabled = true
+    }
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
