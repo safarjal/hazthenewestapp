@@ -785,7 +785,7 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         //find  remainder
 
         val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
-        if(daurHaizIkhtilaf && remainder+aadatHaz<=10*MILLISECONDS_IN_A_DAY){
+        if(daurHaizIkhtilaf && remainder+aadatHaz<=10*MILLISECONDS_IN_A_DAY){//ikhtlafi masla
             returnAadatHaiz = remainder+aadatHaz
         }else if (remainder<aadatTuhr + (3*MILLISECONDS_IN_A_DAY)){//it ended in tuhr or right between haz and tuhr
             //add istihazaAfter to next Tuhur mark it as fasid
@@ -1747,112 +1747,102 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
 }
 
 fun finalAadats(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):AadatsOfHaizAndTuhr{
-    if(fixedDurations.last().type==DurationType.DAM&&fixedDurations.last().days>10) {
-        val lastDurationOfBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
-        var haizAadat = -1L
-        var tuhrAadat = -1L
-
-        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
-                fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=fixedDurations.last().timeInMilliseconds){
-            haizAadat=fixedDurations.last().biggerThanTen!!.haiz
-            tuhrAadat=fixedDurations.last().biggerThanTen!!.gp
-        }else{
-            if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER) {
-                //if it ended in paki
-                haizAadat=fixedDurations.last().biggerThanTen!!.haiz
-                tuhrAadat=fixedDurations.last().biggerThanTen!!.aadatTuhr
-
-            } else if (lastDurationOfBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
-                //it ended in a haiz less than 3, no tension
-                if (fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3){
-                    haizAadat=fixedDurations.last().biggerThanTen!!.hz
-                    tuhrAadat=fixedDurations.last().biggerThanTen!!.gp
-                }else{
-                    haizAadat=fixedDurations.last().biggerThanTen!!.haiz
-                    tuhrAadat=fixedDurations.last().biggerThanTen!!.aadatTuhr
-                }
-            } else {
-                haizAadat=fixedDurations.last().biggerThanTen!!.haiz
-                tuhrAadat=fixedDurations.last().biggerThanTen!!.aadatTuhr
-            }
-        }
-        if(lastDurationOfBiggerThanTen.type==DurationType.HAIZ &&
-            lastDurationOfBiggerThanTen.timeInMilliseconds>fixedDurations.last().biggerThanTen!!.haiz){//for ikhtilafi masla
-            haizAadat=lastDurationOfBiggerThanTen.timeInMilliseconds
-        }
-
-        return AadatsOfHaizAndTuhr(haizAadat,tuhrAadat)
-    }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA&&fixedDurations.last().days>10){
-        //this is a bigger than 10 mubtadia dam and the last thing
-        return AadatsOfHaizAndTuhr(
-            fixedDurations.last().biggerThanTen!!.aadatHaiz,
-            fixedDurations.last().biggerThanTen!!.aadatTuhr
-        )
-    }else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
-        val lastDurationBiggerThanForty = fixedDurations.last().biggerThanForty!!.durationsList.last()
-
-        return if(lastDurationBiggerThanForty.type==DurationType.ISTIHAZA_AFTER){
-            //if it ended in paki, no tension
-            AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
-        }else if(lastDurationBiggerThanForty.type==DurationType.LESS_THAN_3_HAIZ){
-            //it ended in a haiz less than 3, no tension
-            AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
-        }else{
-            //it ended in a hiaz more than 3. We are not going to give that haiz as aadat
-            AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz,fixedDurations.last().biggerThanForty!!.aadatTuhr)
-        }
-    }else if(fixedDurations.last().days<=10 &&
-        (fixedDurations.last().type==DurationType.DAM||
-                fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
-        //this portion is done
-        var aadatHaiz:Long
-        if(fixedDurations.last().timeInMilliseconds>=3*MILLISECONDS_IN_A_DAY){
-            aadatHaiz=fixedDurations.last().timeInMilliseconds
-        }else{
-            aadatHaiz=adatsOfHaizList.last().aadat
-        }
-        val aadatTuhr:Long
-        if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
-            aadatTuhr=-1L
-            return AadatsOfHaizAndTuhr(aadatHaiz,aadatTuhr)
-        }
-        return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
-//        var i = fixedDurations.lastIndex
-//        while (i>0){
-//            i--
-//            if(fixedDurations[i].type == DurationType.TUHR ||
-//                    fixedDurations[i].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
-//                aadatTuhr=fixedDurations[i].timeInMilliseconds
-//                return AadatsOfHaizAndTuhr(aadatHaiz,aadatTuhr)
-//            }else if((fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10)||
-//                (fixedDurations[i].type==DurationType.DAM_MUBTADIA && fixedDurations[i].days>10)){
-//                aadatTuhr = fixedDurations[i].biggerThanTen!!.aadatTuhr
-//                return AadatsOfHaizAndTuhr(aadatHaiz, aadatTuhr)
-//            }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAS_PERIOD &&
-//                    fixedDurations[i].timeInMilliseconds>=(40+15+3)*MILLISECONDS_IN_A_DAY){
-//                aadatTuhr= fixedDurations[i].biggerThanForty!!.aadatTuhr
-//                return AadatsOfHaizAndTuhr(aadatHaiz, aadatTuhr)
-//            }
-//        }
-//        if (i==0){
-//            //we gotta access inputted, if any
-//            if(!isMawjoodaFasid && inputtedMawjoodaTuhr!=null){
-//                aadatTuhr=inputtedMawjoodaTuhr
-//            }else if(inputtedAadatTuhr!=null){
-//                aadatTuhr=inputtedAadatTuhr
-//            }else{
-//                aadatTuhr=-1
-//            }
-//            return AadatsOfHaizAndTuhr(aadatHaiz, aadatTuhr)
-//        }
-
-    }else if(fixedDurations.last().days<=40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
-        return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat, adatsOfTuhrList.last().aadat )
-
-    }else if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+    if(fixedDurations.last().type==DurationType.DAM &&
+        fixedDurations.last().days>10 &&
+        fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
+        fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=
+        fixedDurations.last().timeInMilliseconds){
+        //A-3 shifting to A-2, has entered aadat, but not 3 days yet
+        //we will give it previous aadat of haiz and tuhr, according to A-1, though it could remain A-3
+        //as this is an unusual and unique thing, we deal with it first
+        return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
+            adatsOfTuhrList[adatsOfTuhrList.lastIndex-1].aadat)
+    }
+    if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         return AadatsOfHaizAndTuhr(fixedDurations.last().ayyameqabliyya!!.aadatHaiz, fixedDurations.last().ayyameqabliyya!!.aadatTuhr)
     }
-    return AadatsOfHaizAndTuhr(-1L,-1L)
+    if(adatsOfHaizList.last().index!=-1 &&
+        adatsOfHaizList[adatsOfHaizList.lastIndex-1].index==fixedDurations.lastIndex){
+        //Anam says, that in case of daur, if it ends at less than the aadat of haiz...
+        //we give previous aadat of haiz, and not the current one
+        //when there are 2 aadats at same index, that indicates daur, with
+        // an aadat change at the end of it. So if the aadat changed at the last index, twice
+        //there was daur.
+        return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat, adatsOfTuhrList.last().aadat)
+    }
+
+    return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
+
+
+//    if(fixedDurations.last().type==DurationType.DAM&&
+//        fixedDurations.last().days>10) {//ends at bigger than 10 mutadah
+//        val lastDurationOfBiggerThanTen = fixedDurations.last().biggerThanTen!!.durationsList.last()
+//        var haizAadat = -1L
+//        var tuhrAadat = -1L
+//
+//        if(fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
+//                fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=
+//            fixedDurations.last().timeInMilliseconds){
+//            //A-3 shifting to A-2, has entered aadat, but not 3 days yet
+//            //we will give it previous aadat of haiz and tuhr, according to A-1, though it could remain A-3
+//            //as this is an unusual and unique thing, we deal with it first
+//            haizAadat=adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat
+//            tuhrAadat=adatsOfTuhrList[adatsOfTuhrList.lastIndex-1].aadat
+//        }else{
+//            if (lastDurationOfBiggerThanTen.type == DurationType.ISTIHAZA_AFTER||
+//                lastDurationOfBiggerThanTen.type == DurationType.LESS_THAN_3_HAIZ) {
+//                //if it ended in paki, last aadats are the right ones
+//                haizAadat=adatsOfHaizList.last().aadat
+//                tuhrAadat=adatsOfTuhrList.last().aadat
+//
+//            } else {
+//                //it ended in a haiz, bigger than 3, less than aadat.
+//                //Anam says we gotta give previous aadat here
+//                haizAadat=adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat
+//                tuhrAadat=adatsOfTuhrList.last().aadat
+//            }
+//        }
+//        if(lastDurationOfBiggerThanTen.type==DurationType.HAIZ &&
+//            lastDurationOfBiggerThanTen.timeInMilliseconds>fixedDurations.last().biggerThanTen!!.haiz){
+//            //this is probably unnecessary
+//            //TODO: we should write a test case for ikhtilafi masla
+//            //for ikhtilafi masla
+//            haizAadat=lastDurationOfBiggerThanTen.timeInMilliseconds
+//        }
+//
+//        return AadatsOfHaizAndTuhr(haizAadat,tuhrAadat)
+//    }
+//    else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA&&
+//        fixedDurations.last().days>10){
+//        //this is a bigger than 10 mubtadia dam and the last thing
+//        return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat, adatsOfTuhrList.last().aadat)
+//    }
+//    else if(fixedDurations.last().days>40 &&
+//        fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
+//        val lastDurationBiggerThanForty = fixedDurations.last().biggerThanForty!!.durationsList.last()
+//
+//        return if(lastDurationBiggerThanForty.type==DurationType.ISTIHAZA_AFTER||
+//            lastDurationBiggerThanForty.type==DurationType.LESS_THAN_3_HAIZ){
+//            //if it ended in paki or in haiz less than 3, no tension
+//            AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat, adatsOfTuhrList.last().aadat)
+//        }else{//it ended in haiz, less than previous aadat
+//            //it ended in a hiaz more than 3. We are not going to give that haiz as aadat
+//            AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat, adatsOfTuhrList.last().aadat)
+//        }
+//    }
+//    else if(fixedDurations.last().days<=10 &&
+//        (fixedDurations.last().type==DurationType.DAM||
+//                fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
+//        return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
+//    }
+//    else if(fixedDurations.last().days<=40 &&
+//        fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
+//        return AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat, adatsOfTuhrList.last().aadat )
+//    }
+//    else if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+//        return AadatsOfHaizAndTuhr(fixedDurations.last().ayyameqabliyya!!.aadatHaiz, fixedDurations.last().ayyameqabliyya!!.aadatTuhr)
+//    }
+//    return AadatsOfHaizAndTuhr(-1L,-1L)
 }
 
 fun getSecondLastAadatOfHaiz(adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,fixedDurations: MutableList<FixedDuration>):Long{
