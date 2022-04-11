@@ -294,8 +294,6 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
     languageChange()
-//    onClickTypeConfigurationSelectDropdown(clonedInputsContainer)
-//    disableByMasla(clonedInputsContainer)
     disableTree(clonedInputsContainer)
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
@@ -436,7 +434,7 @@ private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
 
     val questionTxt = findInputContainer(event).questionText.value
-    val divider = "\uD83C\uDF00➖➖➖➖➖\uD83C\uDF00"
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var dateStr = getNow()
 
@@ -570,10 +568,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
             id = Ids.MASLA_TYPE_SELECT
-            onChangeFunction = { event ->
-//                disableByMasla(findInputContainer(event))
-                disableTree(findInputContainer(event))
-            }
+            onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
@@ -637,19 +632,21 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
+    div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(
             Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime,
             CssC.DATETIME_AADAT
         )
         pregnancyTimeInput(inputContainerToCopyFrom) {
-            classes = setOf(CssC.DATETIME_AADAT)
+            classes = setOf(CssC.DATETIME_AADAT, CssC.NIFAS)
             id = Ids.PREG_END_TIME_INPUT
             name = Ids.PREG_END_TIME_INPUT
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
         }
+    }
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}"){
         div {
             makeLabel(Ids.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
             checkBoxInput {
@@ -1189,7 +1186,7 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
 }
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, CssC.INVIS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, inputContainer.isMubtadia)
+    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, !inputContainer.isMutada)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
@@ -1202,6 +1199,11 @@ private fun disableTree(inputContainer: HTMLElement) {
     disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", CssC.INVIS, inputContainer, !isNifas || !isDateTime)
     disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, !isMutada || !isDateTime)
 
+    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+    if (inputContainer.isMubtadia) {
+        mawjoodaFasidCheck.checked = true
+        mawjoodaFasidCheck.disabled = true
+    }
 }
 
 private fun parseEntries(inputContainer: HTMLElement) {
