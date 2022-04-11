@@ -614,7 +614,6 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String, input
         id = inputId
         name = inputId
         value = inputVal
-        placeholder = "DD:HH:MM"
         onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(inputRange) }
         block()
     }
@@ -633,19 +632,21 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
+    div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(
             Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime,
             CssC.DATETIME_AADAT
         )
         pregnancyTimeInput(inputContainerToCopyFrom) {
-            classes = setOf(CssC.DATETIME_AADAT)
+            classes = setOf(CssC.DATETIME_AADAT, CssC.NIFAS)
             id = Ids.PREG_END_TIME_INPUT
             name = Ids.PREG_END_TIME_INPUT
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
         }
+    }
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}"){
         div {
             makeLabel(Ids.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
             checkBoxInput {
