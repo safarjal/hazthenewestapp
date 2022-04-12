@@ -50,6 +50,8 @@ object Ids {
     object Ikhtilafat {
         const val IKHTILAF1 = "ikhtilaf1"
         const val IKHTILAF2 = "ikhtilaf2"
+        const val IKHTILAF3 = "ikhtilaf3"
+        const val IKHTILAF4 = "ikhtilaf4"
     }
 
     const val CONTENT_CONTAINER = "content_container"
@@ -167,6 +169,8 @@ private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INP
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
+private val HTMLElement.ikhtilaf3 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement).checked
+private val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement).checked
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -522,6 +526,16 @@ private fun FlowContent.ikhtilafiMasle() {
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2,
                 StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
                 StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
+                classes = setOfNotNull(CssC.ROW, CssC.DEV)
+            }
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3,
+                StringsOfLanguages.ENGLISH.ayyameqabliyyaikhtilaf,
+                StringsOfLanguages.URDU.ayyameqabliyyaikhtilaf) {
+                classes = setOfNotNull(CssC.ROW, CssC.DEV)
+            }
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4,
+                StringsOfLanguages.ENGLISH.mubtadiaikhitilaf,
+                StringsOfLanguages.URDU.mubtadiaikhitilaf) {
                 classes = setOfNotNull(CssC.ROW, CssC.DEV)
             }
         }
@@ -1279,7 +1293,10 @@ private fun parseEntries(inputContainer: HTMLElement) {
             languageSelector.value,
             isDuration,
             ikhtilaf1,
-            ikhtilaf2
+            ikhtilaf2,
+            ikhtilaf3,
+            ikhtilaf4
+
         )
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)

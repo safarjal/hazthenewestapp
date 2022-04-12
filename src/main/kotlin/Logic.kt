@@ -16,7 +16,7 @@ import kotlin.js.Date
 
 lateinit var firstStartTime:Date
 
-fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy, isMubtadia:Boolean, language:String, isDuration:Boolean=false, ghairMustabeenIkhtilaf:Boolean=false, daurHaizIkhtilaf:Boolean=false): OutputTexts {
+fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuhr:Long?, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean, isDateOnly:Boolean, isPregnancy: Boolean, pregnancy: Pregnancy, isMubtadia:Boolean, language:String, isDuration:Boolean=false, ghairMustabeenIkhtilaf:Boolean=false, daurHaizIkhtilaf:Boolean=false, ayyameQabliyyaIkhtilaf: Boolean = true, mubtadiaIkhtilaf:Boolean = false): OutputTexts {
 
     firstStartTime = entries[0].startTime
     val times = entries
@@ -73,7 +73,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
                     daurHaizIkhtilaf
                 )){return noOutput}
             addDurationsToDams(fixedDurations, daurHaizIkhtilaf)
-            checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
+            checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr, ayyameQabliyyaIkhtilaf)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
             val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr,inputtedMawjoodaTuhr, mawjoodahIsNotAadat,adatsOfHaizList,adatsOfTuhrList, -1L)
@@ -99,7 +99,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
                     daurHaizIkhtilaf
                 )){return noOutput}
             addDurationsToDams(fixedDurations, daurHaizIkhtilaf)
-            checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList,inputtedMawjoodaTuhr)
+            checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList,inputtedMawjoodaTuhr, ayyameQabliyyaIkhtilaf)
             addWiladat(fixedDurations, pregnancy)
             addStartOfPregnancy(fixedDurations, pregnancy)
             val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList, pregnancy.aadatNifas)
@@ -135,7 +135,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             )
         }
         addDurationsToDams(fixedDurations, daurHaizIkhtilaf)
-        checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
+        checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr, ayyameQabliyyaIkhtilaf)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations, true, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList, -1L)
         return generateOutputStringMubtadia(fixedDurations, durations, isDateOnly, endingOutputValues, isDuration)
     }else{//is mutadah
@@ -154,7 +154,7 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
                 daurHaizIkhtilaf
             )){return noOutput}
         addDurationsToDams(fixedDurations, daurHaizIkhtilaf)
-        checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr)
+        checkForAyyameQabliyya(fixedDurations, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr,ayyameQabliyyaIkhtilaf)
         val endingOutputValues = calculateEndingOutputValues(fixedDurations, false, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid,adatsOfHaizList,adatsOfTuhrList,-1L)
         return generateOutputStringMutadah(fixedDurations, durations, isDateOnly, endingOutputValues, isDuration)
     }
@@ -922,42 +922,46 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
     }
   return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
 }
-fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?){
-    //figure out aadat for the last fixed duration
-    //for that, we need aadats befor it
-    //we need to find out what aadats were, at this point.
-    var hz = adatsOfHaizList[0].aadat
-    var gp = adatsOfTuhrList[0].aadat
-    for(adat in adatsOfHaizList){
-        if(adat.index<fixedDurations.lastIndex){
-            hz= adat.aadat
-        }else{
-            break
+fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?, ayyameQabliyyaIkhtilaf: Boolean){
+    if(!ayyameQabliyyaIkhtilaf){
+        //figure out aadat for the last fixed duration
+        //for that, we need aadats befor it
+        //we need to find out what aadats were, at this point.
+        var hz = adatsOfHaizList[0].aadat
+        var gp = adatsOfTuhrList[0].aadat
+        for(adat in adatsOfHaizList){
+            if(adat.index<fixedDurations.lastIndex){
+                hz= adat.aadat
+            }else{
+                break
+            }
         }
-    }
-    for(adat in adatsOfTuhrList){
-        if(adat.index<fixedDurations.lastIndex){
-            gp= adat.aadat
-        }else{
-            break
+        for(adat in adatsOfTuhrList){
+            if(adat.index<fixedDurations.lastIndex){
+                gp= adat.aadat
+            }else{
+                break
+            }
         }
-    }
-    //now we have aadaat
-    var mp = inputtedMawjoodaTuhr
-    if(fixedDurations.size>1){
-        mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds+
-                fixedDurations[fixedDurations.size-2].istihazaAfter
-    }
-
-    if(mp!=null&&mp!=-1L&&hz!=-1L&&gp!=-1L){
-        val ayyaameqabliyyah = gp-mp
-        if(ayyaameqabliyyah+hz>10*MILLISECONDS_IN_A_DAY &&
-            ayyaameqabliyyah<18*MILLISECONDS_IN_A_DAY&&
-            fixedDurations.last().timeInMilliseconds<ayyaameqabliyyah){//hasn't entered into aadat yet
-            fixedDurations.last().type = DurationType.ISTEHAZA_AYYAMEQABLIYYA
-            fixedDurations.last().ayyameqabliyya=AyyameQabliyya(ayyaameqabliyyah, hz, gp)
+        //now we have aadaat
+        var mp = inputtedMawjoodaTuhr
+        if(fixedDurations.size>1){
+            mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds+
+                    fixedDurations[fixedDurations.size-2].istihazaAfter
         }
 
+        if(mp!=null&&mp!=-1L&&hz!=-1L&&gp!=-1L){
+            val ayyaameqabliyyah = gp-mp
+            if(ayyaameqabliyyah+hz>10*MILLISECONDS_IN_A_DAY &&
+                ayyaameqabliyyah<18*MILLISECONDS_IN_A_DAY&&
+                fixedDurations.last().timeInMilliseconds<ayyaameqabliyyah){//hasn't entered into aadat yet
+                fixedDurations.last().type = DurationType.ISTEHAZA_AYYAMEQABLIYYA
+                fixedDurations.last().ayyameqabliyya=AyyameQabliyya(ayyaameqabliyyah, hz, gp)
+            }
+
+        }
+    }else{
+        //do nothing
     }
 
 
@@ -1879,6 +1883,7 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList
             }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){//daur, A-3, B-3, B-2
                 if(aadatTuhr>lastDurationTime){
                     val qism = fixedDurations.last().biggerThanTen!!.qism
+                    //this isn't actually about ayyame qabliya
                     val ayyameQabliyya = fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp
                     if(qism==Soortain.A_3 && //A-3 entered into aadat
                         ayyameQabliyya<=fixedDurations.last().timeInMilliseconds) {
