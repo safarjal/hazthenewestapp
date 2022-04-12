@@ -116,10 +116,10 @@ fun handleEntries(entries: List<Entry>, inputtedAadatHaz:Long?, inputtedAadatTuh
             daurHaizIkhtilaf,
             inputtedAadatHaz,
             inputtedMawjoodaTuhr,
-            language
+            language, mubtadiaIkhtilaf
         )
         if(aadats==null){ return noOutput }
-        markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations)
+        markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations, mubtadiaIkhtilaf)
         //if we got aadats, the we run this portion
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
             dealWithBiggerThan10Dam(
@@ -184,18 +184,33 @@ fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>, 
     return false
 }
 
-fun markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations:MutableList<FixedDuration>){
+fun markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations:MutableList<FixedDuration>, mubtadiaIkhtilaf: Boolean){
     for(fixedDuration in fixedDurations) {
-        when (fixedDuration.type) {
-            DurationType.DAM -> fixedDuration.type = DurationType.DAM_MUBTADIA
-            DurationType.TUHR -> fixedDuration.type = DurationType.TUHR_MUBTADIA
-            DurationType.TUHREFAASID -> fixedDuration.type = DurationType.TUHREFAASID_MUBTADIA
-            DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW -> return
-            else -> return
+        if(mubtadiaIkhtilaf){//mubtadia is over after first bigger THAN 10
+            if(fixedDuration.type == DurationType.DAM ) {
+                fixedDuration.type = DurationType.DAM_MUBTADIA
+                if(fixedDuration.days>10){
+                    return
+                }
+            }else if(fixedDuration.type==DurationType.TUHR) {
+                fixedDuration.type = DurationType.TUHR_MUBTADIA
+            }else if(fixedDuration.type==DurationType.TUHREFAASID) {
+                fixedDuration.type = DurationType.TUHREFAASID_MUBTADIA
+            }else {
+                return
+            }
+        }else{
+            when (fixedDuration.type) {
+                DurationType.DAM -> fixedDuration.type = DurationType.DAM_MUBTADIA
+                DurationType.TUHR -> fixedDuration.type = DurationType.TUHR_MUBTADIA
+                DurationType.TUHREFAASID -> fixedDuration.type = DurationType.TUHREFAASID_MUBTADIA
+                DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW -> return
+                else -> return
+            }
         }
     }
 }
-fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, endOfDaurIkhtilaf: Boolean, inputtedAadatHaz: Long?, inputtedMawjoodaTuhr: Long?, language: String):AadatsOfHaizAndTuhr?{
+fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, endOfDaurIkhtilaf: Boolean, inputtedAadatHaz: Long?, inputtedMawjoodaTuhr: Long?, language: String, mubtadiaIkhtilaf: Boolean):AadatsOfHaizAndTuhr?{
     //this is not in case of pregnancy
     //the job of this function is to just tell how much of it from the start is istehaza,
     // how much is haiz, and what the aadat at the end of this is
@@ -344,6 +359,9 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>, adatsOfHaizLi
                 }
                 val biggerThanTen = BiggerThanTenDm(0,0,0,0,Soortain.A_1,istehazaBefore, haiz, istehazaAfter, aadatHaz, -1L, mutableListOf())
                 fixedDurations[i].biggerThanTen = biggerThanTen
+                if(mubtadiaIkhtilaf){
+                    return AadatsOfHaizAndTuhr(iztirariAadatHaiz,iztirariAadatTuhr)
+                }
 //                println("9")
 
             }
