@@ -105,6 +105,47 @@ data class Strings(
 
 enum class LanguageNames { ENGLISH, URDU }
 
+data class AllTheInputs(
+    val entries: List<Entry>?= null,
+    val preMaslaValues: PreMaslaValues = PreMaslaValues(-1L,-1L,-1L, false),
+    val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
+    val pregnancy: Pregnancy? = null,
+    val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
+    val language:String = "urdu",
+    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
+
+
+)
+
+data class PreMaslaValues(
+    val inputtedAadatHaiz:Long? = null,
+    val inputtedAadatTuhr:Long? = null,
+    val inputtedMawjoodahTuhr:Long? = null,
+    val isMawjoodaFasid:Boolean = false,
+
+)
+
+data class Ikhtilaafaat(
+    val ghairMustabeenIkhtilaaf:Boolean = false,
+    val daurHaizIkhtilaf:Boolean = false,
+    val ayyameQabliyyaIkhtilaf: Boolean = false,
+    val mubtadiaIkhitilaf: Boolean = false
+)
+
+
+
+enum class TypesOfInputs {
+    DATE_ONLY,
+    DATE_AND_TIME,
+    DURATION
+}
+
+enum class TypesOfMasla {
+    MUBTADIA,
+    MUTADAH,
+    NIFAS
+}
+
 data class Entry(
     val startTime: Date,
     val endTime: Date

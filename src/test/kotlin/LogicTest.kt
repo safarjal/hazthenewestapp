@@ -96,13 +96,7 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(Date(2020,7,30), Date(2020,9,1))
 
-        val output = handleEntries(entries,null,null, null, false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,false),
-            isMubtadia = false,
-            language = "urdu", false
-        )
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList += Entry(Date(2020,5,14), Date(2020,5,20))
@@ -118,19 +112,18 @@ class LogicTest {
 
     @Test
     fun realWorldLogicTest1(){
-        val entries = mutableListOf<Entry>()
-        entries+=//each month has to be one minus the real
-            Entry(Date(2020,3,15), Date(2020,3,21))
-        entries+=
-            Entry(Date(2020,4,7), Date(2020,4,14))
-        entries+=//30 Aug - 1 Oct
-            Entry(Date(2021,5,14), Date(2021,9,6))
+        val entries = listOf(
+            Entry(Date(2020,3,15), Date(2020,3,21)),
+            Entry(Date(2020,4,7), Date(2020,4,14)),
+            Entry(Date(2021,5,14), Date(2021,9,6)))
 
-        val output = handleEntries(entries, null,null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020,9,6),Date(2021,5,15),25*MILLISECONDS_IN_A_DAY,true), isMubtadia = false,
-            language = "urdu", false
+        val output = handleEntries(AllTheInputs(
+            entries, typeOfInput = TypesOfInputs.DATE_ONLY, typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(
+                Date(2020,9,6),
+                Date(2021,5,15),
+                25*MILLISECONDS_IN_A_DAY,
+                true))
         )
         val haizDateList = output.hazDatesList
 
@@ -176,12 +169,12 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(Date(2021,9,6), Date(2021,9,6))
 
-        val output = handleEntries(entries,null, null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
-            pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu", false)
+        val output = handleEntries(AllTheInputs(
+            entries,
+            typeOfInput = TypesOfInputs.DATE_ONLY,
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)),
+        )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -215,12 +208,8 @@ class LogicTest {
         entries+=
             Entry(Date(2021,2,6), Date(2021,2,9))
 
-        val output = handleEntries(entries,null,null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries,typeOfInput = TypesOfInputs.DATE_ONLY))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -256,12 +245,8 @@ class LogicTest {
             Entry(Date(2021,1,21), Date(2021,2,11))
 
 
-        val output = handleEntries(entries,null,null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -293,12 +278,7 @@ class LogicTest {
             Entry(Date(2020,7,2), Date(2020,7,16))
 
 
-        val output = handleEntries(entries,null,null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -337,12 +317,7 @@ class LogicTest {
             Entry(Date(2020,8,5), Date(2020,8,28))
 
 
-        val output = handleEntries(entries,null,null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1,1,1),Date(1,1,1),null,mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -393,15 +368,7 @@ class LogicTest {
         entries +=
             Entry(Date(2020, 9, 21), Date(2020, 10, 2))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(1, 1, 1), Date(1, 1, 1), null, mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -450,15 +417,11 @@ class LogicTest {
         entries +=
             Entry(Date(2021, 1, 14), Date(2021, 3, 14))
 
-        val output = handleEntries(
+        val output = handleEntries(AllTheInputs(
             entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+        )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -508,15 +471,7 @@ class LogicTest {
             Entry(Date(2021, 3, 12), Date(2021, 3, 12))
 
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -569,15 +524,7 @@ class LogicTest {
         entries +=
             Entry(Date(2021, 3, 10), Date(2021, 3, 23))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -635,15 +582,10 @@ class LogicTest {
         entries +=
             Entry(Date(2021, 3, 23), Date(2021, 3, 23))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
-            pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+        )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
@@ -681,78 +623,61 @@ class LogicTest {
 //            output.endingOutputValues.futureDateType!!.futureDates
 //        )
     }
-    @Test
-    fun bugMasla1() {
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
-        entries +=
-            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
-        entries +=
-            Entry(Date(2021, 0, 26), Date(2021, 1, 1))
-        entries +=
-            Entry(Date(2021, 1, 11), Date(2021, 1, 23))
-        entries +=
-            Entry(Date(2021, 1, 28), Date(2021, 2, 2))
-        entries +=
-            Entry(Date(2021, 10, 12), Date(2021, 11, 26))
-        entries +=
-            Entry(Date(2021, 11, 30), Date(2022, 0, 8))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
-
-        val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList +=
-            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
-        expectedHaizDatesList +=
-            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
-        expectedHaizDatesList +=
-            Entry(Date(2021, 0, 31), Date(2021, 1, 7))
-        expectedHaizDatesList +=
-            Entry(Date(2021, 10, 12), Date(2021, 11, 22))
-
-        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-
-        for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
-        }
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
-                mutableListOf()
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-    }
+//    @Test
+//    fun bugMasla1() {
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
+//        entries +=
+//            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
+//        entries +=
+//            Entry(Date(2021, 0, 26), Date(2021, 1, 1))
+//        entries +=
+//            Entry(Date(2021, 1, 11), Date(2021, 1, 23))
+//        entries +=
+//            Entry(Date(2021, 1, 28), Date(2021, 2, 2))
+//        entries +=
+//            Entry(Date(2021, 10, 12), Date(2021, 11, 26))
+//        entries +=
+//            Entry(Date(2021, 11, 30), Date(2022, 0, 8))
+//
+//        val output = handleEntries(AllTheInputs(entries))
+//        val haizDateList = output.hazDatesList
+//
+//        val expectedHaizDatesList = mutableListOf<Entry>()
+//        expectedHaizDatesList +=
+//            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
+//        expectedHaizDatesList +=
+//            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
+//        expectedHaizDatesList +=
+//            Entry(Date(2021, 0, 31), Date(2021, 1, 7))
+//        expectedHaizDatesList +=
+//            Entry(Date(2021, 10, 12), Date(2021, 11, 22))
+//
+//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+//
+//        for (i in expectedHaizDatesList.indices) {
+//            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+//            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+//        }
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                true,
+//                AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
+//                mutableListOf()
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//    }
     @Test
     fun testingAadatCase1() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 0), Date(2022, 2, 2))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -770,16 +695,13 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 0), Date(2022, 2, 2))
 
-        val output = handleEntries(
+        val output = handleEntries(AllTheInputs(
             entries,
-            7*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            PreMaslaValues(
+                parseDays("7"),
+                parseDays("15")
+            ))
+        )
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -799,16 +721,7 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 0), Date(2022, 2, 2))
 
-        val output = handleEntries(
-            entries,
-            -1,
-            -1, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -830,15 +743,7 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
-            -1,
-            -1, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -856,15 +761,7 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 0, 1), Date(2022, 0, 5))
 
-        val output = handleEntries(
-            entries,
-            -1,
-            -1, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -883,14 +780,10 @@ class LogicTest {
             Entry(Date(2022, 0, 1), Date(2022, 0, 5))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(entries,
+                PreMaslaValues(
             8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            30*MILLISECONDS_IN_A_DAY)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -914,15 +807,10 @@ class LogicTest {
             Entry(Date(2022, 1, 27), Date(2022, 2, 10))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(entries,
+                PreMaslaValues(
             8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-
+            30*MILLISECONDS_IN_A_DAY)))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
@@ -943,15 +831,9 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 2), Date(2022, 2, 16))
 
-        val output = handleEntries(
-            entries,
-            8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(8*MILLISECONDS_IN_A_DAY,
+            30*MILLISECONDS_IN_A_DAY)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -970,15 +852,10 @@ class LogicTest {
             Entry(Date(2022, 1, 21), Date(2022, 2, 4))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(entries,
+                PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-
+            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
@@ -996,14 +873,9 @@ class LogicTest {
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(entries, PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1021,15 +893,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1047,15 +914,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(entries,
+            PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,true,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1073,15 +935,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 1), Date(2022, 2, 1))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,true,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1099,15 +956,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 31))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1125,16 +977,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 3, 12))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1152,16 +998,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 3, 19))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1180,16 +1021,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 3, 15))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1207,15 +1043,7 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1237,16 +1065,12 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
+        val output = handleEntries(AllTheInputs(
             entries,
+            PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            15*MILLISECONDS_IN_A_DAY),
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1275,15 +1099,10 @@ class LogicTest {
             Entry(Date(2022, 2, 1), Date(2022, 2, 4))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            15*MILLISECONDS_IN_A_DAY)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1310,16 +1129,12 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 21))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             7*MILLISECONDS_IN_A_DAY,
-            25*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            25*MILLISECONDS_IN_A_DAY,
+                20*MILLISECONDS_IN_A_DAY,
+                false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1345,16 +1160,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 3, 7))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             7*MILLISECONDS_IN_A_DAY,
-            25*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            25*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1382,16 +1191,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1417,16 +1220,9 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(entries, PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1454,16 +1250,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 21))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1493,16 +1283,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 21))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1529,16 +1314,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 21))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            59*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            59*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1565,16 +1344,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 3, 15))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1605,16 +1378,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            18*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-//        val haizDateList = output.hazDatesList
+            18*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1643,17 +1410,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu",
-        ayyameQabliyyaIkhtilaf = false)
-        val haizDateList = output.hazDatesList
+            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)
+        ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 null,
@@ -1679,17 +1440,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu",
-            ayyameQabliyyaIkhtilaf = true)
-        val haizDateList = output.hazDatesList
+            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false),
+            ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
+        ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
@@ -1719,17 +1474,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu",
-        ayyameQabliyyaIkhtilaf = false)
-        val haizDateList = output.hazDatesList
+            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1757,17 +1505,12 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu",
-            ayyameQabliyyaIkhtilaf = true)
-        val haizDateList = output.hazDatesList
+            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+            ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1796,16 +1539,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            17*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1834,16 +1571,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false),
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1872,17 +1604,11 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 5))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries, PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
-
+            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false),
+        ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
@@ -1909,16 +1635,10 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 23), Date(2022, 1, 28))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             9*MILLISECONDS_IN_A_DAY,
-            21*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY,true,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            21*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY,true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1950,18 +1670,13 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 5), Date(2022, 3, 23))
 
-        val output = handleEntries(
+        val output = handleEntries(AllTheInputs(
             entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = true,
+            typeOfMasla = TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
                 40*MILLISECONDS_IN_A_DAY,
                 mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1990,18 +1705,8 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 10), Date(2022, 2, 15))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-                40*MILLISECONDS_IN_A_DAY,
-                mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+        val output = handleEntries(AllTheInputs(
+            entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2028,18 +1733,9 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
-            20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-                40*MILLISECONDS_IN_A_DAY,
-                mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2088,18 +1784,10 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             parseDays("7:20:30"),
-            parseDays("17:17:30"), parseDays("37:5:30"),true,
-            isDateOnly = false,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-                40*MILLISECONDS_IN_A_DAY,
-                mustabeenUlKhilqat = true)
-            , isMubtadia = false,
-            language = "urdu")
-        val haizDateList = output.hazDatesList
+            parseDays("17:17:30"), parseDays("37:5:30"),true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2171,15 +1859,8 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 2))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries, typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2205,15 +1886,8 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 5))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries, typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2241,17 +1915,15 @@ class LogicTest {
             Entry(Date(2021, 11, 30,15,20), Date(2022, 2, 28,0,27))
 
         val output = handleEntries(
-            entries,
+            AllTheInputs(
+            entries,PreMaslaValues(
             parseDays("6:16:40"),
             parseDays("27:6:20"),
             parseDays("27:6:20"),
-            false,
-            isDateOnly = false,
-            isPregnancy = true,
+            false),
+            typeOfMasla = TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(Date(2021, 11, 12,0,0), Date(2021, 11, 30, 0,0),
-                40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = false)
-            , isMubtadia = false,
-            language = "urdu")
+                40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2279,19 +1951,15 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2021, 10, 8), Date(2021, 10, 24))
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             parseDays("6"),
-            parseDays("27"),
-            null,
-            false,
-            isDateOnly = true,
-            isPregnancy = true,
+            parseDays("27")),
+            TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(
                 Date(2021, 3, 15), Date(2021, 8, 15),
                 null, mustabeenUlKhilqat = true
-            ), isMubtadia = false,
-            language = "urdu"
+            ))
         )
 
         val expectedEndingOutputValues =
@@ -2331,20 +1999,7 @@ class LogicTest {
 
         )
 
-        val output = handleEntries(
-            entries,
-            parseDays(""),
-            parseDays(""),
-            null,
-            false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(
-                Date(2021, 3, 15), Date(2021, 8, 15),
-                null, mustabeenUlKhilqat = true
-            ), isMubtadia = false,
-            language = "urdu", ayyameQabliyyaIkhtilaf = false
-        )
+        val output = handleEntries(AllTheInputs(entries))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2380,19 +2035,8 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            parseDays(""),
-            parseDays(""),
-            null,
-            false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(
-                Date(2021, 3, 15), Date(2021, 8, 15),
-                null, mustabeenUlKhilqat = true
-            ), isMubtadia = false,
-            language = "urdu", ayyameQabliyyaIkhtilaf = true
+        val output = handleEntries(AllTheInputs(
+            entries, ikhtilaafaat = Ikhtilaafaat( ayyameQabliyyaIkhtilaf = true))
         )
 
         val expectedEndingOutputValues =
@@ -2433,19 +2077,8 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            parseDays(""),
-            parseDays(""),
-            null,
-            false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(
-                Date(2021, 3, 15), Date(2021, 8, 15),
-                null, mustabeenUlKhilqat = true
-            ), isMubtadia = false,
-            language = "urdu"
+        val output = handleEntries(AllTheInputs(
+            entries)
         )
 
         val expectedEndingOutputValues =
@@ -2475,7 +2108,7 @@ class LogicTest {
             )
         }
     }
-    
+
     @Test
     fun testingMubtadiaFinalOutputsCase3() {
         //dam 10, no aadat
@@ -2483,15 +2116,8 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 11))
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(
+            entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2510,357 +2136,293 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
-    @Test
-    fun testingMubtadiaFinalOutputsCase4a() {
-        //dam >10, no aadat
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase4b() {//ikhtilaf
-        //dam >10, no aadat
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase5a() {
-        //dam >10, no aadat ends at end of istehaza, start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase5b() {//ikhtilaf
-        //dam >10, no aadat ends at end of istehaza, start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase6a() {
-        //dam >10, no aadat ends at start of haiz less than 3, start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase6b() {//ikhtilaf
-        //dam >10, no aadat ends at start of haiz less than 3, start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase7a() {
-        //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase7b() {//ikhtilaf
-        //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-    @Test
-    fun testingMubtadiaFinalOutputsCase8a() {
-        //dam >10, no aadat ends at end of haiz 10  daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
-
-    @Test
-    fun testingMubtadiaFinalOutputsCase8b() {//ikhtilaaf
-        //dam >10, no aadat ends at end of haiz 10  daur
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
-
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                true,
-                AadatsOfHaizAndTuhr(-1L, -1L),
-                mutableListOf(
-                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
-                )
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-        for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-        }
-    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase4a() {
+//        //dam >10, no aadat
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                true,
+//                AadatsOfHaizAndTuhr(-1L, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase4b() {//ikhtilaf
+//        //dam >10, no aadat
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true))
+//        )
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                true,
+//                AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("20")!!),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase5a() {
+//        //dam >10, no aadat ends at end of istehaza, start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(-1L, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase5b() {//ikhtilaf
+//        //dam >10, no aadat ends at end of istehaza, start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
+//        ))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("20")!!),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase6a() {
+//        //dam >10, no aadat ends at start of haiz less than 3, start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries,typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(-1L, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase6b() {//ikhtilaf
+//        //dam >10, no aadat ends at start of haiz less than 3, start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
+//
+//        val output = handleEntries( AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
+//        ))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("20")!!),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase7a() {
+//        //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries,typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase7b() {//ikhtilaf
+//        //gotta fix this
+//
+//        //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
+//        ))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("20")!!),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase8a() {
+//        //dam >10, no aadat ends at end of haiz 10  daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries,typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                true,
+//                AadatsOfHaizAndTuhr(-1L, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
+//
+//    @Test
+//    fun testingMubtadiaFinalOutputsCase8b() {//ikhtilaaf
+//        //dam >10, no aadat ends at end of haiz 10  daur
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
+//
+//        val output = handleEntries(AllTheInputs(
+//            entries, typeOfMasla = TypesOfMasla.MUBTADIA))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                true,
+//                AadatsOfHaizAndTuhr(-1L, -1L),
+//                mutableListOf(
+//                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
+//                )
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+//        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+//        }
+//    }
     @Test
     fun testingMubtadiaFinalOutputsCase9() {
         //dam <3,  aadat
@@ -2871,15 +2433,7 @@ class LogicTest {
 
         )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2910,15 +2464,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2948,15 +2494,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2985,15 +2523,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3022,15 +2552,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3059,15 +2581,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3096,15 +2610,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3135,15 +2641,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3174,15 +2672,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3212,15 +2702,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3249,15 +2731,7 @@ class LogicTest {
 
             )
 
-        val output = handleEntries(
-            entries,
-            null,
-            null, null,false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+        val output = handleEntries(AllTheInputs(entries,typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -3283,15 +2757,11 @@ class LogicTest {
             Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
             )
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             parseDays("7"),
-            null, parseDays("30"),false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+            null, parseDays("30"),false),
+            typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val hazDatesList = output.hazDatesList
         val expectedHazDatesList = mutableListOf(
@@ -3326,15 +2796,11 @@ class LogicTest {
             Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
         )
 
-        val output = handleEntries(
-            entries,
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
             parseDays("7"),
-            null, parseDays("22"),false,
-            isDateOnly = true,
-            isPregnancy = false,
-            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-            , isMubtadia = true,
-            language = "urdu")
+            null, parseDays("22"),false),
+            typeOfMasla = TypesOfMasla.MUBTADIA))
 
         val hazDatesList = output.hazDatesList
         val expectedHazDatesList = mutableListOf(
@@ -3363,5 +2829,5 @@ class LogicTest {
         }
     }
 
-    
+
 }

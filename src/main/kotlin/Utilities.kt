@@ -181,12 +181,14 @@ fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
     return arrayOf(days, hours, minutes)
 }
 
-fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):String {
+fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs):String {
 //    val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
 //    var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
 //    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)))
 //    milisecsleft -= hours*3600000
 //    val minutes = kotlin.math.floor(milisecsleft/60000)
+    var isDateOnly = false
+    if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
     val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
 
@@ -218,12 +220,15 @@ fun daysHoursMinutesDigitalUrdu(numberOfMilliseconds:Long, isDateOnly: Boolean):
     return returnStatement.trim().trimEnd()
 }
 
-fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolean):String{
+fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs):String{
 //    val days:Double = kotlin.math.floor((numberOfMilliseconds/MILLISECONDS_IN_A_DAY).toDouble())
 //    var milisecsleft = numberOfMilliseconds - days*MILLISECONDS_IN_A_DAY
 //    val hours:Double = kotlin.math.floor((milisecsleft/(3600000)))
 //    milisecsleft -= hours*3600000
 //    val minutes = kotlin.math.floor(milisecsleft/60000)
+    var isDateOnly = false
+    if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
+
 
     val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
 
@@ -263,8 +268,11 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
     return returnStatement.trimEnd().trim()
 }
 
- fun englishDateFormat(date: Date, isDateOnly: Boolean):String{
-  //   Sat, 05 Jun 2021 06:21:59 GMT
+ fun englishDateFormat(date: Date, typeOfInput: TypesOfInputs):String{
+     var isDateOnly = false
+     if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
+
+     //   Sat, 05 Jun 2021 06:21:59 GMT
      var dateStr = (date.toUTCString()).dropLast(18).drop(5)
      if(dateStr.startsWith("0")) dateStr = dateStr.drop(1)
      var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
@@ -283,7 +291,10 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, isDateOnly: Boolea
  }
 fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTime()).toLong() }
 
- fun urduDateFormat(date: Date, isDateOnly: Boolean):String{
+ fun urduDateFormat(date: Date, typeOfInput: TypesOfInputs):String{
+     var isDateOnly = false
+     if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
+
      val day = date.getUTCDate().toString()
      val month = date.getUTCMonth()
 //     var urduMonth = ""

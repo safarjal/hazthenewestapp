@@ -426,9 +426,9 @@ private fun TagConsumer<HTMLElement>.content() {
 private fun getNow(): String {
     var dateStr = ""
     if (languageSelector.value == Vls.Langs.URDU){
-        dateStr = urduDateFormat(Date(Date.now()),true)
+        dateStr = urduDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
     }else if(languageSelector.value == Vls.Langs.ENGLISH){
-        dateStr = englishDateFormat(Date(Date.now()),true)
+        dateStr = englishDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
     }
     dateStr += " ${Date(Date.now()).getFullYear()}"
     return dateStr
@@ -1274,29 +1274,45 @@ private fun parseEntries(inputContainer: HTMLElement) {
             }
 
         }
+
+        val typeOfMasla:TypesOfMasla = if(mubtadiaIs){
+            TypesOfMasla.MUBTADIA
+        } else if(pregnancyIs){
+            TypesOfMasla.NIFAS
+        } else{
+            TypesOfMasla.MUTADAH
+        }
+        val typesOfInputs:TypesOfInputs = if(isDateOnly){
+            TypesOfInputs.DATE_ONLY
+        } else if(isDuration){
+            TypesOfInputs.DURATION
+        }else{TypesOfInputs.DATE_AND_TIME}
+
+
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
-            entries,
-            parseDays(aadatHaz.value),
-            parseDays(aadatTuhr.value),
-            mawjodahtuhreditable,
-            isMawjoodaFasid,
-            isDateOnly,
-            pregnancyIs,
-            Pregnancy(
-                pregnancyStrt,
-                pregnancyEnd,
-                parseDays(aadatNifas.value),
-                mustabeen
-            ),
-            mubtadiaIs,
-            languageSelector.value,
-            isDuration,
-            ikhtilaf1,
-            ikhtilaf2,
-            ikhtilaf3,
-            ikhtilaf4
-
+            AllTheInputs(
+                entries,
+                PreMaslaValues(
+                    parseDays(aadatHaz.value),
+                    parseDays(aadatTuhr.value),
+                    mawjodahtuhreditable,
+                    isMawjoodaFasid
+                ),
+                typeOfMasla,
+                Pregnancy(
+                    pregnancyStrt,
+                    pregnancyEnd,
+                    parseDays(aadatNifas.value),
+                    mustabeen
+                ),
+                typesOfInputs,
+                languageSelector.value,
+                Ikhtilaafaat(
+                    ikhtilaf1,
+                    ikhtilaf2,
+                    ikhtilaf3,
+                    ikhtilaf4))
         )
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
