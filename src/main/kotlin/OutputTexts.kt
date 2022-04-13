@@ -159,6 +159,15 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                         strEnglish += StringsOfLanguages.ENGLISH.afterpregheader
                     }
                 }
+                if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                    strUrdu += StringsOfLanguages.URDU.earlymiscarriage.replace("date1", "${urduDateFormat(birthTime, isDateOnly)}")
+                    strEnglish += StringsOfLanguages.ENGLISH.earlymiscarriage.replace("date1", "${englishDateFormat(birthTime, isDateOnly)}")
+                    if(index<fixedDurations.size-2){//if there is something after wiladat
+                        strUrdu += StringsOfLanguages.URDU.afterpregheader
+                        strEnglish += StringsOfLanguages.ENGLISH.afterpregheader
+                    }
+                }
+
             }
 
         }
@@ -435,9 +444,8 @@ fun outputStringBiggerThan10HallDurations(fixedDurations: MutableList<FixedDurat
     if((fixedDurations[index].days>10 &&
                 (fixedDurations[index].type==DurationType.DAM||
                         fixedDurations[index].type==DurationType.DAM_MUBTADIA))){
-
-        strUrdu += TAB
-        strEnglish += TAB
+        strUrdu += UnicodeChars.ABACUS
+        strEnglish += UnicodeChars.ABACUS
 
         for(duration in fixedDurations[index].biggerThanTen!!.durationsList){
             if(duration.type == DurationType.ISTIHAZA_BEFORE){
@@ -575,8 +583,8 @@ fun outputStringBiggerThan40HallDuration(fixedDurations: MutableList<FixedDurati
     var strUrdu = ""
     var strEnglish = ""
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAS_PERIOD){
-        strUrdu+=TAB
-        strEnglish+=TAB
+        strUrdu+=UnicodeChars.ABACUS
+        strEnglish+=UnicodeChars.ABACUS
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
             when (duration.type) {
                 DurationType.NIFAS -> {
