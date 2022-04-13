@@ -1442,7 +1442,8 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false,)
+            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false),
+            ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
         ))
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1507,7 +1508,9 @@ class LogicTest {
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
+            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+            ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
+        ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -1625,224 +1628,186 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
-//    @Test
-//    fun bugMaslaDescribedInIssue67() {
-//        //A-3 changing to A-1
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 1, 23), Date(2022, 1, 28))
-//
-//        val output = handleEntries(
-//            entries,
-//            9*MILLISECONDS_IN_A_DAY,
-//            21*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY,true,
-//            isDateOnly = true,
-//            isPregnancy = false,
-//            pregnancy = Pregnancy(Date(2021, 2, 2), Date(2021, 10, 12), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
-//            , isMubtadia = false,
-//            language = "urdu")
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
-//                mutableListOf(
-//                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-//                    FutureDateType(Date(2022,2, 5), TypesOfFutureDates.AFTER_TEN_DAYS),
-//                    FutureDateType(Date(2022,2, 2), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//    }
-//    @Test
-//    fun bugMaslaDescribedInIssue103() {
-//        //pregnancy
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2021, 4, 4), Date(2021, 4, 12))
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2021, 5, 2), Date(2021, 5, 10))
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 2, 5), Date(2022, 3, 23))
-//
-//        val output = handleEntries(
-//            entries,
-//            null,
-//            null, null,false,
-//            isDateOnly = true,
-//            isPregnancy = true,
-//            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-//                40*MILLISECONDS_IN_A_DAY,
-//                mustabeenUlKhilqat = true)
-//            , isMubtadia = false,
-//            language = "urdu")
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                true,
-//                AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
-//                mutableListOf(
-//                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//    }
-//    @Test
-//    fun bugMaslaDescribedInIssue116() {
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2021, 11, 10), Date(2021, 11, 16))
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 0, 9), Date(2022, 0, 16))
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 1, 10), Date(2022, 2, 15))
-//
-//        val output = handleEntries(
-//            entries,
-//            null,
-//            null, null,false,
-//            isDateOnly = true,
-//            isPregnancy = false,
-//            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-//                40*MILLISECONDS_IN_A_DAY,
-//                mustabeenUlKhilqat = true)
-//            , isMubtadia = false,
-//            language = "urdu")
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
-//                mutableListOf(
-//                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
-//                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-//                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//    }
-//    @Test
-//    fun bugMaslaOccured17March2022() {
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
-//        val output = handleEntries(
-//            entries,
-//            6*MILLISECONDS_IN_A_DAY,
-//            20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false,
-//            isDateOnly = true,
-//            isPregnancy = false,
-//            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-//                40*MILLISECONDS_IN_A_DAY,
-//                mustabeenUlKhilqat = true)
-//            , isMubtadia = false,
-//            language = "urdu")
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                true,
-//                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY),
-//                mutableListOf(
-//                    FutureDateType(Date(2022,3, 1), TypesOfFutureDates.END_OF_AADAT_TUHR),
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//    }
-//    @Test
-//    fun parseDaysTest(){
-//        val str = "17:17:30"
-//        val expectedOutput:Long = 1531800000
-//        assertEquals(expectedOutput, parseDays(str))
-//    }
-//    @Test
-//    fun parseDaysTest1(){
-//        val str = "17:17"
-//        val expectedOutput:Long = 1530000000
-//        assertEquals(expectedOutput, parseDays(str))
-//    }
-//    @Test
-//    fun parseDaysTest2(){
-//        val str = "17"
-//        val expectedOutput:Long = 1468800000
-//        assertEquals(expectedOutput, parseDays(str))
-//    }
-//    @Test
-//    fun parseDaysTest3(){
-//        val str = "17:17:30:9"
-//        val expectedOutput: Long = 1531800000
-//        assertEquals(expectedOutput, parseDays(str))
-//    }
-//
-//    @Test
-//    fun bugMaslaDescribedInIssue130() {
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
-//        val output = handleEntries(
-//            entries,
-//            parseDays("7:20:30"),
-//            parseDays("17:17:30"), parseDays("37:5:30"),true,
-//            isDateOnly = false,
-//            isPregnancy = false,
-//            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
-//                40*MILLISECONDS_IN_A_DAY,
-//                mustabeenUlKhilqat = true)
-//            , isMubtadia = false,
-//            language = "urdu")
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                true,
-//                AadatsOfHaizAndTuhr(parseDays("7:20:30")!!, parseDays("17:17:30")!!),
-//                mutableListOf(
-//                    FutureDateType(Date(2022,2, 30, 3,0), TypesOfFutureDates.END_OF_AADAT_TUHR),
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//    }
-//
-//
+    @Test
+    fun bugMaslaDescribedInIssue67() {
+        //A-3 changing to A-1
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 1, 23), Date(2022, 1, 28))
+
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
+            9*MILLISECONDS_IN_A_DAY,
+            21*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY,true)))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,2, 5), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(Date(2022,2, 2), TypesOfFutureDates.IHTIYATI_GHUSL),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
+    fun bugMaslaDescribedInIssue103() {
+        //pregnancy
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 4, 4), Date(2021, 4, 12))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 5, 2), Date(2021, 5, 10))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 2, 5), Date(2022, 3, 23))
+
+        val output = handleEntries(AllTheInputs(
+            entries,
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
+                40*MILLISECONDS_IN_A_DAY,
+                mustabeenUlKhilqat = true)
+        ))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
+    fun bugMaslaDescribedInIssue116() {
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2021, 11, 10), Date(2021, 11, 16))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 0, 9), Date(2022, 0, 16))
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 1, 10), Date(2022, 2, 15))
+
+        val output = handleEntries(AllTheInputs(
+            entries))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
+    fun bugMaslaOccured17March2022() {
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+        val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
+            6*MILLISECONDS_IN_A_DAY,
+            20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+                    FutureDateType(Date(2022,3, 1), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+    @Test
+    fun parseDaysTest(){
+        val str = "17:17:30"
+        val expectedOutput:Long = 1531800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun parseDaysTest1(){
+        val str = "17:17"
+        val expectedOutput:Long = 1530000000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun parseDaysTest2(){
+        val str = "17"
+        val expectedOutput:Long = 1468800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+    @Test
+    fun parseDaysTest3(){
+        val str = "17:17:30:9"
+        val expectedOutput: Long = 1531800000
+        assertEquals(expectedOutput, parseDays(str))
+    }
+
+    @Test
+    fun bugMaslaDescribedInIssue130() {
+        val entries = mutableListOf<Entry>()
+        entries +=//each month has to be one minus the real
+            Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
+        val output = handleEntries(AllTheInputs(
+            entries,PreMaslaValues(
+            parseDays("7:20:30"),
+            parseDays("17:17:30"), parseDays("37:5:30"),true)))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("7:20:30")!!, parseDays("17:17:30")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,2, 30, 3,0), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+
+
 //    @Test
 //    fun calculateEndTime(){
 //        val fixedDuration1=
