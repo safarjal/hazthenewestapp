@@ -602,13 +602,11 @@ class LogicTest {
             assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
             assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
         }
-//        println(output.urduText)
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(8 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY),
-//                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
 
             )
@@ -744,7 +742,6 @@ class LogicTest {
             Entry(Date(2022, 1, 1), Date(2022, 1, 6))
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
-//        println(entries)
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -754,7 +751,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 27*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
@@ -764,7 +760,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 0, 1), Date(2022, 0, 5))
-//        println(entries)
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -774,7 +769,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, -1),
                 mutableListOf()
             )
-  //      println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
@@ -784,7 +778,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 0, 1), Date(2022, 0, 5))
-//        println(entries)
 
         val output = handleEntries(
             AllTheInputs(entries,
@@ -798,7 +791,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-  //      println("Aadat of tuhr is ${ output.endingOutputValues.aadats!!.aadatTuhr / MILLISECONDS_IN_A_DAY }")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
@@ -813,14 +805,12 @@ class LogicTest {
             Entry(Date(2022, 1, 1), Date(2022, 1, 6))
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 27), Date(2022, 2, 10))
-     //   println(entries)
 
         val output = handleEntries(
             AllTheInputs(entries,
                 PreMaslaValues(
             8*MILLISECONDS_IN_A_DAY,
             30*MILLISECONDS_IN_A_DAY)))
-
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
@@ -840,7 +830,6 @@ class LogicTest {
             Entry(Date(2022, 1, 1), Date(2022, 1, 6))
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 2, 2), Date(2022, 2, 16))
-        //println(entries)
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(8*MILLISECONDS_IN_A_DAY,
@@ -861,14 +850,12 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 4))
-        //println(entries)
 
         val output = handleEntries(
             AllTheInputs(entries,
                 PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
             60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
-
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
@@ -884,7 +871,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
-       // println(entries)
 
         val output = handleEntries(
             AllTheInputs(entries, PreMaslaValues(
@@ -906,7 +892,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
-        //println(entries)
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -928,7 +913,6 @@ class LogicTest {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
             Entry(Date(2022, 1, 21), Date(2022, 2, 26))
-        //println(entries)
 
         val output = handleEntries(AllTheInputs(entries,
             PreMaslaValues(
@@ -962,8 +946,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
-//        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
@@ -985,8 +967,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
-//        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
@@ -1008,8 +988,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
-//        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
@@ -1032,8 +1010,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
-//        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
@@ -1058,8 +1034,6 @@ class LogicTest {
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
-//        println("aadat haiz is ${output.endingOutputValues.aadats!!.aadatHaiz/MILLISECONDS_IN_A_DAY}")
-//        println("aadat tuhr is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }

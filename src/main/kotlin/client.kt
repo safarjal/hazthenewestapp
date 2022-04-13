@@ -529,13 +529,13 @@ private fun FlowContent.ikhtilafiMasle() {
                 classes = setOfNotNull(CssC.ROW, CssC.DEV)
             }
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3,
-                StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
-                StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
+                StringsOfLanguages.ENGLISH.ayyameqabliyyaikhtilaf,
+                StringsOfLanguages.URDU.ayyameqabliyyaikhtilaf) {
                 classes = setOfNotNull(CssC.ROW, CssC.DEV)
             }
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4,
-                StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
-                StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
+                StringsOfLanguages.ENGLISH.mubtadiaikhitilaf,
+                StringsOfLanguages.URDU.mubtadiaikhitilaf) {
                 classes = setOfNotNull(CssC.ROW, CssC.DEV)
             }
         }
@@ -1313,7 +1313,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     ikhtilaf2,
                     ikhtilaf3,
                     ikhtilaf4))
-
         )
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)

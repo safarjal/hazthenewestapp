@@ -95,7 +95,9 @@ data class Strings(
     val askagainnodate:String,
     val tendaysdoghusl:String,
     val habitwithnifas: String,
-    val earlymiscarriageduration: String
+    val earlymiscarriageduration: String,
+    val ayyameqabliyyaikhtilaf:String,
+    val mubtadiaikhitilaf:String,
     )
 
 
