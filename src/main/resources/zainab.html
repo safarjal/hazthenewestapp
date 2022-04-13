@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+  <link rel="manifest" href="images/manifest.json">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="./language-change.js" defer></script>
+  <title>Other: Haidh and Nifas Calculator</title>
+</head>
+
+<body class="rtl">
+  <div id="bg"></div>
+  <header>
+    <div class="nav">
+      <a class="nav-link" href="./index.html" title="Home">
+        <img class="icon" src="images/home.svg">
+      </a>
+      <h1>
+        <span class="english lang-invisible">Zainab Institute</span>
+        <span class="urdu">Zainab Institute</span>
+      </h1>
+    </div>
+    <div id="language-selection">
+      <select name="language" id="language" onchange="onChangeFunction(this.value)">
+        <option class="rtl" selected="selected" value="urdu">اردو</option>
+        <option value="english">English</option>
+      </select>
+      <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
+      <label class="urdu" for="language">Select Language</label>
+    </div>
+    <hr>
+  </header>
+  <main>
+    <h3>Zainab Institute</h3>
+    <p>
+      Zainab Institute is a scholarly and religious institution which provides
+      religious services under the patronage of Hadrat Maulana Muhammad Ejaz
+      Mustafa (damat barakatuhum) Amir of Aalami Majlis Tahaffuz Khatme Nubuwwat,
+      Karachi.
+    </p>
+    <h3>Goals and Objectives</h3>
+    <ul>
+      <li>Promote and teach Aalimaat the Fiqh of menstruation and nifas.</li>
+      <li>Create a strong team of expert Aalimaat in these injunctions.</li>
+      <li>Draw common women's attention towards the general fiqh of menstruation.</li>
+      <li>Make a warm, welcoming, easy and non-judgemental platform for
+        common women so that they do not shy away from asking about masail-e-haidh
+        and sensitive issues.</li>
+      <li>Take all possible steps for the betterment of the society.</li>
+    </ul>
+  </main>
+</body>
+
+</html>

@@ -2,54 +2,61 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Haidh and Istihadha Calculator</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script src="https://www.googletagmanager.com/gtag/js?id=G-RGMD55PENZ" defer></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        gtag('config', 'G-RGMD55PENZ');
-    </script>
-    <script src="hazthenewestapp.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mea+Culpa&display=swap" rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+  <link rel="manifest" href="images/manifest.json">
 
-    <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
-    <link rel="manifest" href="images/manifest.json">
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="index.css">
+  <script src="./language-change.js" defer></script>
+  <title>Home: Haidh and Nifas Calculator</title>
 </head>
 
-<body class="rtl">
-    <!--<div id="root"></div>-->
-    <header>
-        <a class="nav-link" href="./instructions.html" target="_blank">🛈</a>
-        <h1>
-            <span class="english lang-invisible">Haidh and Istihadha Calculator</span>
-            <span class="urdu">حيض و استحاضہ کیلکولیٹر</span>
-            <!-- <a class="english lang-invisible" href="./instructions-english.html">🛈</a> -->
-        </h1>
-        <div id="language-selection">
-            <select name="language" id="language">
-                <option class="rtl" selected="selected" value="urdu">اردو</option>
-                <option value="english">English</option>
-            </select>
-            <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
-            <label class="urdu" for="language">Select Language</label>
-        </div>
-        <hr>
-    </header>
+<body>
+  <!-- <header>
+    <div class="tabs">
+      <button class="tab english selected" id="english-tab" onclick="onClickFunction('english')">
+        English
+      </button>
+      <button class="tab urdu" id="urdu-tab" onclick="onClickFunction('urdu')">اردو</button>
+    </div>
+  </header> -->
+  <main>
+    <div class="bg-image"></div>
+    <div class="semicircle"></div>
+    <div id="pics">
+      <img id="main-pic" src="./images/cover_img.jpeg" alt="bg-image">
+      <div id="outer-circle">
+        <a class="main-circle" href="./home.html?lang=en">
+            <!-- Haidh and
+            <br>
+            Nifas
+            <br>
+            Calculator -->
+        </a>
+    </div>
+    </div>
+  </main>
+  <footer>
+    A combined effort of
+    <br>
+    <a href="http://www.suffahpk.com/hamara-taruf/" class="title">
+      Suffah&nbsp;Islamic&nbsp;Research&nbsp;Center
+    </a>
+    &
+    <a href="" class="title">Zainab&nbsp;Institute</a>
+  </footer>
 </body>
 
 </html>

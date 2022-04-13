@@ -3,8 +3,11 @@
   src: url('./Jameel\ Noori\ Nastaleeq\ Regular.ttf');
 }
 
+/* General */
 * {
   box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  text-align: justify;
 }
 
 body {
@@ -19,7 +22,37 @@ body {
   --delete: rgb(145, 120, 142);
   --add: #0002;
   --urdu-font: Nastaleeq, serif;
+}
+
+#bg {
+  z-index: -100;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: var(--bg-color);
+  background: -moz-linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
+  background: -webkit-linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
+  background: linear-gradient(
+    45deg,
+    var(--primary3) 0%,
+    var(--primary1) 33%,
+    var(--primary2) 66%,
+    var(--bg-color) 100%
+  );
 }
 
 .rtl {
@@ -28,24 +61,36 @@ body {
   font-family: var(--urdu-font);
 }
 
+.urdu,
+.urdu * {
+  direction: rtl;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
+  /* font-size: larger; */
+}
+
+.mubtadia-invis,
+.duration-invis,
+.lang-invisible,
 .invisible {
   display: none !important;
 }
 
-.lang-invisible {
-  display: none !important;
-}
-
-.duration-invis {
-  display: none !important;
-}
-
+/* Header */
 header {
   width: 100vw;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 h1 {
   text-align: center;
+  flex: 5;
 }
 
 a {
@@ -53,67 +98,30 @@ a {
 }
 
 .nav-link {
-  margin: 0.5rem;
-  position: absolute;
-  top: 0.2rem;
-  left: 0.7rem;
-  font-size: 3rem;
-  font-weight: bold;
+  display: flex;
+  margin: 1rem;
+  color: rgb(61, 14, 60);
+  box-shadow: 2px 2px 4px 0.5px;
+  border-radius: 12px;
+  padding: 0.3rem;
 }
 
-#how-to,
+.icon {
+  width: 36px;
+  height: 36px;
+}
+
 #language-selection {
   text-align: center;
   width: 90vw;
   margin: auto;
 }
 
-main.instructions {
-  width: clamp(min(50vw, 400px), 400px, 100vw);
-  margin: 0 auto;
-  font-size: 1.2rem;
-}
-
-details {
-  margin: 1rem;
-}
-
-summary {
-  font-weight: bold;
-}
-
 hr {
   margin: 1rem 0 0 0;
 }
 
-textarea,
-input {
-  margin: 0.5rem;
-  padding: 0.5rem;
-  flex: 1;
-}
-
-input[type='date'],
-input[type='datetime-local'] {
-  margin-left: 0;
-  margin-right: 0;
-  direction: ltr;
-}
-
-input[type='datetime-local'] {
-  font-size: clamp(min(2vw, 13px), 2.1vw, 13px);
-}
-
-
-label {
-  margin: 0.5rem 0.5rem 0 0.5rem;
-  flex: 1;
-}
-
-#fasid {
-  margin: 0 0.5rem;
-}
-
+/* Haz Input Containers */
 #input_containers_container {
   display: grid;
   grid-auto-flow: column;
@@ -132,20 +140,8 @@ label {
   border: 1px;
 }
 
-#fasid {
-  margin: 0 0.5rem;
-}
-
 .date_and_time {
   width: clamp(min(517px, 100vw), 100vw, 517px);
-}
-
-.time {
-  min-width: 605px;
-}
-
-.vertical {
-  margin: 0 0.5rem;
 }
 
 .label-input {
@@ -154,8 +150,8 @@ label {
 }
 
 .row {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   width: 100%;
   border: 2px groove;
 }
@@ -166,6 +162,48 @@ label {
 
 .row:nth-child(odd) {
   background: var(--primary2);
+}
+
+/* Haz Inputs */
+details > summary.ikhtilaf {
+  list-style-type: '⚙';
+  margin: 1rem 1rem 0 1rem;
+  transition: 0.4s;
+}
+
+details[open] > summary.ikhtilaf {
+  list-style-type: '⚛';
+}
+
+details > b {
+  margin: 1rem;
+}
+
+textarea,
+input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  resize: vertical;
+}
+
+input[type='date'],
+input[type='datetime-local'] {
+  margin-left: 0;
+  margin-right: 0;
+  direction: ltr;
+}
+
+select {
+  padding: 0.2rem;
+  font-size: 1rem;
+  margin: 0.5rem;
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: var(--urdu-font);
+}
+
+label {
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  flex: 1;
 }
 
 button {
@@ -180,26 +218,17 @@ button:hover {
   margin: 0;
 }
 
-.urdu {
-  direction: rtl;
-  font-family: 'Noto Nastaliq Urdu', serif;
-  font-family: var(--urdu-font);
-  font-size: larger;
-}
-
 .plus {
-  color: black;
   background-color: var(--add);
 }
 
-.clone {
-  font-weight: bold;
-  font-size: 14px;
+.minus {
+  background-color: var(--delete);
 }
 
-.minus {
-  color: red;
-  background-color: var(--delete);
+/* Table */
+table {
+  width: 100%;
 }
 
 tbody > tr:nth-child(even) {
@@ -217,6 +246,7 @@ tbody > tr:nth-child(odd) {
   background: var(--primary3);
 }
 
+/* Results */
 #content_container {
   padding: 1rem;
   max-width: 100vw;
@@ -240,18 +270,6 @@ small {
   margin: 0.2rem;
 }
 
-select {
-  padding: 0.2rem;
-  font-size: 1rem;
-  margin: 0.5rem;
-  font-family: 'Noto Nastaliq Urdu', serif;
-  font-family: var(--urdu-font);
-}
-
-table {
-  width: 100%;
-}
-
 .flex {
   display: flex;
 }
@@ -261,11 +279,23 @@ table {
 }
 
 /* FAQ faqs */
-
-details {
-  margin-top: 2rem;
+main {
+  width: clamp(min(50vw, 400px), 400px, 100vw);
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 1.2rem;
 }
+
+details.faq-det {
+  margin: 2rem 1rem 1rem 1rem;
+}
+
+summary {
+  font-weight: bold;
+}
+
 p {
+  font-size: 1.1rem;
   margin-top: 0.5rem;
 }
 
@@ -281,12 +311,8 @@ p {
 
 #contact-form li {
   display: flex;
+  flex-direction: column;
   list-style: none;
-}
-
-#contact-form input,
-#contact-form textarea {
-  flex: 4;
 }
 
 #contact-form textarea {
@@ -299,12 +325,15 @@ p {
   font-size: 1.1rem;
 }
 
- /* The switch - the box around the slider */
- .switch {
+/* The switch - the box around the slider */
+.switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  --diameter: 20px;
+  --margin: 3px;
+  width: calc(calc(var(--diameter) * 2) + calc(var(--margin) * 2));
+  height: calc(var(--diameter) + calc(var(--margin) * 2));
+  margin: 0.3rem;
 }
 
 /* Hide default HTML checkbox */
@@ -323,20 +352,20 @@ p {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
   position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  content: '';
+  height: var(--diameter);
+  width: var(--diameter);
+  left: var(--margin);
+  bottom: var(--margin);
   background-color: var(--primary1);
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
@@ -348,9 +377,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(var(--diameter));
+  -ms-transform: translateX(var(--diameter));
+  transform: translateX(var(--diameter));
 }
 
 /* Rounded sliders */
@@ -360,4 +389,22 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Home Page */
+.page-link {
+  display: flex;
+  align-items: center;
+}
+
+.page-link .icon {
+  margin: 0.5rem;
+}
+
+.page-link h2 {
+  color: rgb(61, 14, 60);
+}
+
+.row p {
+  font-size: 1rem;
 }

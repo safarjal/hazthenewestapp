@@ -1,73 +1,38 @@
-import kotlinx.html.attributes.StringSetEncoder
 import kotlin.js.Date
-
 
 data class Strings(
     val answer: String,
-//    جواب: 
     val headerline: String,
-//    مندرجہ ذیل ترتیب سے دم و طہر آیا:
     val headerlinemubtadia: String,
-//    مبتداہ کو اس ترتیب سے دم و طہر آیا:
     val writedown: String,
-//    جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔
     val allahknows: String,
-//    واللہ تعالی اعلم بالصواب
     val currentpaki: String,
-//    فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔
     val currenthaiz: String,
-//    فی الحال آپ کے حیض کے دن ہیں نمازیں نہ پڑھیں۔
     val situationmaychange:String,
-//    "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھرdate کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔
     val haizend: String,
-//    "اگر خون اسی طرح جاری رہے تب پھرdate تک آپ کے حیض کے دن ہونگے۔
     val beforepregheader: String,
-//    "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:
     val preg: String,
-//    حمل
     val birth: String,
-//     date ولادت
     val afterpregheader:String,
-//    ولادت کے بعد اس ترتیب سے خون آیااور پاکی ملی:
     val earlymiscarriage: String,
-//    date کو اسقاط ہوا (غیر مستبین الخلقہ)
     val ihtiyatighusl: String,
-//    اگر خون date سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا date کو بھی غسل کر لیجیے۔
     val sexnotallowed: String,
-//    اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: 
-//    اگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي date سے پہلے صحبت کي اجازت نہيں۔
     val endofpaki: String,
-//    اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھرdate تک آپ کے یقینی پاکی کے دن ہونگے۔
     val habit: String,
-//    عادت:: حیض: days, hours, minutes ، طہر: days, hours, minutes
     val haizdays: String,
-//    date تا date کل days, hours, minutes حیض کے ہیں۔
     val haizdaysinsolution:String,
-    //this will have the red circle
     val istihazadays: String,
-//    date تا date کل days, hours, minutes یقینی پاکی (استحاضہ) کے ہیں۔
     val nifasdays: String,
-//    date تا date کل days, hours, minutes نفاس کے ہیں۔
     val nifasdaysinsolution:String,
-    //these will have red circle
     val blooddays: String,
-//    date سے date تک کل days, hours, minutes خون۔
     val solution: String,
-//    مسئلہ کا حل ::
     val istihazadetailslineone: String,
-//    اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔
     val istihazadetailslinetwo: String,
-//    date کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔
-//    اگر اس دوران میں کوئی نمازیں حیض سمجھ کر چھوڑیں تھیں، ان کو بھی قضاء کریں۔
     val continuosbleeding: String,
-//    date سے date تک کل days, hours, minutes خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)
     val pakidays:String,
-//    days, hours, minutes پاکی۔
     val tuhrfasid:String,
     val tuhrfasidwithaddition:String,
-//    days, hours, minutes استحاضہ + days, hours, minutes پاکی = days, hours, minutes  طہر فاسد۔
     val twomonthstuhr: String,
-//    days, hours, minutes طہر (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)
     val dashesline: String,
     val becamemutadah:String,
     val thereisnoaadat:String,
@@ -120,14 +85,66 @@ data class Strings(
     val aftertendays:String,
     val considerTuhrInGhiarMustabeenIsqaatIkhtilaf:String,
     val ikhtilafimasail: String,
-    val aadatIncreasingAtEndOfDaurIkhtilaf:String
-
-)
+    val aadatIncreasingAtEndOfDaurIkhtilaf:String,
+    val beforetendaysayyameqabliyyaallconsideredhaiz:String,
+    val endofistehazaayyameqabliyya:String,
+    val daysayyameqabliyya:String,
+    val mubtadia:String,
+    val mutada:String,
+    val typeOfMasla:String,
+    val askagainnodate:String,
+    val tendaysdoghusl:String,
+    val habitwithnifas: String,
+    val earlymiscarriageduration: String,
+    val ayyameqabliyyaikhtilaf:String,
+    val mubtadiaikhitilaf:String,
+    )
 
 
 
 
 enum class LanguageNames { ENGLISH, URDU }
+
+data class AllTheInputs(
+    val entries: List<Entry>?= null,
+    val preMaslaValues: PreMaslaValues = PreMaslaValues(-1L,-1L,-1L, false),
+    val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
+    val pregnancy: Pregnancy? = null,
+    val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
+    val language:String = "urdu",
+    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
+
+
+)
+
+data class PreMaslaValues(
+    val inputtedAadatHaiz:Long? = null,
+    val inputtedAadatTuhr:Long? = null,
+    val inputtedMawjoodahTuhr:Long? = null,
+    val isMawjoodaFasid:Boolean = false,
+
+)
+
+data class Ikhtilaafaat(
+    val ghairMustabeenIkhtilaaf:Boolean = false,
+    val daurHaizIkhtilaf:Boolean = false,
+    val ayyameQabliyyaIkhtilaf: Boolean = false,
+    val mubtadiaIkhitilaf: Boolean = false
+)
+
+
+
+enum class TypesOfInputs {
+    DATE_ONLY,
+    DATE_AND_TIME,
+    DURATION
+}
+
+enum class TypesOfMasla {
+    MUBTADIA,
+    MUTADAH,
+    NIFAS
+}
 
 data class Entry(
     val startTime: Date,
@@ -142,15 +159,20 @@ enum class TypesOfFutureDates {
     AFTER_TEN_DAYS,
     FORTY_DAYS,
     IC_FORBIDDEN_DATE,
-    IHTIYATI_GHUSL
+    IHTIYATI_GHUSL,
+    BEFORE_TEN_DAYS_AYYAMEQABLIYYAH,
+    START_OF_AADAT_AYYAMEQABLIYYA,
+    TEN_DAYS_EXACTLY
+
 }
 
 class FutureDateType(
     val date:Date,
-    val futureDates:TypesOfFutureDates
+    val futureDates:TypesOfFutureDates,
+    val date2:Date? = null,
 )
 class EndingOutputValues(
-    val filHaalPaki:Boolean,
+    val filHaalPaki:Boolean?,
     val aadats:AadatsOfHaizAndTuhr?,
     val futureDateType: MutableList<FutureDateType>
 )
@@ -175,7 +197,8 @@ data class Pregnancy(
     val pregStartTime:Date,
     val birthTime:Date,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
-    val mustabeenUlKhilqat:Boolean
+    val mustabeenUlKhilqat:Boolean,
+    var newAadatNifas: Long? = -1L
 )
 
 enum class DurationType {
@@ -183,9 +206,10 @@ enum class DurationType {
     TUHR,
     TUHREFAASID,
     TUHR_IN_HAML,
-    NIFAAS,
+    TUHREFAASID_IN_HAML,
+    NIFAS,
     DAM_IN_HAML,
-    DAM_IN_NIFAAS_PERIOD,
+    DAM_IN_NIFAS_PERIOD,
     ISTIHAZA_BEFORE,
     ISTIHAZA_AFTER,
     HAIZ,
@@ -198,7 +222,9 @@ enum class DurationType {
     TUHR_MUBTADIA,
     TUHREFAASID_MUBTADIA,
     TUHREFAASID_MUBTADIA_WITH_ISTEHAZA,
-    TUHREFAASID_WITH_ISTEHAZA
+    TUHREFAASID_WITH_ISTEHAZA,
+    ISTEHAZA_AYYAMEQABLIYYA,
+    START_OF_AADAT_AYYAMEQABLIYYA
 }
 
 class DateTypeList (
@@ -232,6 +258,7 @@ data class FixedDuration(
     var timeInMilliseconds: Long,
     var indices: MutableList<Int> = mutableListOf(),
     var istihazaAfter: Long = 0,
+    var ayyameqabliyya:AyyameQabliyya? = null,
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Date = Date(1,1,1),
@@ -239,6 +266,12 @@ data class FixedDuration(
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = addTimeToDate(this.startDate, this.timeInMilliseconds)
 }
+
+data class AyyameQabliyya(
+    var ayyameqabliyya: Long,
+    var aadatHaiz: Long,
+    var aadatTuhr: Long
+)
 
 data class BiggerThanTenDm(
     var mp: Long, //mawjooda paki
@@ -276,4 +309,9 @@ data class AadaatWithChangeability(
 data class AadatAfterIndexOfFixedDuration(
     var aadat: Long,
     var index: Int
+)
+
+data class OutputStringsLanguages(
+    var urduString:String,
+    var englishString: String
 )

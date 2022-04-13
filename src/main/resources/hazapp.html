@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-RGMD55PENZ" defer></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-RGMD55PENZ');
+    </script>
+    <script src="hazthenewestapp.js" defer></script>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+    <link rel="manifest" href="images/manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Haidh and Nifas Calculator</title>
+</head>
+
+<body class="rtl">
+    <div id="bg"></div>
+    <header>
+        <div class="nav">
+            <a class="nav-link" href="./home.html" title="Home" target="_blank">
+                <img class="icon" src="images/home.svg">
+            </a>
+            <h1>
+                <span class="english lang-invisible">Haidh and Istihadha Calculator</span>
+                <span class="urdu">حيض و نفاس کیلکولیٹر</span>
+            </h1>
+        </div>
+        <div id="language-selection">
+            <select name="language" id="language">
+                <option class="rtl" selected="selected" value="urdu">اردو</option>
+                <option value="english">English</option>
+            </select>
+            <label class="english lang-invisible rtl" for="language">زبان تبديل كريں</label>
+            <label class="urdu" for="language">Select Language</label>
+        </div>
+        <hr>
+    </header>
+    <div class="root"></div>
+</body>
+
+</html>
