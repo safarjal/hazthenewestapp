@@ -50,6 +50,8 @@ object Ids {
     object Ikhtilafat {
         const val IKHTILAF1 = "ikhtilaf1"
         const val IKHTILAF2 = "ikhtilaf2"
+        const val IKHTILAF3 = "ikhtilaf3"
+        const val IKHTILAF4 = "ikhtilaf4"
     }
 
     const val CONTENT_CONTAINER = "content_container"
@@ -167,6 +169,8 @@ private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INP
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
+private val HTMLElement.ikhtilaf3 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement).checked
+private val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement).checked
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -422,9 +426,9 @@ private fun TagConsumer<HTMLElement>.content() {
 private fun getNow(): String {
     var dateStr = ""
     if (languageSelector.value == Vls.Langs.URDU){
-        dateStr = urduDateFormat(Date(Date.now()),true)
+        dateStr = urduDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
     }else if(languageSelector.value == Vls.Langs.ENGLISH){
-        dateStr = englishDateFormat(Date(Date.now()),true)
+        dateStr = englishDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
     }
     dateStr += " ${Date(Date.now()).getFullYear()}"
     return dateStr
@@ -520,6 +524,16 @@ private fun FlowContent.ikhtilafiMasle() {
                 StringsOfLanguages.ENGLISH.considerTuhrInGhiarMustabeenIsqaatIkhtilaf,
                 StringsOfLanguages.URDU.considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2,
+                StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
+                StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
+                classes = setOfNotNull(CssC.ROW, CssC.DEV)
+            }
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3,
+                StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
+                StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
+                classes = setOfNotNull(CssC.ROW, CssC.DEV)
+            }
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4,
                 StringsOfLanguages.ENGLISH.aadatIncreasingAtEndOfDaurIkhtilaf,
                 StringsOfLanguages.URDU.aadatIncreasingAtEndOfDaurIkhtilaf) {
                 classes = setOfNotNull(CssC.ROW, CssC.DEV)
@@ -1260,26 +1274,46 @@ private fun parseEntries(inputContainer: HTMLElement) {
             }
 
         }
+
+        val typeOfMasla:TypesOfMasla = if(mubtadiaIs){
+            TypesOfMasla.MUBTADIA
+        } else if(pregnancyIs){
+            TypesOfMasla.NIFAS
+        } else{
+            TypesOfMasla.MUTADAH
+        }
+        val typesOfInputs:TypesOfInputs = if(isDateOnly){
+            TypesOfInputs.DATE_ONLY
+        } else if(isDuration){
+            TypesOfInputs.DURATION
+        }else{TypesOfInputs.DATE_AND_TIME}
+
+
         @Suppress("UnsafeCastFromDynamic")
         val output = handleEntries(
-            entries,
-            parseDays(aadatHaz.value),
-            parseDays(aadatTuhr.value),
-            mawjodahtuhreditable,
-            isMawjoodaFasid,
-            isDateOnly,
-            pregnancyIs,
-            Pregnancy(
-                pregnancyStrt,
-                pregnancyEnd,
-                parseDays(aadatNifas.value),
-                mustabeen
-            ),
-            mubtadiaIs,
-            languageSelector.value,
-            isDuration,
-            ikhtilaf1,
-            ikhtilaf2
+            AllTheInputs(
+                entries,
+                PreMaslaValues(
+                    parseDays(aadatHaz.value),
+                    parseDays(aadatTuhr.value),
+                    mawjodahtuhreditable,
+                    isMawjoodaFasid
+                ),
+                typeOfMasla,
+                Pregnancy(
+                    pregnancyStrt,
+                    pregnancyEnd,
+                    parseDays(aadatNifas.value),
+                    mustabeen
+                ),
+                typesOfInputs,
+                languageSelector.value,
+                Ikhtilaafaat(
+                    ikhtilaf1,
+                    ikhtilaf2,
+                    ikhtilaf3,
+                    ikhtilaf4))
+
         )
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)

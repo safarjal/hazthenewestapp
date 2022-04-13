@@ -30,10 +30,14 @@ fun addCalcsGetDuration(){
     val endDate = Date(addCalcsEndDate.valueAsNumber)
     var strUrdu = ""
     var strEnglish = ""
+    var typesOfInputs:TypesOfInputs
+    if(isDateOnly){typesOfInputs=TypesOfInputs.DATE_ONLY}
+    else{typesOfInputs=TypesOfInputs.DATE_AND_TIME}
+
     if(startDate != null && endDate != null && startDate.getTime() < endDate.getTime()){
         val result = (endDate.getTime()-startDate.getTime()).toLong()
-        strUrdu = daysHoursMinutesDigitalUrdu(result,isDateOnly)
-        strEnglish = daysHoursMinutesDigitalEnglish(result, isDateOnly)
+        strUrdu = daysHoursMinutesDigitalUrdu(result,typesOfInputs)
+        strEnglish = daysHoursMinutesDigitalEnglish(result, typesOfInputs)
     }
     val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
     if(languageSelecter.value=="urdu"){
@@ -43,6 +47,7 @@ fun addCalcsGetDuration(){
     }
 
 }
+
 
 fun addListeners(){
     addCalcsDateToAddTo.onchange = { addCalcsAddTimeToDate()}
@@ -61,25 +66,30 @@ fun addListeners(){
     addCalcsButtonGetDuration.onclick = {getDurationButtonClick()}
 }
 
-fun addCalcsAddTimeToDate(){
-    val isDateOnly:Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
-    val date = Date(addCalcsDateToAddTo.valueAsNumber)
-    val duration = parseDays(addCalcsDurationToAdd.value)
-    var strResultUrdu = ""
-    var strResultEnglish = ""
-    if(duration!=null&&date!=null){
-        val result = addTimeToDate(date,duration)
-        strResultEnglish = englishDateFormat(result,isDateOnly)
-        strResultUrdu = urduDateFormat(result,isDateOnly)
-    }
-    val resultStrings = OutputStringsLanguages(strResultUrdu,strResultEnglish)
-    if(languageSelecter.value=="urdu"){
-        addCalcsOutputDate.innerHTML = resultStrings.urduString
-    }else if(languageSelecter.value=="english"){
-        addCalcsOutputDate.innerHTML = resultStrings.englishString
+fun addCalcsAddTimeToDate() {
+    val isDateOnly: Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
+    var typesOfInputs: TypesOfInputs
+    if (isDateOnly) {
+        typesOfInputs = TypesOfInputs.DATE_ONLY
+    } else {
+        typesOfInputs = TypesOfInputs.DATE_AND_TIME
+        val date = Date(addCalcsDateToAddTo.valueAsNumber)
+        val duration = parseDays(addCalcsDurationToAdd.value)
+        var strResultUrdu = ""
+        var strResultEnglish = ""
+        if (duration != null && date != null) {
+            val result = addTimeToDate(date, duration)
+            strResultEnglish = englishDateFormat(result, typesOfInputs)
+            strResultUrdu = urduDateFormat(result, typesOfInputs)
+        }
+        val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish)
+        if (languageSelecter.value == "urdu") {
+            addCalcsOutputDate.innerHTML = resultStrings.urduString
+        } else if (languageSelecter.value == "english") {
+            addCalcsOutputDate.innerHTML = resultStrings.englishString
+        }
     }
 }
-
 fun switchDateTime(calcType:String){
     println("got here")
     if(calcType=="calculate-duration"){
