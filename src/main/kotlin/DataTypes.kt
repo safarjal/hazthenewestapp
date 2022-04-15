@@ -107,7 +107,7 @@ enum class LanguageNames { ENGLISH, URDU }
 
 data class AllTheInputs(
     val entries: List<Entry>?= null,
-    val preMaslaValues: PreMaslaValues = PreMaslaValues(-1L,-1L,-1L, false),
+    val preMaslaValues: PreMaslaValues = PreMaslaValues(null,null, null, false),
     val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
