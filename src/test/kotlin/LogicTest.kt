@@ -623,54 +623,55 @@ class LogicTest {
 //            output.endingOutputValues.futureDateType!!.futureDates
 //        )
     }
-//    @Test
-//    fun bugMasla1() {
-//        val entries = mutableListOf<Entry>()
-//        entries +=//each month has to be one minus the real
-//            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
-//        entries +=
-//            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
-//        entries +=
-//            Entry(Date(2021, 0, 26), Date(2021, 1, 1))
-//        entries +=
-//            Entry(Date(2021, 1, 11), Date(2021, 1, 23))
-//        entries +=
-//            Entry(Date(2021, 1, 28), Date(2021, 2, 2))
-//        entries +=
-//            Entry(Date(2021, 10, 12), Date(2021, 11, 26))
-//        entries +=
-//            Entry(Date(2021, 11, 30), Date(2022, 0, 8))
-//
-//        val output = handleEntries(AllTheInputs(entries))
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList +=
-//            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
-//        expectedHaizDatesList +=
-//            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
-//        expectedHaizDatesList +=
-//            Entry(Date(2021, 0, 31), Date(2021, 1, 7))
-//        expectedHaizDatesList +=
-//            Entry(Date(2021, 10, 12), Date(2021, 11, 22))
-//
-//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-//
-//        for (i in expectedHaizDatesList.indices) {
-//            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-//            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
-//        }
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                true,
-//                AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
-//                mutableListOf()
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//    }
+    @Test
+    fun bugMasla1() {
+        val entries = listOf(
+            Entry(Date(2020, 10, 27), Date(2020, 11, 7)),
+            Entry(Date(2020, 11, 31), Date(2021, 0, 7)),
+            Entry(Date(2021, 0, 26), Date(2021, 1, 1)),
+            Entry(Date(2021, 1, 11), Date(2021, 1, 23)),
+            Entry(Date(2021, 1, 28), Date(2021, 2, 2)),
+            Entry(Date(2021, 10, 12), Date(2021, 11, 26)),
+            Entry(Date(2021, 11, 30), Date(2022, 0, 8))
+        )
+
+        val output = handleEntries(AllTheInputs(entries, ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)))
+        val haizDateList = output.hazDatesList
+
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList +=
+            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
+        expectedHaizDatesList +=
+            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
+        expectedHaizDatesList +=
+            Entry(Date(2021, 0, 31), Date(2021, 1, 7))
+        expectedHaizDatesList +=
+            Entry(Date(2021, 10, 12), Date(2021, 10, 19))
+        expectedHaizDatesList +=
+            Entry(Date(2021, 11, 13), Date(2021, 11, 20))
+
+        assertEquals(expectedHaizDatesList.size, haizDateList.size)
+
+        for (i in expectedHaizDatesList.indices) {
+            println(" i is $i")
+            println(haizDateList[i].startTime)
+            println(haizDateList[i].endTime)
+            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
+            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+        }
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
+                mutableListOf(
+
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+    }
     @Test
     fun testingAadatCase1() {
         val entries = mutableListOf<Entry>()
