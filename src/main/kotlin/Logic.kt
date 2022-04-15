@@ -945,38 +945,6 @@ class FiveSoortainOutput (
     val aadatTuhrChanges:Boolean
 )
 
-//fun threeSoortainIstimrar(mp:Long, gp:Long, hz: Long):FiveSoortainOutput{
-//    val soorat: Soortain
-//    val istihazaBefore:Long
-//    val haiz:Long
-//    val istihazaAfter:Long
-//    val aadatTuhrChanges:Boolean // 0 for gp, 1 for mp (change)
-//    val veryBigArbitraryNumber = 1000
-//
-//    if (mp <= gp) {    //Qism A (Always A-1 in istimrar)
-//        soorat = Soortain.A_1
-//        istihazaBefore = gp-mp
-//        haiz = hz
-//        istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
-//        aadatTuhrChanges = false
-//    }else {	// mp>gp qism B
-//        if (hz - (mp - gp) >= 3*MILLISECONDS_IN_A_DAY) {							// soorat B-2
-//            soorat = Soortain.B_2
-//            istihazaBefore = 0
-//            haiz = hz-(mp-gp)
-//            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
-//            aadatTuhrChanges = true
-//        }else{ //if (hz - (mp - gp) < 3) {						// soorat B-3
-//            soorat = Soortain.B_3
-//            istihazaBefore = 0
-//            haiz = hz
-//            istihazaAfter = (veryBigArbitraryNumber*MILLISECONDS_IN_A_DAY)
-//            aadatTuhrChanges = true
-//        }
-//    }
-//    return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
-//}
-
 fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
     val soorat: Soortain
     val istihazaBefore:Long
@@ -1586,7 +1554,13 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>,
     return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
-fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: AadatsOfHaizAndTuhr, fillHaalPaki:Boolean?, aadatNifas: Long?, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
+fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
+                          aadats: AadatsOfHaizAndTuhr,
+                          fillHaalPaki:Boolean?,
+                          aadatNifas: Long?,
+                          adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                          adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
+                          inputtedMawjoodaTuhr: Long?):MutableList<FutureDateType>{
 //    println("got to future dates")
     val futureDatesList = mutableListOf<FutureDateType>()
 //    println(fixedDurations.last())
@@ -1824,6 +1798,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>, aadats: Aa
     else if(fixedDurations.last().type == DurationType.DAM_MUBTADIA&&
         fixedDurations.last().days>10){
         var izitrariAadatHaiz=-1L
+
         if(adatsOfHaizList.size>1){
             if(adatsOfHaizList.last().index!=fixedDurations.lastIndex){
                 izitrariAadatHaiz=adatsOfHaizList.last().aadat
@@ -2157,7 +2132,6 @@ fun ihtiyatiGhuslCalc(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList
 
         }
     }else if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
-        println("v r here")
         gp = 30*MILLISECONDS_IN_A_DAY - hz //iztirari tuhr aadat
         if (mp>gp){
             ihtiyatiGhuslTime = addTimeToDate(fixedDurations.last().startDate, hz)
