@@ -198,7 +198,6 @@ data class Pregnancy(
     val birthTime:Date,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat:Boolean,
-    var newAadatNifas: Long? = -1L
 )
 
 enum class DurationType {
@@ -298,7 +297,8 @@ data class BiggerThanFortyNifas(
 
 data class AadatsOfHaizAndTuhr(
     var aadatHaiz: Long,
-    var aadatTuhr: Long
+    var aadatTuhr: Long,
+    var aadatNifas: Long? = null
 )
 
 data class AadaatWithChangeability(

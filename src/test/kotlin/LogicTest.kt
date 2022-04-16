@@ -443,7 +443,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY, parseDays("40")!!),
 //                FutureDateType(Date(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
@@ -1371,8 +1371,6 @@ class LogicTest {
     }
     @Test
     fun testingFinalDatesCase9() {
-        //this test is failing on github
-
         //ihtiyati ghusl dam less than 3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
@@ -1501,9 +1499,9 @@ class LogicTest {
     fun testingFinalDatesCase9part3b() {
         //ihtiyati ghusl dam less than 3 - A-3
         //another ayyame qabliyyah with ayyame qabliyya off
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
+        val entries = listOf(
             Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+        )
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -2139,7 +2137,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaFinalOutputsCase4a() {
         //dam >10, no aadat
-        val entries = listOf<Entry>(
+        val entries = listOf(
             Entry(Date(2022, 2, 1), Date(2022, 2, 12))
         )
 
@@ -2857,7 +2855,7 @@ class LogicTest {
 
         val fixedDurations = output.fixedDurations
 
-        val expectedFixedDurations = listOf<FixedDuration>(
+        val expectedFixedDurations = listOf(
             FixedDuration(
                 DurationType.DAM_MUBTADIA,
                 parseDays("63")!!,
@@ -2961,7 +2959,7 @@ class LogicTest {
 
         val fixedDurations = output.fixedDurations
 
-        val expectedFixedDurations = listOf<FixedDuration>(
+        val expectedFixedDurations = listOf(
             FixedDuration(
                 DurationType.DAM,
                 parseDays("63")!!,
@@ -3474,7 +3472,68 @@ class LogicTest {
         assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
+    @Test
+    fun testingNifasDurationCase1() {
+        //mashq 12, sawal 1//testing daur ikhtilaf
+        val arbitraryTime = Date(0,0,0)
+        val durations = listOf(
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("2")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("30")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("2")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("2")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("1")!!, arbitraryTime),
+        )
 
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(addTimeToDate(arbitraryTime,-1),
+                    arbitraryTime,
+                    40*MILLISECONDS_IN_A_DAY,
+                    true)
+            )
+        ))
 
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM_IN_NIFAS_PERIOD,
+                parseDays("37")!!,
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(-1,-1, parseDays("37")!!)
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
 
 }

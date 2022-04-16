@@ -1321,8 +1321,8 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
     }
     var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
     var entries= mutableListOf<Entry>()
-    var pregnancyStrt:Date = Date(0,0,0)
     var pregnancyEnd:Date = Date(0,0,0)
+    var pregnancyStrt:Date = addTimeToDate(pregnancyEnd, -1)
     if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
     for(dur in durations){
         when (dur.type) {

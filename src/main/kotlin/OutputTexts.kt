@@ -233,8 +233,8 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues, typeOfInput: 
     var strUrdu = ""
     var strEnglish = ""
     val aadats = endingOutputValues.aadats
-    strUrdu+=outputStringAadatLine(typeOfInput, aadats, pregnancy).urduString
-    strEnglish+=outputStringAadatLine(typeOfInput, aadats, pregnancy).englishString
+    strUrdu+=outputStringAadatLine(typeOfInput, aadats).urduString
+    strEnglish+=outputStringAadatLine(typeOfInput, aadats).englishString
     if(typeOfInput==TypesOfInputs.DURATION){return OutputStringsLanguages(strUrdu,strEnglish)}
     val filHaal = endingOutputValues.filHaalPaki
     strUrdu+=outputStringFilHaalLine(filHaal).urduString
@@ -376,7 +376,7 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableLis
     }
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr?, pregnancy: Pregnancy?):OutputStringsLanguages{
+fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr?):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
 
@@ -393,15 +393,15 @@ fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr
             strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
                 .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
         }else{
-            if(pregnancy?.newAadatNifas != null && pregnancy.newAadatNifas!=-1L){
+            if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){
                 strUrdu+= StringsOfLanguages.URDU.habitwithnifas
                     .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
                     .replace("duration2", daysHoursMinutesDigitalUrdu(aadatTuhr, typeOfInput))
-                    .replace("duration3", daysHoursMinutesDigitalUrdu(pregnancy.newAadatNifas!!, typeOfInput))
+                    .replace("duration3", daysHoursMinutesDigitalUrdu(aadats.aadatNifas!!, typeOfInput))
                 strEnglish+= StringsOfLanguages.ENGLISH.habitwithnifas
                     .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
                     .replace("duration2", daysHoursMinutesDigitalEnglish(aadatTuhr, typeOfInput))
-                    .replace("duration3", daysHoursMinutesDigitalEnglish(pregnancy.newAadatNifas!!, typeOfInput))
+                    .replace("duration3", daysHoursMinutesDigitalEnglish(aadats.aadatNifas!!, typeOfInput))
             }
             else{
                 strUrdu+= StringsOfLanguages.URDU.habit
