@@ -99,6 +99,8 @@ val urduStrings = Strings(
     "\n<b>اسقاط ہوا (غیر مستبین الخلقہ)</b>\n",
     "کیا ایام قبلیہ میں عبادات جاری رہیں گی؟",
     "کیا مبتداہ کے حق میں اضطراری عادت بلکل حقیقی عادت کی طرح ہے؟",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration1\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration2، حیض: duration1</b>\n\n",
 
 
     )
@@ -230,6 +232,8 @@ val englishStrings = Strings(
     "\n<b>Miscarriage of an undeveloped fetus</b>\n",
     "Will ibadaat be continued during ayyam-e-qabliyya?",
     "Does iztirari habit become real habit in mubtadia?",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration1 \n\n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration2, Haidh : duration1\n\n",
 
 
     )

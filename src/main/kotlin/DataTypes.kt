@@ -98,6 +98,8 @@ data class Strings(
     val earlymiscarriageduration: String,
     val ayyameqabliyyaikhtilaf:String,
     val mubtadiaikhitilaf:String,
+    val onlynifashabit:String,
+    val nifasAndHaizHabit:String,
     )
 
 

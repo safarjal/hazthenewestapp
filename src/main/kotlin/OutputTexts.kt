@@ -377,6 +377,8 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableLis
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr?):OutputStringsLanguages{
+    //we should probably put in the possibility of tuhr aadat only...
+    //and tuhr aadat with nifas
     var strUrdu = ""
     var strEnglish = ""
 
@@ -384,16 +386,34 @@ fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr
     else {
         val aadatTuhr = aadats.aadatTuhr
         val aadatHaiz = aadats.aadatHaiz
-        if(aadatHaiz==-1L && aadatTuhr==-1L){
-            strUrdu += StringsOfLanguages.URDU.thereisnoaadat
-            strEnglish += StringsOfLanguages.ENGLISH.thereisnoaadat
-        }else if(aadatHaiz!=-1L && aadatTuhr==-1L){
-            strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly
-                .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
-            strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
-                .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
-        }else{
-            if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){
+        if(aadatHaiz==-1L && aadatTuhr==-1L){//neither haiz nor tuhr aadat exists
+            if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
+                strUrdu+= StringsOfLanguages.URDU.onlynifashabit
+                    .replace("duration1", daysHoursMinutesDigitalUrdu(aadats.aadatNifas!!, typeOfInput))
+                strEnglish+= StringsOfLanguages.ENGLISH.onlynifashabit
+                    .replace("duration1", daysHoursMinutesDigitalEnglish(aadats.aadatNifas!!, typeOfInput))
+
+            }else {//adat nifas doesn't exists
+                strUrdu += StringsOfLanguages.URDU.thereisnoaadat
+                strEnglish += StringsOfLanguages.ENGLISH.thereisnoaadat
+            }
+        }else if(aadatHaiz!=-1L && aadatTuhr==-1L){//aadat of haiz exists, but not aadat of tuhr
+            if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
+                strUrdu+= StringsOfLanguages.URDU.nifasAndHaizHabit
+                    .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
+                    .replace("duration2", daysHoursMinutesDigitalUrdu(aadats.aadatNifas!!, typeOfInput))
+                strEnglish+= StringsOfLanguages.ENGLISH.nifasAndHaizHabit
+                    .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
+                    .replace("duration2", daysHoursMinutesDigitalEnglish(aadats.aadatNifas!!, typeOfInput))
+
+            }else{//adat nifas doesn't exists
+                strUrdu+= StringsOfLanguages.URDU.aadatofhaizonly
+                    .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
+                strEnglish+= StringsOfLanguages.ENGLISH.aadatofhaizonly
+                    .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
+            }
+        }else{//adats of haiz and tuhr exist
+            if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
                 strUrdu+= StringsOfLanguages.URDU.habitwithnifas
                     .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
                     .replace("duration2", daysHoursMinutesDigitalUrdu(aadatTuhr, typeOfInput))
@@ -402,8 +422,7 @@ fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr
                     .replace("duration1", daysHoursMinutesDigitalEnglish(aadatHaiz, typeOfInput))
                     .replace("duration2", daysHoursMinutesDigitalEnglish(aadatTuhr, typeOfInput))
                     .replace("duration3", daysHoursMinutesDigitalEnglish(aadats.aadatNifas!!, typeOfInput))
-            }
-            else{
+            }else{//adat nifas doesn't exists
                 strUrdu+= StringsOfLanguages.URDU.habit
                     .replace("duration1", daysHoursMinutesDigitalUrdu(aadatHaiz, typeOfInput))
                     .replace("duration2", daysHoursMinutesDigitalUrdu(aadatTuhr, typeOfInput))
