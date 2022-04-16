@@ -71,7 +71,7 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
             dealWithBiggerThan10Dam(
                 fixedDurations,
-                allTheInputs.preMaslaValues,
+                PreMaslaValues(aadats.aadatHaiz,aadats.aadatTuhr, aadats.aadatTuhr),
                 allTheInputs.language,
                 adatsOfHaizList,
                 adatsOfTuhrList,
