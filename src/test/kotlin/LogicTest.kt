@@ -2840,6 +2840,140 @@ class LogicTest {
             assertEquals(hazDatesList[i].endTime.getTime(), expectedHazDatesList[i].endTime.getTime())
         }
     }
+    @Test
+    fun testingMubtadiaDuration() {
+        //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
+        val arbitraryTime = Date(0,0,0)
+        val durations = listOf(
+            Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("18")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("11")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("16")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("15")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("11")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("18")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUBTADIA
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+        println(fixedDurations)
+
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(
+                DurationType.DAM_MUBTADIA,
+                parseDays("63")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    Soortain.A_1,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW,
+                parseDays("15")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("11")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    Soortain.A_1,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("8")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("18")!!,
+                istihazaAfter = parseDays("8")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("100")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    Soortain.A_1,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("15")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("15")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("15")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("15")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("15")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!, arbitraryTime),
+                    )
+                )
+            ),
+
+            )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("15")!!)
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
 
 
 }

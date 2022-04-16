@@ -1224,13 +1224,44 @@ private fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
     with(inputContainer) {
-        var mawjodahtuhreditable = parseDays(mawjoodaTuhr.value)
-        var pregnancyIs = isNifas
         var pregnancyStrt = Date(pregStartTime.valueAsNumber)
         var pregnancyEnd = Date(pregEndTime.valueAsNumber)
-        val mubtadiaIs = isMubtadia
 
-        if(isDuration){
+        val typeOfMasla:TypesOfMasla = if(isMubtadia){
+            TypesOfMasla.MUBTADIA
+        } else if(isNifas){
+            TypesOfMasla.NIFAS
+        } else{
+            TypesOfMasla.MUTADAH
+        }
+        val typesOfInputs:TypesOfInputs = if(isDateOnly){
+            TypesOfInputs.DATE_ONLY
+        } else if(isDuration){
+            TypesOfInputs.DURATION
+        }else{TypesOfInputs.DATE_AND_TIME}
+
+        val preMaslaValues = PreMaslaValues(
+            parseDays(aadatHaz.value),
+            parseDays(aadatTuhr.value),
+            parseDays(mawjoodaTuhr.value),
+            isMawjoodaFasid
+        )
+        val ikhtilaafaat = Ikhtilaafaat(
+            ikhtilaf1,
+            ikhtilaf2,
+            ikhtilaf3,
+            ikhtilaf4)
+
+        val pregnancy = Pregnancy(
+            pregnancyStrt,
+            pregnancyEnd,
+            parseDays(aadatNifas.value),
+            mustabeen
+        )
+
+        var allTheInputs:AllTheInputs=AllTheInputs()
+
+        if(typesOfInputs==TypesOfInputs.DURATION){
             //take arbitrary date
             val arbitraryDate = Date(0,0,0)
             val durations = haizDurationInputDatesRows.map { row ->
@@ -1245,26 +1276,15 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     timeInMilliseconds = parseDays(row.durationInput.value)!!,
                     startTime = arbitraryDate
                 ) }
-            for (index in durations.indices){
-                if(index > 0){
-                    durations[index].startTime = durations[index-1].endDate
-                }
-            }
-            if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
-            for(dur in durations){
-                when (dur.type) {
-                    DurationType.DAM -> {
-                        entries += Entry(dur.startTime, dur.endDate)
-                    }
-                    DurationType.HAML -> {
-                        pregnancyIs=true
-                        pregnancyStrt=dur.startTime
-                    }
-                    DurationType.WILADAT_ISQAT -> {
-                        pregnancyEnd=dur.startTime
-                    }
-                }
-            }
+            allTheInputs = AllTheInputs(
+                entries,
+                preMaslaValues,
+                typeOfMasla,
+                pregnancy,
+                typesOfInputs,
+                languageSelector.value,
+                ikhtilaafaat)
+            allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
@@ -1272,54 +1292,75 @@ private fun parseEntries(inputContainer: HTMLElement) {
                     endTime = Date(row.endTimeInput.valueAsNumber)
                 )
             }
-
+            allTheInputs = AllTheInputs(
+                entries,
+                preMaslaValues,
+                typeOfMasla,
+                pregnancy,
+                typesOfInputs,
+                languageSelector.value,
+                ikhtilaafaat)
         }
-
-        val typeOfMasla:TypesOfMasla = if(mubtadiaIs){
-            TypesOfMasla.MUBTADIA
-        } else if(pregnancyIs){
-            TypesOfMasla.NIFAS
-        } else{
-            TypesOfMasla.MUTADAH
-        }
-        val typesOfInputs:TypesOfInputs = if(isDateOnly){
-            TypesOfInputs.DATE_ONLY
-        } else if(isDuration){
-            TypesOfInputs.DURATION
-        }else{TypesOfInputs.DATE_AND_TIME}
 
 
         @Suppress("UnsafeCastFromDynamic")
-        val output = handleEntries(
-            AllTheInputs(
-                entries,
-                PreMaslaValues(
-                    parseDays(aadatHaz.value),
-                    parseDays(aadatTuhr.value),
-                    mawjodahtuhreditable,
-                    isMawjoodaFasid
-                ),
-                typeOfMasla,
-                Pregnancy(
-                    pregnancyStrt,
-                    pregnancyEnd,
-                    parseDays(aadatNifas.value),
-                    mustabeen
-                ),
-                typesOfInputs,
-                languageSelector.value,
-                Ikhtilaafaat(
-                    ikhtilaf1,
-                    ikhtilaf2,
-                    ikhtilaf3,
-                    ikhtilaf4))
-        )
+        val output = handleEntries(allTheInputs)
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
     }
     addCompareButtonIfNeeded()
+}
+
+fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs):AllTheInputs{
+    for (index in durations.indices){
+        if(index > 0){
+            durations[index].startTime = durations[index-1].endDate
+        }
+    }
+    var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
+    var entries= mutableListOf<Entry>()
+    var pregnancyStrt:Date = Date(0,0,0)
+    var pregnancyEnd:Date = Date(0,0,0)
+    if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
+    for(dur in durations){
+        when (dur.type) {
+            DurationType.DAM -> {
+                entries += Entry(dur.startTime, dur.endDate)
+            }
+            DurationType.HAML -> {
+                pregnancyStrt=dur.startTime
+
+            }
+            DurationType.WILADAT_ISQAT -> {
+                pregnancyEnd=dur.startTime
+            }
+        }
+    }
+    val newPreMaslaValues = PreMaslaValues(
+        allTheOriginalInputs.preMaslaValues.inputtedAadatHaiz,
+        allTheOriginalInputs.preMaslaValues.inputtedAadatTuhr,
+        mawjodahtuhreditable,
+        allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
+    )
+    var newPregnancy:Pregnancy? = null
+    if(allTheOriginalInputs.pregnancy!=null){
+        newPregnancy= Pregnancy(
+            pregnancyStrt,
+            pregnancyEnd,
+            allTheOriginalInputs.pregnancy.aadatNifas,
+            allTheOriginalInputs.pregnancy.mustabeenUlKhilqat
+        )
+    }
+    return AllTheInputs(entries,
+        newPreMaslaValues,
+        allTheOriginalInputs.typeOfMasla,
+        newPregnancy,
+        TypesOfInputs.DURATION,
+        allTheOriginalInputs.language,
+        allTheOriginalInputs.ikhtilaafaat
+    )
 }
 
 fun replaceBoldTagWithBoldAndStar(string: String): String {
