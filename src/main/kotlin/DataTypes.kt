@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import kotlin.js.Date
 
 data class Strings(
@@ -98,6 +100,10 @@ data class Strings(
     val earlymiscarriageduration: String,
     val ayyameqabliyyaikhtilaf:String,
     val mubtadiaikhitilaf:String,
+    val onlynifashabit:String,
+    val nifasAndHaizHabit:String,
+    val nifasAndTuhrHabit:String,
+    val onlyTuhrHabit:String,
     )
 
 
@@ -107,7 +113,7 @@ enum class LanguageNames { ENGLISH, URDU }
 
 data class AllTheInputs(
     val entries: List<Entry>?= null,
-    val preMaslaValues: PreMaslaValues = PreMaslaValues(-1L,-1L,-1L, false),
+    val preMaslaValues: PreMaslaValues = PreMaslaValues(null,null, null, false),
     val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
@@ -198,7 +204,6 @@ data class Pregnancy(
     val birthTime:Date,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat:Boolean,
-    var newAadatNifas: Long? = -1L
 )
 
 enum class DurationType {
@@ -246,7 +251,7 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    var startTime: Date
+    var startTime: Date = Date(0,0,0)
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))
@@ -298,7 +303,8 @@ data class BiggerThanFortyNifas(
 
 data class AadatsOfHaizAndTuhr(
     var aadatHaiz: Long,
-    var aadatTuhr: Long
+    var aadatTuhr: Long,
+    var aadatNifas: Long? = null
 )
 
 data class AadaatWithChangeability(
