@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import kotlin.js.Date
 
 data class Strings(
