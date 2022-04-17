@@ -251,7 +251,7 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    var startTime: Date
+    var startTime: Date = Date(0,0,0)
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))
