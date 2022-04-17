@@ -1200,18 +1200,18 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
 }
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, CssC.INVIS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, !inputContainer.isMutada)
+    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, inputContainer.isMubtadia)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
     val isNifas = inputContainer.isNifas
-    val isMutada = inputContainer.isMutada
+    val isMubtadia = inputContainer.isMubtadia
     val isDateTime = !inputContainer.isDuration
 
     disableByClass(CssC.DATETIME_AADAT, CssC.INVIS, inputContainer, !isDateTime)
     disableByMasla(inputContainer)
     disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", CssC.INVIS, inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, !isMutada || !isDateTime)
+    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, isMubtadia || !isDateTime)
 
     val mawjoodaFasidCheck = inputContainer.getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
