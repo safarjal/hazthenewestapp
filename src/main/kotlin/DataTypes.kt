@@ -102,6 +102,8 @@ data class Strings(
     val mubtadiaikhitilaf:String,
     val onlynifashabit:String,
     val nifasAndHaizHabit:String,
+    val nifasAndTuhrHabit:String,
+    val onlyTuhrHabit:String,
     )
 
 

@@ -101,6 +101,8 @@ val urduStrings = Strings(
     "کیا مبتداہ کے حق میں اضطراری عادت بلکل حقیقی عادت کی طرح ہے؟",
     "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration1\n\n",
     "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration2، حیض: duration1</b>\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration2، پاکی: duration1</b>\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: پاکی: duration1\n\n",
 
 
     )
@@ -234,6 +236,8 @@ val englishStrings = Strings(
     "Does iztirari habit become real habit in mubtadia?",
     "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration1 \n\n",
     "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration2, Haidh : duration1\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration2, Purity (Tuh'r) : duration1\n\n",
+    "${UnicodeChars.GREEN_CIRCLE} Habit: Purity (Tuh'r) : duration1 \n\n",
 
 
     )
