@@ -99,6 +99,7 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
         allTheInputs.preMaslaValues,
         adatsOfHaizList,
         adatsOfTuhrList, -1L, typesOfMasla = TypesOfMasla.MUBTADIA)
+    putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringMubtadia(fixedDurations,
         endingOutputValues,
         allTheInputs.typeOfInput)
@@ -161,6 +162,7 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
         adatsOfHaizList,
         adatsOfTuhrList,
         -1L, typesOfMasla = TypesOfMasla.NIFAS)
+    putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
         endingOutputValues,
@@ -200,6 +202,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         adatsOfHaizList,
         adatsOfTuhrList,
         allTheInputs.pregnancy.aadatNifas, newNifasAadat, TypesOfMasla.NIFAS)
+    putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
         endingOutputValues, allTheInputs.typeOfInput)
@@ -228,6 +231,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDu
         adatsOfHaizList,
         adatsOfTuhrList,
         -1L, typesOfMasla = TypesOfMasla.MUTADAH)
+    putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringMutadah(fixedDurations, endingOutputValues, allTheInputs.typeOfInput)
 
 }
@@ -2176,5 +2180,25 @@ fun ihtiyatiGhuslCalc(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList
         }
     }
     return null
+}
 
+fun putMawjoodahPakiInFixedDurations(fixedDurations: MutableList<FixedDuration>, allTheInputs: AllTheInputs){
+    if(allTheInputs.typeOfInput==TypesOfInputs.DURATION &&
+        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=null &&
+        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=-1L){
+        if(fixedDurations[0].type==DurationType.DAM){
+            var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr)
+            fixedDurations.add(0, FixedDuration(DurationType.TUHR, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = startTime))
+        }
+        else if(fixedDurations[0].type==DurationType.HAML){
+            if(allTheInputs.preMaslaValues.isMawjoodaFasid){//this is tuhr in haml
+                fixedDurations.add(1, FixedDuration(DurationType.TUHR_IN_HAML, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = fixedDurations[0].startDate))
+                //start date is the same as last one, cuz haml has 0 length
+            }else{//this is tuhr before haml
+                var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr)
+                fixedDurations.add(0, FixedDuration(DurationType.TUHR, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = startTime))
+            }
+        }
+
+    }
 }

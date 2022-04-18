@@ -1346,10 +1346,27 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
         }
     }
     var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
+    var isMawjoodaFasid = allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
     val entries= mutableListOf<Entry>()
     var pregnancyEnd = ARBITRARY_DATE
     var pregnancyStrt:Date = ARBITRARY_DATE
-    if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
+
+    //as there is no way that entries can begin with a tuhr, and we are translating durations to entries,
+    // we will put a beginning tuhr in mawjoodah paki.
+    //beginning tuhr cannot be fasid. if it is fasid, it is tuhr in haml
+    //later, we will put these back in fixed durations
+    if(durations[0].type == DurationType.TUHR && durations[0].days>=15){
+        mawjodahtuhreditable = durations[0].timeInMilliseconds
+    }
+    else if(durations[0].type==DurationType.HAML &&
+        durations[1].days>=15&&
+        durations[1].type ==DurationType.TUHR){
+        mawjodahtuhreditable = durations[1].timeInMilliseconds
+        isMawjoodaFasid = true
+    }
+
+
+
     for(dur in durations){
         when (dur.type) {
             DurationType.DAM -> {
@@ -1362,13 +1379,16 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
             DurationType.WILADAT_ISQAT -> {
                 pregnancyEnd=dur.startTime
             }
+            DurationType.TUHR -> {
+
+            }
         }
     }
     val newPreMaslaValues = PreMaslaValues(
         allTheOriginalInputs.preMaslaValues.inputtedAadatHaiz,
         allTheOriginalInputs.preMaslaValues.inputtedAadatTuhr,
         mawjodahtuhreditable,
-        allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
+        isMawjoodaFasid
     )
     var newPregnancy:Pregnancy? = null
     if(allTheOriginalInputs.pregnancy!=null){
