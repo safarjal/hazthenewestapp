@@ -1335,7 +1335,6 @@ fun validateNifasDurations(durations:List<Duration>):Boolean{
 
 
 fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs):AllTheInputs{
-    //Todo:validate pregnancy start and endtimes and deal with them appropraitely
     if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
         if(!validateNifasDurations(durations)){
             return AllTheInputs(null)
