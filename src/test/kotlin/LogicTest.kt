@@ -3475,28 +3475,27 @@ class LogicTest {
     @Test
     fun testingNifasDurationCase1() {
         //mashq 12, sawal 1//testing daur ikhtilaf
-        val arbitraryTime = Date(0,0,0)
         val durations = listOf(
-            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!, arbitraryTime),
-            Duration(DurationType.DAM, parseDays("2")!!, arbitraryTime),
-            Duration(DurationType.TUHR, parseDays("30")!!, arbitraryTime),
-            Duration(DurationType.DAM, parseDays("2")!!, arbitraryTime),
-            Duration(DurationType.TUHR, parseDays("2")!!, arbitraryTime),
-            Duration(DurationType.DAM, parseDays("1")!!, arbitraryTime),
+            Duration(DurationType.HAML, parseDays("0")!!),
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("2")!!),
+            Duration(DurationType.TUHR, parseDays("30")!!),
+            Duration(DurationType.DAM, parseDays("2")!!),
+            Duration(DurationType.TUHR, parseDays("2")!!),
+            Duration(DurationType.DAM, parseDays("1")!!),
         )
 
         val output = handleEntries( convertDurationsIntoEntries(
             durations,
             AllTheInputs(
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(addTimeToDate(arbitraryTime,-1),
-                    arbitraryTime,
-                    40*MILLISECONDS_IN_A_DAY,
-                    true)
+                pregnancy = Pregnancy(aadatNifas= 40*MILLISECONDS_IN_A_DAY,
+                    mustabeenUlKhilqat = true)
             )
         ))
 
         val fixedDurations = output.fixedDurations
+        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(
@@ -3540,6 +3539,7 @@ class LogicTest {
         //mashq 13, sawal 1//testing daur ikhtilaf
         val arbitraryTime = Date(0,0,0)
         val durations = listOf(
+            Duration(DurationType.HAML, parseDays("0")!!, arbitraryTime),
             Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!, arbitraryTime),
             Duration(DurationType.DAM, parseDays("10")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("20")!!, arbitraryTime),
@@ -3562,6 +3562,7 @@ class LogicTest {
         ))
 
         val fixedDurations = output.fixedDurations
+        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(

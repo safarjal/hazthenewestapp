@@ -1245,8 +1245,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
         var allTheInputs:AllTheInputs=AllTheInputs()
 
         if(typesOfInputs==TypesOfInputs.DURATION){
-            //take arbitrary date
-            val arbitraryDate = Date(0,0,0)
             val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
                     type = when (row.damOrTuhr) {
@@ -1256,8 +1254,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                         Vls.Opts.WILADAT -> {DurationType.WILADAT_ISQAT}
                         else -> {DurationType.NIFAS}
                     },
-                    timeInMilliseconds = parseDays(row.durationInput.value)!!,
-                    startTime = arbitraryDate
+                    timeInMilliseconds = parseDays(row.durationInput.value)!!
                 ) }
             allTheInputs = AllTheInputs(
                 entries,
@@ -1287,7 +1284,12 @@ private fun parseEntries(inputContainer: HTMLElement) {
 
 
         @Suppress("UnsafeCastFromDynamic")
-        val output = handleEntries(allTheInputs)
+        var output:OutputTexts
+        if(allTheInputs.entries!=null){
+            output = handleEntries(allTheInputs)
+        }else{
+            output = NO_OUTPUT
+        }
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
@@ -1295,8 +1297,50 @@ private fun parseEntries(inputContainer: HTMLElement) {
     }
     addCompareButtonIfNeeded()
 }
+fun validateNifasDurations(durations:List<Duration>):Boolean{
+    //this is ensuring that we have both pregnancy and birth, and only one of each.
+
+    //I am wondering if, if preg or birth, or both are missing, we can just arbitrarily add them to the start of the masla.
+    //it seems possible, but idk if that is what we want.
+
+
+    var pregnancy=false
+    var wiladatIsqat=false
+    for(duration in durations){
+        if(duration.type==DurationType.HAML){
+            if(pregnancy){
+                window.alert("You can only solve one pregnancy per masla")
+                return false
+            }else{//is false
+                pregnancy=true
+            }
+        }else if(duration.type==DurationType.WILADAT_ISQAT){
+            if(wiladatIsqat){
+                window.alert("You can only solve one birth at a time")
+                return false
+            }else if(!pregnancy){
+                window.alert("Please add pregnancy before birth")
+                return false
+            }else{//is false
+                wiladatIsqat=true
+            }
+        }
+    }
+    if(!pregnancy||!wiladatIsqat){
+        window.alert("You need to add pregnancy and birth/miscarriage to solve a nifas question.")
+        return false
+    }
+    return true
+}
+
 
 fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs):AllTheInputs{
+    //Todo:validate pregnancy start and endtimes and deal with them appropraitely
+    if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
+        if(!validateNifasDurations(durations)){
+            return AllTheInputs(null)
+        }
+    }
     for (index in durations.indices){
         if(index > 0){
             durations[index].startTime = durations[index-1].endDate
@@ -1304,8 +1348,8 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
     }
     var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
     val entries= mutableListOf<Entry>()
-    var pregnancyEnd = Date(0,0,0)
-    var pregnancyStrt:Date = addTimeToDate(pregnancyEnd, -1)
+    var pregnancyEnd = ARBITRARY_DATE
+    var pregnancyStrt:Date = ARBITRARY_DATE
     if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
     for(dur in durations){
         when (dur.type) {
