@@ -413,14 +413,19 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun getNow(): String {
     var dateStr = ""
+    val now = Date.now()
+    val day = Date(now).getDate()
+    val month = Date(now).getMonth()
     if (languageSelector.value == Vls.Langs.URDU){
-        dateStr = urduDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
+        val urduMonth = urduMonthNames[month]
+        val urduDay:String = if (day == 1) "یکم" else day.toString()
+        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
     }else if(languageSelector.value == Vls.Langs.ENGLISH){
-        dateStr = englishDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
+        dateStr = Date(now).toDateString().drop(4)
     }
-    dateStr += " ${Date(Date.now()).getFullYear()}"
     return dateStr
 }
+
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
 
