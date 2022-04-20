@@ -3819,5 +3819,183 @@ class LogicTest {
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
     }
+    @Test
+    fun bugMaslaIssue168() {
+        //writitng isqat line twice
+        val entries = listOf(
+            Entry(Date(2022,1,13), Date(2022, 1, 21)),
+            Entry(Date(2022,2,27), Date(2022, 3, 19)),
 
+        )
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                preMaslaValues = PreMaslaValues(inputtedMawjoodahTuhr = parseDays("31")!!),
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(Date(2022,2,21), Date(2022, 3,15),
+                    mustabeenUlKhilqat = false)
+            )
+        )
+
+        val fixedDurations = output.fixedDurations
+        println(fixedDurations)
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("8")!!,
+            ),
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR_IN_HAML,
+                parseDays("34")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("23")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+                    mutableListOf(
+                        Duration(DurationType.HAIZ, parseDays("5")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("18")!!)
+
+                    )
+                )
+            ),
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("5")!!,parseDays("31")!!, -1)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+//    @Test
+//    fun testingBugMaslaIssue161() {
+//        //durationgs, requesting habit when habit exists
+//        val durations = listOf(
+//            Duration(DurationType.DAM, parseDays("8")!!),
+//            Duration(DurationType.TUHR, parseDays("24")!!),
+//            Duration(DurationType.DAM, parseDays("8")!!),
+//            Duration(DurationType.HAML, parseDays("0")!!),
+//            Duration(DurationType.DAM, parseDays("60")!!),
+//            Duration(DurationType.TUHR, parseDays("10")!!),
+//            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+//            Duration(DurationType.DAM, parseDays("16")!!),
+//            Duration(DurationType.TUHR, parseDays("17")!!),
+//            Duration(DurationType.DAM, parseDays("8")!!),
+//            Duration(DurationType.TUHR, parseDays("27")!!),
+//            Duration(DurationType.DAM, parseDays("16")!!),
+//        )
+//
+//        val output = handleEntries( convertDurationsIntoEntries(
+//            durations,
+//            AllTheInputs(
+//                typeOfMasla = TypesOfMasla.NIFAS,
+//                pregnancy = Pregnancy( aadatNifas = parseDays("40")!!,
+//                    mustabeenUlKhilqat = true)
+//            )
+//        ))
+//
+//        val fixedDurations = output.fixedDurations
+//        println(fixedDurations)
+//
+//        val expectedFixedDurations = listOf(
+//            FixedDuration(
+//                DurationType.HAML,
+//                parseDays("0")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.TUHR_IN_HAML,
+//                parseDays("60")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.DAM,
+//                parseDays("10")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.TUHR_IN_HAML,
+//                parseDays("15")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.WILADAT_ISQAT,
+//                parseDays("0")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.DAM,
+//                parseDays("17")!!,
+//                biggerThanTen = BiggerThanTenDm(
+//                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+//                    mutableListOf(
+//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
+//                        Duration(DurationType.HAIZ, parseDays("8")!!)
+//
+//                    )
+//                )
+//            ),
+//            FixedDuration(
+//                DurationType.TUHR,
+//                parseDays("16")!!,
+//            ),
+//            FixedDuration(
+//                DurationType.DAM,
+//                parseDays("20")!!,
+//                biggerThanTen = BiggerThanTenDm(
+//                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+//                    mutableListOf(
+//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("8")!!),
+//                        Duration(DurationType.HAIZ, parseDays("8")!!),
+//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!),
+//                    )
+//                )
+//            ),
+//
+//            )
+//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, -1)
+//
+//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+//        for(i in fixedDurations.indices){
+//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+//            if(fixedDurations[i].biggerThanTen!=null){
+//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+//
+//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+//                }
+//            }
+//        }
+//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+//    }
 }
