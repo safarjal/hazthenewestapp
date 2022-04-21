@@ -625,16 +625,20 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inpu
 private fun switchWiladatIsqat(inputContainer: HTMLElement) {
     disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.mustabeen)
     disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.mustabeen)
+
+    // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
     val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
         .asList()
         .map { it as HTMLSelectElement }
         .filter { select -> select.value == Vls.Opts.WILADAT }
 
+    // If mustabeen, select wiladat
     if (inputContainer.mustabeen) wiladatSelect.forEach { select ->
         select.children.asList().map { it as HTMLOptionElement }
             .first { option -> option.classList.contains(CssC.MUSTABEEN) }
             .selected = true
     }
+    // If !mustabeen, select isqaat
     else wiladatSelect.forEach { select ->
         select.children.asList().map { it as HTMLOptionElement }
             .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
