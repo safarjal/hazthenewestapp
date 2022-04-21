@@ -91,6 +91,8 @@ object CssC {
     const val NIFAS = "nifas"                       // Switch. Put on any input that only shows when Nifas
     const val MUTADA = "mutada"                     // Switch. Put on any input that only shows when NOT Mubtadia
     const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
+    const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
+    const val NOT_MUSTABEEN = "not-mustabeen"       // Switch. Between Isqat/Wiladat
 
     const val ROW = "row"                           // CSS Style. Make nice alternating colorful rows of inputs
     const val IKHTILAF = "ikhtilaf"                 // CSS Style. Makes the gearbox icon on the detail
@@ -620,6 +622,26 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inpu
     }
 }
 
+private fun switchWiladatIsqat(inputContainer: HTMLElement) {
+    disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.mustabeen)
+    disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.mustabeen)
+    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
+        .asList()
+        .map { it as HTMLSelectElement }
+        .filter { select -> select.value == Vls.Opts.WILADAT }
+
+    if (inputContainer.mustabeen) wiladatSelect.forEach { select ->
+        select.children.asList().map { it as HTMLOptionElement }
+            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
+            .selected = true
+    }
+    else wiladatSelect.forEach { select ->
+        select.children.asList().map { it as HTMLOptionElement }
+            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
+            .selected = true
+    }
+}
+
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Pregnancy Start Time
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
@@ -649,6 +671,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
                 id = Ids.MUSTABEEN_CHECKBOX
                 name = Ids.MUSTABEEN_CHECKBOX
                 checked = inputContainerToCopyFrom?.mustabeen != false
+                onChangeFunction = { event -> switchWiladatIsqat(findInputContainer(event)) }
             }
         }
     }
@@ -793,7 +816,9 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
                         aadat = inputDateRow.durationInput.value,
                         selectedOption = inputDateRow.damOrTuhr,
                         disable = !isDuration,
-                        preg = inputContainerToCopyFrom.isNifas)
+                        preg = inputContainerToCopyFrom.isNifas,
+                        mustabeen = inputContainerToCopyFrom.mustabeen
+                    )
                 }
             } else { durationInputRow(false, !isDuration) }
         }
@@ -807,7 +832,7 @@ private fun onChangeDurationSelect(event: Event) {
     row.durationInput.disabled = (event.target as HTMLSelectElement).value in setOf(Vls.Opts.HAML, Vls.Opts.WILADAT)
 }
 
-private fun TagConsumer<HTMLElement>.makeDurationSelect(disable: Boolean, selectedOption: String, preg: Boolean) {
+private fun TagConsumer<HTMLElement>.makeDurationSelect(disable: Boolean, selectedOption: String, preg: Boolean, mustabeen: Boolean = true) {
     select {
         id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
         name = Ids.DurationRow.INPUT_TYPE_OF_DURATION
@@ -822,17 +847,26 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(disable: Boolean, select
             StringsOfLanguages.URDU.pregduration,
             CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
         )
+        // Wiladat
         makeDropdownOptions(
-            selectedOption == Vls.Opts.WILADAT,
+            selectedOption == Vls.Opts.WILADAT && mustabeen,
             Vls.Opts.WILADAT,
             StringsOfLanguages.ENGLISH.birthduration,
             StringsOfLanguages.URDU.birthduration,
-            CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
+            CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!preg || !mustabeen) CssC.INVIS else null
+        )
+        // Isqaat
+        makeDropdownOptions(
+            selectedOption == Vls.Opts.WILADAT && !mustabeen,
+            Vls.Opts.WILADAT,
+            "Isqaat",
+            "Isqaat in Urdu",
+            CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!preg || mustabeen) CssC.INVIS else null
         )
     }
 }
 
-private fun TagConsumer<HTMLElement>.copyDurationInputRow(aadat: String, selectedOption: String, disable: Boolean, preg: Boolean) {
+private fun TagConsumer<HTMLElement>.copyDurationInputRow(aadat: String, selectedOption: String, disable: Boolean, preg: Boolean, mustabeen: Boolean) {
     tr {
         td {
             makeNumberInput(Ids.DurationRow.INPUT_DURATION, aadat, (0..10000)) {
@@ -841,7 +875,7 @@ private fun TagConsumer<HTMLElement>.copyDurationInputRow(aadat: String, selecte
             }
         }
         td {
-            makeDurationSelect(disable, selectedOption, preg)
+            makeDurationSelect(disable, selectedOption, preg, mustabeen)
         }
         addRemoveButtonsTableData(true)
     }
@@ -869,7 +903,7 @@ private fun TagConsumer<HTMLElement>.inputRow(
     }
 }
 
-private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false) {
+private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disable: Boolean, preg: Boolean = false, mustabeen: Boolean = true) {
     tr {
         td {
             makeNumberInput(Ids.DurationRow.INPUT_DURATION, "", (0..10000)) {
@@ -877,7 +911,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(lastWasDam: Boolean, disab
                 required = true
             }
         }
-        td { makeDurationSelect(disable, if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM, preg) }
+        td { makeDurationSelect(disable, if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM, preg, mustabeen) }
         addRemoveButtonsTableData(true)
     }
 }
@@ -1010,7 +1044,7 @@ private fun FlowContent.addButton(duration: Boolean = false) {
             if (duration) {
                 val rowIsDam = row.damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.HAML)
                 row.after {
-                    durationInputRow(rowIsDam, false, inputContainer.isNifas)
+                    durationInputRow(rowIsDam, false, inputContainer.isNifas, inputContainer.mustabeen)
                 }
                 setupFirstRow(inputContainer, true)
             } else {
@@ -1036,7 +1070,7 @@ private fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) 
             val inputContainer = findInputContainer(event)
             if (duration) {
                 val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.WILADAT)
-                inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas) }
+                inputContainer.hazDurationInputTableBody.prepend { durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.mustabeen) }
                 setupFirstRow(inputContainer, true)
             } else {
                 val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
@@ -1172,7 +1206,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
     disableTree(inputContainer)
 }
 
-private fun disableByClass(classSelector: String, classInvis: String, inputContainer: HTMLElement, disable: Boolean) {
+private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
     inputContainer.getElementsByClassName(classSelector)
         .asList()
         .forEach { row ->
@@ -1187,19 +1221,22 @@ private fun disableByClass(classSelector: String, classInvis: String, inputConta
         }
 }
 private fun disableByMasla(inputContainer: HTMLElement) {
-    disableByClass(CssC.NIFAS, CssC.INVIS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, CssC.INVIS, inputContainer, inputContainer.isMubtadia)
+    disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
+    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
     val isNifas = inputContainer.isNifas
     val isMubtadia = inputContainer.isMubtadia
     val isDateTime = !inputContainer.isDuration
+    val isMustabeen  = inputContainer.mustabeen
 
-    disableByClass(CssC.DATETIME_AADAT, CssC.INVIS, inputContainer, !isDateTime)
+    disableByClass(CssC.DATETIME_AADAT, inputContainer, !isDateTime)
     disableByMasla(inputContainer)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", CssC.INVIS, inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", CssC.INVIS, inputContainer, isMubtadia || !isDateTime)
+    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateTime)
+    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateTime)
+    disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
+    disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
 
     val mawjoodaFasidCheck = inputContainer.getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
