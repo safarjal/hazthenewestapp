@@ -200,8 +200,8 @@ class InfoForCompareTable(
 
 
 data class Pregnancy(
-    val pregStartTime:Date,
-    val birthTime:Date,
+    val pregStartTime:Date = ARBITRARY_DATE,
+    val birthTime:Date = ARBITRARY_DATE,
     var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat:Boolean,
 )
@@ -251,7 +251,7 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    var startTime: Date = Date(0,0,0)
+    var startTime: Date = ARBITRARY_DATE
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))

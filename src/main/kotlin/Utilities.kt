@@ -13,6 +13,8 @@ const val MILLISECONDS_IN_AN_HOUR = 3600000
 const val MILLISECONDS_IN_A_MINUTE = 60000
 const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
+val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, mutableListOf()), mutableListOf())
+val ARBITRARY_DATE = Date(0,0,0)
 val MonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل",
@@ -291,7 +293,7 @@ fun daysHoursMinutesDigitalEnglish(numberOfMilliseconds:Long, typeOfInput: Types
  }
 fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTime()).toLong() }
 
- fun urduDateFormat(date: Date, typeOfInput: TypesOfInputs):String{
+fun urduDateFormat(date: Date, typeOfInput: TypesOfInputs):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
@@ -333,4 +335,4 @@ fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTi
 
          return ("$urduDay $urduMonth $ampm $hours:$strMinutes بجے")
      }
- }
+}

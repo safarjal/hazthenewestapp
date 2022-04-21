@@ -413,14 +413,19 @@ private fun TagConsumer<HTMLElement>.content() {
 
 private fun getNow(): String {
     var dateStr = ""
+    val now = Date.now()
+    val day = Date(now).getDate()
+    val month = Date(now).getMonth()
     if (languageSelector.value == Vls.Langs.URDU){
-        dateStr = urduDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
+        val urduMonth = urduMonthNames[month]
+        val urduDay:String = if (day == 1) "یکم" else day.toString()
+        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
     }else if(languageSelector.value == Vls.Langs.ENGLISH){
-        dateStr = englishDateFormat(Date(Date.now()),TypesOfInputs.DATE_ONLY)
+        dateStr = Date(now).toDateString().drop(4)
     }
-    dateStr += " ${Date(Date.now()).getFullYear()}"
     return dateStr
 }
+
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
 
@@ -1245,8 +1250,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
         var allTheInputs:AllTheInputs=AllTheInputs()
 
         if(typesOfInputs==TypesOfInputs.DURATION){
-            //take arbitrary date
-            val arbitraryDate = Date(0,0,0)
             val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
                     type = when (row.damOrTuhr) {
@@ -1256,8 +1259,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                         Vls.Opts.WILADAT -> {DurationType.WILADAT_ISQAT}
                         else -> {DurationType.NIFAS}
                     },
-                    timeInMilliseconds = parseDays(row.durationInput.value)!!,
-                    startTime = arbitraryDate
+                    timeInMilliseconds = parseDays(row.durationInput.value)!!
                 ) }
             allTheInputs = AllTheInputs(
                 entries,
@@ -1287,7 +1289,12 @@ private fun parseEntries(inputContainer: HTMLElement) {
 
 
         @Suppress("UnsafeCastFromDynamic")
-        val output = handleEntries(allTheInputs)
+        var output:OutputTexts
+        if(allTheInputs.entries!=null){
+            output = handleEntries(allTheInputs)
+        }else{
+            output = NO_OUTPUT
+        }
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
@@ -1295,18 +1302,76 @@ private fun parseEntries(inputContainer: HTMLElement) {
     }
     addCompareButtonIfNeeded()
 }
+fun validateNifasDurations(durations:List<Duration>):Boolean{
+    //this is ensuring that we have both pregnancy and birth, and only one of each.
+
+    //I am wondering if, if preg or birth, or both are missing, we can just arbitrarily add them to the start of the masla.
+    //it seems possible, but idk if that is what we want.
+
+
+    var pregnancy=false
+    var wiladatIsqat=false
+    for(duration in durations){
+        if(duration.type==DurationType.HAML){
+            if(pregnancy){
+                window.alert("You can only solve one pregnancy per masla")
+                return false
+            }else{//is false
+                pregnancy=true
+            }
+        }else if(duration.type==DurationType.WILADAT_ISQAT){
+            if(wiladatIsqat){
+                window.alert("You can only solve one birth at a time")
+                return false
+            }else if(!pregnancy){
+                window.alert("Please add pregnancy before birth")
+                return false
+            }else{//is false
+                wiladatIsqat=true
+            }
+        }
+    }
+    if(!pregnancy||!wiladatIsqat){
+        window.alert("You need to add pregnancy and birth/miscarriage to solve a nifas question.")
+        return false
+    }
+    return true
+}
+
 
 fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs):AllTheInputs{
+    if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
+        if(!validateNifasDurations(durations)){
+            return AllTheInputs(null)
+        }
+    }
     for (index in durations.indices){
         if(index > 0){
             durations[index].startTime = durations[index-1].endDate
         }
     }
     var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
+    var isMawjoodaFasid = allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
     val entries= mutableListOf<Entry>()
-    var pregnancyEnd = Date(0,0,0)
-    var pregnancyStrt:Date = addTimeToDate(pregnancyEnd, -1)
-    if(durations[0].type == DurationType.TUHR){ mawjodahtuhreditable = durations[0].timeInMilliseconds }
+    var pregnancyEnd = ARBITRARY_DATE
+    var pregnancyStrt:Date = ARBITRARY_DATE
+
+    //as there is no way that entries can begin with a tuhr, and we are translating durations to entries,
+    // we will put a beginning tuhr in mawjoodah paki.
+    //beginning tuhr cannot be fasid. if it is fasid, it is tuhr in haml
+    //later, we will put these back in fixed durations
+    if(durations[0].type == DurationType.TUHR && durations[0].days>=15){
+        mawjodahtuhreditable = durations[0].timeInMilliseconds
+    }
+    else if(durations[0].type==DurationType.HAML &&
+        durations[1].days>=15&&
+        durations[1].type ==DurationType.TUHR){
+        mawjodahtuhreditable = durations[1].timeInMilliseconds
+        isMawjoodaFasid = true
+    }
+
+
+
     for(dur in durations){
         when (dur.type) {
             DurationType.DAM -> {
@@ -1319,13 +1384,16 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
             DurationType.WILADAT_ISQAT -> {
                 pregnancyEnd=dur.startTime
             }
+            DurationType.TUHR -> {
+
+            }
         }
     }
     val newPreMaslaValues = PreMaslaValues(
         allTheOriginalInputs.preMaslaValues.inputtedAadatHaiz,
         allTheOriginalInputs.preMaslaValues.inputtedAadatTuhr,
         mawjodahtuhreditable,
-        allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
+        isMawjoodaFasid
     )
     var newPregnancy:Pregnancy? = null
     if(allTheOriginalInputs.pregnancy!=null){
