@@ -111,8 +111,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             }
 
         }
-        strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput, pregnancy).urduString
-        strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput, pregnancy).englishString
+        strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput).urduString
+        strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput).englishString
 
 
 
@@ -204,23 +204,8 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutpu
     }
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun generateUrduOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):String{
-    //ToDo: figure out how to do languages for real
-    var str = StringsOfLanguages.URDU.answer //جواب:
-    str += StringsOfLanguages.URDU.headerlinemubtadia //اس ترتیب سے خون آیا اور پاکی ملی
-    var index = 0
-    while (index<fixedDurations.size){
-        str += outputStringHeaderLine(fixedDurations,index, typeOfInput)
-        str += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput)
-        if(index==fixedDurations.size-1){//if this os the last index
-            str += outputStringFinalLines(endingOutputValues, typeOfInput)
-        }
-        index++
-    }
-    return str
-}
 
-fun outputStringFinalLines(endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs, pregnancy: Pregnancy? = null):OutputStringsLanguages{
+fun outputStringFinalLines(endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):OutputStringsLanguages{
 
     var strUrdu = ""
     var strEnglish = ""
