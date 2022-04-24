@@ -13,11 +13,6 @@ const val MILLISECONDS_IN_AN_HOUR = 3600000
 const val MILLISECONDS_IN_A_MINUTE = 60000
 const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
-object LanguageNames {
-    const val ENGLISH = "english"
-    const val URDU = "urdu"
-}
-
 
 val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, mutableListOf()), mutableListOf())
 val ARBITRARY_DATE = Date(0,0,0)
@@ -190,7 +185,7 @@ fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs, languageNames: String):String {
-    if(languageNames==LanguageNames.ENGLISH){
+    if(languageNames==Vls.Langs.ENGLISH){
         var isDateOnly = false
         if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
@@ -226,7 +221,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
             else strDays + strHours + strMinutes
         if(isDateOnly) returnStatement = if (days == 1.0) "1 day" else strDays
         return returnStatement.trimEnd().trim()
-    }else if(languageNames==LanguageNames.URDU){
+    }else if(languageNames==Vls.Langs.URDU){
         var isDateOnly = false
         if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
@@ -250,7 +245,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
  fun languagedDateFormat(date: Date, typeOfInput: TypesOfInputs, languageNames: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-     if(languageNames==LanguageNames.ENGLISH){
+     if(languageNames==Vls.Langs.ENGLISH){
          //   Sat, 05 Jun 2021 06:21:59 GMT
          var dateStr = (date.toUTCString()).dropLast(18).drop(5)
          if(dateStr.startsWith("0")) dateStr = dateStr.drop(1)
@@ -268,7 +263,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
          return if (isDateOnly) dateStr //05 Jun 2021
          else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30pm
      }
-     else if(languageNames==LanguageNames.URDU){
+     else if(languageNames==Vls.Langs.URDU){
          val day = date.getUTCDate().toString()
          val month = date.getUTCMonth()
          val urduMonth = urduMonthNames[month]

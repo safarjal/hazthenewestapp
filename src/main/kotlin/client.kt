@@ -83,8 +83,8 @@ object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
 
-    const val ENGLISH = LanguageNames.ENGLISH                   // Switch. Put on any element that should only show when lang is english
-    const val URDU = LanguageNames.URDU                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = Vls.Langs.ENGLISH                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = Vls.Langs.URDU                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -107,8 +107,8 @@ object CssC {
 
 object Vls {                                        // Values
     object Langs {
-        const val ENGLISH = LanguageNames.ENGLISH
-        const val URDU = LanguageNames.URDU
+        const val ENGLISH = "english"
+        const val URDU = "urdu"
     }
     object Maslas {
         const val MUTADA = "mutada"
