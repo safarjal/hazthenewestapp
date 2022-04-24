@@ -1440,7 +1440,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     div { id = "cello"
                         style = Styles.TABLE_CELL_STYLE
                         if (date == 1) {
-                            +MonthNames[header.getMonth()]
+                            +englishMonthNames[header.getMonth()]
                         }
                     }
                 }

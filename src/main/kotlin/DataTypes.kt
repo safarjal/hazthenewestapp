@@ -109,7 +109,9 @@ data class Strings(
 
 
 
-enum class LanguageNames { ENGLISH, URDU }
+object LanguageNames {
+    const val ENGLISH = "english"
+    const val URDU = "urdu" }
 
 data class AllTheInputs(
     val entries: List<Entry>?= null,
