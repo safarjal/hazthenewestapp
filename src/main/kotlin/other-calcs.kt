@@ -40,9 +40,9 @@ fun addCalcsGetDuration(){
         strEnglish = daysHoursMinutesDigital(result, typesOfInputs, LanguageNames.ENGLISH)
     }
     val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
-    if(languageSelecter.value=="urdu"){
+    if(languageSelecter.value==LanguageNames.URDU){
         addCalcsOutputDuration.innerHTML = resultStrings.urduString
-    }else if(languageSelecter.value=="english"){
+    }else if(languageSelecter.value==LanguageNames.ENGLISH){
         addCalcsOutputDuration.innerHTML = resultStrings.englishString
     }
 
@@ -83,9 +83,9 @@ fun addCalcsAddTimeToDate() {
             strResultUrdu = languagedDateFormat(result, typesOfInputs, LanguageNames.URDU)
         }
         val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish)
-        if (languageSelecter.value == "urdu") {
+        if (languageSelecter.value == LanguageNames.URDU) {
             addCalcsOutputDate.innerHTML = resultStrings.urduString
-        } else if (languageSelecter.value == "english") {
+        } else if (languageSelecter.value == LanguageNames.ENGLISH) {
             addCalcsOutputDate.innerHTML = resultStrings.englishString
         }
     }
