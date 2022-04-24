@@ -36,13 +36,13 @@ fun addCalcsGetDuration(){
 
     if(startDate != null && endDate != null && startDate.getTime() < endDate.getTime()){
         val result = (endDate.getTime()-startDate.getTime()).toLong()
-        strUrdu = daysHoursMinutesDigitalUrdu(result,typesOfInputs)
-        strEnglish = daysHoursMinutesDigitalEnglish(result, typesOfInputs)
+        strUrdu = daysHoursMinutesDigital(result,typesOfInputs, LanguageNames.URDU)
+        strEnglish = daysHoursMinutesDigital(result, typesOfInputs, LanguageNames.ENGLISH)
     }
     val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
-    if(languageSelecter.value=="urdu"){
+    if(languageSelecter.value==LanguageNames.URDU){
         addCalcsOutputDuration.innerHTML = resultStrings.urduString
-    }else if(languageSelecter.value=="english"){
+    }else if(languageSelecter.value==LanguageNames.ENGLISH){
         addCalcsOutputDuration.innerHTML = resultStrings.englishString
     }
 
@@ -79,13 +79,13 @@ fun addCalcsAddTimeToDate() {
         var strResultEnglish = ""
         if (duration != null && date != null) {
             val result = addTimeToDate(date, duration)
-            strResultEnglish = englishDateFormat(result, typesOfInputs)
-            strResultUrdu = urduDateFormat(result, typesOfInputs)
+            strResultEnglish = languagedDateFormat(result, typesOfInputs, LanguageNames.ENGLISH)
+            strResultUrdu = languagedDateFormat(result, typesOfInputs, LanguageNames.URDU)
         }
         val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish)
-        if (languageSelecter.value == "urdu") {
+        if (languageSelecter.value == LanguageNames.URDU) {
             addCalcsOutputDate.innerHTML = resultStrings.urduString
-        } else if (languageSelecter.value == "english") {
+        } else if (languageSelecter.value == LanguageNames.ENGLISH) {
             addCalcsOutputDate.innerHTML = resultStrings.englishString
         }
     }

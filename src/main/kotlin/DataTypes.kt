@@ -109,7 +109,6 @@ data class Strings(
 
 
 
-enum class LanguageNames { ENGLISH, URDU }
 
 data class AllTheInputs(
     val entries: List<Entry>?= null,
@@ -117,7 +116,7 @@ data class AllTheInputs(
     val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
-    val language:String = "urdu",
+    val language:String = LanguageNames.URDU,
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
 
 

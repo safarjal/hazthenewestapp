@@ -83,8 +83,8 @@ object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
 
-    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
-    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = LanguageNames.ENGLISH                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = LanguageNames.URDU                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -107,8 +107,8 @@ object CssC {
 
 object Vls {                                        // Values
     object Langs {
-        const val ENGLISH = "english"
-        const val URDU = "urdu"
+        const val ENGLISH = LanguageNames.ENGLISH
+        const val URDU = LanguageNames.URDU
     }
     object Maslas {
         const val MUTADA = "mutada"
@@ -431,7 +431,14 @@ private fun copyText(event: Event) {
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
-    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
+    val divider = UnicodeChars.BLUE_SWIRL+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.FAT_DASH+
+            UnicodeChars.BLUE_SWIRL
     val answerTxt = div?.querySelector("p")?.textContent
 
     val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
@@ -1440,7 +1447,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     div { id = "cello"
                         style = Styles.TABLE_CELL_STYLE
                         if (date == 1) {
-                            +MonthNames[header.getMonth()]
+                            +englishMonthNames[header.getMonth()]
                         }
                     }
                 }

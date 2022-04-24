@@ -362,9 +362,9 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
             }
             if(aadatHaz!=-1L&&mawjoodahTuhr==-1L){
                 //give error
-                if(language=="english"){
+                if(language==LanguageNames.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
-                }else if(language=="urdu"){
+                }else if(language==LanguageNames.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                 }
                 return null
@@ -471,9 +471,9 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                 //if nifas exceeded 40
                 if(pregnancy.aadatNifas==null){
                     //give error
-                    if(language=="english"){
+                    if(language==LanguageNames.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterNifasAadat)
-                    }else if(language=="urdu"){
+                    }else if(language==LanguageNames.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterNifasAadat)
                     }
                     pregnancy.aadatNifas=-1
@@ -804,9 +804,9 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 //we don't need mawjoodah paki
                 if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
                     //give error message
-                    if(language=="english"){
+                    if(language==LanguageNames.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
-                    }else if(language=="urdu"){
+                    }else if(language==LanguageNames.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                     }
                     return false
@@ -824,9 +824,9 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==-1L ||aadatTuhr==-1L){
                 //give error message
-                if(language=="english"){
+                if(language==LanguageNames.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
-                }else if(language=="urdu"){
+                }else if(language==LanguageNames.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                 }
                 return false
@@ -834,9 +834,9 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             else{//we have aadat
                 if(mawjoodaTuhr==-1L && i<1){//if mawjoodah tuhr doesn't exist and the first period is bigger than 10
                     //give error message
-                    if(language=="english"){
+                    if(language==LanguageNames.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
-                    }else if(language=="urdu"){
+                    }else if(language==LanguageNames.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                     }
                     return false

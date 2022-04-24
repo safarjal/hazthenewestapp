@@ -1,6 +1,6 @@
 
 val urduStrings = Strings(
-    "${UnicodeChars.ROSE} <b>جواب:</b>\n\n",
+    "${UnicodeChars.MEMO} <b>جواب:</b>\n\n",
     "اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "مبتداہ کو اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "جب بھی خون یا دھبے آئیں تو وقت تاریخ مہینہ نوٹ فرمالیجئے۔\n\n",
@@ -17,14 +17,14 @@ val urduStrings = Strings(
     "اگر خون date1 سے پہلے بند ہو جاۓ تو غسل کر کے نمازیں شروع کر لیں، لیکن احتیاطا date1 کو بھی غسل کر لیجیے۔\n\n",
     "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\nاگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي date1 سے پہلے صحبت کي اجازت نہيں۔\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>date1 تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: حیض: duration1، پاکی: duration2</b>\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: حیض: duration1، پاکی: duration2</b>\n\n",
     "date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
-    "${UnicodeChars.RED_CIRCLE} date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
-    "${UnicodeChars.YELLOW_CIRCLE} date1 تا date2 کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
+    "${UnicodeChars.RED_DIAMOND} date1 تا date2 کل duration1 حیض کے ہیں۔\n\n",
+    "${UnicodeChars.ORANGE_DIAMOND} date1 تا date2 کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
     "date1 تا date2 کل duration1 نفاس کے ہیں۔\n\n",
-    "${UnicodeChars.RED_CIRCLE} date1 تا date2 کل duration1 نفاس کے ہیں۔\n\n",
+    "${UnicodeChars.RED_DIAMOND} date1 تا date2 کل duration1 نفاس کے ہیں۔\n\n",
     "\n\ndate1 سے date2 تک کل duration1 خون۔\n\n",
-    "${UnicodeChars.RAINBOW} <b>مسئلہ کا حل :</b>\n\n",
+    "${UnicodeChars.HAND_WRITING} <b>مسئلہ کا حل :</b>\n\n",
     "${UnicodeChars.BLACK_SQUARE} اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔\n\n",
     "${UnicodeChars.BLACK_SQUARE} date1 کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n",
     "\n\ndate1 سے date2 تک کل duration1 خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
@@ -95,19 +95,19 @@ val urduStrings = Strings(
     "مسئلے کی نوعیت",
     "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
     "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration3، حیض: duration1، طہر: duration2</b>\n\n",
     "\n<b>اسقاط ہوا (غیر مستبین الخلقہ)</b>\n",
     "کیا ایام قبلیہ میں عبادات جاری رہیں گی؟",
     "کیا مبتداہ کے حق میں اضطراری عادت بلکل حقیقی عادت کی طرح ہے؟",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration1\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration2، حیض: duration1</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: نفاس: duration2، پاکی: duration1</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} <b>عادت: پاکی: duration1\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration1\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration2، حیض: duration1</b>\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration2، پاکی: duration1</b>\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: پاکی: duration1\n\n",
 
 
     )
 val englishStrings = Strings(
-    "${UnicodeChars.ROSE}<b>Answer:</b>\n\n",
+    "${UnicodeChars.MEMO}<b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
     "\"The bleeding and purity (tuh’r) has been in the following " +
             "sequence for the menstruation beginner:\\n\\n\"",
@@ -133,15 +133,15 @@ val englishStrings = Strings(
             "remains prohibited till date1.\n\n",
     "In case this bleeding continues without complete 15 days of purity, " +
             "then <b>until date1, are certainly the days of purity (tuhr)</b>\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
     "date1 to date2, a total of duration1 of period.\n\n",
-    "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of period.\n\n",
-    "${UnicodeChars.YELLOW_CIRCLE} date1 to date2, a total of duration1 of definitive" +
+    "${UnicodeChars.RED_DIAMOND} date1 to date2, a total of duration1 of period.\n\n",
+    "${UnicodeChars.ORANGE_DIAMOND} date1 to date2, a total of duration1 of definitive" +
             " purity (istihadha).\n\n",
     "date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
-    "${UnicodeChars.RED_CIRCLE} date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
+    "${UnicodeChars.RED_DIAMOND} date1 to date2, a total of duration1 of post-natal bleeding.\n\n",
     "\n\ndate1 to date2, a total of duration1 of blood.\n\n",
-    "${UnicodeChars.RAINBOW} <b>Solution:</b>\n\n",
+    "${UnicodeChars.HAND_WRITING} <b>Solution:</b>\n\n",
     "${UnicodeChars.BLACK_SQUARE} If you left any salah thinking of it as haidh and it turned " +
             "out to be istihadha, then make qada of them.\n\n",
     "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on date1, salah after " +
@@ -230,14 +230,14 @@ val englishStrings = Strings(
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haidh is 10 days, " +
             "and it is now ten days, please do ghusl and resume your ibadat./n/n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
     "\n<b>Miscarriage of an undeveloped fetus</b>\n",
     "Will ibadaat be continued during ayyam-e-qabliyya?",
     "Does iztirari habit become real habit in mubtadia?",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration1 \n\n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration2, Haidh : duration1\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Nifas : duration2, Purity (Tuh'r) : duration1\n\n",
-    "${UnicodeChars.GREEN_CIRCLE} Habit: Purity (Tuh'r) : duration1 \n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration1 \n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration2, Haidh : duration1\n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration2, Purity (Tuh'r) : duration1\n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Purity (Tuh'r) : duration1 \n\n",
 
 
     )
