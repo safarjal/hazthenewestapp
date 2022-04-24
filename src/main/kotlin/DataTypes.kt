@@ -116,7 +116,7 @@ data class AllTheInputs(
     val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
-    val language:String = LanguageNames.URDU,
+    val language:String = Vls.Langs.URDU,
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
 
 
