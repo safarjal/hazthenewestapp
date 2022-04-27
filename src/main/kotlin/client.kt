@@ -304,6 +304,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     // Make sure all invises are maintained
     languageChange()
     disableTree(clonedInputsContainer)
+//    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
 
