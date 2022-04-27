@@ -593,21 +593,24 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
     }
 }
 
-private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String, block: INPUT.() -> Unit = {}) {
-    if (inputContainerToCopyFrom != null) {
-        timeInput(inputContainerToCopyFrom) {
-            disabled = !inputContainerToCopyFrom.isNifas
-            block()
-        }
-    } else {
+private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
+    var disable = true
+    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
+//        timeInput(inputContainerToCopyFrom) {
+//            disabled = !inputContainerToCopyFrom.isNifas
+//            id = inputId
+//            name = inputId
+//            block()
+//        }
+//    } else {
         timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-            disabled = true
+            disabled = disable
             id = inputId
             name = inputId
 //            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
             block()
         }
-    }
+//    }
 }
 
 private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: IntRange, block: INPUT.() -> Unit = {}) {
@@ -630,7 +633,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-
     // Pregnancy End Time
     div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
