@@ -431,14 +431,7 @@ private fun copyText(event: Event) {
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
-    val divider = UnicodeChars.BLUE_SWIRL+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.FAT_DASH+
-            UnicodeChars.BLUE_SWIRL
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
 
     val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"

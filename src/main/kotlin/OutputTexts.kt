@@ -18,8 +18,8 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
                                  typeOfInput: TypesOfInputs):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA).englishString
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
 
@@ -30,18 +30,8 @@ fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 typeOfInput: TypesOfInputs):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
 
-//    while (index<fixedDurations.size){
-//        englishStr += outputStringHeaderLine(fixedDurations,index, isDateOnly)
-//        englishStr += outputStringSumOfIndicesLine(fixedDurations,durations, index, isDateOnly)
-//        englishStr += outputStringIstihazaAfterLine(fixedDurations, index, isDateOnly)
-//        englishStr += outputStringBiggerThan10Hall(fixedDurations, index, isDateOnly)
-//
-//
-//        index++
-//    }
-
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH).englishString
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
 
@@ -59,7 +49,6 @@ fun generateHazDatesStr(hazDatesList: MutableList<Entry>,typeOfInput: TypesOfInp
 
 fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):OutputStringsLanguages{
     val mustabeen = pregnancy.mustabeenUlKhilqat
-//    var startTimeOfPregnancy = pregnancy.pregStartTime.getTime()
     val birthTime = pregnancy.birthTime
     var strUrdu = StringsOfLanguages.URDU.answer
     var strEnglish = StringsOfLanguages.ENGLISH.answer
@@ -172,13 +161,19 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
-fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs, typesOfMasla: TypesOfMasla):OutputStringsLanguages{
     //ToDo: figure out how to do languages for real
     var strUrdu = StringsOfLanguages.URDU.answer //جواب:
     var strEnglish = StringsOfLanguages.ENGLISH.answer //جواب:
 
-    strUrdu += StringsOfLanguages.URDU.headerline //اس ترتیب سے خون آیا اور پاکی ملی
-    strEnglish += StringsOfLanguages.ENGLISH.headerline //اس ترتیب سے خون آیا اور پاکی ملی
+    if(typesOfMasla==TypesOfMasla.MUTADAH){
+        strUrdu += StringsOfLanguages.URDU.headerline //اس ترتیب سے خون آیا اور پاکی ملی
+        strEnglish += StringsOfLanguages.ENGLISH.headerline //اس ترتیب سے خون آیا اور پاکی ملی
+    }else if(typesOfMasla==TypesOfMasla.MUBTADIA){
+        strUrdu += StringsOfLanguages.URDU.headerlinemubtadia //اس ترتیب سے خون آیا اور پاکی ملی
+        strEnglish += StringsOfLanguages.ENGLISH.headerlinemubtadia //اس ترتیب سے خون آیا اور پاکی ملی
+    }
+
     var index = 0
     while (index<fixedDurations.size){
         if(typeOfInput==TypesOfInputs.DURATION){
@@ -190,7 +185,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutpu
                 strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput).urduString
                 strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput).englishString
             }
-        }else{
+        }else{//not durations
             strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput).urduString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
             strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput).englishString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
             strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).urduString
