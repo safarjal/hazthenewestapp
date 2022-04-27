@@ -3305,7 +3305,6 @@ class LogicTest {
         ))
 
         val fixedDurations = output.fixedDurations
-        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(
@@ -3505,7 +3504,6 @@ class LogicTest {
         ))
 
         val fixedDurations = output.fixedDurations
-        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(
@@ -3568,7 +3566,6 @@ class LogicTest {
         ))
 
         val fixedDurations = output.fixedDurations
-        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(
@@ -3839,7 +3836,6 @@ class LogicTest {
         )
 
         val fixedDurations = output.fixedDurations
-        println(fixedDurations)
 
         val expectedFixedDurations = listOf(
             FixedDuration(
@@ -3894,6 +3890,46 @@ class LogicTest {
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
     }
+    @Test
+    fun bugMaslaIssue170() {
+        //NIFAS MASLA insufficient final values
+        val entries = listOf<Entry>(
+            Entry(Date(2021,4,21), Date(2021, 4, 27)),
+            Entry(Date(2021,5,21), Date(2021, 5, 27)),
+            //preg +Birth
+            Entry(Date(2022,2,4), Date(2022, 2, 28)),
+            Entry(Date(2022,3,20), Date(2022, 3, 25)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(Date(2021,5,27), Date(2022, 2,4), aadatNifas = parseDays("40")!!,
+                    mustabeenUlKhilqat = true)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("23")!!, parseDays("24")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(Date(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+
+    }
+
 
 //    @Test
 //    fun testingBugMaslaIssue161() {
@@ -3999,4 +4035,5 @@ class LogicTest {
 //        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
 //        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
 //    }
+
 }

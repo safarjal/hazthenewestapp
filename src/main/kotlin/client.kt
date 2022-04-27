@@ -84,8 +84,8 @@ object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
 
-    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
-    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = Vls.Langs.ENGLISH                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = Vls.Langs.URDU                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -434,7 +434,7 @@ private fun copyText(event: Event) {
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
-    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
 
     val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
@@ -604,21 +604,24 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
     }
 }
 
-private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String, block: INPUT.() -> Unit = {}) {
-    if (inputContainerToCopyFrom != null) {
-        timeInput(inputContainerToCopyFrom) {
-            disabled = !inputContainerToCopyFrom.isNifas
-            block()
-        }
-    } else {
+private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
+    var disable = true
+    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
+//        timeInput(inputContainerToCopyFrom) {
+//            disabled = !inputContainerToCopyFrom.isNifas
+//            id = inputId
+//            name = inputId
+//            block()
+//        }
+//    } else {
         timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-            disabled = true
+            disabled = disable
             id = inputId
             name = inputId
 //            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
             block()
         }
-    }
+//    }
 }
 
 private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: IntRange, block: INPUT.() -> Unit = {}) {
@@ -665,7 +668,6 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
             }
         }
     }
-
     // Pregnancy End Time
     div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
@@ -1496,7 +1498,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     div { id = "cello"
                         style = Styles.TABLE_CELL_STYLE
                         if (date == 1) {
-                            +MonthNames[header.getMonth()]
+                            +englishMonthNames[header.getMonth()]
                         }
                     }
                 }
