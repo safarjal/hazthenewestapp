@@ -75,6 +75,7 @@ object Ids {
     const val INPUT_TYPE_SELECT = "input_type_select"
     const val MASLA_TYPE_SELECT = "masla_type_select"
     const val INPUT_QUESTION = "input_question"
+    const val INPUT_DESCRIPTION = "input_description"
     const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
     const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
 }
@@ -460,6 +461,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         ikhtilafiMasle()
         br()
         div(classes = CssC.LABEL_INPUT) {
+            description()
             maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             nifasInputs(inputContainerToCopyFrom)
@@ -488,6 +490,13 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
         classes = setOf(CssC.URDU, extraClasses)
         block()
         +urduText
+    }
+}
+
+private fun FlowContent.description(){
+    div(classes = "${CssC.ROW} ${CssC.DEV}") {
+        makeLabel(Ids.INPUT_DESCRIPTION, "Description ..", "Description urdu")
+        makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
     }
 }
 
@@ -753,21 +762,27 @@ private fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: St
     }
 }
 
+private fun FlowContent.makeTextAreaInput(inputId: String, height: String = "auto", block: TEXTAREA.() -> Unit = {}) {
+    textArea {
+        id = inputId
+        style = "height: $height"
+        block()
+        onInputFunction = { event ->
+            val txtarea = event.currentTarget as HTMLTextAreaElement
+            txtarea.dir = "auto"
+            txtarea.style.height = height
+            txtarea.style.height = "${txtarea.scrollHeight + 6}px"
+        }
+    }
+}
+
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
     details {
         summary {
             makeSpans("Question", "سوال")
         }
         div(classes = CssC.ROW) {
-            textArea {
-                id = Ids.INPUT_QUESTION
-                onInputFunction = { event ->
-                    val txtarea = event.currentTarget as HTMLTextAreaElement
-                    txtarea.dir = "auto"
-                    txtarea.style.height = "auto"
-                    txtarea.style.height = "${txtarea.scrollHeight + 6}px"
-                }
-            }
+            makeTextAreaInput(Ids.INPUT_QUESTION)
         }
     }
 }
