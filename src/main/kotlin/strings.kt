@@ -103,6 +103,8 @@ val urduStrings = Strings(
     "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration2، حیض: duration1</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration2، پاکی: duration1</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: پاکی: duration1\n\n",
+    "مسئلے کا عنوان",
+    "اسقاط",
 
 
     )
@@ -229,7 +231,7 @@ val englishStrings = Strings(
     "If bleeding continues, or stops, but starts again " +
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haidh is 10 days, " +
-            "and it is now ten days, please do ghusl and resume your ibadat./n/n",
+            "and it is now ten days, please do ghusl and resume your ibadat.\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration3, Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
     "\n<b>Miscarriage of an undeveloped fetus</b>\n",
     "Will ibadaat be continued during ayyam-e-qabliyya?",
@@ -238,6 +240,8 @@ val englishStrings = Strings(
     "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration2, Haidh : duration1\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration2, Purity (Tuh'r) : duration1\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: Purity (Tuh'r) : duration1 \n\n",
+    "Masla Title",
+    "Miscarriage",
 
 
     )

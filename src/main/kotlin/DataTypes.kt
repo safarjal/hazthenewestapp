@@ -104,6 +104,8 @@ data class Strings(
     val nifasAndHaizHabit:String,
     val nifasAndTuhrHabit:String,
     val onlyTuhrHabit:String,
+    val titleTextFieldLabel:String,
+    val isqat: String,
     )
 
 
