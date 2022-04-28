@@ -496,7 +496,7 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
 
 private fun FlowContent.description(){
     div(classes = "${CssC.ROW} ${CssC.DEV}") {
-        makeLabel(Ids.INPUT_DESCRIPTION, "Description ..", "Description urdu")
+        makeLabel(Ids.INPUT_DESCRIPTION, StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
         makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
     }
 }
