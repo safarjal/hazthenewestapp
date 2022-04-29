@@ -278,6 +278,11 @@ small {
   flex: 0;
 }
 
+/* Comparison Container */
+#comparison_container {
+  overflow: auto;
+}
+
 /* FAQ faqs */
 main {
   width: clamp(min(50vw, 400px), 400px, 100vw);
