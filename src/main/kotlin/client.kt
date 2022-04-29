@@ -1568,6 +1568,21 @@ private fun compareResults() {
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
 
+fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}) {
+    if (starter) div { id = "margin-cell" }   // Empty buffer margin
+    div {
+        id = if (desc.isEmpty()) "empty_desc" else "desc"
+        classes = if (desc.isEmpty()) emptySet() else setOf(
+            CssC.TABLE_CELL,
+            CssC.BORDERED,
+            CssC.DESCRIPTION
+        )
+        +desc
+    }
+    block()
+    if (ender) div { id = "formerly_half_cell" }   // Extra trailing cell to accommodate dates
+}
+
 fun drawCompareTable(
     headerList:List<Date>,
     listOfColorsOfDaysList: List<List<Int>>,
@@ -1581,66 +1596,64 @@ fun drawCompareTable(
         val lang = languageSelector.value
         val dur = inputsContainers.first().isDuration
         val titleClasses = "${lang}-align ${if (dur) CssC.HIDDEN else ""}"
-        // Month
-        div { id = "margin-cell" }   // Empty buffer margin
-        div { id = "empty_desc" }   // Empty Desc
-        for (header in headerList) {
-            val date = header.getDate()
-            div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
-                if (date == 1) {
-                    +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
-                    else urduMonthNames[header.getMonth()]
+
+        // Month Row
+        oneRow(true, "", false) {
+            for (header in headerList) {
+                val date = header.getDate()
+                div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
+                    if (date == 1) {
+                        +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
+                        else urduMonthNames[header.getMonth()]
+                    }
                 }
             }
         }
 
-        // Date
-        div { id = "margin-cell" }   // Empty buffer margin
-        div { id = "empty_desc" }    // Empty Desc
-        for (i in headerList.indices) {
-            val header = headerList[i]
-            val date = header.getDate().toString()
+        // Date Row
+        oneRow(true, "", false) {
+            for (i in headerList.indices) {
+                val header = headerList[i]
+                val date = header.getDate().toString()
 
-            div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
-                +date
+                div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
+                    +date
+                }
             }
         }
 
-        // Conclusion
-        div { id = "margin-cell" }   // Empty buffer margin
-        div { id = "empty_desc" }    // Empty Desc
-        for (day in resultColors) {
-            div {
-                classes = setOf(
-                    CssC.ENPTY_TABLE_CELL,
-                    when (day) {
-                        1 -> CssC.AYYAM_E_SHAKK
-                        2 -> CssC.NA_PAAKI
-                        else -> ""
-                    }
-                )
+        // Conclusion Empty Colored Row
+        oneRow(true, "", true) {
+            for (day in resultColors) {
+                div {
+                    classes = setOf(
+                        CssC.ENPTY_TABLE_CELL,
+                        when (day) {
+                            1 -> CssC.AYYAM_E_SHAKK
+                            2 -> CssC.NA_PAAKI
+                            else -> ""
+                        }
+                    )
+                }
             }
         }
 
-        // Maslas
+        // One Row Each For Each Clone
         for (j in listOfColorsOfDaysList.indices) {
             val colorsOfDaysList = listOfColorsOfDaysList[j]
             val titleDescriptionOfList = listOfDescriptions[j]
-            div { id = "formerly_half_cell" }   // Extra trailing cell to accommodate dates
-            div { id = "margin-cell" }   // Empty buffer margin
-            div(classes = "${CssC.TABLE_CELL} ${CssC.BORDERED} ${CssC.DESCRIPTION}") {
-                +titleDescriptionOfList
-            }
 
-            for (k in colorsOfDaysList.indices) {
-                val cellValue = colorsOfDaysList[k]
-                div {
-                    classes = setOf(
-                        CssC.TABLE_CELL,
-                        CssC.BORDERED,
-                        if (cellValue == 1) CssC.NA_PAAKI else ""
-                    )
-                    +"${k + 1}"
+            oneRow(true, titleDescriptionOfList, true) {
+                for (k in colorsOfDaysList.indices) {
+                    val cellValue = colorsOfDaysList[k]
+                    div {
+                        classes = setOf(
+                            CssC.TABLE_CELL,
+                            CssC.BORDERED,
+                            if (cellValue == 1) CssC.NA_PAAKI else ""
+                        )
+                        +"${k + 1}"
+                    }
                 }
             }
         }
