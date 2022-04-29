@@ -279,8 +279,21 @@ fun languageChange() {
 
 private fun calcAll() {
     inputsContainers.forEach {
-        console.log(it, it.calculateButton)
         it.calculateButton.click()
+    }
+    (comparisonContainer?.querySelector("button") as HTMLButtonElement).click()
+}
+
+private fun TagConsumer<HTMLElement>.calcAllBtn() {
+    div(classes = CssC.DEV) {
+        button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+            +"Calculate All"
+            onClickFunction = { calcAll() }
+        }
+        button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+            +"Calculate All"
+            onClickFunction = { calcAll() }
+        }
     }
 }
 
@@ -290,16 +303,7 @@ fun Node.addInputLayout() {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
         }
-        div(classes = CssC.DEV) {
-            button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
-                +"Calculate All"
-                onClickFunction = { calcAll() }
-            }
-            button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
-                +"Calculate All"
-                onClickFunction = { calcAll() }
-            }
-        }
+        calcAllBtn()
         div {
             style = Styles.NEW_ROW
         }
