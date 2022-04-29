@@ -1675,4 +1675,6 @@ fun drawCompareTable(
             }
         }
     }
+    datesDifferenceTableElement.getChildById("monthRow")?.visibility = !inputsContainers.first().isDuration
+    datesDifferenceTableElement.getChildById("datesRow")?.visibility = !inputsContainers.first().isDuration
 }
