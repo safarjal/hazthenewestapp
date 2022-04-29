@@ -250,6 +250,7 @@ tbody > tr:nth-child(odd) {
 #content_container {
   padding: 1rem;
   max-width: 100vw;
+  overflow: auto;
 }
 
 #content_wrapper {

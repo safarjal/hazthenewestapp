@@ -399,6 +399,15 @@ private fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = CssC.INVIS) {
         id = Ids.CONTENT_CONTAINER
+        div(classes = CssC.DEV) {
+            makeSwitch("minimize") {
+                onChangeFunction = { event ->
+                    val minimize = event.currentTarget as HTMLInputElement
+                    val cont = minimize.getAncestor<HTMLDivElement> { it.id == Ids.CONTENT_CONTAINER }!!
+                    cont.style.maxHeight = if (minimize.checked) "200px" else "auto"
+                }
+            }
+        }
         div(classes = CssC.URDU) {
             id = Ids.CONTENT_WRAPPER
             copyBtn(CssC.LEFT, CssC.RTL)
@@ -431,7 +440,7 @@ private fun getNow(): String {
 }
 
 private fun copyText(event: Event) {
-    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.CONTENT_WRAPPER }
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
@@ -501,16 +510,21 @@ private fun FlowContent.description(){
     }
 }
 
+private fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
+    label(classes = CssC.SWITCH) {
+        checkBoxInput {
+            id = inputId
+            block()
+        }
+        span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
+    }
+}
+
 private fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduText: String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
             makeLabel(inputId, englishText, urduText)
-            label(classes = CssC.SWITCH) {
-                checkBoxInput {
-                    id = inputId
-                }
-                span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
-            }
+            makeSwitch(inputId)
         }
         block()
     }
