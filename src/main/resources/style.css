@@ -453,12 +453,12 @@ input:checked + .slider:before {
   background-color: yellow;
 }
 
-.monthRow.urdu-align,
-.datesRow.urdu-align {
+.months_row.urdu-align,
+.dates_row.urdu-align {
   transform: translateX(50%);
 }
 
-.monthsRow.english-align,
-.datesRow.english-align {
+.months_row.english-align,
+.dates_row.english-align {
   transform: translateX(-50%);
 }

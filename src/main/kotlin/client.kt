@@ -86,8 +86,8 @@ object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
 
-    const val ENGLISH = Vls.Langs.ENGLISH                   // Switch. Put on any element that should only show when lang is english
-    const val URDU = Vls.Langs.URDU                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -108,6 +108,14 @@ object CssC {
     const val SLIDER = "slider"                     // CSS Style.
     const val ROUND = "round"                       // CSS Style.
     const val LABEL_INPUT = "label-input"           // CSS Style.
+
+    const val TABLE_CELL = "table_cell"             // CSS Style.
+    const val MONTHS_ROW = "months_row"             // CSS Style.
+    const val DATES_ROW = "dates_row"               // CSS Style.
+    const val BORDERED = "bordered"                 // CSS Style.
+    const val ENPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
+    const val NA_PAAKI = "na_paaki"                 // CSS Style.
+    const val AYYAM_E_SHAKK = "ayyam_e_shakk"       // CSS Style.
 }
 
 object Vls {                                        // Values
@@ -1567,130 +1575,121 @@ private fun compareResults() {
     val str = getDifferenceFromMultiple(listOfLists)
     contentDatesDifferenceElement!!.innerHTML = str
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+//    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
     drawCompareTable2(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
-
-fun drawCompareTable(
-    headerList:List<Date>,
-    listOfColorsOfDaysList: List<List<Int>>,
-    resultColors: List<Int>,
-    listOfDescriptions: List<String>
-){
-    val datesDifferenceTableElement = datesDifferenceTableElement!!
-    datesDifferenceTableElement.style.width = "${headerList.size*30 +15 + 60}px"
-    datesDifferenceTableElement.replaceChildren {
-        div { id = "tHead"
-            style = Styles.TABLE_HEAD_STYLE
-            div { id = "monthRow"
-                style =Styles.TABLE_ROW_STYLE
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-                }
-                for (header in headerList) {
-                    val date = header.getDate()
-                    div { id = "cello"
-                        style = Styles.TABLE_CELL_STYLE
-                        if (date == 1) {
-                            +englishMonthNames[header.getMonth()]
-                        }
-                    }
-                }
-            }
-            div{
-                style = Styles.NEW_ROW
-            }
-            div { id = "datesRow"
-                style = Styles.TABLE_ROW_STYLE
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-                }
-                for (i in headerList.indices) {
-                    val header = headerList[i]
-                    val date = header.getDate().toString()
-
-                    div { id = "cello"
-                        style =Styles.TABLE_CELL_STYLE
-                        +date
-                    }
-                }
-            }
-        }
-        div{
-            style = Styles.NEW_ROW
-        }
-        div { id = "tBody"
-            style = Styles.TABLE_BODY_STYLE
-            div{
-                style = Styles.NEW_ROW
-            }
-            div { id = "emptyRow"
-                style=Styles.TABLE_ROW_STYLE
-                div{
-                    id = "emptyHalfCellTopRow"
-                    style = Styles.EMPTY_HALF_CELL_STYLE
-                }
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.EMPTY_DOUBLE_CELL_STYLE
-                }
-                for (day in resultColors){
-                    div{
-                        id = "emptyCellTopRow"
-                        style = Styles.EMPTY_CELL_STYLE
-
-                        if (day == 2) {
-                            style += Styles.NA_PAKI
-                        } else if(day == 1){
-                            style += Styles.AYYAAM_E_SHAKK
-                        }
-                    }
-                }
-            }
-
-            for (j in listOfColorsOfDaysList.indices) {
-                val colorsOfDaysList = listOfColorsOfDaysList[j]
-                val titleDescriptionOfList = listOfDescriptions[j]
-                div{
-                    style = Styles.NEW_ROW
-                }
-                div { id = "sit${j+1}"
-                    Styles.TABLE_ROW_STYLE
-                    div { id="half_cell"
-                        style = Styles.HALF_CELL
-                    }
-                    div(classes = "title-descrition-space"){
-                        id = "title-description"
-                        style = Styles.TABLE_DOUBLE_CELL_BORDER_STYLE
-                        + titleDescriptionOfList
-                    }
-
-                    for (k in colorsOfDaysList.indices) {
-                        val cellValue = colorsOfDaysList[k]
-                        div { id = "cello"
-                            style = Styles.TABLE_CELL_BORDER_STYLE +
-                                    (if (cellValue == 1) Styles.NA_PAKI else "")
-                            +"${k+1}"
-                        }
-                    }
-                }
-            }
-        }
-    }
-    datesDifferenceTableElement.getChildById("monthRow")?.visibility = !inputsContainers.first().isDuration
-    datesDifferenceTableElement.getChildById("datesRow")?.visibility = !inputsContainers.first().isDuration
-}
-
-fun TagConsumer<HTMLElement>.titleDesc(classes: String = "", description: String = "", block: DIV.() -> Unit = {}) {
-    div(classes = classes){
-        id = "title-description"
-        style = Styles.TABLE_DOUBLE_CELL_STYLE
-        block()
-        +description
-    }
-}
+//
+//fun drawCompareTable(
+//    headerList:List<Date>,
+//    listOfColorsOfDaysList: List<List<Int>>,
+//    resultColors: List<Int>,
+//    listOfDescriptions: List<String>
+//){
+//    val datesDifferenceTableElement = datesDifferenceTableElement!!
+//    datesDifferenceTableElement.style.width = "${headerList.size*30 +15 + 60}px"
+//    datesDifferenceTableElement.replaceChildren {
+//        div { id = "tHead"
+//            style = Styles.TABLE_HEAD_STYLE
+//            div { id = "monthRow"
+//                style =Styles.TABLE_ROW_STYLE
+//                div(classes = "empty-space"){
+//                    id = "title-description"
+//                    style = Styles.TABLE_DOUBLE_CELL_STYLE
+//                }
+//                for (header in headerList) {
+//                    val date = header.getDate()
+//                    div { id = "cello"
+//                        style = Styles.TABLE_CELL_STYLE
+//                        if (date == 1) {
+//                            +englishMonthNames[header.getMonth()]
+//                        }
+//                    }
+//                }
+//            }
+//            div{
+//                style = Styles.NEW_ROW
+//            }
+//            div { id = "datesRow"
+//                style = Styles.TABLE_ROW_STYLE
+//                div(classes = "empty-space"){
+//                    id = "title-description"
+//                    style = Styles.TABLE_DOUBLE_CELL_STYLE
+//                }
+//                for (i in headerList.indices) {
+//                    val header = headerList[i]
+//                    val date = header.getDate().toString()
+//
+//                    div { id = "cello"
+//                        style =Styles.TABLE_CELL_STYLE
+//                        +date
+//                    }
+//                }
+//            }
+//        }
+//        div{
+//            style = Styles.NEW_ROW
+//        }
+//        div { id = "tBody"
+//            style = Styles.TABLE_BODY_STYLE
+//            div{
+//                style = Styles.NEW_ROW
+//            }
+//            div { id = "emptyRow"
+//                style=Styles.TABLE_ROW_STYLE
+//                div{
+//                    id = "emptyHalfCellTopRow"
+//                    style = Styles.EMPTY_HALF_CELL_STYLE
+//                }
+//                div(classes = "empty-space"){
+//                    id = "title-description"
+//                    style = Styles.EMPTY_DOUBLE_CELL_STYLE
+//                }
+//                for (day in resultColors){
+//                    div{
+//                        id = "emptyCellTopRow"
+//                        style = Styles.EMPTY_CELL_STYLE
+//
+//                        if (day == 2) {
+//                            style += Styles.NA_PAKI
+//                        } else if(day == 1){
+//                            style += Styles.AYYAAM_E_SHAKK
+//                        }
+//                    }
+//                }
+//            }
+//
+//            for (j in listOfColorsOfDaysList.indices) {
+//                val colorsOfDaysList = listOfColorsOfDaysList[j]
+//                val titleDescriptionOfList = listOfDescriptions[j]
+//                div{
+//                    style = Styles.NEW_ROW
+//                }
+//                div { id = "sit${j+1}"
+//                    Styles.TABLE_ROW_STYLE
+//                    div { id="half_cell"
+//                        style = Styles.HALF_CELL
+//                    }
+//                    div(classes = "title-descrition-space"){
+//                        id = "title-description"
+//                        style = Styles.TABLE_DOUBLE_CELL_BORDER_STYLE
+//                        + titleDescriptionOfList
+//                    }
+//
+//                    for (k in colorsOfDaysList.indices) {
+//                        val cellValue = colorsOfDaysList[k]
+//                        div { id = "cello"
+//                            style = Styles.TABLE_CELL_BORDER_STYLE +
+//                                    (if (cellValue == 1) Styles.NA_PAKI else "")
+//                            +"${k+1}"
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    datesDifferenceTableElement.getChildById("monthRow")?.visibility = !inputsContainers.first().isDuration
+//    datesDifferenceTableElement.getChildById("datesRow")?.visibility = !inputsContainers.first().isDuration
+//}
 
 fun drawCompareTable2(
     headerList:List<Date>,
@@ -1699,7 +1698,6 @@ fun drawCompareTable2(
     listOfDescriptions: List<String>
 ){
     val datesDifferenceTableElement = datesDifferenceTableElement2!!
-    println(datesDifferenceTableElement.style.getPropertyValue("--columns"))
     datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
     datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
     datesDifferenceTableElement.replaceChildren {
@@ -1707,10 +1705,10 @@ fun drawCompareTable2(
         val dur = inputsContainers.first().isDuration
         val titleClasses = "${lang}-align ${if (dur) CssC.INVIS else ""}"
         // Month
-        titleDesc()
+        div { id = "empty_desc" }   // Empty Desc
         for (header in headerList) {
             val date = header.getDate()
-            div(classes = "monthsRow table_cell $titleClasses") {
+            div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                 if (date == 1) {
                     +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
                     else urduMonthNames[header.getMonth()]
@@ -1719,26 +1717,28 @@ fun drawCompareTable2(
         }
 
         // Date
-        titleDesc()
+        div { id = "empty_desc" }    // Empty Desc
         for (i in headerList.indices) {
             val header = headerList[i]
             val date = header.getDate().toString()
 
-            div(classes = "datesRow table_cell $titleClasses") {
+            div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                 +date
             }
         }
 
         // Conclusion
-        titleDesc()
+        div { id = "empty_desc" }    // Empty Desc
         for (day in resultColors) {
             div {
-                classes = setOf("emptyRow", "empty_table_cell")
-                if (day == 2) {
-                    classes += ("na_paaki")
-                } else if (day == 1) {
-                    classes += ("ayyam_e_shakk")
-                }
+                classes = setOf(
+                    CssC.ENPTY_TABLE_CELL,
+                    when (day) {
+                        1 -> CssC.AYYAM_E_SHAKK
+                        2 -> CssC.NA_PAAKI
+                        else -> ""
+                    }
+                )
             }
         }
 
@@ -1746,8 +1746,8 @@ fun drawCompareTable2(
         for (j in listOfColorsOfDaysList.indices) {
             val colorsOfDaysList = listOfColorsOfDaysList[j]
             val titleDescriptionOfList = listOfDescriptions[j]
-            div()
-            div(classes = "title-description-space table_cell bordered") {
+            div { id = "formerly_half_cell" }   // Extra trailing cell to accommodate dates
+            div(classes = "${CssC.TABLE_CELL} ${CssC.BORDERED}") {
                 +titleDescriptionOfList
             }
 
@@ -1755,8 +1755,9 @@ fun drawCompareTable2(
                 val cellValue = colorsOfDaysList[k]
                 div {
                     classes = setOf(
-                        "table_cell bordered",
-                        (if (cellValue == 1) "na_paaki" else "")
+                        CssC.TABLE_CELL,
+                        CssC.BORDERED,
+                        if (cellValue == 1) CssC.NA_PAAKI else ""
                     )
                     +"${k + 1}"
                 }
