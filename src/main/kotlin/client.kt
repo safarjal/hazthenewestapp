@@ -167,6 +167,7 @@ private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HT
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
 
 private val HTMLElement.questionText get() = (getChildById(Ids.INPUT_QUESTION) as HTMLTextAreaElement)
+private val HTMLElement.descriptionText get() = (getChildById(Ids.INPUT_DESCRIPTION) as HTMLTextAreaElement)
 
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
@@ -1480,20 +1481,30 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
 
 private fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
+    val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
     val str = getDifferenceFromMultiple(listOfLists)
     contentDatesDifferenceElement!!.innerHTML = str
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors)
+    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
 
-fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<Int>>, resultColors: List<Int>){
+fun drawCompareTable(
+    headerList:List<Date>,
+    listOfColorsOfDaysList: List<List<Int>>,
+    resultColors: List<Int>,
+    listOfDescriptions: List<String>
+){
     val datesDifferenceTableElement = datesDifferenceTableElement!!
-    datesDifferenceTableElement.style.width = "${headerList.size*30 +15}px"
+    datesDifferenceTableElement.style.width = "${headerList.size*30 +15 + 60}px"
     datesDifferenceTableElement.replaceChildren {
         div { id = "tHead"
             style = Styles.TABLE_HEAD_STYLE
             div { id = "monthRow"
                 style =Styles.TABLE_ROW_STYLE
+                div(classes = "empty-space"){
+                    id = "title-description"
+                    style = Styles.TABLE_DOUBLE_CELL_STYLE
+                }
                 for (header in headerList) {
                     val date = header.getDate()
                     div { id = "cello"
@@ -1509,6 +1520,10 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
             }
             div { id = "datesRow"
                 style = Styles.TABLE_ROW_STYLE
+                div(classes = "empty-space"){
+                    id = "title-description"
+                    style = Styles.TABLE_DOUBLE_CELL_STYLE
+                }
                 for (i in headerList.indices) {
                     val header = headerList[i]
                     val date = header.getDate().toString()
@@ -1534,6 +1549,10 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     id = "emptyHalfCellTopRow"
                     style = Styles.EMPTY_HALF_CELL_STYLE
                 }
+                div(classes = "empty-space"){
+                    id = "title-description"
+                    style = Styles.EMPTY_DOUBLE_CELL_STYLE
+                }
                 for (day in resultColors){
                     div{
                         id = "emptyCellTopRow"
@@ -1550,6 +1569,7 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
 
             for (j in listOfColorsOfDaysList.indices) {
                 val colorsOfDaysList = listOfColorsOfDaysList[j]
+                val titleDescriptionOfList = listOfDescriptions[j]
                 div{
                     style = Styles.NEW_ROW
                 }
@@ -1557,6 +1577,11 @@ fun drawCompareTable(headerList:List<Date>, listOfColorsOfDaysList: List<List<In
                     Styles.TABLE_ROW_STYLE
                     div { id="half_cell"
                         style = Styles.HALF_CELL
+                    }
+                    div(classes = "title-descrition-space"){
+                        id = "title-description"
+                        style = Styles.TABLE_DOUBLE_CELL_BORDER_STYLE
+                        + titleDescriptionOfList
                     }
 
                     for (k in colorsOfDaysList.indices) {
