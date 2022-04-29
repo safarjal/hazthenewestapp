@@ -141,6 +141,7 @@ private val datesDifferenceTableElement get() = document.getElementById(Ids.DATE
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
+private val HTMLElement.form get() = (querySelector("form")) as HTMLFormElement
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
@@ -161,7 +162,7 @@ private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPU
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 
-private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
+private val HTMLElement.contentContainer get() = (getChildById(Ids.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
@@ -274,11 +275,27 @@ fun languageChange() {
         }
 }
 
+private fun calcAll() {
+    inputsContainers.forEach {
+        it.form.submit()
+    }
+}
+
 fun Node.addInputLayout() {
     append {
         div {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
+        }
+        div(classes = CssC.DEV) {
+            button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+                +"Calculate All"
+                onClickFunction = { calcAll() }
+            }
+            button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+                +"Calculate All"
+                onClickFunction = { calcAll() }
+            }
         }
         div {
             style = Styles.NEW_ROW
@@ -291,12 +308,15 @@ private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
+    inputsContainers.singleOrNull()?.contentContainer?.style?.maxHeight = "auto"
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     comparisonContainer?.remove()
-    if (inputsContainers.size == 1) addRemoveInputsContainerButton(inputsContainerToCopyFrom)
-
+    if (inputsContainers.size == 1) {
+        addRemoveInputsContainerButton(inputsContainerToCopyFrom)
+    }
+    inputsContainers.forEach { it.contentContainer.style.maxHeight = "200px" }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
@@ -343,6 +363,7 @@ private fun addCompareButtonIfNeeded() {
             }
         }
     }
+    inputsContainers.forEach { it.contentContainer.style.maxHeight = "200px" }
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -483,7 +504,10 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         haizDurationInputTable(inputContainerToCopyFrom)
         calculateButton()
         hr()
-        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
+        onSubmitFunction = { event ->
+            console.log("start", event, event.currentTarget, "done")
+            parseEntries(findInputContainer(event))
+        }
     }
 }
 
