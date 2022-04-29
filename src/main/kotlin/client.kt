@@ -1359,9 +1359,22 @@ private fun parseEntries(inputContainer: HTMLElement) {
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
+        populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
     }
     addCompareButtonIfNeeded()
 }
+fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
+    with(inputContainer) {
+        if(descriptionText.value==""){
+            var text = "$aadatHaz/$aadatTuhr/$mawjoodaTuhr".trim()
+            if(text.contains("//")){text=text.replace("//","/")}
+            if(text.startsWith("/")){text=text.drop(1)}
+            if(text.endsWith("/")){ text=text.dropLast(1) }
+            descriptionText.value = text
+        }
+    }
+}
+
 fun validateNifasDurations(durations:List<Duration>):Boolean{
     //this is ensuring that we have both pregnancy and birth, and only one of each.
 

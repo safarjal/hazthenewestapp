@@ -187,7 +187,7 @@ fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
     return arrayOf(days, hours, minutes)
 }
 
-fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs, languageNames: String):String {
+fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs = TypesOfInputs.DURATION, languageNames: String = Vls.Langs.ENGLISH):String {
     if(languageNames==Vls.Langs.ENGLISH){
         var isDateOnly = false
         if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
