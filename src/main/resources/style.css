@@ -260,7 +260,7 @@ tbody > tr:nth-child(odd) {
 }
 
 .shrunk {
-  max-height: 100px;
+  max-height: 70px;
 }
 
 #content_wrapper {

@@ -38,10 +38,6 @@ object UnicodeChars {
     const val ABACUS = "&#129518;"
 }
 
-object Styles {
-    const val NEW_ROW = "clear:both"
-}
-
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
 

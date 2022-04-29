@@ -159,9 +159,9 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
 private val HTMLElement.typeSelect get() = getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement
-private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_TIME
-private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_ONLY
-private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DURATION
+private val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
+private val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
+private val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
 private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
 private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
@@ -320,9 +320,6 @@ fun Node.addInputLayout() {
             inputFormDiv()
         }
         calcAllBtn()
-        div {
-            style = Styles.NEW_ROW
-        }
     }
 }
 
@@ -366,7 +363,6 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     if (inputsContainers.size == 1) {
         addRemoveInputsContainerButton(inputsContainerToCopyFrom)
     }
-    shrinkAnswer(true)
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
@@ -374,6 +370,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     // Make sure all invises are maintained
     languageChange()
     disableTree(clonedInputsContainer)
+    shrinkAnswer(true)
     disableTime()
 //    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
@@ -402,10 +399,8 @@ private fun addCompareButtonIfNeeded() {
         div(classes = CssC.CENTER) {
             id = Ids.COMPARISON_CONTAINER
             div { id = Ids.DATES_DIFFERENCE_TABLE }
-
         }
     }
-    shrinkAnswer(true)
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
