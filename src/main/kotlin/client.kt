@@ -146,6 +146,7 @@ private val HTMLElement.form get() = (querySelector("form")) as HTMLFormElement
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
+private val HTMLElement.typeSelect get() = getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement
 private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_TIME
 private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_ONLY
 private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DURATION
@@ -622,7 +623,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
         select {
             id = Ids.INPUT_TYPE_SELECT
             onChangeFunction = { event ->
-                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
+                onClickTypeConfigurationSelectDropdown(event)
             }
             makeDropdownOptions(isDateOnly, Vls.Types.DATE_ONLY, StringsOfLanguages.ENGLISH.dateOnly, StringsOfLanguages.URDU.dateOnly)
             makeDropdownOptions(isDateTime, Vls.Types.DATE_TIME, StringsOfLanguages.ENGLISH.dateAndTime, StringsOfLanguages.URDU.dateAndTime)
@@ -1222,9 +1223,8 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
     }
 }
 
-private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) {
-    val isDateOnly = inputContainer.isDateOnly
-    val isDateTime = inputContainer.isDateTime
+private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
+    inputContainer.typeSelect.value = selectedOption
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
@@ -1241,6 +1241,14 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
         setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
     switchToDurationTable(inputContainer)
+}
+
+private fun onClickTypeConfigurationSelectDropdown(event: Event) {
+    val selected = (event.currentTarget as HTMLSelectElement).value
+    val inputContainer = findInputContainer(event)
+    val isDateOnly = inputContainer.isDateOnly
+    val isDateTime = inputContainer.isDateTime
+    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
 }
 
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
