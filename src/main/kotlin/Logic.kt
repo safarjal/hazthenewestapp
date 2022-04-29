@@ -53,7 +53,9 @@ fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
 }
 fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
     removeTuhrLessThan15(fixedDurations)
-    removeDamLessThan3(fixedDurations)
+    val newMawjoodaPakiValues = removeDamLessThan3(fixedDurations, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L, allTheInputs.preMaslaValues.isMawjoodaFasid)
+    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
+    allTheInputs.preMaslaValues.isMawjoodaFasid=newMawjoodaPakiValues.isMawjoodaFasid
     addStartDateToFixedDurations(fixedDurations)
     if(!allTheInputs.ikhtilaafaat.mubtadiaIkhitilaf){
         val aadats = dealWithMubtadiaDam(
@@ -125,7 +127,12 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
     //if it's not mustabeen ulkhilqat, deal with it like haiz
     removeTuhrLessThan15(fixedDurations)
     removeTuhrLessThan15InPregnancy(fixedDurations)
-    removeDamLessThan3(fixedDurations)
+    val newMawjoodaPakiValues = removeDamLessThan3(
+        fixedDurations,
+        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L,
+        allTheInputs.preMaslaValues.isMawjoodaFasid)
+    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
+    allTheInputs.preMaslaValues.isMawjoodaFasid=newMawjoodaPakiValues.isMawjoodaFasid
     addStartDateToFixedDurations(fixedDurations)
     val mawjoodahIsNotAadat = checkIfMawjoodahPakiIsTuhrInHaml(
         fixedDurations,
@@ -180,7 +187,13 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
     makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,allTheInputs.pregnancy) //also, marking them as Dam in
     val newNifasAadat = dealWithDamInMuddateNifas(fixedDurations,allTheInputs.pregnancy, allTheInputs.language)
         ?: return NO_OUTPUT
-    removeDamLessThan3(fixedDurations) //this won't effect dam in muddat e haml
+    val newMawjoodaPakiValues = removeDamLessThan3(
+        fixedDurations,
+        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L,
+        allTheInputs.preMaslaValues.isMawjoodaFasid
+    )//this won'e effect dam in haml
+    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
+    allTheInputs.preMaslaValues.isMawjoodaFasid=newMawjoodaPakiValues.isMawjoodaFasid
     addStartDateToFixedDurations(fixedDurations)
     if(!dealWithBiggerThan10Dam(
             fixedDurations,
@@ -210,7 +223,13 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
 }
 fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
     removeTuhrLessThan15(fixedDurations)
-    removeDamLessThan3(fixedDurations)
+    val newMawjoodaPakiValues = removeDamLessThan3(
+        fixedDurations,
+        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L,
+        allTheInputs.preMaslaValues.isMawjoodaFasid
+    )
+    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
+    allTheInputs.preMaslaValues.isMawjoodaFasid=newMawjoodaPakiValues.isMawjoodaFasid
     addStartDateToFixedDurations(fixedDurations)
     if(!dealWithBiggerThan10Dam(
             fixedDurations,
@@ -692,8 +711,10 @@ fun removeTuhrLessThan15 (fixedDurations: MutableList<FixedDuration>){
 //          iterate through array. when we find a dam less than 3, check if
 //          there is a tuhur behind it. and in front of it. if there is then add all the 3 durations
 //          together. set type as a new type tuhr-e-faasid. delete the originals.
-fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
+fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>, inputtedMawjoodaTuhr: Long? = null, isMawjoodaFasid: Boolean=false):PreMaslaValues{
     var i=0
+    var isMawjoodaFasidEditable=isMawjoodaFasid
+    var mawjoodahtuhreditable=inputtedMawjoodaTuhr
     while (i<fixedDurations.size-1){
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<3){
             if(i>0){//there is tuhur behind this and in front of it
@@ -711,10 +732,36 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>){
                     fixedDurations.removeAt(i)
                     i--
                 }
+            }else{//i is 0 (i should never be less than zero), ie, the first dam is less than 3
+                var newStartDate = fixedDurations[0].startDate
+                //mark the tuhr behind it as fasid
+                isMawjoodaFasidEditable=true
+                //adding the dam to the tuhr behind it
+                if(mawjoodahtuhreditable==null){
+                    mawjoodahtuhreditable=fixedDurations[0].timeInMilliseconds
+                }else{
+                    mawjoodahtuhreditable+=fixedDurations[0].timeInMilliseconds
+                }
+                newStartDate=addTimeToDate(newStartDate,fixedDurations[0].timeInMilliseconds)//but first move the start date onwards
+                fixedDurations.removeAt(0)//delete that dam
+
+                //if there is a tuhr in front of it, add it to the tuhr behind too
+                if(fixedDurations[0].type==DurationType.TUHR){
+                    mawjoodahtuhreditable+=fixedDurations[0].timeInMilliseconds//add the tuhr in front of it to mawjooda paki
+                    newStartDate=addTimeToDate(newStartDate,fixedDurations[0].timeInMilliseconds)//but first move the start date onwards
+                    //and delate that tuhr
+                    fixedDurations.removeAt(0)
+                }
+                //assign new start date
+                firstStartTime=newStartDate
             }
         }
         i++
     }
+    if (mawjoodahtuhreditable != null) {
+        if(mawjoodahtuhreditable<15*MILLISECONDS_IN_A_DAY){mawjoodahtuhreditable=null}
+    }
+    return PreMaslaValues(isMawjoodaFasid = isMawjoodaFasidEditable, inputtedMawjoodahTuhr = mawjoodahtuhreditable)
 }
 //step 4 - Deal with bigger than 10 dam
 //          iterate through array. getting aadat on the way. each time you encounter a dam
@@ -2210,16 +2257,29 @@ fun putMawjoodahPakiInFixedDurations(fixedDurations: MutableList<FixedDuration>,
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=null &&
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=-1L){
         if(fixedDurations[0].type==DurationType.DAM){
-            var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr)
-            fixedDurations.add(0, FixedDuration(DurationType.TUHR, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = startTime))
+            var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
+            if(allTheInputs.preMaslaValues.isMawjoodaFasid==true){
+                fixedDurations.add(0, FixedDuration(DurationType.TUHREFAASID,
+                    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
+            }else{
+                fixedDurations.add(0, FixedDuration(DurationType.TUHR,
+                    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
+            }
         }
         else if(fixedDurations[0].type==DurationType.HAML){
             if(allTheInputs.preMaslaValues.isMawjoodaFasid){//this is tuhr in haml
-                fixedDurations.add(1, FixedDuration(DurationType.TUHR_IN_HAML, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = fixedDurations[0].startDate))
+                fixedDurations.add(1, FixedDuration(DurationType.TUHR_IN_HAML,
+                    allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = fixedDurations[0].startDate))
                 //start date is the same as last one, cuz haml has 0 length
             }else{//this is tuhr before haml
-                var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr)
-                fixedDurations.add(0, FixedDuration(DurationType.TUHR, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr, startDate = startTime))
+                var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
+                if(allTheInputs.preMaslaValues.isMawjoodaFasid==true){
+                    fixedDurations.add(0, FixedDuration(DurationType.TUHREFAASID,
+                        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
+                }else{
+                    fixedDurations.add(0, FixedDuration(DurationType.TUHR,
+                        allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
+                }
             }
         }
 

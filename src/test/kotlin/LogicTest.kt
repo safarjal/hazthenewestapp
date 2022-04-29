@@ -3940,6 +3940,107 @@ class LogicTest {
         val expectedOutputUrdu = "0 دن"
         assertEquals(outputUrdu, expectedOutputUrdu)
     }
+    @Test
+    fun testDurationsMawjoodahPaki() {
+        var durations = listOf<Duration>(
+            Duration(DurationType.DAM,0L),
+            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+        )
+        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        println(output.fixedDurations)
+        var expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 15*MILLISECONDS_IN_A_DAY),
+            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+    }
+    @Test
+    fun testDurationsMawjoodahPakiCase2() {
+        var durations = listOf<Duration>(
+            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.DAM, 0*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY),
+        )
+        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        println(output.fixedDurations)
+        var expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 30*MILLISECONDS_IN_A_DAY),
+            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+    }
+    @Test
+    fun testDurationsMawjoodahPakiCase3() {
+        var durations = listOf<Duration>(
+            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.DAM, 2*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY),
+        )
+        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        println(output.fixedDurations)
+        var expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 32*MILLISECONDS_IN_A_DAY),
+            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+    }
 
 
 //    @Test

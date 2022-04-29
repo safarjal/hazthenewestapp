@@ -124,13 +124,14 @@ data class AllTheInputs(
 
 )
 
+
 data class PreMaslaValues(
     val inputtedAadatHaiz:Long? = null,
     val inputtedAadatTuhr:Long? = null,
-    val inputtedMawjoodahTuhr:Long? = null,
-    val isMawjoodaFasid:Boolean = false,
+    var inputtedMawjoodahTuhr:Long? = null,
+    var isMawjoodaFasid:Boolean = false,
 
-)
+    )
 
 data class Ikhtilaafaat(
     val ghairMustabeenIkhtilaaf:Boolean = false,

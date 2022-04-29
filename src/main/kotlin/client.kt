@@ -1307,7 +1307,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             mustabeen
         )
 
-        var allTheInputs:AllTheInputs=AllTheInputs()
+        var allTheInputs=AllTheInputs()
 
         if(typesOfInputs==TypesOfInputs.DURATION){
             val durations = haizDurationInputDatesRows.map { row ->
@@ -1412,7 +1412,7 @@ fun validateNifasDurations(durations:List<Duration>):Boolean{
 }
 
 
-fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs):AllTheInputs{
+fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs = AllTheInputs(null)):AllTheInputs{
     if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
         if(!validateNifasDurations(durations)){
             return AllTheInputs(null)
@@ -1423,7 +1423,7 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
             durations[index].startTime = durations[index-1].endDate
         }
     }
-    var mawjodahtuhreditable:Long?=allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
+    var mawjodahtuhreditable:Long?= allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
     var isMawjoodaFasid = allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
     val entries= mutableListOf<Entry>()
     var pregnancyEnd = ARBITRARY_DATE
@@ -1433,15 +1433,15 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
     // we will put a beginning tuhr in mawjoodah paki.
     //beginning tuhr cannot be fasid. if it is fasid, it is tuhr in haml
     //later, we will put these back in fixed durations
-    if(durations[0].type == DurationType.TUHR && durations[0].days>=15){
-        mawjodahtuhreditable = durations[0].timeInMilliseconds
-    }
-    else if(durations[0].type==DurationType.HAML &&
-        durations[1].days>=15&&
-        durations[1].type ==DurationType.TUHR){
-        mawjodahtuhreditable = durations[1].timeInMilliseconds
-        isMawjoodaFasid = true
-    }
+//    if(durations[0].type == DurationType.TUHR && durations[0].days>=15){
+//        mawjodahtuhreditable += durations[0].timeInMilliseconds
+//    }
+//    else if(durations[0].type==DurationType.HAML &&
+//        durations[1].days>=15&&
+//        durations[1].type ==DurationType.TUHR){
+//        mawjodahtuhreditable += durations[1].timeInMilliseconds
+//        isMawjoodaFasid = true
+//    }
 
 
 
@@ -1452,14 +1452,33 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
             }
             DurationType.HAML -> {
                 pregnancyStrt=dur.startTime
+                if(entries.size==0){
+                    isMawjoodaFasid=true
+                }
 
             }
             DurationType.WILADAT_ISQAT -> {
                 pregnancyEnd=dur.startTime
             }
             DurationType.TUHR -> {
+                if(entries.size==0){
+                    if(mawjodahtuhreditable==null){
+                        mawjodahtuhreditable = dur.timeInMilliseconds
+
+                    }else{
+                        mawjodahtuhreditable += dur.timeInMilliseconds
+
+                    }
+                }
 
             }
+        }
+    }
+    if (mawjodahtuhreditable != null) {
+        if(mawjodahtuhreditable<15*MILLISECONDS_IN_A_DAY && mawjodahtuhreditable!=-1L){
+            //give an error
+            window.alert("Tuhr before first dam is less than 15 days, so we will need previous information to solve this masla")
+            return AllTheInputs(null)
         }
     }
     val newPreMaslaValues = PreMaslaValues(
