@@ -59,6 +59,7 @@ object Ids {
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
+    const val CALCULATE_ALL_DIV = "calculate_all_button"
     const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
@@ -112,6 +113,7 @@ object CssC {
 
     const val SHRUNK = "shrunk"                     // CSS Style. Shrinks Answer to desired height.
     const val TABLE_CELL = "table_cell"             // CSS Style.
+    const val DESCRIPTION = "description"
     const val MONTHS_ROW = "months_row"             // CSS Style.
     const val DATES_ROW = "dates_row"               // CSS Style.
     const val BORDERED = "bordered"                 // CSS Style.
@@ -146,6 +148,7 @@ object Vls {                                        // Values
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
+private val calculateAllDiv get() = document.getElementById(Ids.CALCULATE_ALL_DIV) as HTMLDivElement
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 
 private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
@@ -286,17 +289,19 @@ fun languageChange() {
                 .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
                 ?.selected = true
         }
+    if (comparisonContainer != null) calcAll()
 }
 
 private fun calcAll() {
     inputsContainers.forEach {
         it.calculateButton.click()
     }
-    (comparisonContainer?.querySelector("button") as HTMLButtonElement).click()
+    compareResults()
 }
 
 private fun TagConsumer<HTMLElement>.calcAllBtn() {
     div(classes = "${CssC.DEV} ${CssC.CENTER}") {
+        id = Ids.CALCULATE_ALL_DIV
         button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
             +"Calculate All"
             onClickFunction = { calcAll() }
@@ -393,14 +398,11 @@ private fun addCompareButtonIfNeeded() {
         inputsContainers.any { it.haizDatesList == null }
     ) return
 
-    inputsContainersContainer.after {
+    calculateAllDiv.after {
         div(classes = CssC.CENTER) {
             id = Ids.COMPARISON_CONTAINER
-            button(classes = CssC.CALC_BTN) {
-                +"Calculate difference"
-                onClickFunction = { compareResults() }
-            }
             div { id = Ids.DATES_DIFFERENCE_TABLE }
+
         }
     }
     shrinkAnswer(true)
@@ -1585,6 +1587,7 @@ fun drawCompareTable(
         val dur = inputsContainers.first().isDuration
         val titleClasses = "${lang}-align ${if (dur) CssC.HIDDEN else ""}"
         // Month
+        div { id = "margin-cell" }   // Empty buffer margin
         div { id = "empty_desc" }   // Empty Desc
         for (header in headerList) {
             val date = header.getDate()
@@ -1597,6 +1600,7 @@ fun drawCompareTable(
         }
 
         // Date
+        div { id = "margin-cell" }   // Empty buffer margin
         div { id = "empty_desc" }    // Empty Desc
         for (i in headerList.indices) {
             val header = headerList[i]
@@ -1608,6 +1612,7 @@ fun drawCompareTable(
         }
 
         // Conclusion
+        div { id = "margin-cell" }   // Empty buffer margin
         div { id = "empty_desc" }    // Empty Desc
         for (day in resultColors) {
             div {
@@ -1627,7 +1632,8 @@ fun drawCompareTable(
             val colorsOfDaysList = listOfColorsOfDaysList[j]
             val titleDescriptionOfList = listOfDescriptions[j]
             div { id = "formerly_half_cell" }   // Extra trailing cell to accommodate dates
-            div(classes = "${CssC.TABLE_CELL} ${CssC.BORDERED}") {
+            div { id = "margin-cell" }   // Empty buffer margin
+            div(classes = "${CssC.TABLE_CELL} ${CssC.BORDERED} ${CssC.DESCRIPTION}") {
                 +titleDescriptionOfList
             }
 
