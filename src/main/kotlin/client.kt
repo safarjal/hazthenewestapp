@@ -60,6 +60,7 @@ object Ids {
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
+    const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
@@ -162,6 +163,7 @@ private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPU
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 
+private val HTMLElement.calculateButton get() = (getChildById(Ids.CALCULATE_BUTTON)) as HTMLButtonElement
 private val HTMLElement.contentContainer get() = (getChildById(Ids.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
@@ -277,7 +279,8 @@ fun languageChange() {
 
 private fun calcAll() {
     inputsContainers.forEach {
-        it.form.submit()
+        console.log(it, it.calculateButton)
+        it.calculateButton.click()
     }
 }
 
@@ -420,15 +423,6 @@ private fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = CssC.INVIS) {
         id = Ids.CONTENT_CONTAINER
-        div(classes = CssC.DEV) {
-            makeSwitch("minimize") {
-                onChangeFunction = { event ->
-                    val minimize = event.currentTarget as HTMLInputElement
-                    val cont = minimize.getAncestor<HTMLDivElement> { it.id == Ids.CONTENT_CONTAINER }!!
-                    cont.style.maxHeight = if (minimize.checked) "200px" else "auto"
-                }
-            }
-        }
         div(classes = CssC.URDU) {
             id = Ids.CONTENT_WRAPPER
             copyBtn(CssC.LEFT, CssC.RTL)
@@ -504,10 +498,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         haizDurationInputTable(inputContainerToCopyFrom)
         calculateButton()
         hr()
-        onSubmitFunction = { event ->
-            console.log("start", event, event.currentTarget, "done")
-            parseEntries(findInputContainer(event))
-        }
+        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
     }
 }
 
@@ -775,10 +766,12 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 
 private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+        id = Ids.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+        id = Ids.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
