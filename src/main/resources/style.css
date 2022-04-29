@@ -66,14 +66,15 @@ body {
   direction: rtl;
   font-family: 'Noto Nastaliq Urdu', serif;
   font-family: var(--urdu-font);
-  /* font-size: larger; */
 }
 
-.mubtadia-invis,
-.duration-invis,
 .lang-invisible,
 .invisible {
   display: none !important;
+}
+
+.hidden {
+  visibility: hidden !important;
 }
 
 /* Header */
@@ -258,6 +259,10 @@ tbody > tr:nth-child(odd) {
   overflow: auto;
 }
 
+.shrunk {
+  max-height: 100px;
+}
+
 #content_wrapper {
   position: relative;
 }
@@ -287,6 +292,52 @@ small {
 /* Comparison Container */
 #comparison_container {
   overflow: auto;
+}
+
+#dates_difference_table {
+  --columns: 0;
+  --rows: 0;
+  display: grid;
+  grid-template: 1fr 1fr 15px repeat(var(--rows), 1fr) / 1fr repeat(var(--columns), 2rem);
+  width: max-content;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.table_cell {
+  text-align: center;
+  padding: 6px 0 2px 0;
+}
+
+.bordered {
+  border: 1px solid black;
+}
+
+.empty_table_cell {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.na_paaki {
+  background-color: red;
+}
+
+.ayyam_e_shakk {
+  background-color: yellow;
+}
+
+.months_row.urdu-align,
+.dates_row.urdu-align {
+  transform: translateX(50%);
+}
+
+.months_row.english-align,
+.dates_row.english-align {
+  transform: translateX(-50%);
 }
 
 /* FAQ faqs */
@@ -418,47 +469,4 @@ input:checked + .slider:before {
 
 .row p {
   font-size: 1rem;
-}
-
-/* CSS Gridding the table */
-#dates_difference_table2 {
-  --columns: 0;
-  --rows: 0;
-  display: grid;
-  grid-template: 1fr 1fr 15px repeat(var(--rows), 1fr) /
-    4rem repeat(var(--columns), 2rem);
-  text-align: center;
-  margin: 1rem;
-}
-
-.table_cell {
-  text-align: center;
-  padding: 6px 0 0 0;
-}
-
-.bordered {
-  border: 1px solid black;
-}
-
-.empty_table_cell {
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-}
-
-.na_paaki {
-  background-color: red;
-}
-
-.ayyam_e_shakk {
-  background-color: yellow;
-}
-
-.months_row.urdu-align,
-.dates_row.urdu-align {
-  transform: translateX(50%);
-}
-
-.months_row.english-align,
-.dates_row.english-align {
-  transform: translateX(-50%);
 }

@@ -59,12 +59,11 @@ object Ids {
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
-    const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
-    const val DATES_DIFFERENCE_TABLE2 = "dates_difference_table2"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
+    const val CALCULATE_ALL_DIV = "calc_all_div"
     const val COMPARISON_CONTAINER = "comparison_container"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
@@ -85,6 +84,7 @@ object Ids {
 object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
+    const val HIDDEN = "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
 
     const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
     const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
@@ -99,16 +99,19 @@ object CssC {
 
     const val ROW = "row"                           // CSS Style. Make nice alternating colorful rows of inputs
     const val IKHTILAF = "ikhtilaf"                 // CSS Style. Makes the gearbox icon on the detail
+    const val SLIDER = "slider"                     // CSS Style.
+    const val ROUND = "round"                       // CSS Style.
+
+    const val CALC_BTN = "calc-btn"                 // CSS Style.
     const val LEFT = "left"                         // CSS Style.
     const val RIGHT = "right"                       // CSS Style.
-    const val CALC_BTN = "calc-btn"                 // CSS Style.
     const val PLUS = "plus"                         // CSS Style.
     const val MINUS = "minus"                       // CSS Style.
     const val SWITCH = "switch"                     // CSS Style.
-    const val SLIDER = "slider"                     // CSS Style.
-    const val ROUND = "round"                       // CSS Style.
     const val LABEL_INPUT = "label-input"           // CSS Style.
+    const val CENTER = "center"                     // CSS Style.
 
+    const val SHRUNK = "shrunk"                     // CSS Style. Shrinks Answer to desired height.
     const val TABLE_CELL = "table_cell"             // CSS Style.
     const val MONTHS_ROW = "months_row"             // CSS Style.
     const val DATES_ROW = "dates_row"               // CSS Style.
@@ -146,9 +149,7 @@ private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_
 private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 
-private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
-private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
-private val datesDifferenceTableElement2 get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE2) as HTMLElement?
+private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
@@ -296,7 +297,7 @@ private fun calcAll() {
 }
 
 private fun TagConsumer<HTMLElement>.calcAllBtn() {
-    div(classes = CssC.DEV) {
+    div(classes = "${CssC.DEV} ${CssC.CENTER}") {
         button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
             +"Calculate All"
             onClickFunction = { calcAll() }
@@ -344,11 +345,15 @@ private fun disableTime() {
     }
 }
 
+private fun shrinkAnswer(shrink: Boolean = true) {
+    inputsContainers.singleOrNull()?.contentContainer?.classList?.toggle(CssC.SHRUNK, shrink)
+}
+
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    inputsContainers.singleOrNull()?.contentContainer?.style?.maxHeight = "auto"
+    shrinkAnswer(false)
     disableTime()
 }
 
@@ -357,7 +362,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     if (inputsContainers.size == 1) {
         addRemoveInputsContainerButton(inputsContainerToCopyFrom)
     }
-    inputsContainers.forEach { it.contentContainer.style.maxHeight = "200px" }
+    shrinkAnswer(true)
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
@@ -390,23 +395,16 @@ private fun addCompareButtonIfNeeded() {
     ) return
 
     inputsContainersContainer.after {
-        div {
+        div(classes = CssC.CENTER) {
             id = Ids.COMPARISON_CONTAINER
-            button(type = ButtonType.button) {
+            button(classes = CssC.CALC_BTN) {
                 +"Calculate difference"
-                style = "margin: 0.2rem auto; display: block;"
                 onClickFunction = { compareResults() }
             }
-            content {
-                id = Ids.CONTENT_DATES_DIFFERENCE
-            }
-            table {
-                id = Ids.DATES_DIFFERENCE_TABLE
-            }
-            div { id = Ids.DATES_DIFFERENCE_TABLE2 }
+            div { id = Ids.DATES_DIFFERENCE_TABLE }
         }
     }
-    inputsContainers.forEach { it.contentContainer.style.maxHeight = "200px" }
+    shrinkAnswer(true)
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -1572,138 +1570,23 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
 private fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
-    val str = getDifferenceFromMultiple(listOfLists)
-    contentDatesDifferenceElement!!.innerHTML = str
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-//    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
-    drawCompareTable2(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
-//
-//fun drawCompareTable(
-//    headerList:List<Date>,
-//    listOfColorsOfDaysList: List<List<Int>>,
-//    resultColors: List<Int>,
-//    listOfDescriptions: List<String>
-//){
-//    val datesDifferenceTableElement = datesDifferenceTableElement!!
-//    datesDifferenceTableElement.style.width = "${headerList.size*30 +15 + 60}px"
-//    datesDifferenceTableElement.replaceChildren {
-//        div { id = "tHead"
-//            style = Styles.TABLE_HEAD_STYLE
-//            div { id = "monthRow"
-//                style =Styles.TABLE_ROW_STYLE
-//                div(classes = "empty-space"){
-//                    id = "title-description"
-//                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-//                }
-//                for (header in headerList) {
-//                    val date = header.getDate()
-//                    div { id = "cello"
-//                        style = Styles.TABLE_CELL_STYLE
-//                        if (date == 1) {
-//                            +englishMonthNames[header.getMonth()]
-//                        }
-//                    }
-//                }
-//            }
-//            div{
-//                style = Styles.NEW_ROW
-//            }
-//            div { id = "datesRow"
-//                style = Styles.TABLE_ROW_STYLE
-//                div(classes = "empty-space"){
-//                    id = "title-description"
-//                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-//                }
-//                for (i in headerList.indices) {
-//                    val header = headerList[i]
-//                    val date = header.getDate().toString()
-//
-//                    div { id = "cello"
-//                        style =Styles.TABLE_CELL_STYLE
-//                        +date
-//                    }
-//                }
-//            }
-//        }
-//        div{
-//            style = Styles.NEW_ROW
-//        }
-//        div { id = "tBody"
-//            style = Styles.TABLE_BODY_STYLE
-//            div{
-//                style = Styles.NEW_ROW
-//            }
-//            div { id = "emptyRow"
-//                style=Styles.TABLE_ROW_STYLE
-//                div{
-//                    id = "emptyHalfCellTopRow"
-//                    style = Styles.EMPTY_HALF_CELL_STYLE
-//                }
-//                div(classes = "empty-space"){
-//                    id = "title-description"
-//                    style = Styles.EMPTY_DOUBLE_CELL_STYLE
-//                }
-//                for (day in resultColors){
-//                    div{
-//                        id = "emptyCellTopRow"
-//                        style = Styles.EMPTY_CELL_STYLE
-//
-//                        if (day == 2) {
-//                            style += Styles.NA_PAKI
-//                        } else if(day == 1){
-//                            style += Styles.AYYAAM_E_SHAKK
-//                        }
-//                    }
-//                }
-//            }
-//
-//            for (j in listOfColorsOfDaysList.indices) {
-//                val colorsOfDaysList = listOfColorsOfDaysList[j]
-//                val titleDescriptionOfList = listOfDescriptions[j]
-//                div{
-//                    style = Styles.NEW_ROW
-//                }
-//                div { id = "sit${j+1}"
-//                    Styles.TABLE_ROW_STYLE
-//                    div { id="half_cell"
-//                        style = Styles.HALF_CELL
-//                    }
-//                    div(classes = "title-descrition-space"){
-//                        id = "title-description"
-//                        style = Styles.TABLE_DOUBLE_CELL_BORDER_STYLE
-//                        + titleDescriptionOfList
-//                    }
-//
-//                    for (k in colorsOfDaysList.indices) {
-//                        val cellValue = colorsOfDaysList[k]
-//                        div { id = "cello"
-//                            style = Styles.TABLE_CELL_BORDER_STYLE +
-//                                    (if (cellValue == 1) Styles.NA_PAKI else "")
-//                            +"${k+1}"
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    datesDifferenceTableElement.getChildById("monthRow")?.visibility = !inputsContainers.first().isDuration
-//    datesDifferenceTableElement.getChildById("datesRow")?.visibility = !inputsContainers.first().isDuration
-//}
 
-fun drawCompareTable2(
+fun drawCompareTable(
     headerList:List<Date>,
     listOfColorsOfDaysList: List<List<Int>>,
     resultColors: List<Int>,
     listOfDescriptions: List<String>
 ){
-    val datesDifferenceTableElement = datesDifferenceTableElement2!!
+    val datesDifferenceTableElement = datesDifferenceGridElement!!
     datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
     datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
     datesDifferenceTableElement.replaceChildren {
         val lang = languageSelector.value
         val dur = inputsContainers.first().isDuration
-        val titleClasses = "${lang}-align ${if (dur) CssC.INVIS else ""}"
+        val titleClasses = "${lang}-align ${if (dur) CssC.HIDDEN else ""}"
         // Month
         div { id = "empty_desc" }   // Empty Desc
         for (header in headerList) {
