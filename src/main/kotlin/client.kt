@@ -62,6 +62,7 @@ object Ids {
     const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
     const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
+    const val DATES_DIFFERENCE_TABLE2 = "dates_difference_table2"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
@@ -139,6 +140,7 @@ private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_C
 
 private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
 private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
+private val datesDifferenceTableElement2 get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE2) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
@@ -393,6 +395,7 @@ private fun addCompareButtonIfNeeded() {
             table {
                 id = Ids.DATES_DIFFERENCE_TABLE
             }
+            div { id = Ids.DATES_DIFFERENCE_TABLE2 }
         }
     }
     inputsContainers.forEach { it.contentContainer.style.maxHeight = "200px" }
@@ -1565,6 +1568,7 @@ private fun compareResults() {
     contentDatesDifferenceElement!!.innerHTML = str
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    drawCompareTable2(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
 
 fun drawCompareTable(
@@ -1677,4 +1681,86 @@ fun drawCompareTable(
     }
     datesDifferenceTableElement.getChildById("monthRow")?.visibility = !inputsContainers.first().isDuration
     datesDifferenceTableElement.getChildById("datesRow")?.visibility = !inputsContainers.first().isDuration
+}
+
+fun TagConsumer<HTMLElement>.titleDesc(classes: String = "", description: String = "", block: DIV.() -> Unit = {}) {
+    div(classes = classes){
+        id = "title-description"
+        style = Styles.TABLE_DOUBLE_CELL_STYLE
+        block()
+        +description
+    }
+}
+
+fun drawCompareTable2(
+    headerList:List<Date>,
+    listOfColorsOfDaysList: List<List<Int>>,
+    resultColors: List<Int>,
+    listOfDescriptions: List<String>
+){
+    val datesDifferenceTableElement = datesDifferenceTableElement2!!
+    println(datesDifferenceTableElement.style.getPropertyValue("--columns"))
+    datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
+    datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
+    datesDifferenceTableElement.replaceChildren {
+        val lang = languageSelector.value
+        val dur = inputsContainers.first().isDuration
+        val titleClasses = "${lang}-align ${if (dur) CssC.INVIS else ""}"
+        // Month
+        titleDesc()
+        for (header in headerList) {
+            val date = header.getDate()
+            div(classes = "monthsRow table_cell $titleClasses") {
+                if (date == 1) {
+                    +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
+                    else urduMonthNames[header.getMonth()]
+                }
+            }
+        }
+
+        // Date
+        titleDesc()
+        for (i in headerList.indices) {
+            val header = headerList[i]
+            val date = header.getDate().toString()
+
+            div(classes = "datesRow table_cell $titleClasses") {
+                +date
+            }
+        }
+
+        // Conclusion
+        titleDesc()
+        for (day in resultColors) {
+            div {
+                classes = setOf("emptyRow", "empty_table_cell")
+                if (day == 2) {
+                    classes += ("na_paaki")
+                } else if (day == 1) {
+                    classes += ("ayyam_e_shakk")
+                }
+            }
+        }
+
+        // Maslas
+        for (j in listOfColorsOfDaysList.indices) {
+            val colorsOfDaysList = listOfColorsOfDaysList[j]
+            val titleDescriptionOfList = listOfDescriptions[j]
+            div()
+            div(classes = "title-description-space table_cell bordered") {
+                +titleDescriptionOfList
+            }
+
+            for (k in colorsOfDaysList.indices) {
+                val cellValue = colorsOfDaysList[k]
+                div {
+                    classes = setOf(
+                        "table_cell bordered",
+                        (if (cellValue == 1) "na_paaki" else "")
+                    )
+                    +"${k + 1}"
+                }
+            }
+        }
+    }
 }

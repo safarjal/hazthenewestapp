@@ -419,3 +419,46 @@ input:checked + .slider:before {
 .row p {
   font-size: 1rem;
 }
+
+/* CSS Gridding the table */
+#dates_difference_table2 {
+  --columns: 0;
+  --rows: 0;
+  display: grid;
+  grid-template: 1fr 1fr 15px repeat(var(--rows), 1fr) /
+    4rem repeat(var(--columns), 2rem);
+  text-align: center;
+  margin: 1rem;
+}
+
+.table_cell {
+  text-align: center;
+  padding: 6px 0 0 0;
+}
+
+.bordered {
+  border: 1px solid black;
+}
+
+.empty_table_cell {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.na_paaki {
+  background-color: red;
+}
+
+.ayyam_e_shakk {
+  background-color: yellow;
+}
+
+.monthRow.urdu-align,
+.datesRow.urdu-align {
+  transform: translateX(50%);
+}
+
+.monthsRow.english-align,
+.datesRow.english-align {
+  transform: translateX(-50%);
+}
