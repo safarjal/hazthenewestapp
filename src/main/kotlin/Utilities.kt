@@ -217,9 +217,9 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
             else if(strDays.isNotEmpty() && strHours.isNotEmpty()) "$strDays and $strHours"
             else if(strDays.isNotEmpty() && strMinutes.isNotEmpty()) "$strDays and $strMinutes"
             else if(strHours.isNotEmpty() && strMinutes.isNotEmpty()) "$strHours and $strMinutes"
-            else if(strDays.isEmpty() && strHours.isEmpty() && strMinutes.isEmpty()) "0 minutes"
+            else if(strDays.isEmpty() && strHours.isEmpty() && strMinutes.isEmpty() && !isDateOnly) {"0 minutes"}
             else strDays + strHours + strMinutes
-        if(isDateOnly) returnStatement = if (days == 1.0) "1 day" else strDays
+        if(isDateOnly) returnStatement = if (days == 1.0) "1 day" else if(days == 0.0) "0 days" else strDays
         return returnStatement.trimEnd().trim()
     }else if(languageNames==Vls.Langs.URDU){
         var isDateOnly = false
@@ -236,7 +236,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         val strDays = if (days == 0.0) "" else "$days دن"
         var returnStatement = "$strDays $strHours $strMinutes"
         if (strDays.isEmpty() && strHours.isEmpty() && strMinutes.isEmpty())  returnStatement = "0 منٹ"
-        if (isDateOnly) returnStatement = strDays
+        if (isDateOnly) returnStatement = if (days == 0.0) "0 دن" else strDays
         return returnStatement.trim().trimEnd()
     }
     return ""
