@@ -104,6 +104,7 @@ val urduStrings = Strings(
     "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration2، پاکی: duration1</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: پاکی: duration1\n\n",
     "مسئلے کا عنوان",
+    "سوال",
     "اسقاط",
 
 
@@ -241,6 +242,7 @@ val englishStrings = Strings(
     "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration2, Purity (Tuh'r) : duration1\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: Purity (Tuh'r) : duration1 \n\n",
     "Masla Title",
+    "Question",
     "Miscarriage",
 
 
