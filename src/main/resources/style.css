@@ -226,6 +226,11 @@ button:hover {
   background-color: var(--delete);
 }
 
+/* Question */
+details {
+  margin: 0.5rem 0 0.5rem 0;
+}
+
 /* Table */
 table {
   width: 100%;

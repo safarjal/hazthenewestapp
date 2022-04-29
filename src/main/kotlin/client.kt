@@ -471,7 +471,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         ikhtilafiMasle()
         br()
         div(classes = CssC.LABEL_INPUT) {
-            description()
             maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             nifasInputs(inputContainerToCopyFrom)
@@ -500,13 +499,6 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
         classes = setOf(CssC.URDU, extraClasses)
         block()
         +urduText
-    }
-}
-
-private fun FlowContent.description(){
-    div(classes = "${CssC.ROW} ${CssC.DEV}") {
-        makeLabel(Ids.INPUT_DESCRIPTION, StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
-        makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
     }
 }
 
@@ -794,9 +786,17 @@ private fun FlowContent.makeTextAreaInput(inputId: String, height: String = "aut
 }
 
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+    details(classes = CssC.DEV) {
+        summary {
+            makeSpans(StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
+        }
+        div(classes = CssC.ROW) {
+            makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
+        }
+    }
     details {
         summary {
-            makeSpans("Question", "سوال")
+            makeSpans(StringsOfLanguages.ENGLISH.questionTextFieldLabel, StringsOfLanguages.URDU.questionTextFieldLabel)
         }
         div(classes = CssC.ROW) {
             makeTextAreaInput(Ids.INPUT_QUESTION)
