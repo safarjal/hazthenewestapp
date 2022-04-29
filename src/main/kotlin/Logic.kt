@@ -1509,91 +1509,92 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
 //    return str
 //}
 
-fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
-    //find out number of lists
-    val numberOfLists = listOfLists.size
-
-    //step 1: merge them into one list
-    val dateTypeList = mutableListOf<DateTypeList>()
-
-    for (list in listOfLists){
-        for(date in list){
-            dateTypeList += DateTypeList(date.startTime,DateTypes.START)
-            dateTypeList += DateTypeList(date.endTime,DateTypes.END)
-        }
-    }
-
-    //step 2: order list by date
-    //since we want to prioritize khurooj, we should reverse order
-    dateTypeList.sortBy { it.date.getTime() }
-
-    //step 3: create a counter
-    var counter = 0
-
-    //step 4: step through the list, create an output list
-    val counterMin = 0 //at counter min, it is yaqeeni paki
-    val counterMax = numberOfLists //at counter max, it is yaqeeni na-paki
-    //all other counter values are ayyam-e-shakk
-
-    val outputList = mutableListOf<DateTypeList>()
-    for(dateType in dateTypeList){
-        //plus 1 for every start time, -1 for every end time
-        if(dateType.type==DateTypes.START){
-            counter++
-            //this is definitely a dukhool, and can lead to yaqeeni napaki
-            //this cannot be yaqeeni paki, or khurooj
-            //though it could simultaneously be a khurooj some other way
-            if(counter==counterMax){
-                outputList+=DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
-            }else{//it is dukhool shakk
-                outputList+=DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK_DUKHOOL)
-            }
-        }else{//the type is end
-            counter--
-            //this is a khurooj or yaqeeni paki
-            if(counter==counterMin){
-                outputList+=DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
-            }else{
-                outputList+=DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK_KHUROOJ)
-            }
-        }
-    }
-
-    //create a people-friendly version of output list
-    var str = ""
-    val durationTypes = mutableListOf<DurationTypes>()
-    var i=0
-
-    while (i<outputList.size-1){
-        val startTime = outputList[i].date
-        val endTime = outputList[i+1].date
-        durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
-        i++
-    }
-    //clean up the junk in durationTypes list now
-//    var j = 0
-//    while (j <= durationTypes.lastIndex){
-//        var duration=durationTypes[j]
-//        //remove things with duration 0
-//        if(duration.endTime.getTime()==duration.startTime.getTime()){
-//            durationTypes.removeAt(j)
-//            j--
+// FORMERLY USED TO MAKE OUTDATED COMPARISONS IN ZALLA
+//fun getDifferenceFromMultiple (listOfLists:List<List<Entry>>):String{
+//    //find out number of lists
+//    val numberOfLists = listOfLists.size
+//
+//    //step 1: merge them into one list
+//    val dateTypeList = mutableListOf<DateTypeList>()
+//
+//    for (list in listOfLists){
+//        for(date in list){
+//            dateTypeList += DateTypeList(date.startTime,DateTypes.START)
+//            dateTypeList += DateTypeList(date.endTime,DateTypes.END)
 //        }
-//        j++
 //    }
-//    //remove things wherebthe next one is the same type as this one.
-//    //if there is a next one
-//    else if(j+1<durationTypes.size && durationTypes[j+1].type==duration.type){
-//        durationTypes.add(j, DurationTypes(duration.startTime, durationTypes[i+1].endTime, duration.type))
-//        durationTypes.removeAt(j+1)
-//        durationTypes.removeAt(j+1)
+//
+//    //step 2: order list by date
+//    //since we want to prioritize khurooj, we should reverse order
+//    dateTypeList.sortBy { it.date.getTime() }
+//
+//    //step 3: create a counter
+//    var counter = 0
+//
+//    //step 4: step through the list, create an output list
+//    val counterMin = 0 //at counter min, it is yaqeeni paki
+//    val counterMax = numberOfLists //at counter max, it is yaqeeni na-paki
+//    //all other counter values are ayyam-e-shakk
+//
+//    val outputList = mutableListOf<DateTypeList>()
+//    for(dateType in dateTypeList){
+//        //plus 1 for every start time, -1 for every end time
+//        if(dateType.type==DateTypes.START){
+//            counter++
+//            //this is definitely a dukhool, and can lead to yaqeeni napaki
+//            //this cannot be yaqeeni paki, or khurooj
+//            //though it could simultaneously be a khurooj some other way
+//            if(counter==counterMax){
+//                outputList+=DateTypeList(dateType.date, DateTypes.YAQEENI_NA_PAKI)
+//            }else{//it is dukhool shakk
+//                outputList+=DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK_DUKHOOL)
+//            }
+//        }else{//the type is end
+//            counter--
+//            //this is a khurooj or yaqeeni paki
+//            if(counter==counterMin){
+//                outputList+=DateTypeList(dateType.date, DateTypes.YAQEENI_PAKI)
+//            }else{
+//                outputList+=DateTypeList(dateType.date, DateTypes.AYYAAM_E_SHAKK_KHUROOJ)
+//            }
+//        }
 //    }
-
-
-    str += generateGetDifferenceString(durationTypes)
-
-    return str
-}
+//
+//    //create a people-friendly version of output list
+//    var str = ""
+//    val durationTypes = mutableListOf<DurationTypes>()
+//    var i=0
+//
+//    while (i<outputList.size-1){
+//        val startTime = outputList[i].date
+//        val endTime = outputList[i+1].date
+//        durationTypes += DurationTypes(startTime,endTime,outputList[i].type)
+//        i++
+//    }
+//    //clean up the junk in durationTypes list now
+////    var j = 0
+////    while (j <= durationTypes.lastIndex){
+////        var duration=durationTypes[j]
+////        //remove things with duration 0
+////        if(duration.endTime.getTime()==duration.startTime.getTime()){
+////            durationTypes.removeAt(j)
+////            j--
+////        }
+////        j++
+////    }
+////    //remove things wherebthe next one is the same type as this one.
+////    //if there is a next one
+////    else if(j+1<durationTypes.size && durationTypes[j+1].type==duration.type){
+////        durationTypes.add(j, DurationTypes(duration.startTime, durationTypes[i+1].endTime, duration.type))
+////        durationTypes.removeAt(j+1)
+////        durationTypes.removeAt(j+1)
+////    }
+//
+//
+//    str += generateGetDifferenceString(durationTypes)
+//
+//    return str
+//}
 
 fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>,
                                 preMaslaValues: PreMaslaValues,

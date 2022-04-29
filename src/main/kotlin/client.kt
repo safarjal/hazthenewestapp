@@ -59,7 +59,8 @@ object Ids {
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
-    const val CONTENT_DATES_DIFFERENCE = "content_dates_difference"
+    const val CALCULATE_ALL_DIV = "calculate_all_button"
+    const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
@@ -83,9 +84,10 @@ object Ids {
 object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
+    const val HIDDEN = "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
 
-    const val ENGLISH = Vls.Langs.ENGLISH                   // Switch. Put on any element that should only show when lang is english
-    const val URDU = Vls.Langs.URDU                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -97,15 +99,27 @@ object CssC {
 
     const val ROW = "row"                           // CSS Style. Make nice alternating colorful rows of inputs
     const val IKHTILAF = "ikhtilaf"                 // CSS Style. Makes the gearbox icon on the detail
+    const val SLIDER = "slider"                     // CSS Style.
+    const val ROUND = "round"                       // CSS Style.
+
+    const val CALC_BTN = "calc-btn"                 // CSS Style.
     const val LEFT = "left"                         // CSS Style.
     const val RIGHT = "right"                       // CSS Style.
-    const val CALC_BTN = "calc-btn"                 // CSS Style.
     const val PLUS = "plus"                         // CSS Style.
     const val MINUS = "minus"                       // CSS Style.
     const val SWITCH = "switch"                     // CSS Style.
-    const val SLIDER = "slider"                     // CSS Style.
-    const val ROUND = "round"                       // CSS Style.
     const val LABEL_INPUT = "label-input"           // CSS Style.
+    const val CENTER = "center"                     // CSS Style.
+
+    const val SHRUNK = "shrunk"                     // CSS Style. Shrinks Answer to desired height.
+    const val TABLE_CELL = "table_cell"             // CSS Style.
+    const val DESCRIPTION = "description"
+    const val MONTHS_ROW = "months_row"             // CSS Style.
+    const val DATES_ROW = "dates_row"               // CSS Style.
+    const val BORDERED = "bordered"                 // CSS Style.
+    const val ENPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
+    const val NA_PAAKI = "na_paaki"                 // CSS Style.
+    const val AYYAM_E_SHAKK = "ayyam_e_shakk"       // CSS Style.
 }
 
 object Vls {                                        // Values
@@ -134,19 +148,20 @@ object Vls {                                        // Values
 private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 private val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
+private val calculateAllDiv get() = document.getElementById(Ids.CALCULATE_ALL_DIV) as HTMLDivElement
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 
-private val contentDatesDifferenceElement get() = document.getElementById(Ids.CONTENT_DATES_DIFFERENCE) as HTMLParagraphElement?
-private val datesDifferenceTableElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
+private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
-private val HTMLElement.isDateTime get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_TIME
-private val HTMLElement.isDateOnly get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DATE_ONLY
-private val HTMLElement.isDuration get() = (getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement).value == Vls.Types.DURATION
+private val HTMLElement.typeSelect get() = getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement
+private val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
+private val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
+private val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
 private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
 private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
@@ -161,7 +176,8 @@ private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPU
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
 
-private val HTMLElement.contentContainer get() = getChildById(Ids.CONTENT_CONTAINER)!!
+private val HTMLElement.calculateButton get() = (getChildById(Ids.CALCULATE_BUTTON)) as HTMLButtonElement
+private val HTMLElement.contentContainer get() = (getChildById(Ids.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
 private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
@@ -273,6 +289,28 @@ fun languageChange() {
                 .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
                 ?.selected = true
         }
+    if (comparisonContainer != null) calcAll()
+}
+
+private fun calcAll() {
+    inputsContainers.forEach {
+        it.calculateButton.click()
+    }
+    compareResults()
+}
+
+private fun TagConsumer<HTMLElement>.calcAllBtn() {
+    div(classes = "${CssC.DEV} ${CssC.CENTER}") {
+        id = Ids.CALCULATE_ALL_DIV
+        button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+            +"Calculate All"
+            onClickFunction = { calcAll() }
+        }
+        button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+            +"Calculate All"
+            onClickFunction = { calcAll() }
+        }
+    }
 }
 
 fun Node.addInputLayout() {
@@ -281,23 +319,50 @@ fun Node.addInputLayout() {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
         }
-        div {
-            style = Styles.NEW_ROW
-        }
+        calcAllBtn()
     }
 }
 
 // CLONING
+private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal: String, disable: Boolean) {
+    inputsContainer
+        .getChildById(selectId)!!
+        .children
+        .asList()
+        .map { it as HTMLOptionElement }
+        .filter { it.value == optionVal }
+        .forEach { it.disabled = disable }
+}
+
+private fun disableTime() {
+    if (inputsContainers.size == 1) {
+        disableOpt(inputsContainers.first(), Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, false)
+    }
+    else {
+        inputsContainers.forEach { inputsContainer ->
+            disableOpt(inputsContainer, Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
+            if (inputsContainer.isDateTime) inputsContainer.typeSelect.value = Vls.Types.DATE_ONLY
+        }
+    }
+}
+
+private fun shrinkAnswer(shrink: Boolean = true) {
+    inputsContainers.forEach { it.contentContainer.classList.toggle(CssC.SHRUNK, shrink) }
+}
+
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
+    shrinkAnswer(false)
+    disableTime()
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     comparisonContainer?.remove()
-    if (inputsContainers.size == 1) addRemoveInputsContainerButton(inputsContainerToCopyFrom)
-
+    if (inputsContainers.size == 1) {
+        addRemoveInputsContainerButton(inputsContainerToCopyFrom)
+    }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
@@ -305,6 +370,8 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     // Make sure all invises are maintained
     languageChange()
     disableTree(clonedInputsContainer)
+    shrinkAnswer(true)
+    disableTime()
 //    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
@@ -328,20 +395,10 @@ private fun addCompareButtonIfNeeded() {
         inputsContainers.any { it.haizDatesList == null }
     ) return
 
-    inputsContainersContainer.after {
-        div {
+    calculateAllDiv.after {
+        div(classes = CssC.CENTER) {
             id = Ids.COMPARISON_CONTAINER
-            button(type = ButtonType.button) {
-                +"Calculate difference"
-                style = "margin: 0.2rem auto; display: block;"
-                onClickFunction = { compareResults() }
-            }
-            content {
-                id = Ids.CONTENT_DATES_DIFFERENCE
-            }
-            table {
-                id = Ids.DATES_DIFFERENCE_TABLE
-            }
+            div { id = Ids.DATES_DIFFERENCE_TABLE }
         }
     }
 }
@@ -432,7 +489,7 @@ private fun getNow(): String {
 }
 
 private fun copyText(event: Event) {
-    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == "content_wrapper" }
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.CONTENT_WRAPPER }
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
@@ -463,14 +520,13 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         ikhtilafiMasle()
         br()
         div(classes = CssC.LABEL_INPUT) {
-            description()
             maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
             typeConfigurationSelectDropdown(inputContainerToCopyFrom)
             nifasInputs(inputContainerToCopyFrom)
             mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
-        questionInput(inputContainerToCopyFrom)
+        questionInput()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -495,10 +551,13 @@ private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText
     }
 }
 
-private fun FlowContent.description(){
-    div(classes = "${CssC.ROW} ${CssC.DEV}") {
-        makeLabel(Ids.INPUT_DESCRIPTION, StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
-        makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
+private fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
+    label(classes = CssC.SWITCH) {
+        checkBoxInput {
+            id = inputId
+            block()
+        }
+        span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
     }
 }
 
@@ -506,12 +565,7 @@ private fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String,
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
             makeLabel(inputId, englishText, urduText)
-            label(classes = CssC.SWITCH) {
-                checkBoxInput {
-                    id = inputId
-                }
-                span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
-            }
+            makeSwitch(inputId)
         }
         block()
     }
@@ -597,7 +651,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
         select {
             id = Ids.INPUT_TYPE_SELECT
             onChangeFunction = { event ->
-                onClickTypeConfigurationSelectDropdown(findInputContainer(event))
+                onClickTypeConfigurationSelectDropdown(event)
             }
             makeDropdownOptions(isDateOnly, Vls.Types.DATE_ONLY, StringsOfLanguages.ENGLISH.dateOnly, StringsOfLanguages.URDU.dateOnly)
             makeDropdownOptions(isDateTime, Vls.Types.DATE_TIME, StringsOfLanguages.ENGLISH.dateAndTime, StringsOfLanguages.URDU.dateAndTime)
@@ -706,7 +760,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Aadat of Haiz
-    div(classes = "${CssC.ROW}") {
+    div(classes = CssC.ROW) {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10))
     }
@@ -746,10 +800,12 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 
 private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+        id = Ids.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+        id = Ids.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
@@ -780,10 +836,18 @@ private fun FlowContent.makeTextAreaInput(inputId: String, height: String = "aut
     }
 }
 
-private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+private fun TagConsumer<HTMLElement>.questionInput() {
+    details(classes = CssC.DEV) {
+        summary {
+            makeSpans(StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
+        }
+        div(classes = CssC.ROW) {
+            makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
+        }
+    }
     details {
         summary {
-            makeSpans("Question", "سوال")
+            makeSpans(StringsOfLanguages.ENGLISH.questionTextFieldLabel, StringsOfLanguages.URDU.questionTextFieldLabel)
         }
         div(classes = CssC.ROW) {
             makeTextAreaInput(Ids.INPUT_QUESTION)
@@ -1187,9 +1251,8 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
     }
 }
 
-private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) {
-    val isDateOnly = inputContainer.isDateOnly
-    val isDateTime = inputContainer.isDateTime
+private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
+    inputContainer.typeSelect.value = selectedOption
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
@@ -1206,6 +1269,14 @@ private fun onClickTypeConfigurationSelectDropdown(inputContainer: HTMLElement) 
         setMaxToCurrentTimeForTimeInputs(inputContainer)
     }
     switchToDurationTable(inputContainer)
+}
+
+private fun onClickTypeConfigurationSelectDropdown(event: Event) {
+    val selected = (event.currentTarget as HTMLSelectElement).value
+    val inputContainer = findInputContainer(event)
+    val isDateOnly = inputContainer.isDateOnly
+    val isDateTime = inputContainer.isDateTime
+    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
 }
 
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
@@ -1464,13 +1535,10 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
                 if(entries.size==0){
                     if(mawjodahtuhreditable==null){
                         mawjodahtuhreditable = dur.timeInMilliseconds
-
                     }else{
                         mawjodahtuhreditable += dur.timeInMilliseconds
-
                     }
                 }
-
             }
         }
     }
@@ -1514,10 +1582,23 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
 private fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
-    val str = getDifferenceFromMultiple(listOfLists)
-    contentDatesDifferenceElement!!.innerHTML = str
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+}
+
+fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}) {
+    if (starter) div { id = "margin-cell" }                     // Empty buffer margin
+    div {                                                       // Description of Inputs
+        id = if (desc.isEmpty()) "empty_desc" else "desc"
+        classes = if (desc.isEmpty()) emptySet() else setOf(
+            CssC.TABLE_CELL,
+            CssC.BORDERED,
+            CssC.DESCRIPTION
+        )
+        +desc
+    }
+    block()                                                     // Row Filler
+    if (ender) div { id = "formerly_half_cell" }                // Extra trailing cell to accommodate dates
 }
 
 fun drawCompareTable(
@@ -1526,103 +1607,70 @@ fun drawCompareTable(
     resultColors: List<Int>,
     listOfDescriptions: List<String>
 ){
-    val datesDifferenceTableElement = datesDifferenceTableElement!!
-    datesDifferenceTableElement.style.width = "${headerList.size*30 +15 + 60}px"
+    val datesDifferenceTableElement = datesDifferenceGridElement!!
+    datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
+    datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
     datesDifferenceTableElement.replaceChildren {
-        div { id = "tHead"
-            style = Styles.TABLE_HEAD_STYLE
-            div { id = "monthRow"
-                style =Styles.TABLE_ROW_STYLE
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-                }
-                for (header in headerList) {
-                    val date = header.getDate()
-                    div { id = "cello"
-                        style = Styles.TABLE_CELL_STYLE
-                        if (date == 1) {
-                            +englishMonthNames[header.getMonth()]
-                        }
-                    }
-                }
-            }
-            div{
-                style = Styles.NEW_ROW
-            }
-            div { id = "datesRow"
-                style = Styles.TABLE_ROW_STYLE
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.TABLE_DOUBLE_CELL_STYLE
-                }
-                for (i in headerList.indices) {
-                    val header = headerList[i]
-                    val date = header.getDate().toString()
+        val lang = languageSelector.value
+        val dur = inputsContainers.first().isDuration
+        val titleClasses = "${lang}-align ${if (dur) CssC.HIDDEN else ""}"
 
-                    div { id = "cello"
-                        style =Styles.TABLE_CELL_STYLE
-                        +date
+        // Month Row
+        oneRow(true, "", false) {
+            for (header in headerList) {
+                val date = header.getDate()
+                div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
+                    if (date == 1) {
+                        +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
+                        else urduMonthNames[header.getMonth()]
                     }
                 }
             }
         }
-        div{
-            style = Styles.NEW_ROW
+
+        // Date Row
+        oneRow(true, "", false) {
+            for (i in headerList.indices) {
+                val header = headerList[i]
+                val date = header.getDate().toString()
+
+                div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
+                    +date
+                }
+            }
         }
-        div { id = "tBody"
-            style = Styles.TABLE_BODY_STYLE
-            div{
-                style = Styles.NEW_ROW
-            }
-            div { id = "emptyRow"
-                style=Styles.TABLE_ROW_STYLE
-                div{
-                    id = "emptyHalfCellTopRow"
-                    style = Styles.EMPTY_HALF_CELL_STYLE
-                }
-                div(classes = "empty-space"){
-                    id = "title-description"
-                    style = Styles.EMPTY_DOUBLE_CELL_STYLE
-                }
-                for (day in resultColors){
-                    div{
-                        id = "emptyCellTopRow"
-                        style = Styles.EMPTY_CELL_STYLE
 
-                        if (day == 2) {
-                            style += Styles.NA_PAKI
-                        } else if(day == 1){
-                            style += Styles.AYYAAM_E_SHAKK
+        // Conclusion Empty Colored Row
+        oneRow(true, "", true) {
+            for (day in resultColors) {
+                div {
+                    classes = setOf(
+                        CssC.ENPTY_TABLE_CELL,
+                        when (day) {
+                            1 -> CssC.AYYAM_E_SHAKK
+                            2 -> CssC.NA_PAAKI
+                            else -> ""
                         }
-                    }
+                    )
                 }
             }
+        }
 
-            for (j in listOfColorsOfDaysList.indices) {
-                val colorsOfDaysList = listOfColorsOfDaysList[j]
-                val titleDescriptionOfList = listOfDescriptions[j]
-                div{
-                    style = Styles.NEW_ROW
-                }
-                div { id = "sit${j+1}"
-                    Styles.TABLE_ROW_STYLE
-                    div { id="half_cell"
-                        style = Styles.HALF_CELL
-                    }
-                    div(classes = "title-descrition-space"){
-                        id = "title-description"
-                        style = Styles.TABLE_DOUBLE_CELL_BORDER_STYLE
-                        + titleDescriptionOfList
-                    }
+        // One Row Each For Each Clone
+        for (j in listOfColorsOfDaysList.indices) {
+            val colorsOfDaysList = listOfColorsOfDaysList[j]
+            val titleDescriptionOfList = listOfDescriptions[j]
 
-                    for (k in colorsOfDaysList.indices) {
-                        val cellValue = colorsOfDaysList[k]
-                        div { id = "cello"
-                            style = Styles.TABLE_CELL_BORDER_STYLE +
-                                    (if (cellValue == 1) Styles.NA_PAKI else "")
-                            +"${k+1}"
-                        }
+            oneRow(true, titleDescriptionOfList, true) {
+                for (k in colorsOfDaysList.indices) {
+                    val cellValue = colorsOfDaysList[k]
+                    div {
+                        classes = setOf(
+                            CssC.TABLE_CELL,
+                            CssC.BORDERED,
+                            if (cellValue == 1) CssC.NA_PAAKI else ""
+                        )
+                        +"${k + 1}"
                     }
                 }
             }
