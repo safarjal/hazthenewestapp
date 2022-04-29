@@ -1569,8 +1569,8 @@ private fun compareResults() {
 }
 
 fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}) {
-    if (starter) div { id = "margin-cell" }   // Empty buffer margin
-    div {
+    if (starter) div { id = "margin-cell" }                     // Empty buffer margin
+    div {                                                       // Description of Inputs
         id = if (desc.isEmpty()) "empty_desc" else "desc"
         classes = if (desc.isEmpty()) emptySet() else setOf(
             CssC.TABLE_CELL,
@@ -1579,8 +1579,8 @@ fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", 
         )
         +desc
     }
-    block()
-    if (ender) div { id = "formerly_half_cell" }   // Extra trailing cell to accommodate dates
+    block()                                                     // Row Filler
+    if (ender) div { id = "formerly_half_cell" }                // Extra trailing cell to accommodate dates
 }
 
 fun drawCompareTable(
