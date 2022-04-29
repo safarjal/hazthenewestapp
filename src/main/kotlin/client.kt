@@ -346,7 +346,7 @@ private fun disableTime() {
 }
 
 private fun shrinkAnswer(shrink: Boolean = true) {
-    inputsContainers.singleOrNull()?.contentContainer?.classList?.toggle(CssC.SHRUNK, shrink)
+    inputsContainers.forEach { it.contentContainer.classList.toggle(CssC.SHRUNK, shrink) }
 }
 
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
