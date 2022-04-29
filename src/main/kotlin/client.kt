@@ -1238,7 +1238,7 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
                 .map { input ->
                     input as HTMLInputElement
                     input.disabled = disable
-                    input.value = ""
+                    if (disable) input.value = ""
                 }
         }
 }
