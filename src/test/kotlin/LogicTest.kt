@@ -3929,6 +3929,17 @@ class LogicTest {
         }
 
     }
+    @Test
+    fun testDaysHoursMinutesDigitalIssue171() {
+        //if value is 0
+        val inputtedMilliseconds = 0L
+        val outputEnglish = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)
+        val expectedOutputEnglish = "0 days"
+        assertEquals(outputEnglish, expectedOutputEnglish)
+        val outputUrdu = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.URDU)
+        val expectedOutputUrdu = "0 دن"
+        assertEquals(outputUrdu, expectedOutputUrdu)
+    }
 
 
 //    @Test
