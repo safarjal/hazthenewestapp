@@ -142,7 +142,6 @@ private val datesDifferenceTableElement get() = document.getElementById(Ids.DATE
 private val root_hazapp = document.getElementsByClassName("root").asList()
 private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
-private val HTMLElement.form get() = (querySelector("form")) as HTMLFormElement
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 
@@ -313,11 +312,34 @@ fun Node.addInputLayout() {
 }
 
 // CLONING
+private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal: String, disable: Boolean) {
+    inputsContainer
+        .getChildById(selectId)!!
+        .children
+        .asList()
+        .map { it as HTMLOptionElement }
+        .filter { it.value == optionVal }
+        .forEach { it.disabled = disable }
+}
+
+private fun disableTime() {
+    if (inputsContainers.size == 1) {
+        disableOpt(inputsContainers.first(), Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, false)
+    }
+    else {
+        inputsContainers.forEach { inputsContainer ->
+            disableOpt(inputsContainer, Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
+            if (inputsContainer.isDateTime) inputsContainer.typeSelect.value = Vls.Types.DATE_ONLY
+        }
+    }
+}
+
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
     inputsContainers.singleOrNull()?.contentContainer?.style?.maxHeight = "auto"
+    disableTime()
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
@@ -333,6 +355,7 @@ private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     // Make sure all invises are maintained
     languageChange()
     disableTree(clonedInputsContainer)
+    disableTime()
 //    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
