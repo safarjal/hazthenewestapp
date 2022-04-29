@@ -63,7 +63,6 @@ object Ids {
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
     const val INPUT_CONTAINER = "input_container"
-    const val CALCULATE_ALL_DIV = "calc_all_div"
     const val COMPARISON_CONTAINER = "comparison_container"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
@@ -530,7 +529,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
-        questionInput(inputContainerToCopyFrom)
+        questionInput()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -764,7 +763,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Aadat of Haiz
-    div(classes = "${CssC.ROW}") {
+    div(classes = CssC.ROW) {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
         makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10))
     }
@@ -840,7 +839,7 @@ private fun FlowContent.makeTextAreaInput(inputId: String, height: String = "aut
     }
 }
 
-private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
+private fun TagConsumer<HTMLElement>.questionInput() {
     details(classes = CssC.DEV) {
         summary {
             makeSpans(StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
@@ -1532,9 +1531,7 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
             DurationType.WILADAT_ISQAT -> {
                 pregnancyEnd=dur.startTime
             }
-            DurationType.TUHR -> {
-
-            }
+            DurationType.TUHR -> {}
         }
     }
     val newPreMaslaValues = PreMaslaValues(
