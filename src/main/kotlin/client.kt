@@ -390,10 +390,11 @@ private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
 }
 
 private fun addCompareButtonIfNeeded() {
-    if (comparisonContainer != null ||
-        inputsContainers.size < 2 ||
-        inputsContainers.any { it.haizDatesList == null }
-    ) return
+    //TODO:Uncomment this
+//    if (comparisonContainer != null ||
+//        inputsContainers.size < 2 ||
+//        inputsContainers.any { it.haizDatesList == null }
+//    ) return
 
     calculateAllDiv.after {
         div(classes = CssC.CENTER) {
@@ -685,7 +686,8 @@ private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inpu
         id = inputId
         name = inputId
         value = inputVal.orEmpty()
-        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(inputRange) }
+        //TODO: Uncomment this later after fixing validator
+//        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(inputRange) }
         block()
     }
 }
@@ -784,19 +786,19 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
 }
-
-fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
-    value = value.replace("[^0-9:]".toRegex(), "")
-    val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
-    setCustomValidity(try {
-        val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
-        require(days == null || days in doubleValidityRange) { errormessage }
-        ""
-    } catch (e: IllegalArgumentException) {
-        e.message ?: errormessage
-    })
-}
+//TODO:Figure this out and uncomment it
+//fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+//    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
+//    value = value.replace("[^0-9:]".toRegex(), "")
+//    val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
+//    setCustomValidity(try {
+//        val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
+//        require(days == null || days in doubleValidityRange) { errormessage }
+//        ""
+//    } catch (e: IllegalArgumentException) {
+//        e.message ?: errormessage
+//    })
+//}
 
 private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
@@ -1339,6 +1341,40 @@ private fun disableTree(inputContainer: HTMLElement) {
     }
 }
 
+fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
+    val aadatHaizList = mutableListOf<Int>()
+    val haizStart = parseRange(aadatHaz)[0]
+    val haizEnd = parseRange(aadatHaz)[1]
+    if(haizStart!=null && haizEnd!=null){
+        for (i in haizStart .. haizEnd){
+            aadatHaizList += i
+        }
+    }
+    val aadatTuhrList = mutableListOf<Int>()
+    val tuhrStart = parseRange(aadatTuhr)[0]
+    val tuhrEnd = parseRange(aadatTuhr)[1]
+    if(tuhrStart!=null && tuhrEnd!=null){
+        for (i in tuhrStart .. tuhrEnd){
+            aadatTuhrList += i
+        }
+    }
+    if(!aadatTuhr.contains('-')){
+        aadatTuhrList+= aadatTuhr.toInt()
+    }
+    if(!aadatHaz.contains(('-'))){
+        aadatHaizList+= aadatHaz.toInt()
+    }
+
+
+    var combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
+    for (aadatHaiz in aadatHaizList){
+        for(tuhrAadat in aadatTuhrList){
+            combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
+        }
+    }
+    return combosToTry
+}
+
 private fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
@@ -1365,6 +1401,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
             parseDays(mawjoodaTuhr.value),
             isMawjoodaFasid
         )
+
         val ikhtilaafaat = Ikhtilaafaat(
             ikhtilaf1,
             ikhtilaf2,
@@ -1416,6 +1453,23 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 typesOfInputs,
                 languageSelector.value,
                 ikhtilaafaat)
+        }
+        if(aadatHaz.value.contains("-")||
+            aadatTuhr.value.contains("-")||
+            aadatNifas.value.contains("-")){
+            val combosToTry = makeRangeArray(aadatHaz.value,aadatTuhr.value)
+            val listOfLists = mutableListOf<MutableList<Entry>>()
+            val listOfDescriptions = mutableListOf<String>()
+            for (aadatCombo in combosToTry){
+                allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
+                allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
+                listOfLists+=handleEntries(allTheInputs).hazDatesList
+                listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+            }
+            val output = generatInfoForCompareTable(listOfLists.toMutableList())
+            addCompareButtonIfNeeded()
+            drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+            return
         }
 
 
@@ -1608,6 +1662,7 @@ fun drawCompareTable(
     listOfDescriptions: List<String>
 ){
     val datesDifferenceTableElement = datesDifferenceGridElement!!
+    println("still alive")
     datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
     datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
     datesDifferenceTableElement.replaceChildren {
