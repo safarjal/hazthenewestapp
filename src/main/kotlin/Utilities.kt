@@ -142,7 +142,17 @@ fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDat
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date { return Date(date.getTime() + timeInMilliseconds) }
 
+fun parseRange(input: String):Array<Int?>{
+    val sections = input.split('-')
+    var array:Array<Int?> = arrayOf()
+    for (i in sections.indices){
+        array[i]= (parseDays(sections[i])?.div(MILLISECONDS_IN_A_DAY))?.toInt()
+    }
+    return array
+}
+
 fun parseDays(input: String): Long? {
+    if(input.contains('-')) return null
     if (input.isEmpty()) return null
 
     val sections = input.split(':')

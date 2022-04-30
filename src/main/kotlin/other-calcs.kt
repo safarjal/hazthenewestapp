@@ -51,7 +51,8 @@ fun addCalcsGetDuration(){
 
 fun addListeners(){
     addCalcsDateToAddTo.onchange = { addCalcsAddTimeToDate()}
-    addCalcsDurationToAdd.oninput = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
+//    ToDO: Fix this commented porion
+//    addCalcsDurationToAdd.oninput = { event -> (event.currentTarget as HTMLInputElement).validateAadat(0..10000) }
 
 //        addCalcsAddTimeToDate()
 //    }
