@@ -66,6 +66,7 @@ object Ids {
     const val INPUT_CONTAINER = "input_container"
     const val COMPARISON_CONTAINER = "comparison_container"
     const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
+    const val ZAALLA_CHECKBOX = "zaalla_checkbox"
     const val PREG_START_TIME_INPUT = "preg_start_time_input"
     const val PREG_END_TIME_INPUT = "preg_end_time_input"
     const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
@@ -169,8 +170,8 @@ private val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATIO
 private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
 private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
 private val HTMLElement.isMubtadia get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
-private val HTMLElement.isZaalla get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.ZAALLA
 
+private val HTMLElement.isZaalla get() = (getChildById(Ids.ZAALLA_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
 private val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
@@ -318,6 +319,13 @@ private fun TagConsumer<HTMLElement>.calcAllBtn() {
     }
 }
 
+private fun TagConsumer<HTMLElement>.comparisonDiv() {
+    div(classes = "${CssC.CENTER} ${CssC.DEV}") {
+        id = Ids.COMPARISON_CONTAINER
+        div { id = Ids.DATES_DIFFERENCE_TABLE }
+    }
+}
+
 fun Node.addInputLayout() {
     append {
         div {
@@ -325,6 +333,7 @@ fun Node.addInputLayout() {
             inputFormDiv()
         }
         calcAllBtn()
+        comparisonDiv()
     }
 }
 
@@ -396,17 +405,17 @@ private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
 
 private fun addCompareButtonIfNeeded() {
     //TODO:Uncomment this
-//    if (comparisonContainer != null ||
-//        inputsContainers.size < 2 ||
-//        inputsContainers.any { it.haizDatesList == null }
-//    ) return
+    if (comparisonContainer != null ||
+        inputsContainers.size < 2 ||
+        inputsContainers.any { it.haizDatesList == null }
+    ) return
 
-    calculateAllDiv.after {
-        div(classes = CssC.CENTER) {
-            id = Ids.COMPARISON_CONTAINER
-            div { id = Ids.DATES_DIFFERENCE_TABLE }
-        }
-    }
+//    calculateAllDiv.after {
+//        div(classes = CssC.CENTER) {
+//            id = Ids.COMPARISON_CONTAINER
+//            div { id = Ids.DATES_DIFFERENCE_TABLE }
+//        }
+//    }
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -422,8 +431,9 @@ private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTML
 }
 
 private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
-    inputsContainerAddRemoveButton {
+    button(type = ButtonType.button) {
         +"Clone"
+        style = "float: right"
         classes = setOf(CssC.PLUS, CssC.DEV)
         id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
         onClickFunction = { event ->
@@ -433,20 +443,14 @@ private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
 }
 
 private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
-    inputsContainerAddRemoveButton {
+    button(type = ButtonType.button) {
         +"\u274C"
+        style = "float: right"
         classes = setOf(CssC.MINUS)
         id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
         onClickFunction = { event ->
             removeInputsContainer(findInputContainer(event))
         }
-    }
-}
-
-private fun TagConsumer<HTMLElement>.inputsContainerAddRemoveButton(block : BUTTON.() -> Unit = {}) {
-    button(type = ButtonType.button) {
-        style = "float: right"
-        block()
     }
 }
 
@@ -473,7 +477,7 @@ private fun TagConsumer<HTMLElement>.content() {
             copyBtn(CssC.RIGHT)
             content { id = Ids.CONTENT_ENGLISH }
         }
-        hr()
+//        hr()
         content { id = Ids.CONTENT_DATES }
         hr()
     }
@@ -636,7 +640,6 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
     val isMutada = inputContainerToCopyFrom?.isMutada ?: IS_DEFAULT_INPUT_MODE_MUTADA
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
-    val isZaalla = inputContainerToCopyFrom?.isZaalla ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     div(classes = CssC.ROW) {
         makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
@@ -645,9 +648,19 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
-            makeDropdownOptions(isZaalla, Vls.Maslas.ZAALLA, "Zaalla", "Zaalla", "dev")
+        }
+        // Zaalla?
+        div {
+            makeLabel(Ids.ZAALLA_CHECKBOX, "Zaalla", "Zaalla")
+            checkBoxInput {
+                id = Ids.ZAALLA_CHECKBOX
+                name = Ids.ZAALLA_CHECKBOX
+                checked = inputContainerToCopyFrom?.isZaalla == true
+                onChangeFunction = { event -> disableTree(findInputContainer(event)) }
+            }
         }
     }
+
 }
 
 private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContainerToCopyFrom: HTMLElement?) {
@@ -793,7 +806,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     // Zaalla Cycle Length
-    div(classes = "${CssC.ROW} ${CssC.ZAALLA}") {
+    div(classes = "${CssC.ROW} ${CssC.ZAALLA} ${CssC.INVIS}") {
         makeLabel(Ids.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
         makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10))
         // TODO: Should max cycle length be 6 months or infinite?
@@ -1332,7 +1345,6 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
     disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
-    disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
@@ -1353,6 +1365,8 @@ private fun disableTree(inputContainer: HTMLElement) {
         mawjoodaFasidCheck.checked = true
         mawjoodaFasidCheck.disabled = true
     }
+
+    disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
