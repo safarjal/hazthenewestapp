@@ -73,6 +73,7 @@ object Ids {
     const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
     const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
     const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
+    const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
     const val INPUT_TYPE_SELECT = "input_type_select"
     const val MASLA_TYPE_SELECT = "masla_type_select"
     const val INPUT_QUESTION = "input_question"
@@ -92,6 +93,7 @@ object CssC {
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
     const val NIFAS = "nifas"                       // Switch. Put on any input that only shows when Nifas
+    const val ZAALLA = "zaalla"                     // Switch. Put on any input that only shows when Zaalla
     const val MUTADA = "mutada"                     // Switch. Put on any input that only shows when NOT Mubtadia
     const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
     const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
@@ -131,6 +133,7 @@ object Vls {                                        // Values
         const val MUTADA = "mutada"
         const val NIFAS = "nifas"
         const val MUBTADIA = "mubtadia"
+        const val ZAALLA = "zaalla"
     }
     object Types {
         const val DATE_ONLY = "dateOnly"
@@ -166,6 +169,7 @@ private val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATIO
 private val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
 private val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
 private val HTMLElement.isMubtadia get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
+private val HTMLElement.isZaalla get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.ZAALLA
 
 private val HTMLElement.mustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
@@ -175,6 +179,7 @@ private val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as 
 private val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPUT) as HTMLInputElement
 private val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 private val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
+private val HTMLElement.cycleLength get() = getChildById(Ids.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
 
 private val HTMLElement.calculateButton get() = (getChildById(Ids.CALCULATE_BUTTON)) as HTMLButtonElement
 private val HTMLElement.contentContainer get() = (getChildById(Ids.CONTENT_CONTAINER)!!) as HTMLDivElement
@@ -631,6 +636,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
     val isMutada = inputContainerToCopyFrom?.isMutada ?: IS_DEFAULT_INPUT_MODE_MUTADA
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
+    val isZaalla = inputContainerToCopyFrom?.isZaalla ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     div(classes = CssC.ROW) {
         makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
@@ -639,6 +645,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
+            makeDropdownOptions(isZaalla, Vls.Maslas.ZAALLA, "Zaalla", "Zaalla", "dev")
         }
     }
 }
@@ -784,6 +791,12 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
                 checked = inputContainerToCopyFrom?.isMawjoodaFasid?.or(false) == true
             }
         }
+    }
+    // Zaalla Cycle Length
+    div(classes = "${CssC.ROW} ${CssC.ZAALLA}") {
+        makeLabel(Ids.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
+        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30))
+        // TODO: Should max cycle length be 6 months or infinite?
     }
 }
 //TODO:Figure this out and uncomment it
@@ -1319,6 +1332,7 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
     disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
+    disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
 }
 
 private fun disableTree(inputContainer: HTMLElement) {
