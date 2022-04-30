@@ -795,7 +795,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Zaalla Cycle Length
     div(classes = "${CssC.ROW} ${CssC.ZAALLA}") {
         makeLabel(Ids.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
-        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30))
+        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10))
         // TODO: Should max cycle length be 6 months or infinite?
     }
 }
