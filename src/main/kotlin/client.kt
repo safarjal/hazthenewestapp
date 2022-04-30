@@ -1662,9 +1662,8 @@ fun drawCompareTable(
     listOfDescriptions: List<String>
 ){
     val datesDifferenceTableElement = datesDifferenceGridElement!!
-    println("still alive")
     datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
-    datesDifferenceTableElement.style.setProperty("--rows",  "${inputsContainers.size - 1}")
+    datesDifferenceTableElement.style.setProperty("--rows",  "${listOfDescriptions.size - 1}")
     datesDifferenceTableElement.replaceChildren {
         val lang = languageSelector.value
         val dur = inputsContainers.first().isDuration
