@@ -12,8 +12,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.5")
     implementation(kotlin("stdlib-js"))
+    implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.1")
     implementation(npm("html2canvas", "1.4.1"))
 }
 
@@ -25,5 +26,9 @@ kotlin {
                 cssSupport.enabled = true
             }
         }
+    }
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.RequiresOptIn")
     }
 }

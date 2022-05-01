@@ -1,7 +1,11 @@
 @file:Suppress("SpellCheckingInspection")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
@@ -433,7 +437,8 @@ fun drawCompareTable(
         }
     }
 
-    html2canvas(comparisonGrid).then { canvas ->
+    GlobalScope.launch {
+        val canvas = comparisonGrid.toCanvas(backgroundColor = null)
         comparisonGrid.replaceChildren(canvas)
         comparisonGrid.classList.replace(CssC.GRID, CssC.COLUMN)
         comparisonGrid.appendChild {
