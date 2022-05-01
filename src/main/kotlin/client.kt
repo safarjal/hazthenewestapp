@@ -59,8 +59,8 @@ fun languageChange() {
                 .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
                 ?.selected = true
         }
-    if (datesDifferenceGridElement?.children?.asList()?.isNotEmpty() == true) {
-        datesDifferenceGridElement?.getElementsByClassName(CssC.TITLE_CELL)?.asList()?.forEach {
+    if (comparisonGridElement?.children?.asList()?.isNotEmpty() == true) {
+        comparisonGridElement?.getElementsByClassName(CssC.TITLE_CELL)?.asList()?.forEach {
             it.classList.toggle("${Vls.Langs.ENGLISH}-align", lang == Vls.Langs.ENGLISH)
             it.classList.toggle("${Vls.Langs.URDU}-align", lang == Vls.Langs.URDU)
         }
@@ -369,10 +369,11 @@ fun drawCompareTable(
     resultColors: List<Int>,
     listOfDescriptions: List<String>
 ){
-    val datesDifferenceTableElement = datesDifferenceGridElement!!
-    datesDifferenceTableElement.style.setProperty("--columns",  "${headerList.size}")
-    datesDifferenceTableElement.style.setProperty("--rows",  "${listOfDescriptions.size - 1}")
-    datesDifferenceTableElement.replaceChildren {
+    val comparisonGrid = comparisonGridElement!!
+    comparisonGrid.classList.replace(CssC.COLUMN, CssC.GRID)
+    comparisonGrid.style.setProperty("--columns",  "${headerList.size}")
+    comparisonGrid.style.setProperty("--rows",  "${listOfDescriptions.size - 1}")
+    comparisonGrid.replaceChildren {
         val lang = languageSelector.value
         val dur = inputsContainers.first().isDuration
         val titleClasses = "${CssC.TITLE_CELL} ${lang}-align ${if (dur) CssC.HIDDEN else ""}"
@@ -406,11 +407,11 @@ fun drawCompareTable(
             for (day in resultColors) {
                 div {
                     classes = setOf(
-                        CssC.ENPTY_TABLE_CELL,
+                        CssC.HALF_TABLE_CELL,
                         when (day) {
                             1 -> CssC.AYYAM_E_SHAKK
                             2 -> CssC.NA_PAAKI
-                            else -> ""
+                            else -> CssC.EMPTY_TABLE_CELL
                         }
                     )
                 }
@@ -429,7 +430,7 @@ fun drawCompareTable(
                         classes = setOf(
                             CssC.TABLE_CELL,
                             CssC.BORDERED,
-                            if (cellValue == 1) CssC.NA_PAAKI else ""
+                            if (cellValue == 1) CssC.NA_PAAKI else CssC.EMPTY_TABLE_CELL
                         )
                         +"${k + 1}"
                     }
@@ -438,8 +439,13 @@ fun drawCompareTable(
         }
     }
 
-    html2canvas(datesDifferenceGridElement!!).then { canvas ->
-        datesDifferenceGridElement!!.after(canvas)
+    html2canvas(comparisonGrid).then { canvas ->
+        comparisonGrid.replaceChildren(canvas)
+        comparisonGrid.classList.replace(CssC.GRID, CssC.COLUMN)
+        comparisonGrid.appendChild {
+            a(href = canvas.toDataURL()) { +"Download Table" }
+                .asDynamic().download = "hazapp_comparison_table.png"
+        }
     }
 }
 
@@ -453,7 +459,7 @@ val inputsContainers get() = inputsContainersContainer.children.asList() as List
 
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
-private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
+private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement

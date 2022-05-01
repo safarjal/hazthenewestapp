@@ -297,11 +297,24 @@ small {
 #dates_difference_table {
   --columns: 0;
   --rows: 0;
-  display: grid;
-  grid-template: 1fr 1fr 15px repeat(var(--rows), 1fr) / 2rem 1fr repeat(var(--columns), 2rem);
+  --paaki: var(--primary2);
+  --na-paaki: #AC0C0C;
+  --shakk: yellow;
+  --description: var(--primary3);
+  grid-template: 25px 25px 15px repeat(var(--rows), 1fr) / 2rem 1fr repeat(var(--columns), 2rem);
   width: max-content;
   margin: 1rem auto;
+  padding-bottom: 1rem;
   text-align: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
 }
 
 .center {
@@ -315,32 +328,35 @@ small {
 
 .description {
   padding: 6px 1rem;
+  background-color: var(--description);
 }
 
 .bordered {
   border: 1px solid black;
 }
 
-.empty_table_cell {
+.half_table_cell {
   border-left: 1px solid black;
   border-right: 1px solid black;
 }
 
+.empty_table_cell {
+  background-color: var(--paaki);
+}
+
 .na_paaki {
-  background-color: red;
+  background-color: var(--na-paaki);
 }
 
 .ayyam_e_shakk {
-  background-color: yellow;
+  background-color: var(--shakk);
 }
 
-.months_row.urdu-align,
-.dates_row.urdu-align {
+.title_cell.urdu-align {
   transform: translateX(50%);
 }
 
-.months_row.english-align,
-.dates_row.english-align {
+.title_cell.english-align {
   transform: translateX(-50%);
 }
 

@@ -373,12 +373,15 @@ object CssC {
     const val CENTER = "center"                     // CSS Style.
 
     const val SHRUNK = "shrunk"                     // CSS Style. Shrinks Answer to desired height.
+    const val GRID = "grid"
+    const val COLUMN = "column"
     const val TABLE_CELL = "table_cell"             // CSS Style.
     const val DESCRIPTION = "description"
     const val MONTHS_ROW = "months_row"             // CSS Style.
     const val DATES_ROW = "dates_row"               // CSS Style.
     const val BORDERED = "bordered"                 // CSS Style.
-    const val ENPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
+    const val HALF_TABLE_CELL = "half_table_cell"  // CSS Style.
+    const val EMPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
     const val NA_PAAKI = "na_paaki"                 // CSS Style.
     const val AYYAM_E_SHAKK = "ayyam_e_shakk"       // CSS Style.
 }
