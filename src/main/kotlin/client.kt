@@ -59,7 +59,7 @@ object Ids {
     const val CONTENT_URDU = "content_urdu"
     const val CONTENT_ENGLISH = "content_english"
     const val CONTENT_DATES = "content_dates"
-    const val CALCULATE_ALL_DIV = "calculate_all_button"
+    const val CALCULATE_ALL_DIV = "calculate_all_div"
     const val CALCULATE_BUTTON = "calculate_button"
     const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
@@ -312,12 +312,20 @@ private fun calcAll() {
 
 private fun TagConsumer<HTMLElement>.calcAllBtn() {
     button {
-        classes = setOf(CssC.ENGLISH, if(languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.INVIS)
+        classes = setOf(
+            CssC.CALC_BTN,
+            CssC.ENGLISH,
+            if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.INVIS
+        )
         +"Calculate All"
         onClickFunction = { calcAll() }
     }
     button {
-        classes = setOf(CssC.URDU, if(languageSelector.value == Vls.Langs.URDU) "" else CssC.INVIS)
+        classes = setOf(
+            CssC.CALC_BTN,
+            CssC.URDU,
+            if (languageSelector.value == Vls.Langs.URDU) "" else CssC.INVIS
+        )
         +"Calculate All"
         onClickFunction = { calcAll() }
     }
@@ -372,20 +380,21 @@ private fun shrinkAnswer(shrink: Boolean = true) {
 
 private fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
-    comparisonContainer?.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
+    if (inputsContainers.size == 1) calculateAllDiv.replaceChildren {  }
     shrinkAnswer(false)
     disableTime()
 }
 
 private fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
-    comparisonContainer?.remove()
     if (inputsContainers.size == 1) {
         addRemoveInputsContainerButton(inputsContainerToCopyFrom)
     }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
+
+    addCalcAllButtonIfNeeded()
 
     // Make sure all invises are maintained
     languageChange()
@@ -409,15 +418,14 @@ private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
     }
 }
 
-private fun addCompareButtonIfNeeded() {
-    if (comparisonContainer != null || inputsContainers.size < 2 ) {
+private fun addCalcAllButtonIfNeeded() {
+    // Redundant, but jic
+    if (inputsContainers.size < 2 ) {
         calculateAllDiv.replaceChildren {  }
         return
     }
 
-    calculateAllDiv.replaceChildren {
-        calcAllBtn()
-    }
+    calculateAllDiv.replaceChildren { calcAllBtn() }
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -734,7 +742,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 }
 
-fun onlyTwo(event: Event) {
+private fun onlyTwo(event: Event) {
     val inputContainer = findInputContainer(event)
     val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
     var inputsInUse = 0
@@ -1411,7 +1419,6 @@ private fun parseEntries(inputContainer: HTMLElement) {
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
     }
-    addCompareButtonIfNeeded()
 }
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
     with(inputContainer) {
