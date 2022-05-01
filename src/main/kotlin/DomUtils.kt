@@ -81,11 +81,11 @@ fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: 
 }
 
 fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
-    span(classes = CssC.ENGLISH) {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +englishText
     }
-    span(classes = CssC.URDU) {
+    span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
         +urduText
     }
