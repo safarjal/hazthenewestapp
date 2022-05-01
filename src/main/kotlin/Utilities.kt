@@ -56,7 +56,7 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
 }
 
 fun findInputContainer(event: Event) =
-    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER)}!!
+    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER)}!!
 fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
 var Element.visibility: Boolean
@@ -273,17 +273,17 @@ fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTi
 object Ids {
     const val LANGUAGE = "language"
 
-    const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
-    const val INPUT_CONTAINER = "input_container"
-    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
-    const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
-
+    object InputContainers {
+        const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
+        const val INPUT_CONTAINER = "input_container"
+        const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+        const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
+    }
     object InputTables {
+        const val HAIZ_INPUT_TABLE = "haiz_input_table"
+        const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
     }
-    const val HAIZ_INPUT_TABLE = "haiz_input_table"
-    const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
-
     object AddTimeToDate {
         //        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
         const val DATE_TO_ADD_TO = "date_to_add_to"

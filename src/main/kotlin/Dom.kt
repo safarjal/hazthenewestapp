@@ -10,7 +10,7 @@ import org.w3c.dom.*
 fun Node.addInputLayout() {
     append {
         div {
-            id = Ids.INPUT_CONTAINERS_CONTAINER
+            id = Ids.InputContainers.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
         }
         div(classes = "${CssC.DEV} ${CssC.CENTER}") {
@@ -24,8 +24,8 @@ fun Node.addInputLayout() {
 }
 
 fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
-    div(classes = Ids.INPUT_CONTAINER) {
-        id = Ids.INPUT_CONTAINER
+    div(classes = Ids.InputContainers.INPUT_CONTAINER) {
+        id = Ids.InputContainers.INPUT_CONTAINER
         if (inputContainerToCopyFrom != null) {
             removeInputsContainerButton()
         }
@@ -231,7 +231,7 @@ private fun TagConsumer<HTMLElement>.questionInput() {
 private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFrom: HTMLElement?) {
     val isDuration = inputContainerToCopyFrom?.isDuration ?: false
     table {
-        id = Ids.HAIZ_INPUT_TABLE
+        id = Ids.InputTables.HAIZ_INPUT_TABLE
         classes = setOf( if (isDuration) CssC.INVIS else "" )
         thead {
             tr {
@@ -249,7 +249,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
 private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopyFrom: HTMLElement?) {
     val isDuration = inputContainerToCopyFrom?.isDuration ?: false
     table {
-        id = Ids.HAIZ_DURATION_INPUT_TABLE
+        id = Ids.InputTables.HAIZ_DURATION_INPUT_TABLE
         classes = setOf( if (!isDuration) CssC.INVIS else "" )
         thead {
             tr {
@@ -301,7 +301,7 @@ private fun TagConsumer<HTMLElement>.addInputsContainerButton() {
         +"Clone"
         style = "float: right"
         classes = setOf(CssC.PLUS, CssC.DEV)
-        id = Ids.INPUTS_CONTAINER_CLONE_BUTTON
+        id = Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON
         onClickFunction = { event ->
             cloneInputsContainer(findInputContainer(event))
         }
@@ -313,7 +313,7 @@ private fun TagConsumer<HTMLElement>.removeInputsContainerButton() {
         +"\u274C"
         style = "float: right"
         classes = setOf(CssC.MINUS)
-        id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
+        id = Ids.InputContainers.INPUTS_CONTAINER_REMOVE_BUTTON
         onClickFunction = { event ->
             removeInputsContainer(findInputContainer(event))
         }

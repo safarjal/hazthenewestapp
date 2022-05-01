@@ -385,7 +385,7 @@ private fun addTheRemoveInputsContainerButton(inputContainer: HTMLElement) {
     inputContainer.inputsContainerCloneButton.before {
         button(type = ButtonType.button, classes = "${CssC.MINUS} ${CssC.DEV}") {
             +"\u274C"
-            id = Ids.INPUTS_CONTAINER_REMOVE_BUTTON
+            id = Ids.InputContainers.INPUTS_CONTAINER_REMOVE_BUTTON
             style = "float: right"
             onClickFunction = { event ->
                 removeInputsContainer(findInputContainer(event))
@@ -839,12 +839,12 @@ private fun calcAll() {
 }
 
 // VALS
-private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
-private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+private val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
+private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
 private val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement)
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
-private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
-private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement
+private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
+private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement

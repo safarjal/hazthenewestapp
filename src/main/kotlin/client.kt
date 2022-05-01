@@ -453,7 +453,7 @@ fun drawCompareTable(
 const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 const val IS_DEFAULT_INPUT_MODE_MUTADA = true
 
-private val inputsContainersContainer get() = document.getElementById(Ids.INPUT_CONTAINERS_CONTAINER) as HTMLElement
+private val inputsContainersContainer get() = document.getElementById(Ids.InputContainers.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
@@ -506,11 +506,11 @@ private val languageElements get() = listOf(englishElements, urduElements).flatt
 private val devElements get() = document.getElementsByClassName(CssC.DEV).asList()
 
 val HTMLElement.hazInputTableBody: HTMLTableSectionElement get() {
-    val inputDatesTable = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
+    val inputDatesTable = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
     return inputDatesTable.tBodies[0] as HTMLTableSectionElement
 }
 val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement get() {
-    val inputDatesTable = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+    val inputDatesTable = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
     return inputDatesTable.tBodies[0] as HTMLTableSectionElement
 }
 
