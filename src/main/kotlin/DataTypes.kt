@@ -127,8 +127,8 @@ data class AllTheInputs(
 
 
 data class PreMaslaValues(
-    val inputtedAadatHaiz:Long? = null,
-    val inputtedAadatTuhr:Long? = null,
+    var inputtedAadatHaiz:Long? = null,
+    var inputtedAadatTuhr:Long? = null,
     var inputtedMawjoodahTuhr:Long? = null,
     var isMawjoodaFasid:Boolean = false,
 
