@@ -1301,8 +1301,8 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAnd
 
 
     var combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
-    for (aadatHaiz in aadatHaizList){
-        for(tuhrAadat in aadatTuhrList){
+    for(tuhrAadat in aadatTuhrList){
+        for (aadatHaiz in aadatHaizList){
             combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
         }
     }
@@ -1397,9 +1397,9 @@ private fun parseEntries(inputContainer: HTMLElement) {
             for (aadatCombo in combosToTry){
                 allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
                 allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
-                val entries = handleEntries(allTheInputs)
-                if (entries == NO_OUTPUT) return
-                listOfLists+=entries.hazDatesList
+                val output = handleEntries(allTheInputs)
+                if (output == NO_OUTPUT) return
+                listOfLists+=output.hazDatesList
                 listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
             }
             val output = generatInfoForCompareTable(listOfLists.toMutableList())
