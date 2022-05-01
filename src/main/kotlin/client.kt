@@ -731,9 +731,11 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-")) {
+//        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
-            require( !arr.any { it.toInt() in validityRange } ) { errormessage }
+//            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
+            require( arr.all { it.toInt() in validityRange } ) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {
             e.message ?: errormessage
