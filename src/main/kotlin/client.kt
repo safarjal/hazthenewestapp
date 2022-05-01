@@ -59,12 +59,6 @@ fun languageChange() {
                 .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
                 ?.selected = true
         }
-    if (comparisonGridElement?.children?.asList()?.isNotEmpty() == true) {
-        comparisonGridElement?.getElementsByClassName(CssC.TITLE_CELL)?.asList()?.forEach {
-            it.classList.toggle("${Vls.Langs.ENGLISH}-align", lang == Vls.Langs.ENGLISH)
-            it.classList.toggle("${Vls.Langs.URDU}-align", lang == Vls.Langs.URDU)
-        }
-    }
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
