@@ -1676,4 +1676,8 @@ fun drawCompareTable(
             }
         }
     }
+
+    html2canvas(datesDifferenceGridElement!!).then { canvas ->
+        datesDifferenceGridElement!!.after(canvas)
+    }
 }

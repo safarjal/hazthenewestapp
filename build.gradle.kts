@@ -12,8 +12,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.5")
     implementation(kotlin("stdlib-js"))
+    implementation(npm("html2canvas", "1.4.1"))
 }
 
 kotlin {
