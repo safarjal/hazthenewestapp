@@ -155,9 +155,9 @@ private val inputsContainers get() = inputsContainersContainer.children.asList()
 private val calculateAllDiv get() = document.getElementById(Ids.CALCULATE_ALL_DIV) as HTMLDivElement
 private val comparisonContainer get() = document.getElementById(Ids.COMPARISON_CONTAINER) as HTMLElement?
 
+val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
-private val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 
 private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE) as HTMLTableElement
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
@@ -546,40 +546,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
     }
 }
 
-private fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
-    label {
-        htmlFor = inputId
-        classes = setOf(CssC.ENGLISH, extraClasses)
-        block()
-        +englishText
-    }
-    label {
-        htmlFor = inputId
-        classes = setOf(CssC.URDU, extraClasses)
-        block()
-        +urduText
-    }
-}
-
-private fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
-    label(classes = CssC.SWITCH) {
-        checkBoxInput {
-            id = inputId
-            block()
-        }
-        span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
-    }
-}
-
-private fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduText: String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
-    div(classes = "${CssC.ROW} $extraClasses") {
-        div {
-            makeLabel(inputId, englishText, urduText)
-            makeSwitch(inputId)
-        }
-        block()
-    }
-}
 private fun FlowContent.ikhtilafiMasle() {
     div {
         details {
@@ -601,38 +567,6 @@ private fun FlowContent.ikhtilafiMasle() {
                 StringsOfLanguages.ENGLISH.mubtadiaikhitilaf,
                 StringsOfLanguages.URDU.mubtadiaikhitilaf, extraClasses = CssC.DEV)
         }
-    }
-}
-
-private fun TagConsumer<HTMLElement>.makeDropdownOptions(
-    isSelected: Boolean,
-    optionVal: String,
-    englishText: String,
-    urduText: String,
-    extraClasses: String = "",
-    block: OPTION.() -> Unit = {}
-) {
-    option {
-        classes = setOfNotNull(
-            CssC.ENGLISH,
-            extraClasses,
-            if (languageSelector.value != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
-        )
-        selected = isSelected && languageSelector.value == Vls.Langs.ENGLISH
-        value = optionVal
-        block()
-        +englishText
-    }
-    option {
-        classes = setOfNotNull(
-            CssC.URDU,
-            extraClasses,
-            if (languageSelector.value != Vls.Langs.URDU) CssC.LANG_INVIS else null
-        )
-        selected = isSelected && languageSelector.value == Vls.Langs.URDU
-        value = optionVal
-        block()
-        +urduText
     }
 }
 
@@ -684,30 +618,10 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
 private fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
     var disable = true
     if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
-//        timeInput(inputContainerToCopyFrom) {
-//            disabled = !inputContainerToCopyFrom.isNifas
-//            id = inputId
-//            name = inputId
-//            block()
-//        }
-//    } else {
-        timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-            disabled = disable
-            id = inputId
-            name = inputId
-//            max = currentTimeString(IS_DEFAULT_INPUT_MODE_DATE_ONLY)
-            block()
-        }
-//    }
-}
-
-private fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: IntRange, block: INPUT.() -> Unit = {}) {
-    input {
+    timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
+        disabled = disable
         id = inputId
         name = inputId
-        value = inputVal.orEmpty()
-        //TODO: Uncomment this later after fixing validator
-//        onInputFunction = { event -> (event.currentTarget as HTMLInputElement).validateAadat(inputRange) }
         block()
     }
 }
@@ -813,18 +727,30 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 }
 //TODO:Figure this out and uncomment it
-//fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-//    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat } else {StringsOfLanguages.URDU.incorrectAadat}
-//    value = value.replace("[^0-9:]".toRegex(), "")
-//    val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
-//    setCustomValidity(try {
-//        val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
-//        require(days == null || days in doubleValidityRange) { errormessage }
-//        ""
-//    } catch (e: IllegalArgumentException) {
-//        e.message ?: errormessage
-//    })
-//}
+fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
+    else {StringsOfLanguages.URDU.incorrectAadat}
+    if (value.contains("-")) {
+        setCustomValidity(try {
+            val arr = value.split("-")
+            require( !arr.any { it.toInt() in validityRange } ) { errormessage }
+            ""
+        } catch (e: IllegalArgumentException) {
+            e.message ?: errormessage
+        })
+    }
+    else {
+        value = value.replace("[^0-9:]".toRegex(), "")
+        val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
+        setCustomValidity(try {
+            val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
+            require(days == null || days in doubleValidityRange) { errormessage }
+            ""
+        } catch (e: IllegalArgumentException) {
+            e.message ?: errormessage
+        })
+    }
+}
 
 private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
@@ -836,31 +762,6 @@ private fun FlowContent.calculateButton() {
         id = Ids.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
-    }
-}
-
-private fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
-    span(classes = CssC.ENGLISH) {
-        block()
-        +englishText
-    }
-    span(classes = CssC.URDU) {
-        block()
-        +urduText
-    }
-}
-
-private fun FlowContent.makeTextAreaInput(inputId: String, height: String = "auto", block: TEXTAREA.() -> Unit = {}) {
-    textArea {
-        id = inputId
-        style = "height: $height"
-        block()
-        onInputFunction = { event ->
-            val txtarea = event.currentTarget as HTMLTextAreaElement
-            txtarea.dir = "auto"
-            txtarea.style.height = height
-            txtarea.style.height = "${txtarea.scrollHeight + 6}px"
-        }
     }
 }
 
@@ -1564,7 +1465,6 @@ fun validateNifasDurations(durations:List<Duration>):Boolean{
     return true
 }
 
-
 fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs = AllTheInputs(null)):AllTheInputs{
     if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
         if(!validateNifasDurations(durations)){
@@ -1656,31 +1556,11 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
     )
 }
 
-fun replaceBoldTagWithBoldAndStar(string: String): String {
-    return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
-        .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
-}
-
 private fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
-}
-
-fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}) {
-    if (starter) div { id = "margin-cell" }                     // Empty buffer margin
-    div {                                                       // Description of Inputs
-        id = if (desc.isEmpty()) "empty_desc" else "desc"
-        classes = if (desc.isEmpty()) emptySet() else setOf(
-            CssC.TABLE_CELL,
-            CssC.BORDERED,
-            CssC.DESCRIPTION
-        )
-        +desc
-    }
-    block()                                                     // Row Filler
-    if (ender) div { id = "formerly_half_cell" }                // Extra trailing cell to accommodate dates
 }
 
 fun drawCompareTable(

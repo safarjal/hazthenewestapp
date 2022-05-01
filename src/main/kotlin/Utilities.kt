@@ -41,6 +41,11 @@ object UnicodeChars {
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
 
+fun replaceBoldTagWithBoldAndStar(string: String): String {
+    return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
+        .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
+}
+
 private fun insertRelative(
     ownerDocument: Document,
     block: TagConsumer<HTMLElement>.() -> Unit,
