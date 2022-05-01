@@ -737,16 +737,10 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
 fun onlyTwo(event: Event) {
     val inputContainer = findInputContainer(event)
     val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
-    console.log("inputsList", inputsList)
     var inputsInUse = 0
-    console.log("inputsInUse", inputsInUse)
     inputsList.forEach { if (it.value.isNotEmpty()) inputsInUse += 1 }
-    if (inputsInUse == 2) {
-        console.log("2!", inputsList.first { it.value.isEmpty() })
-        inputsList.first { it.value.isEmpty() }.disabled = true
-    }
+    if (inputsInUse == 2) inputsList.first { it.value.isEmpty() }.disabled = true
     else if (inputsInUse < 2) {
-        console.log("<2!")
         inputsList.forEach { it.disabled = false }
         disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
     }
