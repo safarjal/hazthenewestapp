@@ -312,8 +312,8 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(
     preg: Boolean,
     mustabeen: Boolean = true) {
     select {
-        id = Ids.DurationRow.INPUT_TYPE_OF_DURATION
-        name = Ids.DurationRow.INPUT_TYPE_OF_DURATION
+        id = Ids.Row.INPUT_TYPE_OF_DURATION
+        name = Ids.Row.INPUT_TYPE_OF_DURATION
         disabled = disable
         onChangeFunction = { event -> onChangeDurationOption(event) }
         makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, StringsOfLanguages.ENGLISH.dam, StringsOfLanguages.URDU.dam)
@@ -352,7 +352,7 @@ private fun TagConsumer<HTMLElement>.copyDurationInputRow(
     mustabeen: Boolean) {
     tr {
         td {
-            makeNumberInput(Ids.DurationRow.INPUT_DURATION, aadat, (0..10000)) {
+            makeNumberInput(Ids.Row.INPUT_DURATION, aadat, (0..10000)) {
                 required = true
                 disabled = disable
             }
@@ -370,7 +370,7 @@ private fun TagConsumer<HTMLElement>.durationInputRow(
     mustabeen: Boolean = true) {
     tr {
         td {
-            makeNumberInput(Ids.DurationRow.INPUT_DURATION, "", (0..10000)) {
+            makeNumberInput(Ids.Row.INPUT_DURATION, "", (0..10000)) {
                 disabled = disable
                 required = true
             }
@@ -465,7 +465,7 @@ fun disableTree(inputContainer: HTMLElement) {
     disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
     disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
 
-    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
         mawjoodaFasidCheck.checked = true
         mawjoodaFasidCheck.disabled = true
@@ -787,11 +787,11 @@ private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal
 }
 private fun disableTime() {
     if (inputsContainers.size == 1) {
-        disableOpt(inputsContainers.first(), Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, false)
+        disableOpt(inputsContainers.first(), Ids.Inputs.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, false)
     }
     else {
         inputsContainers.forEach { inputsContainer ->
-            disableOpt(inputsContainer, Ids.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
+            disableOpt(inputsContainer, Ids.Inputs.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
             if (inputsContainer.isDateTime) inputsContainer.typeSelect.value = Vls.Types.DATE_ONLY
         }
     }
@@ -816,7 +816,7 @@ private fun getNow(): String {
 }
 
 private fun copyText(event: Event) {
-    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.CONTENT_WRAPPER }
+    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
 
     val dateStr = getNow()
     val questionTxt = findInputContainer(event).questionText.value
@@ -843,8 +843,8 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.HAIZ_INPUT_TABLE
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
-private val HTMLElement.questionText get() = (getChildById(Ids.INPUT_QUESTION) as HTMLTextAreaElement)
+private val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement)
 
-private val calculateAllDiv get() = document.getElementById(Ids.CALCULATE_ALL_DIV) as HTMLDivElement
+private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement

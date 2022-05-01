@@ -14,11 +14,11 @@ fun Node.addInputLayout() {
             inputFormDiv()
         }
         div(classes = "${CssC.DEV} ${CssC.CENTER}") {
-            id = Ids.CALCULATE_ALL_DIV
+            id = Ids.Results.CALCULATE_ALL_DIV
         }
         div(classes = "${CssC.CENTER} ${CssC.DEV}") {
-            id = Ids.COMPARISON_CONTAINER
-            div { id = Ids.DATES_DIFFERENCE_TABLE }
+            id = Ids.Results.COMPARISON_CONTAINER
+            div(classes = CssC.GRID) { id = Ids.Results.DATES_DIFFERENCE_TABLE }
         }
     }
 }
@@ -87,9 +87,9 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     div(classes = CssC.ROW) {
-        makeLabel(Ids.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
+        makeLabel(Ids.Inputs.MASLA_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfMasla, StringsOfLanguages.URDU.typeOfMasla)
         select {
-            id = Ids.MASLA_TYPE_SELECT
+            id = Ids.Inputs.MASLA_TYPE_SELECT
             onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, StringsOfLanguages.ENGLISH.mutada, StringsOfLanguages.URDU.mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, StringsOfLanguages.ENGLISH.nifas, StringsOfLanguages.URDU.nifas)
@@ -97,10 +97,10 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         }
         // Zaalla?
         div {
-            makeLabel(Ids.ZAALLA_CHECKBOX, "Zaalla", "Zaalla")
+            makeLabel(Ids.Inputs.ZAALLA_CHECKBOX, "Zaalla", "Zaalla")
             checkBoxInput {
-                id = Ids.ZAALLA_CHECKBOX
-                name = Ids.ZAALLA_CHECKBOX
+                id = Ids.Inputs.ZAALLA_CHECKBOX
+                name = Ids.Inputs.ZAALLA_CHECKBOX
                 checked = inputContainerToCopyFrom?.isZaalla == true
                 onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             }
@@ -114,9 +114,9 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     div(classes = CssC.ROW) {
-        makeLabel(Ids.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
+        makeLabel(Ids.Inputs.INPUT_TYPE_SELECT, StringsOfLanguages.ENGLISH.typeOfInput, StringsOfLanguages.URDU.typeOfInput)
         select {
-            id = Ids.INPUT_TYPE_SELECT
+            id = Ids.Inputs.INPUT_TYPE_SELECT
             onChangeFunction = { event ->
                 onClickTypeConfigurationSelectDropdown(event)
             }
@@ -130,8 +130,8 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Pregnancy Start Time
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
-        makeLabel(Ids.PREG_START_TIME_INPUT, StringsOfLanguages.ENGLISH.pregnancyStartTime, StringsOfLanguages.URDU.pregnancyStartTime)
-        pregnancyTimeInput(inputContainerToCopyFrom, Ids.PREG_START_TIME_INPUT) {
+        makeLabel(Ids.Inputs.PREG_START_TIME_INPUT, StringsOfLanguages.ENGLISH.pregnancyStartTime, StringsOfLanguages.URDU.pregnancyStartTime)
+        pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_START_TIME_INPUT) {
             onChangeFunction = { event ->
                 findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
             }
@@ -139,8 +139,8 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
     // Pregnancy End Time
     div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
-        makeLabel(Ids.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
-        pregnancyTimeInput(inputContainerToCopyFrom, Ids.PREG_END_TIME_INPUT) {
+        makeLabel(Ids.Inputs.PREG_END_TIME_INPUT, StringsOfLanguages.ENGLISH.birthMiscarrriageTime, StringsOfLanguages.URDU.birthMiscarrriageTime)
+        pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_END_TIME_INPUT) {
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
@@ -150,10 +150,10 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Pregnancy Mustabeen ul Khilqa?
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}"){
         div {
-            makeLabel(Ids.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
+            makeLabel(Ids.Inputs.MUSTABEEN_CHECKBOX, StringsOfLanguages.ENGLISH.mustabeenUlKhilqa, StringsOfLanguages.URDU.mustabeenUlKhilqa)
             checkBoxInput {
-                id = Ids.MUSTABEEN_CHECKBOX
-                name = Ids.MUSTABEEN_CHECKBOX
+                id = Ids.Inputs.MUSTABEEN_CHECKBOX
+                name = Ids.Inputs.MUSTABEEN_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMustabeen != false
                 onChangeFunction = { event -> switchWiladatIsqat(findInputContainer(event)) }
             }
@@ -162,8 +162,8 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 
     // Pregnancy Aadat
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
-        makeLabel(Ids.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat)
-        makeNumberInput(Ids.AADAT_NIFAS_INPUT, inputContainerToCopyFrom?.aadatNifas?.value.orEmpty(), (1..40)) {
+        makeLabel(Ids.Inputs.AADAT_NIFAS_INPUT, StringsOfLanguages.ENGLISH.nifasAadat, StringsOfLanguages.URDU.nifasAadat)
+        makeNumberInput(Ids.Inputs.AADAT_NIFAS_INPUT, inputContainerToCopyFrom?.aadatNifas?.value.orEmpty(), (1..40)) {
             step = "any"
             required = false
             disabled = inputContainerToCopyFrom?.isNifas != true
@@ -174,35 +174,35 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
 private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Aadat of Haiz
     div(classes = CssC.ROW) {
-        makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
-        makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10)) {
+        makeLabel(Ids.Inputs.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
+        makeNumberInput(Ids.Inputs.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10)) {
             onChangeFunction = { event -> onlyTwo(event) }
         }
     }
     // Aadat of Tuhr
     div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
-        makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
-        makeNumberInput(Ids.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30)) {
+        makeLabel(Ids.Inputs.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
+        makeNumberInput(Ids.Inputs.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30)) {
             onChangeFunction = { event -> onlyTwo(event) }
         }
     }
     // Zaalla Cycle Length
     div(classes = "${CssC.ROW} ${CssC.ZAALLA} ${CssC.INVIS}") {
-        makeLabel(Ids.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
-        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10)) {
+        makeLabel(Ids.Inputs.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
+        makeNumberInput(Ids.Inputs.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10)) {
             onChangeFunction = { event -> onlyTwo(event) }
         }
     }
     // Mawjooda Tuhr
     div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT}") {
-        makeLabel(Ids.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
-        makeNumberInput(Ids.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
+        makeLabel(Ids.Inputs.MAWJOODA_TUHR_INPUT, StringsOfLanguages.ENGLISH.mawjoodahTuhr, StringsOfLanguages.URDU.mawjoodahTuhr)
+        makeNumberInput(Ids.Inputs.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
         // Fasid?
         div {
-            makeLabel(Ids.MAWJOODA_FASID_CHECKBOX, StringsOfLanguages.ENGLISH.faasid, StringsOfLanguages.URDU.faasid)
+            makeLabel(Ids.Inputs.MAWJOODA_FASID_CHECKBOX, StringsOfLanguages.ENGLISH.faasid, StringsOfLanguages.URDU.faasid)
             checkBoxInput {
-                id = Ids.MAWJOODA_FASID_CHECKBOX
-                name = Ids.MAWJOODA_FASID_CHECKBOX
+                id = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
+                name = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMawjoodaFasid?.or(false) == true
             }
         }
@@ -215,7 +215,7 @@ private fun TagConsumer<HTMLElement>.questionInput() {
             makeSpans(StringsOfLanguages.ENGLISH.titleTextFieldLabel, StringsOfLanguages.URDU.titleTextFieldLabel)
         }
         div(classes = CssC.ROW) {
-            makeTextAreaInput(Ids.INPUT_DESCRIPTION, "36px")
+            makeTextAreaInput(Ids.Inputs.INPUT_DESCRIPTION, "36px")
         }
     }
     details {
@@ -223,7 +223,7 @@ private fun TagConsumer<HTMLElement>.questionInput() {
             makeSpans(StringsOfLanguages.ENGLISH.questionTextFieldLabel, StringsOfLanguages.URDU.questionTextFieldLabel)
         }
         div(classes = CssC.ROW) {
-            makeTextAreaInput(Ids.INPUT_QUESTION)
+            makeTextAreaInput(Ids.Inputs.INPUT_QUESTION)
         }
     }
 }
@@ -266,12 +266,12 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
 
 private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
-        id = Ids.CALCULATE_BUTTON
+        id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
-        id = Ids.CALCULATE_BUTTON
+        id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
@@ -279,18 +279,18 @@ private fun FlowContent.calculateButton() {
 
 private fun TagConsumer<HTMLElement>.content() {
     div(classes = CssC.INVIS) {
-        id = Ids.CONTENT_CONTAINER
+        id = Ids.Results.CONTENT_CONTAINER
         div(classes = CssC.URDU) {
-            id = Ids.CONTENT_WRAPPER
+            id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.LEFT, CssC.RTL)
-            content { id = Ids.CONTENT_URDU }
+            content { id = Ids.Results.CONTENT_URDU }
         }
         div(classes = CssC.ENGLISH) {
-            id = Ids.CONTENT_WRAPPER
+            id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.RIGHT)
-            content { id = Ids.CONTENT_ENGLISH }
+            content { id = Ids.Results.CONTENT_ENGLISH }
         }
-        content { id = Ids.CONTENT_DATES }
+        content { id = Ids.Results.CONTENT_DATES }
         hr()
     }
 }

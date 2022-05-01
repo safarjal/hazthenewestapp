@@ -456,34 +456,34 @@ val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelect
 private val datesDifferenceGridElement get() = document.getElementById(Ids.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
 
-val HTMLElement.typeSelect get() = getChildById(Ids.INPUT_TYPE_SELECT) as HTMLSelectElement
+val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
-val HTMLElement.isMutada get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
-val HTMLElement.isNifas get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
-val HTMLElement.isMubtadia get() = (getChildById(Ids.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
+val HTMLElement.isMutada get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
+val HTMLElement.isNifas get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
+val HTMLElement.isMubtadia get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
 
-val HTMLElement.pregStartTime get() = getChildById(Ids.PREG_START_TIME_INPUT) as HTMLInputElement
-val HTMLElement.pregEndTime get() = getChildById(Ids.PREG_END_TIME_INPUT) as HTMLInputElement
+val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
+val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement
 
-val HTMLElement.aadatHaz get() = getChildById(Ids.AADAT_HAIZ_INPUT) as HTMLInputElement
-val HTMLElement.aadatTuhr get() = getChildById(Ids.AADAT_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.MAWJOODA_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.aadatNifas get() = getChildById(Ids.AADAT_NIFAS_INPUT) as HTMLInputElement
-val HTMLElement.cycleLength get() = getChildById(Ids.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
+val HTMLElement.aadatHaz get() = getChildById(Ids.Inputs.AADAT_HAIZ_INPUT) as HTMLInputElement
+val HTMLElement.aadatTuhr get() = getChildById(Ids.Inputs.AADAT_TUHR_INPUT) as HTMLInputElement
+val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT) as HTMLInputElement
+val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement
+val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
 
-val HTMLElement.isZaalla get() = (getChildById(Ids.ZAALLA_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMustabeen get() = (getChildById(Ids.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 
-val HTMLElement.contentContainer get() = (getChildById(Ids.CONTENT_CONTAINER)!!) as HTMLDivElement
-private val HTMLElement.contentEnglish get() = getChildById(Ids.CONTENT_ENGLISH) as HTMLParagraphElement
-private val HTMLElement.contentUrdu get() = getChildById(Ids.CONTENT_URDU) as HTMLParagraphElement
-private val HTMLElement.contentDatesElement get() = getChildById(Ids.CONTENT_DATES) as HTMLParagraphElement
+val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
+private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
+private val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
+private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
 
-private val HTMLElement.descriptionText get() = (getChildById(Ids.INPUT_DESCRIPTION) as HTMLTextAreaElement)
+private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_DESCRIPTION) as HTMLTextAreaElement)
 
 private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
@@ -519,8 +519,8 @@ val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement> get() {
 
 val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
-val HTMLTableRowElement.durationInput get() = getChildById(Ids.DurationRow.INPUT_DURATION) as HTMLInputElement
-private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.DurationRow.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
+val HTMLTableRowElement.durationInput get() = getChildById(Ids.Row.INPUT_DURATION) as HTMLInputElement
+private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.Row.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 val HTMLTableRowElement.damOrTuhr get() = durationTypeInput.value
 
 val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->

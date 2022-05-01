@@ -273,6 +273,14 @@ fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTi
 object Ids {
     const val LANGUAGE = "language"
 
+    const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
+    const val INPUT_CONTAINER = "input_container"
+    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+    const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
+
+    object InputTables {
+
+    }
     const val HAIZ_INPUT_TABLE = "haiz_input_table"
     const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
 
@@ -288,54 +296,48 @@ object Ids {
         const val END_DATE = "end_date"
         const val OUTPUT_FIELD = "calc_duration_output"
     }
-
     object Row {
         const val INPUT_START_TIME = "input_start_time"
         const val INPUT_END_TIME = "input_end_time"
         const val BUTTONS_CONTAINER = "button_add_before_container"
         const val BUTTON_REMOVE = "button_remove"
         const val BUTTON_ADD_BEFORE = "button_add_before"
-    }
-
-    object DurationRow {
         const val INPUT_DURATION = "input_duration"
         const val INPUT_TYPE_OF_DURATION = "input_duration_type"
     }
-
     object Ikhtilafat {
         const val IKHTILAF1 = "ikhtilaf1"
         const val IKHTILAF2 = "ikhtilaf2"
         const val IKHTILAF3 = "ikhtilaf3"
         const val IKHTILAF4 = "ikhtilaf4"
     }
-
-    const val CONTENT_CONTAINER = "content_container"
-    const val CONTENT_WRAPPER = "content_wrapper"
-    const val CONTENT_URDU = "content_urdu"
-    const val CONTENT_ENGLISH = "content_english"
-    const val CONTENT_DATES = "content_dates"
-    const val CALCULATE_ALL_DIV = "calculate_all_div"
-    const val CALCULATE_BUTTON = "calculate_button"
-    const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
-    const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
-    const val INPUT_CONTAINER = "input_container"
-    const val COMPARISON_CONTAINER = "comparison_container"
-    const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
-    const val ZAALLA_CHECKBOX = "zaalla_checkbox"
-    const val PREG_START_TIME_INPUT = "preg_start_time_input"
-    const val PREG_END_TIME_INPUT = "preg_end_time_input"
-    const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
-    const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
-    const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
-    const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
-    const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
-    const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
-    const val INPUT_TYPE_SELECT = "input_type_select"
-    const val MASLA_TYPE_SELECT = "masla_type_select"
-    const val INPUT_QUESTION = "input_question"
-    const val INPUT_DESCRIPTION = "input_description"
-    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
-    const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
+    object Results {
+        const val CONTENT_CONTAINER = "content_container"
+        const val CONTENT_WRAPPER = "content_wrapper"
+        const val CONTENT_URDU = "content_urdu"
+        const val CONTENT_ENGLISH = "content_english"
+        const val CONTENT_DATES = "content_dates"
+        const val CALCULATE_ALL_DIV = "calculate_all_div"
+        const val CALCULATE_BUTTON = "calculate_button"
+        const val COMPARISON_CONTAINER = "comparison_container"
+        const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
+    }
+    object Inputs {
+        const val MASLA_TYPE_SELECT = "masla_type_select"
+        const val ZAALLA_CHECKBOX = "zaalla_checkbox"
+        const val INPUT_TYPE_SELECT = "input_type_select"
+        const val PREG_END_TIME_INPUT = "preg_end_time_input"
+        const val PREG_START_TIME_INPUT = "preg_start_time_input"
+        const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
+        const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
+        const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
+        const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
+        const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
+        const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
+        const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
+        const val INPUT_QUESTION = "input_question"
+        const val INPUT_DESCRIPTION = "input_description"
+    }
 }
 
 object CssC {
