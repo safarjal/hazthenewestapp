@@ -80,6 +80,33 @@ fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: 
     }
 }
 
+private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
+    else {StringsOfLanguages.URDU.incorrectAadat}
+    if (value.contains("-")) {
+//        println("DASH!")
+        setCustomValidity(try {
+            val arr = value.split("-")
+//            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
+            require( arr.all { it.toInt() in validityRange } ) { errormessage }
+            ""
+        } catch (e: IllegalArgumentException) {
+            e.message ?: errormessage
+        })
+    }
+    else {
+        value = value.replace("[^0-9:]".toRegex(), "")
+        val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
+        setCustomValidity(try {
+            val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
+            require(days == null || days in doubleValidityRange) { errormessage }
+            ""
+        } catch (e: IllegalArgumentException) {
+            e.message ?: errormessage
+        })
+    }
+}
+
 fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
     span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()

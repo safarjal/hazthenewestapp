@@ -135,7 +135,6 @@ object Vls {                                        // Values
         const val MUTADA = "mutada"
         const val NIFAS = "nifas"
         const val MUBTADIA = "mubtadia"
-        const val ZAALLA = "zaalla"
     }
     object Types {
         const val DATE_ONLY = "dateOnly"
@@ -701,12 +700,16 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Aadat of Haiz
     div(classes = CssC.ROW) {
         makeLabel(Ids.AADAT_HAIZ_INPUT, StringsOfLanguages.ENGLISH.haizAadat, StringsOfLanguages.URDU.haizAadat)
-        makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10))
+        makeNumberInput(Ids.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10)) {
+            onChangeFunction = { event -> onlyTwo(event) }
+        }
     }
     // Aadat of Tuhr
     div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
         makeLabel(Ids.AADAT_TUHR_INPUT, StringsOfLanguages.ENGLISH.tuhrAadat, StringsOfLanguages.URDU.tuhrAadat)
-        makeNumberInput(Ids.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30))
+        makeNumberInput(Ids.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30)) {
+            onChangeFunction = { event -> onlyTwo(event) }
+        }
     }
     // Mawjooda Tuhr
     div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT}") {
@@ -725,35 +728,27 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Zaalla Cycle Length
     div(classes = "${CssC.ROW} ${CssC.ZAALLA} ${CssC.INVIS}") {
         makeLabel(Ids.ZAALLA_CYCLE_LENGTH, "Cycle Length", "Cycle Length")
-        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10))
-        // TODO: Should max cycle length be 6 months or infinite?
+        makeNumberInput(Ids.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10)) {
+            onChangeFunction = { event -> onlyTwo(event) }
+        }
     }
 }
-//TODO:Figure this out and uncomment it
-fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
-    else {StringsOfLanguages.URDU.incorrectAadat}
-    if (value.contains("-")) {
-//        println("DASH!")
-        setCustomValidity(try {
-            val arr = value.split("-")
-//            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
-            require( arr.all { it.toInt() in validityRange } ) { errormessage }
-            ""
-        } catch (e: IllegalArgumentException) {
-            e.message ?: errormessage
-        })
+
+fun onlyTwo(event: Event) {
+    val inputContainer = findInputContainer(event)
+    val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
+    console.log("inputsList", inputsList)
+    var inputsInUse = 0
+    console.log("inputsInUse", inputsInUse)
+    inputsList.forEach { if (it.value.isNotEmpty()) inputsInUse += 1 }
+    if (inputsInUse == 2) {
+        console.log("2!", inputsList.first { it.value.isEmpty() })
+        inputsList.first { it.value.isEmpty() }.disabled = true
     }
-    else {
-        value = value.replace("[^0-9:]".toRegex(), "")
-        val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
-        setCustomValidity(try {
-            val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
-            require(days == null || days in doubleValidityRange) { errormessage }
-            ""
-        } catch (e: IllegalArgumentException) {
-            e.message ?: errormessage
-        })
+    else if (inputsInUse < 2) {
+        console.log("<2!")
+        inputsList.forEach { it.disabled = false }
+        disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
     }
 }
 
@@ -1300,7 +1295,7 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAnd
     }
 
 
-    var combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
+    val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
     for(tuhrAadat in aadatTuhrList){
         for (aadatHaiz in aadatHaizList){
             combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
