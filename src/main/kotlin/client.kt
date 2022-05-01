@@ -99,6 +99,7 @@ object CssC {
     const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
     const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
     const val NOT_MUSTABEEN = "not-mustabeen"       // Switch. Between Isqat/Wiladat
+    const val TITLE_CELL = "title_cell"
 
     const val ROW = "row"                           // CSS Style. Make nice alternating colorful rows of inputs
     const val IKHTILAF = "ikhtilaf"                 // CSS Style. Makes the gearbox icon on the detail
@@ -295,7 +296,12 @@ fun languageChange() {
                 .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
                 ?.selected = true
         }
-    if (comparisonContainer != null) calcAll()
+    if (datesDifferenceGridElement?.children?.asList()?.isNotEmpty() == true) {
+        datesDifferenceGridElement?.getElementsByClassName(CssC.TITLE_CELL)?.asList()?.forEach {
+            it.classList.toggle("${Vls.Langs.ENGLISH}-align", lang == Vls.Langs.ENGLISH)
+            it.classList.toggle("${Vls.Langs.URDU}-align", lang == Vls.Langs.URDU)
+        }
+    }
 }
 
 private fun calcAll() {
@@ -306,16 +312,15 @@ private fun calcAll() {
 }
 
 private fun TagConsumer<HTMLElement>.calcAllBtn() {
-    div(classes = "${CssC.DEV} ${CssC.CENTER}") {
-        id = Ids.CALCULATE_ALL_DIV
-        button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
-            +"Calculate All"
-            onClickFunction = { calcAll() }
-        }
-        button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
-            +"Calculate All"
-            onClickFunction = { calcAll() }
-        }
+    button {
+        classes = setOf(CssC.ENGLISH, if(languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.INVIS)
+        +"Calculate All"
+        onClickFunction = { calcAll() }
+    }
+    button {
+        classes = setOf(CssC.URDU, if(languageSelector.value == Vls.Langs.URDU) "" else CssC.INVIS)
+        +"Calculate All"
+        onClickFunction = { calcAll() }
     }
 }
 
@@ -332,7 +337,9 @@ fun Node.addInputLayout() {
             id = Ids.INPUT_CONTAINERS_CONTAINER
             inputFormDiv()
         }
-        calcAllBtn()
+        div(classes = "${CssC.DEV} ${CssC.CENTER}") {
+            id = Ids.CALCULATE_ALL_DIV
+        }
         comparisonDiv()
     }
 }
@@ -404,18 +411,14 @@ private fun addRemoveInputsContainerButton(inputContainer: HTMLElement) {
 }
 
 private fun addCompareButtonIfNeeded() {
-    //TODO:Uncomment this
-    if (comparisonContainer != null ||
-        inputsContainers.size < 2 ||
-        inputsContainers.any { it.haizDatesList == null }
-    ) return
+    if (comparisonContainer != null || inputsContainers.size < 2 ) {
+        calculateAllDiv.replaceChildren {  }
+        return
+    }
 
-//    calculateAllDiv.after {
-//        div(classes = CssC.CENTER) {
-//            id = Ids.COMPARISON_CONTAINER
-//            div { id = Ids.DATES_DIFFERENCE_TABLE }
-//        }
-//    }
+    calculateAllDiv.replaceChildren {
+        calcAllBtn()
+    }
 }
 
 private fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -1394,16 +1397,18 @@ private fun parseEntries(inputContainer: HTMLElement) {
             for (aadatCombo in combosToTry){
                 allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
                 allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
-                listOfLists+=handleEntries(allTheInputs).hazDatesList
+                val entries = handleEntries(allTheInputs)
+                if (entries == NO_OUTPUT) return
+                listOfLists+=entries.hazDatesList
                 listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
             }
             val output = generatInfoForCompareTable(listOfLists.toMutableList())
-            addCompareButtonIfNeeded()
+            contentContainer.visibility = false
             drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
             return
         }
 
-
+        datesDifferenceGridElement?.replaceChildren {  }
         @Suppress("UnsafeCastFromDynamic")
         var output:OutputTexts
         if(allTheInputs.entries!=null){
@@ -1577,7 +1582,7 @@ fun drawCompareTable(
     datesDifferenceTableElement.replaceChildren {
         val lang = languageSelector.value
         val dur = inputsContainers.first().isDuration
-        val titleClasses = "${lang}-align ${if (dur) CssC.HIDDEN else ""}"
+        val titleClasses = "${CssC.TITLE_CELL} ${lang}-align ${if (dur) CssC.HIDDEN else ""}"
 
         // Month Row
         oneRow(true, "", false) {
@@ -1585,8 +1590,7 @@ fun drawCompareTable(
                 val date = header.getDate()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {
-                        +if (lang == Vls.Langs.ENGLISH) englishMonthNames[header.getMonth()]
-                        else urduMonthNames[header.getMonth()]
+                        makeSpans(englishMonthNames[header.getMonth()], urduMonthNames[header.getMonth()])
                     }
                 }
             }
