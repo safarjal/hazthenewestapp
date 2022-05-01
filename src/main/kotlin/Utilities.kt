@@ -14,7 +14,7 @@ const val MILLISECONDS_IN_A_MINUTE = 60000
 const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 
-val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(true, null, mutableListOf()), mutableListOf())
+val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
 val ARBITRARY_DATE = Date(0,0,0)
 val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")

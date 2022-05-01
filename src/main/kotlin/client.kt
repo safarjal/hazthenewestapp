@@ -1298,8 +1298,8 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAnd
 
 
     var combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
-    for (aadatHaiz in aadatHaizList){
-        for(tuhrAadat in aadatTuhrList){
+    for(tuhrAadat in aadatTuhrList){
+        for (aadatHaiz in aadatHaizList){
             combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
         }
     }
