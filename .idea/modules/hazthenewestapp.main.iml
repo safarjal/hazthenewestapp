@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="4" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp" pureKotlinSourceFolders="C:\Users\safar\Documents\GitHub\hazthenewestapp\src\test\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\main\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\build\externals\hazthenewestapp\src;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\main\kotlin;C:\Users\safar\Documents\GitHub\hazthenewestapp\build\externals\hazthenewestapp\src;C:\Users\safar\Documents\GitHub\hazthenewestapp\src\test\kotlin">
+      <configuration version="4" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp">
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <productionOutputPath>$MODULE_DIR$/../../build/classes/kotlin/main</productionOutputPath>
         <compilerSettings>
@@ -25,7 +25,6 @@
           <option name="pluginClasspaths">
             <array />
           </option>
-          <option name="multiPlatform" value="true" />
           <option name="errors">
             <ArgumentParseErrors />
           </option>

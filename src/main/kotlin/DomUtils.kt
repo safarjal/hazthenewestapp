@@ -2,6 +2,80 @@ import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
 
+fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
+    p(classes = classes) {
+        id = "content"
+        style = "white-space: pre-wrap;"
+        block()
+    }
+}
+
+fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    minTimeInput: String,
+    maxTimeInput: String,
+    indexWithinRow: Int,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput) {
+        onChangeFunction = { event -> setMinMaxForTimeInputsOnInput(event, indexWithinRow) }
+        block()
+    }
+}
+
+fun FlowContent.timeInput(
+    inputContainerToCopyFrom: HTMLElement,
+    timeInputToCopyFrom: HTMLInputElement,
+    indexWithinRow: Int,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(inputContainerToCopyFrom, timeInputToCopyFrom) {
+        onChangeFunction = { event -> setMinMaxForTimeInputsOnInput(event, indexWithinRow) }
+        block()
+    }
+}
+
+fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    minTimeInput: String,
+    maxTimeInput: String,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(isDateOnlyLayout) {
+        min = minTimeInput
+        max = maxTimeInput
+        block()
+    }
+}
+
+fun FlowContent.timeInput(
+    inputContainerToCopyFrom: HTMLElement,
+    timeInputToCopyFrom: HTMLInputElement? = null,
+    block: INPUT.() -> Unit = {}
+) {
+    timeInput(inputContainerToCopyFrom.isDateOnly) {
+        block()
+        @Suppress("NAME_SHADOWING")
+        val timeInputToCopyFrom = timeInputToCopyFrom ?: inputContainerToCopyFrom.getChildById(id) as HTMLInputElement
+        value = timeInputToCopyFrom.value
+        min = timeInputToCopyFrom.min
+        max = timeInputToCopyFrom.max
+    }
+}
+
+fun FlowContent.timeInput(
+    isDateOnlyLayout: Boolean,
+    block: INPUT.() -> Unit = {}
+) {
+    customDateTimeInput(isDateOnlyLayout) {
+        required = true
+        onClickFunction = { event ->
+            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+        }
+        block()
+    }
+}
+
 fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
     label {
         htmlFor = inputId
@@ -53,6 +127,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         )
         selected = isSelected && languageSelector.value == Vls.Langs.ENGLISH
         value = optionVal
+        id = optionVal
         block()
         +englishText
     }
@@ -64,6 +139,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         )
         selected = isSelected && languageSelector.value == Vls.Langs.URDU
         value = optionVal
+        id = optionVal
         block()
         +urduText
     }

@@ -2,41 +2,11 @@ import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import kotlin.js.Date
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-
-// VALS TO USE
-const val MILLISECONDS_IN_A_DAY:Long = 86400000
-const val MILLISECONDS_IN_AN_HOUR = 3600000
-const val MILLISECONDS_IN_A_MINUTE = 60000
-const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-
-
-val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
-val ARBITRARY_DATE = Date(0,0,0)
-val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل",
-    "مئی", "جون", "جولائ", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر")
-
-object Events {
-    const val VISIBILITY_CHANGE = "visibilitychange"
-}
-
-object UnicodeChars {
-    const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
-    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
-    const val ORANGE_DIAMOND = "&#x1F538;"           // ORANGE_DIAMOND
-    const val SNOWFLAKE = "&#10052;&#65039;"     // SNOWFLAKE
-    const val BLACK_SQUARE = "&#9642;"
-    const val FAT_DASH = "&#x2796;"
-    const val MEMO = "&#128221;"                    // MEMO
-    const val HAND_WRITING = "&#9997;&#65039;"           // HAND_WRITING
-    const val BLUE_SWIRL = "\uD83C\uDF00"
-    const val ABACUS = "&#129518;"
-}
 
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
@@ -84,6 +54,10 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
         parent = parent.parentElement
     }
 }
+
+fun findInputContainer(event: Event) =
+    (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.INPUT_CONTAINER)}!!
+fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
 var Element.visibility: Boolean
     get() = !classList.contains(CssC.INVIS)
@@ -294,3 +268,165 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
  }
 
 fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTime()).toLong() }
+
+// VALS TO USE
+object Ids {
+    const val LANGUAGE = "language"
+
+    const val HAIZ_INPUT_TABLE = "haiz_input_table"
+    const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
+
+    object AddTimeToDate {
+        //        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
+        const val DATE_TO_ADD_TO = "date_to_add_to"
+        const val TIME_TO_ADD = "time_to_add"
+        const val OUTOUT_FIELD = "add_time_date_output"
+    }
+    object CalcDuration {
+        //        const val IS_DATE_ONLY = "get_duration_is_date_only"
+        const val STRT_DATE = "start_date"
+        const val END_DATE = "end_date"
+        const val OUTPUT_FIELD = "calc_duration_output"
+    }
+
+    object Row {
+        const val INPUT_START_TIME = "input_start_time"
+        const val INPUT_END_TIME = "input_end_time"
+        const val BUTTONS_CONTAINER = "button_add_before_container"
+        const val BUTTON_REMOVE = "button_remove"
+        const val BUTTON_ADD_BEFORE = "button_add_before"
+    }
+
+    object DurationRow {
+        const val INPUT_DURATION = "input_duration"
+        const val INPUT_TYPE_OF_DURATION = "input_duration_type"
+    }
+
+    object Ikhtilafat {
+        const val IKHTILAF1 = "ikhtilaf1"
+        const val IKHTILAF2 = "ikhtilaf2"
+        const val IKHTILAF3 = "ikhtilaf3"
+        const val IKHTILAF4 = "ikhtilaf4"
+    }
+
+    const val CONTENT_CONTAINER = "content_container"
+    const val CONTENT_WRAPPER = "content_wrapper"
+    const val CONTENT_URDU = "content_urdu"
+    const val CONTENT_ENGLISH = "content_english"
+    const val CONTENT_DATES = "content_dates"
+    const val CALCULATE_ALL_DIV = "calculate_all_div"
+    const val CALCULATE_BUTTON = "calculate_button"
+    const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
+    const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
+    const val INPUT_CONTAINER = "input_container"
+    const val COMPARISON_CONTAINER = "comparison_container"
+    const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
+    const val ZAALLA_CHECKBOX = "zaalla_checkbox"
+    const val PREG_START_TIME_INPUT = "preg_start_time_input"
+    const val PREG_END_TIME_INPUT = "preg_end_time_input"
+    const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
+    const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
+    const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
+    const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
+    const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
+    const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
+    const val INPUT_TYPE_SELECT = "input_type_select"
+    const val MASLA_TYPE_SELECT = "masla_type_select"
+    const val INPUT_QUESTION = "input_question"
+    const val INPUT_DESCRIPTION = "input_description"
+    const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
+    const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
+}
+
+object CssC {
+    const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
+    const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
+    const val HIDDEN = "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
+
+    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
+    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
+    const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
+    const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
+
+    const val NIFAS = "nifas"                       // Switch. Put on any input that only shows when Nifas
+    const val ZAALLA = "zaalla"                     // Switch. Put on any input that only shows when Zaalla
+    const val MUTADA = "mutada"                     // Switch. Put on any input that only shows when NOT Mubtadia
+    const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
+    const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
+    const val NOT_MUSTABEEN = "not-mustabeen"       // Switch. Between Isqat/Wiladat
+    const val TITLE_CELL = "title_cell"
+
+    const val ROW = "row"                           // CSS Style. Make nice alternating colorful rows of inputs
+    const val IKHTILAF = "ikhtilaf"                 // CSS Style. Makes the gearbox icon on the detail
+    const val SLIDER = "slider"                     // CSS Style.
+    const val ROUND = "round"                       // CSS Style.
+
+    const val CALC_BTN = "calc-btn"                 // CSS Style.
+    const val LEFT = "left"                         // CSS Style.
+    const val RIGHT = "right"                       // CSS Style.
+    const val PLUS = "plus"                         // CSS Style.
+    const val MINUS = "minus"                       // CSS Style.
+    const val SWITCH = "switch"                     // CSS Style.
+    const val LABEL_INPUT = "label-input"           // CSS Style.
+    const val CENTER = "center"                     // CSS Style.
+
+    const val SHRUNK = "shrunk"                     // CSS Style. Shrinks Answer to desired height.
+    const val TABLE_CELL = "table_cell"             // CSS Style.
+    const val DESCRIPTION = "description"
+    const val MONTHS_ROW = "months_row"             // CSS Style.
+    const val DATES_ROW = "dates_row"               // CSS Style.
+    const val BORDERED = "bordered"                 // CSS Style.
+    const val ENPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
+    const val NA_PAAKI = "na_paaki"                 // CSS Style.
+    const val AYYAM_E_SHAKK = "ayyam_e_shakk"       // CSS Style.
+}
+
+object Vls {                                        // Values
+    object Langs {
+        const val ENGLISH = "english"
+        const val URDU = "urdu"
+    }
+    object Maslas {
+        const val MUTADA = "mutada"
+        const val NIFAS = "nifas"
+        const val MUBTADIA = "mubtadia"
+    }
+    object Types {
+        const val DATE_ONLY = "dateOnly"
+        const val DATE_TIME = "dateTime"
+        const val DURATION = "duration"
+    }
+    object Opts {                                   // Options for duration dropdowns
+        const val DAM = "dam"
+        const val TUHR = "tuhr"
+        const val HAML = "haml"
+        const val WILADAT = "wiladat"
+    }
+}
+
+const val MILLISECONDS_IN_A_DAY:Long = 86400000
+const val MILLISECONDS_IN_AN_HOUR = 3600000
+const val MILLISECONDS_IN_A_MINUTE = 60000
+
+val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
+val ARBITRARY_DATE = Date(0,0,0)
+val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائ", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر")
+
+object Events {
+    const val VISIBILITY_CHANGE = "visibilitychange"
+}
+
+object UnicodeChars {
+    const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
+    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
+    const val ORANGE_DIAMOND = "&#x1F538;"           // ORANGE_DIAMOND
+    const val SNOWFLAKE = "&#10052;&#65039;"     // SNOWFLAKE
+    const val BLACK_SQUARE = "&#9642;"
+    const val FAT_DASH = "&#x2796;"
+    const val MEMO = "&#128221;"                    // MEMO
+    const val HAND_WRITING = "&#9997;&#65039;"           // HAND_WRITING
+    const val BLUE_SWIRL = "\uD83C\uDF00"
+    const val ABACUS = "&#129518;"
+    const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+}
