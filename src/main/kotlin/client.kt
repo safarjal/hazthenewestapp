@@ -304,9 +304,7 @@ fun languageChange() {
 }
 
 private fun calcAll() {
-    inputsContainers.forEach {
-        it.calculateButton.click()
-    }
+    inputsContainers.forEach { parseEntries(it) }
     compareResults()
 }
 
@@ -1385,6 +1383,7 @@ private fun parseEntries(inputContainer: HTMLElement) {
                 languageSelector.value,
                 ikhtilaafaat)
         }
+
         if(aadatHaz.value.contains("-")||
             aadatTuhr.value.contains("-")||
             aadatNifas.value.contains("-")){
