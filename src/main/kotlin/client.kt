@@ -51,14 +51,7 @@ fun languageChange() {
     document.querySelectorAll("select") // Selected options don't invis so switch them.
         .asList()
         .map { it as HTMLSelectElement }
-        .forEach { select ->
-            select.children
-                .asList()
-                .map { it as HTMLOptionElement }
-                // Same val as selected option, different lang:
-                .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
-                ?.selected = true
-        }
+        .forEach { select -> setOptionInSelect(select) }
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{

@@ -433,10 +433,19 @@ fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", 
 
 // DEAL-WITH-DOM FUNCTIONS
 // All maslas are the same
+fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String = selectElement.value) {
+    // Selects the language appropriate option
+    selectElement.children
+        .asList()
+        .map { it as HTMLOptionElement }
+        .firstOrNull { option ->
+            option.value == selectedOption && option.classList.contains(languageSelector.value) }
+        ?.selected = true
+}
 fun maslaChanging(event: Event) {
     var selectedOption = (event.currentTarget as HTMLSelectElement).value
-    inputsContainers.forEach {
-        it.maslaSelect.value = selectedOption
+    inputsContainers.forEach { it ->
+        setOptionInSelect(it.maslaSelect, selectedOption)
         disableTree(it)
     }
 }
@@ -571,7 +580,8 @@ private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boole
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
 private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
-    inputContainer.typeSelect.value = selectedOption
+    setOptionInSelect(inputContainer.typeSelect, selectedOption)
+
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)
