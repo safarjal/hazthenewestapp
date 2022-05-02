@@ -34,7 +34,7 @@ private fun askPassword(): Boolean {
 
 private fun parseHREF() {
     // DEVMODE
-    for (element in devElements) element.visibility = window.location.href.contains("dev")
+    for (element in devElements) element.visibility = devmode
 
     // DEFAULT LANGUAGE
     languageSelector.onchange = { languageChange() }
@@ -174,9 +174,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
-        if(aadatHaz.value.contains("-")||
-            aadatTuhr.value.contains("-")||
-            aadatNifas.value.contains("-")){
+        if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value)
             return
@@ -210,8 +208,8 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
-
 }
+
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
     with(inputContainer) {
         if(descriptionText.value==""){
@@ -452,9 +450,9 @@ private val inputsContainersContainer get() = document.getElementById(Ids.InputC
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
-
-private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
+val devmode = window.location.href.contains("dev")
+private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME

@@ -478,7 +478,7 @@ fun disableTree(inputContainer: HTMLElement) {
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
-    if (value.contains("-")) {
+    if (value.contains("-") && devmode) {
 //        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
