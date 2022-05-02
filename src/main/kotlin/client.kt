@@ -459,9 +459,10 @@ val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
-val HTMLElement.isMutada get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
-val HTMLElement.isNifas get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
-val HTMLElement.isMubtadia get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
+val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
+val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
+val HTMLElement.isNifas get() = maslaSelect.value == Vls.Maslas.NIFAS
+val HTMLElement.isMubtadia get() = maslaSelect.value == Vls.Maslas.MUBTADIA
 
 val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
 val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement

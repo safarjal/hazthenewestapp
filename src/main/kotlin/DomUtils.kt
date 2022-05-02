@@ -432,6 +432,14 @@ fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", 
 }
 
 // DEAL-WITH-DOM FUNCTIONS
+// All maslas are the same
+fun maslaChanging(event: Event) {
+    var selectedOption = (event.currentTarget as HTMLSelectElement).value
+    inputsContainers.forEach {
+        it.maslaSelect.value = selectedOption
+        disableTree(it)
+    }
+}
 
 // Invising Tree
 private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
