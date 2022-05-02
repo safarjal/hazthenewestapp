@@ -23,7 +23,7 @@ suspend fun HTMLElement.toCanvas(
     imageTimeout: Int = 15000,
     useCORS: Boolean = false,
     proxy: String? = null,
-    backgroundColor: String? = null,
+    backgroundColor: String? = undefined,
     foreignObjectRendering: Boolean = false,
     removeContainer: Boolean = true,
 ) = html2canvas(this, Html2CanvasOptions(
@@ -69,7 +69,7 @@ data class Html2CanvasOptions(
     val useCORS: Boolean = false,
     val proxy: String? = null,
     // more options
-    val backgroundColor: String? = null,
+    val backgroundColor: String? = undefined,
     val foreignObjectRendering: Boolean = false,
     val removeContainer: Boolean = true,
 )
