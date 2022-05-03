@@ -432,6 +432,23 @@ fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", 
 }
 
 // DEAL-WITH-DOM FUNCTIONS
+// All maslas are the same
+fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String = selectElement.value) {
+    // Selects the language appropriate option
+    selectElement.children
+        .asList()
+        .map { it as HTMLOptionElement }
+        .firstOrNull { option ->
+            option.value == selectedOption && option.classList.contains(languageSelector.value) }
+        ?.selected = true
+}
+fun maslaChanging(event: Event) {
+    var selectedOption = (event.currentTarget as HTMLSelectElement).value
+    inputsContainers.forEach { it ->
+        setOptionInSelect(it.maslaSelect, selectedOption)
+        disableTree(it)
+    }
+}
 
 // Invising Tree
 private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
@@ -478,7 +495,7 @@ fun disableTree(inputContainer: HTMLElement) {
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
-    if (value.contains("-")) {
+    if (value.contains("-") && devmode) {
 //        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
@@ -563,7 +580,8 @@ private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boole
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
 private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
-    inputContainer.typeSelect.value = selectedOption
+    setOptionInSelect(inputContainer.typeSelect, selectedOption)
+
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly)
         val newMin = convertInputValue(timeInput.min, isDateOnly)

@@ -38,7 +38,7 @@ private fun askPassword(): Boolean {
 
 private fun parseHREF() {
     // DEVMODE
-    for (element in devElements) element.visibility = window.location.href.contains("dev")
+    for (element in devElements) element.visibility = devmode
 
     // DEFAULT LANGUAGE
     languageSelector.onchange = { languageChange() }
@@ -55,14 +55,7 @@ fun languageChange() {
     document.querySelectorAll("select") // Selected options don't invis so switch them.
         .asList()
         .map { it as HTMLSelectElement }
-        .forEach { select ->
-            select.children
-                .asList()
-                .map { it as HTMLOptionElement }
-                // Same val as selected option, different lang:
-                .firstOrNull { option -> option.value == select.value && option.classList.contains(lang) }
-                ?.selected = true
-        }
+        .forEach { select -> setOptionInSelect(select) }
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
@@ -178,9 +171,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
-        if(aadatHaz.value.contains("-")||
-            aadatTuhr.value.contains("-")||
-            aadatNifas.value.contains("-")){
+        if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value)
             return
@@ -214,8 +205,8 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
-
 }
+
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
     with(inputContainer) {
         if(descriptionText.value==""){
@@ -457,18 +448,19 @@ private val inputsContainersContainer get() = document.getElementById(Ids.InputC
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
-
-private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 private val root_hazapp = document.getElementsByClassName("root").asList()
+val devmode = window.location.href.contains("dev")
+private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
-val HTMLElement.isMutada get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUTADA
-val HTMLElement.isNifas get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.NIFAS
-val HTMLElement.isMubtadia get() = (getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement).value == Vls.Maslas.MUBTADIA
+val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
+val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
+val HTMLElement.isNifas get() = maslaSelect.value == Vls.Maslas.NIFAS
+val HTMLElement.isMubtadia get() = maslaSelect.value == Vls.Maslas.MUBTADIA
 
 val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
 val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement
