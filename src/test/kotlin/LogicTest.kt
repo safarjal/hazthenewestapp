@@ -3949,7 +3949,6 @@ class LogicTest {
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        println(output.fixedDurations)
         var expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 15*MILLISECONDS_IN_A_DAY),
             FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
@@ -3983,7 +3982,6 @@ class LogicTest {
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        println(output.fixedDurations)
         var expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 30*MILLISECONDS_IN_A_DAY),
             FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
@@ -4017,7 +4015,6 @@ class LogicTest {
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        println(output.fixedDurations)
         var expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 32*MILLISECONDS_IN_A_DAY),
             FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
