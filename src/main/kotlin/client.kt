@@ -60,25 +60,34 @@ fun languageChange() {
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
     val aadatHaizList = mutableListOf<Int>()
-    val haizStart = parseRange(aadatHaz)[0]
-    val haizEnd = parseRange(aadatHaz)[1]
-    if(haizStart!=null && haizEnd!=null){
-        for (i in haizStart .. haizEnd){
-            aadatHaizList += i
+    if(aadatHaz!=""){
+        val haizStart = parseRange(aadatHaz)[0]
+        val haizEnd = parseRange(aadatHaz)[1]
+        if(haizStart!=null && haizEnd!=null){
+            for (i in haizStart .. haizEnd){
+                aadatHaizList += i
+            }
         }
+    }else{
+        aadatHaizList += -1
     }
     val aadatTuhrList = mutableListOf<Int>()
-    val tuhrStart = parseRange(aadatTuhr)[0]
-    val tuhrEnd = parseRange(aadatTuhr)[1]
-    if(tuhrStart!=null && tuhrEnd!=null){
-        for (i in tuhrStart .. tuhrEnd){
-            aadatTuhrList += i
+    if(aadatTuhr!=""){
+        val tuhrStart = parseRange(aadatTuhr)[0]
+        val tuhrEnd = parseRange(aadatTuhr)[1]
+        if(tuhrStart!=null && tuhrEnd!=null){
+            for (i in tuhrStart .. tuhrEnd){
+                aadatTuhrList += i
+            }
         }
+    }else{
+        aadatTuhrList += -1
     }
-    if(!aadatTuhr.contains('-')){
+
+    if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
         aadatTuhrList+= aadatTuhr.toInt()
     }
-    if(!aadatHaz.contains(('-'))){
+    if(!aadatHaz.contains(('-')) && aadatHaz != ""){//if haiz aadat doen't have -, then just enter that one habit
         aadatHaizList+= aadatHaz.toInt()
     }
 
@@ -196,12 +205,26 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
     val listOfLists = mutableListOf<MutableList<Entry>>()
     val listOfDescriptions = mutableListOf<String>()
     for (aadatCombo in combosToTry){
-        allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
-        allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
+        if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
+            allTheInputs.preMaslaValues.inputtedAadatTuhr=null
+        }else{
+            allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
+        }
+        if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
+            allTheInputs.preMaslaValues.inputtedAadatHaiz=null
+        }else{
+            allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
+        }
         val output = handleEntries(allTheInputs)
-        if (output == NO_OUTPUT) return
+        if (output == NO_OUTPUT) return //we gotta put this line so we don't keep on getting error messages every time it puts in a new value. gotta break at first error
         listOfLists+=output.hazDatesList
-        listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+        if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
+            listOfDescriptions += "${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+        }else if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
+            listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
+        }else{
+            listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+        }
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
