@@ -58,7 +58,8 @@ fun languageChange() {
         .forEach { select -> setOptionInSelect(select) }
 }
 
-fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAndTuhr>{
+fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):MutableList<AadatsOfHaizAndTuhr>{
+    val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
     val aadatHaizList = mutableListOf<Int>()
     if(aadatHaz!=""){
         val haizStart = parseRange(aadatHaz)[0]
@@ -84,18 +85,39 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String):MutableList<AadatsOfHaizAnd
         aadatTuhrList += -1
     }
 
-    if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
-        aadatTuhrList+= aadatTuhr.toInt()
-    }
-    if(!aadatHaz.contains(('-')) && aadatHaz != ""){//if haiz aadat doen't have -, then just enter that one habit
-        aadatHaizList+= aadatHaz.toInt()
-    }
-
-    val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
-    for(tuhrAadat in aadatTuhrList){
-        for (aadatHaiz in aadatHaizList){
-            combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
+    if(cycleLength==""){//there is no cycle length
+        if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
+            aadatTuhrList+= aadatTuhr.toInt()
         }
+        if(!aadatHaz.contains(('-')) && aadatHaz != ""){//if haiz aadat doen't have -, then just enter that one habit
+            aadatHaizList+= aadatHaz.toInt()
+        }
+
+        for(tuhrAadat in aadatTuhrList){
+            for (aadatHaiz in aadatHaizList){
+                combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
+            }
+        }
+
+    }else{//there is cycle length, and only one of haiz or tuhr, which is ranged
+        if(aadatTuhrList[0]==-1){//there is no tuhr aadat  - haiz aadat is a range
+            for(haizAadat in aadatHaizList){
+                var tuhrAadat = parseDays(cycleLength)?.minus(haizAadat*MILLISECONDS_IN_A_DAY)
+                if(tuhrAadat!=null && tuhrAadat>=15*MILLISECONDS_IN_A_DAY){
+                    combosToTry+=AadatsOfHaizAndTuhr(haizAadat*MILLISECONDS_IN_A_DAY, tuhrAadat)
+                }
+            }
+
+        }else if(aadatHaizList[0]==-1){//there is no haiz aadat - tuhr aadat is a range
+            for(tuhrAadat in aadatTuhrList){//got through each tuhr aadat, figure out if it's composite haiz is a viablr haiz, if so, add it to the combos
+                var haizAadat = parseDays(cycleLength)?.minus(tuhrAadat*MILLISECONDS_IN_A_DAY)
+                if(haizAadat!=null && haizAadat>=3*MILLISECONDS_IN_A_DAY && haizAadat<=10*MILLISECONDS_IN_A_DAY){
+                    combosToTry+=AadatsOfHaizAndTuhr(haizAadat, tuhrAadat*MILLISECONDS_IN_A_DAY)
+                }
+            }
+        }
+
+
     }
     return combosToTry
 }
@@ -182,7 +204,7 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
-            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value)
+            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value)
             return
         }
 
@@ -200,8 +222,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
     }
 }
-private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String) {
-    val combosToTry = makeRangeArray(aadatHaz, aadatTuhr)
+private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String) {
+    val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength)
     val listOfLists = mutableListOf<MutableList<Entry>>()
     val listOfDescriptions = mutableListOf<String>()
     for (aadatCombo in combosToTry){
