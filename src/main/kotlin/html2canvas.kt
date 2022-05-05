@@ -44,7 +44,6 @@ external fun html2canvas(
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-@Suppress("NON_EXPORTABLE_TYPE")
 data class Html2CanvasOptions(
     // clone options
     val ignoreElements: (element: Element) -> Boolean = { false },
