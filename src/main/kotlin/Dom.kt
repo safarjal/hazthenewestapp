@@ -96,7 +96,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, StringsOfLanguages.ENGLISH.mubtadia, StringsOfLanguages.URDU.mubtadia, "dev")
         }
         // Zaalla?
-        div {
+        div(classes = CssC.DEV) {
             makeLabel(Ids.Inputs.ZAALLA_CHECKBOX, "Zaalla", "Zaalla")
             checkBoxInput {
                 id = Ids.Inputs.ZAALLA_CHECKBOX
