@@ -20,7 +20,7 @@ import redux.combineReducers
 // 0 is the initial state
 //val store = createThreadSafeStore(reducer, 0)
 
-data class State(
+data class Store(
     var masla: String = Vls.Maslas.MUTADA,
     var type: String = Vls.Types.DATE_ONLY,
 //    var isDateOnly: Boolean = false,
@@ -28,6 +28,12 @@ data class State(
 //    var isNifas: Boolean = false,
 //    var isMubtadia: Boolean = false,
 )
+
+object InputState {
+    var lang: String = languageSelector.value
+    var masla: String = Vls.Maslas.MUTADA
+    var type: String = Vls.Types.DATE_ONLY
+}
 
 class MaslaChange(val value: String): RAction
 fun updateMasla(state: String, action: RAction): String = when (action) {
@@ -41,7 +47,7 @@ fun updateType(state: String, action: RAction): String = when (action) {
     else -> state
 }
 
-fun combinedReducers() = combineReducers<State, RAction>(
+fun combinedReducers() = combineReducers<InputState, RAction>(
     mapOf(
         "updateMasla" to ::updateMasla,
         "updateType" to ::updateType

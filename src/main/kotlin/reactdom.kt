@@ -20,8 +20,6 @@ import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
-import react.redux.provider
-import react.RBuilder
 //import kotlinx.serialization.Serializable
 
 fun Node.addInputLayout() {
@@ -81,19 +79,22 @@ fun next(inputId: String) {
     render(Inputs.create(), inputDiv!!)
 }
 
-fun RBuilder.helloWorld() =
-    h1 {
-        +"Hello World!"
-    }
-
+external interface ChangeHandlerProp : Props {
+    var changeHandler: () -> Unit
+}
 private val Inputs = FC<Props> {
-    MaslaConfigDropdown {}
-    TypeConfigDropdown {}
-//    if(State.masla == Vls.Maslas.NIFAS) {
-//        NifasInputs
-//        println("nifas")
-//    }
-    MutadaInputs {}
+    var masla : String by useState(InputState.masla)
+    var type : String by useState(InputState.type)
+    fun typeChange(newType: String) { type = newType }
+    fun maslaChange(newType: String) { masla = newType }
+
+    MaslaConfigDropdown { changeHandler = maslaChange }
+    TypeConfigDropdown { changeHandler = typeChange }
+    if(masla == Vls.Maslas.NIFAS) {
+        NifasInputs
+        println("nifas")
+    }
+    MutadaInputs { }
 }
 
 private val ikhtilafiMasle = FC<Props> {
@@ -208,10 +209,13 @@ private val DropdownOption = FC<DropdownProps> { props ->
     }
 }
 
-private var MaslaConfigDropdown = FC<Props> {
-    val isMutada = IS_DEFAULT_INPUT_MODE_MUTADA
-    val isNifas = !IS_DEFAULT_INPUT_MODE_MUTADA
-    val isMubtadia = !IS_DEFAULT_INPUT_MODE_MUTADA
+private var MaslaConfigDropdown = FC<ChangeHandlerProp> { props ->
+    var masla = InputState.masla
+
+    val isMutada = masla == Vls.Maslas.MUTADA
+    val isNifas = masla == Vls.Maslas.NIFAS
+    val isMubtadia = masla == Vls.Maslas.MUBTADIA
+
     div {
         className = CssC.ROW
         Label {
@@ -221,8 +225,7 @@ private var MaslaConfigDropdown = FC<Props> {
         }
         select {
             id = Ids.Inputs.MASLA_TYPE_SELECT
-//            onChange {  }
-//            onChangeFunction = { event -> state.masla = event.cu }
+            onChange = { event -> props.changeHandler(event.currentTarget.value) }
             DropdownOption {
                 isSelected = isMutada
                 optionVal = Vls.Maslas.MUTADA
@@ -263,7 +266,8 @@ private var MaslaConfigDropdown = FC<Props> {
         }
     }
 }
-private var TypeConfigDropdown = FC<Props>  {
+private var TypeConfigDropdown = FC<ChangeHandlerProp>  {
+    var type: String by useState(InputState.masla)
     val isDateTime = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDateOnly = IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDuration = !IS_DEFAULT_INPUT_MODE_DATE_ONLY
@@ -276,6 +280,7 @@ private var TypeConfigDropdown = FC<Props>  {
         }
         select {
             id = Ids.Inputs.INPUT_TYPE_SELECT
+            onChange = { event -> type = event.currentTarget.value }
 //            onChangeFunction = { event -> onClickTypeConfigurationSelectDropdown(event) }
             DropdownOption {
                 isSelected = isDateOnly
@@ -302,7 +307,7 @@ external interface TimeInputProps : Props {
     var block: (INPUT) -> Unit?
 }
 private var TimeInput = FC<TimeInputProps> { props ->
-    val dateOnly: Boolean by useState(State.isDateOnly)
+    val dateOnly: Boolean by useState(InputState.type == Vls.Types.DATE_ONLY)
     input {
         id = props.inputId
         name = props.inputId
@@ -344,7 +349,7 @@ private var NumberInput = FC<NumberInputProps> { props ->
 
 private var NifasInputs = FC<Props> {
     // Pregnancy Start Time
-    if (!State.isDuration) {
+    if (InputState.type != Vls.Types.DURATION) {
         div {
             className = "${CssC.ROW} ${CssC.NIFAS} ${CssC.DATETIME_AADAT}"
             Label {
@@ -430,7 +435,7 @@ private val MutadaInputs = FC<Props> {
         }
     }
     // Aadat of Tuhr
-    if (!State.isMubtadia) {
+    if (InputState.masla != Vls.Maslas.MUBTADIA) {
         div {
             className = "${CssC.ROW} ${CssC.MUTADA}"
             Label {
@@ -462,7 +467,7 @@ private val MutadaInputs = FC<Props> {
         }
     }
     // Mawjooda Tuhr
-    if (!State.isDuration) {
+    if (InputState.type != Vls.Types.DURATION) {
         div {
             className = "${CssC.ROW} ${CssC.DATETIME_AADAT}"
             Label {
