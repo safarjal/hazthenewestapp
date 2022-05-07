@@ -2,6 +2,16 @@
 
 import kotlin.js.Date
 
+//data class InputContainer(
+//    val ikhtilafimasla1: Boolean,
+//    val ikhtilafimasla2: Boolean,
+//    val ikhtilafimasla3: Boolean,
+//    val ikhtilafimasla4: Boolean,
+//    val masla: String,
+//    val type: String,
+//
+//)
+
 data class Strings(
     val answer: String,
     val headerline: String,

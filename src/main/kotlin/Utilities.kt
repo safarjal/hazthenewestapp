@@ -57,6 +57,8 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
 
 fun findInputContainer(event: Event) =
     (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER)}!!
+fun findInputContainer(element: Element) =
+    element.getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER)}!!
 fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
 var Element.visibility: Boolean

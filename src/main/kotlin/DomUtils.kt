@@ -7,6 +7,7 @@ import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
+import react.dom.events.ChangeEvent
 import kotlin.js.Date
 
 // MAKE ELEMENTS
@@ -84,23 +85,23 @@ fun FlowContent.timeInput(
 ) {
     customDateTimeInput(isDateOnlyLayout) {
         required = true
-        onClickFunction = { event ->
-            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-        }
+//        onClickFunction = { event ->
+//            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+//        }
         block()
     }
 }
 
-fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
-    var disable = true
-    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
-    timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-        disabled = disable
-        id = inputId
-        name = inputId
-        block()
-    }
-}
+//fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
+//    var disable = true
+//    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
+//    timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
+//        disabled = disable
+//        id = inputId
+//        name = inputId
+//        block()
+//    }
+//}
 
 fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
     label {
@@ -443,8 +444,8 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
         ?.selected = true
 }
 fun maslaChanging(event: Event) {
-    var selectedOption = (event.currentTarget as HTMLSelectElement).value
-    inputsContainers.forEach { it ->
+    val selectedOption = (event.currentTarget as HTMLSelectElement).value
+    inputsContainers.forEach {
         setOptionInSelect(it.maslaSelect, selectedOption)
         disableTree(it)
     }
@@ -492,7 +493,7 @@ fun disableTree(inputContainer: HTMLElement) {
 }
 
 // Ensure Aadaat in Range
-private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-") && devmode) {
@@ -545,8 +546,8 @@ fun switchWiladatIsqat(inputContainer: HTMLElement) {
 }
 
 // Ensure only two of AadatHaiz, AadatTuhr, CycleLength active at a time
-fun onlyTwo(event: Event) {
-    val inputContainer = findInputContainer(event)
+fun onlyTwo(event: ChangeEvent<HTMLInputElement>) {
+    val inputContainer = findInputContainer(event.currentTarget)
     val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
     var inputsInUse = 0
     inputsList.forEach { if (it.value.isNotEmpty()) inputsInUse += 1 }
@@ -594,19 +595,19 @@ private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, is
         timeInput.min = newMin
         timeInput.max = newMax
     }
-    if (isDateTime) {
-        setMaxToCurrentTimeForTimeInputs(inputContainer)
-    }
+//    if (isDateTime) {
+//        setMaxToCurrentTimeForTimeInputs(inputContainer)
+//    }
     switchToDurationTable(inputContainer)
 }
-fun onClickTypeConfigurationSelectDropdown(event: Event) {
-    val selected = (event.currentTarget as HTMLSelectElement).value
-    val inputContainer = findInputContainer(event)
-    val isDateOnly = inputContainer.isDateOnly
-    val isDateTime = inputContainer.isDateTime
-    // Ensure all input containers are same type
-    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
-}
+//fun onClickTypeConfigurationSelectDropdown(event: Event) {
+//    val selected = (event.currentTarget as HTMLSelectElement).value
+//    val inputContainer = findInputContainer(event)
+//    val isDateOnly = inputContainer.isDateOnly
+//    val isDateTime = inputContainer.isDateTime
+//     Ensure all input containers are same type
+//    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
+//}
 
 // Add new rows at the start
 private fun addBeforeDurationRow(inputContainer: HTMLElement) {
@@ -650,7 +651,7 @@ private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
 
 // Setup the changing rows
 fun setupRows(inputContainer: HTMLElement) {
-    setMaxToCurrentTimeForTimeInputs(inputContainer)
+//    setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer, false)
     setupFirstRow(inputContainer, true)
 }
@@ -700,12 +701,12 @@ private fun onChangeDurationOption(event: Event) {
 // Dealing with DateTime Inputs Max/Min Times
 fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
 //    val currentTime = currentTimeString(inputContainer.isDateOnly)
-    for (timeInputsGroup in inputContainer.timeInputsGroups) {
-        for (timeInput in timeInputsGroup.asReversed()) {
+//    for (timeInputsGroup in inputContainer.timeInputsGroups) {
+//        for (timeInput in timeInputsGroup.asReversed()) {
 //            timeInput.max = currentTime
-            if (timeInput.value.isNotEmpty()) break
-        }
-    }
+//            if (timeInput.value.isNotEmpty()) break
+//        }
+//    }
 }
 private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
     setMinMaxForTimeInputsOnInput(

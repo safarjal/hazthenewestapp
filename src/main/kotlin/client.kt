@@ -1,6 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
+import com.benasher44.uuid.uuid4
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -9,21 +10,20 @@ import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
+import react.create
+import react.dom.render
 import kotlin.js.Date
+import kotlinx.coroutines.await
 
 // START PROGRAM
 fun main() {
     window.onload = {
         if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
             document.body!!.addInputLayout()
+            next("abc")
             setupRows(inputsContainers.first())
-            document.addEventListener(Events.VISIBILITY_CHANGE, {
-                if (!document.isHidden) {
-                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-                }
-            })
-        } else mainOtherCalcs()                             // Other Calcs Page
-
+        }
+        else mainOtherCalcs()                             // Other Calcs Page
         parseHREF()
     }
 }
@@ -493,7 +493,7 @@ private val inputsContainersContainer get() = document.getElementById(Ids.InputC
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
-private val root_hazapp = document.getElementsByClassName("root").asList()
+val root_hazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
@@ -501,11 +501,17 @@ val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
+//val isDateTime get() = (inputsContainersContainer.firstChild as HTMLElement).isDateTime ?: false
+//val isDateOnly get() = (inputsContainersContainer.firstChild as HTMLElement).isDateOnly ?: true
+//val isDuration get() = (inputsContainersContainer.firstChild as HTMLElement).isDuration ?: false
 
 val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
 val HTMLElement.isNifas get() = maslaSelect.value == Vls.Maslas.NIFAS
 val HTMLElement.isMubtadia get() = maslaSelect.value == Vls.Maslas.MUBTADIA
+//val isMutada get() = (inputsContainersContainer.firstChild as HTMLElement).isMutada ?: true
+//val isNifas get() = (inputsContainersContainer.firstChild as HTMLElement).isNifas ?: false
+//val isMubtadia get() = (inputsContainersContainer.firstChild as HTMLElement).isMubtadia ?: false
 
 val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
 val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement
