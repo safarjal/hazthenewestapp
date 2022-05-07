@@ -1,32 +1,10 @@
 import redux.RAction
 import redux.combineReducers
 
-//fun reducer(state: Int, action: Action) =
-//    when (action) {
-//        is Increment -> state + 1
-//        is Decrement -> state - 1
-//        else -> state
-//    }
-
-/**
- * Actions are plain objects that represent an action in the app. These can be
- * plain objects or data classes and have fields that hold data necessary for
- * the reducer to update the state.
- */
-//class Increment
-//class Decrement
-
-// Create a Redux store holding the state of your app.
-// 0 is the initial state
-//val store = createThreadSafeStore(reducer, 0)
-
-data class Store(
+data class MyStore(
+    var lang: String = languageSelector.value,
     var masla: String = Vls.Maslas.MUTADA,
-    var type: String = Vls.Types.DATE_ONLY,
-//    var isDateOnly: Boolean = false,
-//    var isDuration: Boolean = false,
-//    var isNifas: Boolean = false,
-//    var isMubtadia: Boolean = false,
+    var type: String = Vls.Types.DATE_ONLY
 )
 
 object InputState {

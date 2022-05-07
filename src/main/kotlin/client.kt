@@ -1,7 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
-import com.benasher44.uuid.uuid4
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -10,17 +9,14 @@ import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
-import react.create
-import react.dom.render
 import kotlin.js.Date
-import kotlinx.coroutines.await
 
 // START PROGRAM
 fun main() {
     window.onload = {
         if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
             document.body!!.addInputLayout()
-            next("abc")
+            addInputs("abc")
             setupRows(inputsContainers.first())
         }
         else mainOtherCalcs()                             // Other Calcs Page
@@ -48,6 +44,7 @@ private fun parseHREF() {
 
 fun languageChange() {
     val lang = languageSelector.value
+    (inputsContainers.first().getChildById("update_lang") as HTMLButtonElement).click()
     // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
@@ -249,7 +246,9 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
         }
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    if (output.headerList.size > 2) {
+        drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    }
 }
 
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
@@ -394,7 +393,9 @@ fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    if (output.headerList.size > 2) {
+        drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    }
 }
 
 fun drawCompareTable(
