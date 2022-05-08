@@ -2,15 +2,20 @@
 
 import kotlin.js.Date
 
-//data class InputContainer(
-//    val ikhtilafimasla1: Boolean,
-//    val ikhtilafimasla2: Boolean,
-//    val ikhtilafimasla3: Boolean,
-//    val ikhtilafimasla4: Boolean,
-//    val masla: String,
-//    val type: String,
-//
-//)
+data class NifasValues(
+    var pregStart: String,
+    var pregEnd: String,
+    var isMustabeen: Boolean,
+    var pregAadat: String,
+)
+
+data class MutadaValues(
+    var haizAadat: String,
+    var tuhrAadat: String,
+    var zaallaCycle: String,
+    var mawjoodaTuhr: String,
+    var isFaasid: Boolean
+)
 
 data class Strings(
     val answer: String,

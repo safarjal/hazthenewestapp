@@ -12,7 +12,6 @@ import react.css.css
 import react.dom.render
 import react.dom.events.ChangeEvent
 import react.dom.html.InputType
-import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.input
@@ -21,49 +20,75 @@ import react.dom.html.ReactHTML.select
 
 //import kotlinx.serialization.Serializable
 
-fun addInputs(inputId: String) {
+fun addInputs(
+    inputId: String,
+    nifasInputs: NifasValues = NifasValues("", "", true, ""),
+    mutadaInputs: MutadaValues = MutadaValues("", "", "", "",false)
+) {
     val inputDiv = document.getChildById(inputId)
-    render(Inputs.create(), inputDiv!!)
+    render(Inputs.create {
+        nifasState = nifasInputs
+        mutadaState = mutadaInputs
+    }, inputDiv!!)
 }
 
 external interface StateProp : Props {
-    var changeHandler: (String) -> Unit
-    var stateMasla: String
-    var stateType: String
-    var stateLang: String
+    var maslaState: String
+    var typeState: String
+    var langState: String
+    var dropdownChangeHandler: (String) -> Unit
+
+    var nifasState: NifasValues
+//    var pregStart: String
+//    var pregEnd: String
+//    var isMustabeen: Boolean
+//    var pregAadat: String
+
+    var mutadaState: MutadaValues
+//    var haizAadat: String
+//    var tuhrAadat: String
+//    var zaallaCycle: String
+//    var mawjoodaTuhr: String
+//    var isFaasid: Boolean
 }
-private val Inputs = FC<Props> {
+private val Inputs = FC<StateProp> { props ->
     var masla : String by useState(InputState.masla)
     var type : String by useState(InputState.type)
     var lang : String by useState(InputState.lang)
 
-    println(lang)
+    val nifasInputs: NifasValues by useState(props.nifasState)
+    val mutadaInputs: MutadaValues by useState(props.mutadaState)
 
     MaslaConfigDropdown {
-        changeHandler = { newMasla: String -> masla = newMasla }
-        stateLang = lang
+        dropdownChangeHandler = { newMasla: String -> masla = newMasla }
+        langState = lang
     }
     TypeConfigDropdown {
-        changeHandler = { newType: String -> type = newType }
-        stateLang = lang
+        dropdownChangeHandler = { newType: String -> type = newType }
+        langState = lang
     }
     if(masla == Vls.Maslas.NIFAS) {
         NifasInputs {
-            stateType = type
-            stateLang = lang
+            typeState = type
+            langState = lang
+            nifasState = nifasInputs
         }
     }
     MutadaInputs {
-        stateMasla = masla
-        stateType = type
-        stateLang = lang
+        maslaState = masla
+        typeState = type
+        langState = lang
+        mutadaState = mutadaInputs
     }
-    ReactHTML.input {
+    // to update!
+    input {
         className = CssC.HIDDEN      // not working because of css
         id = "update_lang"
         css {
             height = 0.px
             width = 0.px
+            margin = 0.px
+            padding = 0.px
             visibility = Visibility.hidden
         }
         checked = lang == Vls.Langs.ENGLISH
@@ -72,7 +97,7 @@ private val Inputs = FC<Props> {
 }
 
 private var MaslaConfigDropdown = FC<StateProp> { props ->
-    var masla: String by useState(props.stateMasla)
+    var masla: String by useState(props.maslaState)
     var isZaalla: Boolean by useState(false)
     div {
         className = CssC.ROW
@@ -80,33 +105,33 @@ private var MaslaConfigDropdown = FC<StateProp> { props ->
             inputId = Ids.Inputs.MASLA_TYPE_SELECT
             englishText = StringsOfLanguages.ENGLISH.typeOfMasla
             urduText = StringsOfLanguages.URDU.typeOfMasla
-            language = props.stateLang
+            language = props.langState
         }
         select {
             value = masla
             id = Ids.Inputs.MASLA_TYPE_SELECT
             onChange = { event ->
-                props.changeHandler(event.currentTarget.value)
+                props.dropdownChangeHandler(event.currentTarget.value)
                 masla = event.currentTarget.value
             }
             DropdownOption {
                 optionVal = Vls.Maslas.MUTADA
                 englishText = StringsOfLanguages.ENGLISH.mutada
                 urduText = StringsOfLanguages.URDU.mutada
-                language = props.stateLang
+                language = props.langState
             }
             DropdownOption {
                 optionVal = Vls.Maslas.NIFAS
                 englishText = StringsOfLanguages.ENGLISH.nifas
                 urduText = StringsOfLanguages.URDU.nifas
-                language = props.stateLang
+                language = props.langState
             }
             if (devmode) {
                 DropdownOption {
                     optionVal = Vls.Maslas.MUBTADIA
                     englishText = StringsOfLanguages.ENGLISH.mubtadia
                     urduText = StringsOfLanguages.URDU.mubtadia
-                    language = props.stateLang
+                    language = props.langState
 //                    "dev"
                 }
             }
@@ -119,7 +144,7 @@ private var MaslaConfigDropdown = FC<StateProp> { props ->
                     inputId = Ids.Inputs.ZAALLA_CHECKBOX
                     englishText = "Zaalla"
                     urduText = "ضالة"
-                    language = props.stateLang
+                    language = props.langState
                 }
                 input {
                     type = InputType.checkbox
@@ -133,7 +158,7 @@ private var MaslaConfigDropdown = FC<StateProp> { props ->
     }
 }
 private var TypeConfigDropdown = FC<StateProp>  { props ->
-    var type: String by useState(props.stateType)
+    var type: String by useState(props.typeState)
 
     div {
         className = CssC.ROW
@@ -141,13 +166,13 @@ private var TypeConfigDropdown = FC<StateProp>  { props ->
             inputId = Ids.Inputs.INPUT_TYPE_SELECT
             englishText = StringsOfLanguages.ENGLISH.typeOfInput
             urduText = StringsOfLanguages.URDU.typeOfInput
-            language = props.stateLang
+            language = props.langState
         }
         select {
             id = Ids.Inputs.INPUT_TYPE_SELECT
             value = type
             onChange = { event ->
-                props.changeHandler(event.currentTarget.value)
+                props.dropdownChangeHandler(event.currentTarget.value)
                 type = event.currentTarget.value
             }
 //            onChangeFunction = { event -> onClickTypeConfigurationSelectDropdown(event) }
@@ -155,46 +180,46 @@ private var TypeConfigDropdown = FC<StateProp>  { props ->
                 optionVal = Vls.Types.DATE_ONLY
                 englishText = StringsOfLanguages.ENGLISH.dateOnly
                 urduText = StringsOfLanguages.URDU.dateOnly
-                language = props.stateLang
+                language = props.langState
             }
             DropdownOption {
                 optionVal = Vls.Types.DATE_TIME
                 englishText = StringsOfLanguages.ENGLISH.dateAndTime
                 urduText = StringsOfLanguages.URDU.dateAndTime
-                language = props.stateLang
+                language = props.langState
             }
             DropdownOption {
                 optionVal = Vls.Types.DURATION
                 englishText = StringsOfLanguages.ENGLISH.duration
                 urduText = StringsOfLanguages.URDU.duration
-                language = props.stateLang
+                language = props.langState
             }
         }
     }
 }
 
 private var NifasInputs = FC<StateProp> { props ->
-    var pregStart: String by useState("")
-    var pregEnd: String by useState("")
-    var isMustabeen: Boolean by useState(true)
-    var pregAadat: String by useState("")
+    var pregStart: String by useState(props.nifasState.pregStart)
+    var pregEnd: String by useState(props.nifasState.pregEnd)
+    var isMustabeen: Boolean by useState(props.nifasState.isMustabeen)
+    var pregAadat: String by useState(props.nifasState.pregAadat)
 
     // Pregnancy Start Time
-    if (props.stateType != Vls.Types.DURATION) {
+    if (props.typeState != Vls.Types.DURATION) {
         div {
             className = "${CssC.ROW} ${CssC.NIFAS} ${CssC.DATETIME_AADAT}"
             Label {
                 inputId = Ids.Inputs.PREG_START_TIME_INPUT
                 englishText = StringsOfLanguages.ENGLISH.pregnancyStartTime
                 urduText = StringsOfLanguages.URDU.pregnancyStartTime
-                language = props.stateLang
+                language = props.langState
             }
             TimeInput {
                 inputId = Ids.Inputs.PREG_START_TIME_INPUT
                 inputVal = pregStart
-                inputType = props.stateType
+                inputType = props.typeState
                 onChange = { event: ChangeEvent<HTMLElement> ->
-                    var thisElem = event.currentTarget as HTMLInputElement
+                    val thisElem = event.currentTarget as HTMLInputElement
                     findInputContainer(thisElem).pregEndTime.min = thisElem.value
                     pregStart = thisElem.value
                 }
@@ -205,19 +230,19 @@ private var NifasInputs = FC<StateProp> { props ->
     // Pregnancy End Time
     div {
         className = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS}"
-        if (props.stateType != Vls.Types.DURATION) {
+        if (props.typeState != Vls.Types.DURATION) {
             Label {
                 inputId = Ids.Inputs.PREG_END_TIME_INPUT
                 englishText = StringsOfLanguages.ENGLISH.birthMiscarrriageTime
                 urduText = StringsOfLanguages.URDU.birthMiscarrriageTime
-                language = props.stateLang
+                language = props.langState
             }
             TimeInput {
                 inputId = Ids.Inputs.PREG_END_TIME_INPUT
                 inputVal = pregEnd
-                inputType = props.stateType
+                inputType = props.typeState
                 onChange = { event: ChangeEvent<HTMLElement> ->
-                    var thisElem = event.currentTarget as HTMLInputElement
+                    val thisElem = event.currentTarget as HTMLInputElement
                     findInputContainer(thisElem).pregStartTime.min = thisElem.value
                     pregEnd = thisElem.value
                 }
@@ -229,7 +254,7 @@ private var NifasInputs = FC<StateProp> { props ->
                 inputId = Ids.Inputs.MUSTABEEN_CHECKBOX
                 englishText = StringsOfLanguages.ENGLISH.mustabeenUlKhilqa
                 urduText = StringsOfLanguages.URDU.mustabeenUlKhilqa
-                language = props.stateLang
+                language = props.langState
             }
             input {
                 type = InputType.checkbox
@@ -246,12 +271,12 @@ private var NifasInputs = FC<StateProp> { props ->
 
     // Pregnancy Aadat
     div {
-        className = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}"
+        className = "${CssC.ROW} ${CssC.NIFAS}"
         Label {
             inputId = Ids.Inputs.AADAT_NIFAS_INPUT
             englishText = StringsOfLanguages.ENGLISH.nifasAadat
             urduText = StringsOfLanguages.URDU.nifasAadat
-            language = props.stateLang
+            language = props.langState
         }
         NumberInput {
             inputId = Ids.Inputs.AADAT_NIFAS_INPUT
@@ -264,11 +289,11 @@ private var NifasInputs = FC<StateProp> { props ->
     }
 }
 private val MutadaInputs = FC<StateProp> { props ->
-    var haizAadat: String by useState("")
-    var tuhrAadat: String by useState("")
-    var zaallaCycle: String by useState("")
-    var mawjoodaTuhr: String by useState("")
-    var isFaasid: Boolean by useState(false)
+    var haizAadat: String by useState(props.mutadaState.haizAadat)
+    var tuhrAadat: String by useState(props.mutadaState.tuhrAadat)
+    var zaallaCycle: String by useState(props.mutadaState.zaallaCycle)
+    var mawjoodaTuhr: String by useState(props.mutadaState.mawjoodaTuhr)
+    var isFaasid: Boolean by useState(props.mutadaState.isFaasid)
 
     // Aadat of Haiz
     div {
@@ -277,7 +302,7 @@ private val MutadaInputs = FC<StateProp> { props ->
             inputId = Ids.Inputs.AADAT_HAIZ_INPUT
             englishText = StringsOfLanguages.ENGLISH.haizAadat
             urduText = StringsOfLanguages.URDU.haizAadat
-            language = props.stateLang
+            language = props.langState
         }
         NumberInput {
             inputId = Ids.Inputs.AADAT_HAIZ_INPUT
@@ -286,19 +311,18 @@ private val MutadaInputs = FC<StateProp> { props ->
             onChange = { event ->
                 haizAadat = fixInputNumber(event.currentTarget.value)
                 event.currentTarget.validateAadat(3..10)
-//                updateTwo()
             }
         }
     }
     // Aadat of Tuhr
-    if (props.stateMasla != Vls.Maslas.MUBTADIA) {
+    if (props.maslaState != Vls.Maslas.MUBTADIA) {
         div {
             className = "${CssC.ROW} ${CssC.MUTADA}"
             Label {
                 inputId = Ids.Inputs.AADAT_TUHR_INPUT
                 englishText = StringsOfLanguages.ENGLISH.tuhrAadat
                 urduText = StringsOfLanguages.URDU.tuhrAadat
-                language = props.stateLang
+                language = props.langState
             }
             NumberInput {
                 inputId = Ids.Inputs.AADAT_TUHR_INPUT
@@ -320,7 +344,7 @@ private val MutadaInputs = FC<StateProp> { props ->
                 inputId = Ids.Inputs.ZAALLA_CYCLE_LENGTH
                 englishText = "Cycle Length"
                 urduText = "سائیکل کی لمبائی"
-                language = props.stateLang
+                language = props.langState
             }
             NumberInput {
                 inputId = Ids.Inputs.ZAALLA_CYCLE_LENGTH
@@ -335,14 +359,14 @@ private val MutadaInputs = FC<StateProp> { props ->
         }
     }
     // Mawjooda Tuhr
-    if (props.stateType != Vls.Types.DURATION) {
+    if (props.typeState != Vls.Types.DURATION) {
         div {
             className = "${CssC.ROW} ${CssC.DATETIME_AADAT}"
             Label {
                 inputId = Ids.Inputs.MAWJOODA_TUHR_INPUT
                 englishText = StringsOfLanguages.ENGLISH.mawjoodahTuhr
                 urduText = StringsOfLanguages.URDU.mawjoodahTuhr
-                language = props.stateLang
+                language = props.langState
             }
             NumberInput {
                 inputId = Ids.Inputs.MAWJOODA_TUHR_INPUT
@@ -358,7 +382,7 @@ private val MutadaInputs = FC<StateProp> { props ->
                     inputId = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
                     englishText = StringsOfLanguages.ENGLISH.faasid
                     urduText = StringsOfLanguages.URDU.faasid
-                    language = props.stateLang
+                    language = props.langState
                 }
                 input {
                     type = InputType.checkbox
@@ -372,46 +396,7 @@ private val MutadaInputs = FC<StateProp> { props ->
     }
 }
 
-external interface LabelProps : Props {
-    var inputId: String
-    var englishText: String
-    var urduText: String
-    var extraClasses: String?
-    var language: String
-//    val block: (LABEL) -> Unit?
-}
-private val Label = FC<LabelProps> { props ->
-    label {
-        htmlFor = props.inputId
-        className = "${props.extraClasses} ${props.language}"
-        +if (props.language == Vls.Langs.ENGLISH) props.englishText
-        else props.urduText
-//        props.block
-    }
-}
-
-external interface DropdownProps : Props {
-    var optionVal: String
-    var englishText: String
-    var urduText: String
-    var extraClasses: String
-    var language: String
-}
-private val DropdownOption = FC<DropdownProps> { props ->
-    option {
-        className = "${props.extraClasses} ${props.language}"
-//        selected = props.isSelected
-        value = props.optionVal
-        id = props.optionVal
-//        block()
-        if (props.language == Vls.Langs.ENGLISH) {
-            +props.englishText
-        } else {
-            +props.urduText
-        }
-    }
-}
-
+// MiniComponents
 external interface TimeInputProps : Props {
     var inputId: String
     var inputVal: String
@@ -446,7 +431,7 @@ external interface NumberInputProps : Props {
     var inputId: String
     var inputVal: String?
     var disabled: Boolean
-//    var inputRange: ClosedRange<Int>
+    //    var inputRange: ClosedRange<Int>
     var onChange: (ChangeEvent<HTMLInputElement>) -> Unit
     var block: (HTMLInputElement) -> Unit
 }
@@ -467,4 +452,50 @@ private fun fixInputNumber(thisValue: String): String {
         thisValue.replace("[^0-9:]".toRegex(), "")
     }
 
+}
+
+external interface DropdownProps : Props {
+    var optionVal: String
+    var englishText: String
+    var urduText: String
+    var extraClasses: String
+    var language: String
+}
+private val DropdownOption = FC<DropdownProps> { props ->
+    option {
+        className = "${props.extraClasses} ${props.language}"
+//        selected = props.isSelected
+        value = props.optionVal
+        id = props.optionVal
+//        block()
+        if (props.language == Vls.Langs.ENGLISH) {
+            +props.englishText
+        } else {
+            +props.urduText
+        }
+    }
+}
+
+external interface LabelProps : Props {
+    var inputId: String
+    var englishText: String
+    var urduText: String
+    var extraClasses: String?
+    var language: String
+//    val block: (LABEL) -> Unit?
+}
+private val Label = FC<LabelProps> { props ->
+    label {
+        htmlFor = props.inputId
+        className = "${props.extraClasses} ${props.language}"
+        +if (props.language == Vls.Langs.ENGLISH) props.englishText
+        else props.urduText
+//        props.block
+    }
+}
+
+object InputState {
+    var lang: String = languageSelector.value
+    var masla: String = Vls.Maslas.MUTADA
+    var type: String = Vls.Types.DATE_ONLY
 }

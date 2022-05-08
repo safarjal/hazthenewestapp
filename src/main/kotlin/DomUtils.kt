@@ -7,7 +7,6 @@ import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
-import react.dom.events.ChangeEvent
 import kotlin.js.Date
 
 // MAKE ELEMENTS
@@ -471,25 +470,11 @@ private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
 }
 fun disableTree(inputContainer: HTMLElement) {
-    val isNifas = inputContainer.isNifas
-    val isMubtadia = inputContainer.isMubtadia
-    val isDateTime = !inputContainer.isDuration
-    val isMustabeen  = inputContainer.isMustabeen
-
-    disableByClass(CssC.DATETIME_AADAT, inputContainer, !isDateTime)
-    disableByMasla(inputContainer)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateTime)
-    disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
-    disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
-
     val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
         mawjoodaFasidCheck.checked = true
         mawjoodaFasidCheck.disabled = true
     }
-
-    disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
 }
 
 // Ensure Aadaat in Range
@@ -545,19 +530,6 @@ fun switchWiladatIsqat(inputContainer: HTMLElement) {
     }
 }
 
-// Ensure only two of AadatHaiz, AadatTuhr, CycleLength active at a time
-fun onlyTwo(event: ChangeEvent<HTMLInputElement>) {
-    val inputContainer = findInputContainer(event.currentTarget)
-    val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
-    var inputsInUse = 0
-    inputsList.forEach { if (it.value.isNotEmpty()) inputsInUse += 1 }
-    if (inputsInUse == 2) inputsList.first { it.value.isEmpty() }.disabled = true
-    else if (inputsInUse < 2) {
-        inputsList.forEach { it.disabled = false }
-        disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
-    }
-}
-
 // DEALING WITH THE INPUT TABLES
 
 // Switching Date/Duration Inputs
@@ -572,7 +544,6 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-//    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
     disableTree(inputContainer)
 }
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
@@ -580,7 +551,7 @@ private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boole
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
-private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
+private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean) {
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
 
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
@@ -595,19 +566,8 @@ private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, is
         timeInput.min = newMin
         timeInput.max = newMax
     }
-//    if (isDateTime) {
-//        setMaxToCurrentTimeForTimeInputs(inputContainer)
-//    }
     switchToDurationTable(inputContainer)
 }
-//fun onClickTypeConfigurationSelectDropdown(event: Event) {
-//    val selected = (event.currentTarget as HTMLSelectElement).value
-//    val inputContainer = findInputContainer(event)
-//    val isDateOnly = inputContainer.isDateOnly
-//    val isDateTime = inputContainer.isDateTime
-//     Ensure all input containers are same type
-//    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
-//}
 
 // Add new rows at the start
 private fun addBeforeDurationRow(inputContainer: HTMLElement) {
@@ -699,15 +659,6 @@ private fun onChangeDurationOption(event: Event) {
 }
 
 // Dealing with DateTime Inputs Max/Min Times
-fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
-//    val currentTime = currentTimeString(inputContainer.isDateOnly)
-//    for (timeInputsGroup in inputContainer.timeInputsGroups) {
-//        for (timeInput in timeInputsGroup.asReversed()) {
-//            timeInput.max = currentTime
-//            if (timeInput.value.isNotEmpty()) break
-//        }
-//    }
-}
 private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
     setMinMaxForTimeInputsOnInput(
         findInputContainer(event),
