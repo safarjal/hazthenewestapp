@@ -22,11 +22,15 @@ import react.dom.html.ReactHTML.select
 
 fun addInputs(
     inputId: String,
+    maslaValue: String = Vls.Maslas.MUTADA,
+    typeValue: String = Vls.Types.DATE_ONLY,
     nifasInputs: NifasValues = NifasValues("", "", true, ""),
     mutadaInputs: MutadaValues = MutadaValues("", "", "", "",false)
 ) {
     val inputDiv = document.getChildById(inputId)
     render(Inputs.create {
+        maslaState = maslaValue
+        typeState = typeValue
         nifasState = nifasInputs
         mutadaState = mutadaInputs
     }, inputDiv!!)
@@ -39,25 +43,18 @@ external interface StateProp : Props {
     var dropdownChangeHandler: (String) -> Unit
 
     var nifasState: NifasValues
-//    var pregStart: String
-//    var pregEnd: String
-//    var isMustabeen: Boolean
-//    var pregAadat: String
+    var updateNifas: (NifasValues) -> Unit
 
     var mutadaState: MutadaValues
-//    var haizAadat: String
-//    var tuhrAadat: String
-//    var zaallaCycle: String
-//    var mawjoodaTuhr: String
-//    var isFaasid: Boolean
+    var updateMutada: (MutadaValues) -> Unit
 }
 private val Inputs = FC<StateProp> { props ->
     var masla : String by useState(InputState.masla)
     var type : String by useState(InputState.type)
     var lang : String by useState(InputState.lang)
 
-    val nifasInputs: NifasValues by useState(props.nifasState)
-    val mutadaInputs: MutadaValues by useState(props.mutadaState)
+    var nifasInputs: NifasValues by useState(props.nifasState)
+    var mutadaInputs: MutadaValues by useState(props.mutadaState)
 
     MaslaConfigDropdown {
         dropdownChangeHandler = { newMasla: String -> masla = newMasla }
@@ -72,6 +69,7 @@ private val Inputs = FC<StateProp> { props ->
             typeState = type
             langState = lang
             nifasState = nifasInputs
+            updateNifas = { newNifasInputs: NifasValues -> nifasInputs = newNifasInputs }
         }
     }
     MutadaInputs {
@@ -79,6 +77,7 @@ private val Inputs = FC<StateProp> { props ->
         typeState = type
         langState = lang
         mutadaState = mutadaInputs
+        updateMutada = { newMutadaInputs: MutadaValues -> mutadaInputs = newMutadaInputs }
     }
     // to update!
     input {
@@ -221,7 +220,9 @@ private var NifasInputs = FC<StateProp> { props ->
                 onChange = { event: ChangeEvent<HTMLElement> ->
                     val thisElem = event.currentTarget as HTMLInputElement
                     findInputContainer(thisElem).pregEndTime.min = thisElem.value
-                    pregStart = thisElem.value
+                    props.nifasState.pregStart = thisElem.value
+                    pregStart = props.nifasState.pregStart
+                    props.updateNifas(props.nifasState)
                 }
             }
         }
@@ -244,7 +245,9 @@ private var NifasInputs = FC<StateProp> { props ->
                 onChange = { event: ChangeEvent<HTMLElement> ->
                     val thisElem = event.currentTarget as HTMLInputElement
                     findInputContainer(thisElem).pregStartTime.min = thisElem.value
-                    pregEnd = thisElem.value
+                    props.nifasState.pregEnd = thisElem.value
+                    pregEnd = props.nifasState.pregEnd
+                    props.updateNifas(props.nifasState)
                 }
             }
         }
@@ -262,8 +265,10 @@ private var NifasInputs = FC<StateProp> { props ->
                 name = Ids.Inputs.MUSTABEEN_CHECKBOX
                 checked = isMustabeen
                 onChange = { event ->
-                    isMustabeen = event.currentTarget.checked
+                    props.nifasState.isMustabeen = event.currentTarget.checked
+                    isMustabeen = props.nifasState.isMustabeen
                     switchWiladatIsqat(findInputContainer(event.currentTarget))
+                    props.updateNifas(props.nifasState)
                 }
             }
         }
@@ -282,8 +287,10 @@ private var NifasInputs = FC<StateProp> { props ->
             inputId = Ids.Inputs.AADAT_NIFAS_INPUT
             inputVal = pregAadat
             onChange = { event ->
-                pregAadat = fixInputNumber(event.currentTarget.value)
+                props.nifasState.pregAadat = fixInputNumber(event.currentTarget.value)
+                pregAadat = props.nifasState.pregAadat
                 event.currentTarget.validateAadat(1..40)
+                props.updateNifas(props.nifasState)
             }
         }
     }
@@ -309,8 +316,10 @@ private val MutadaInputs = FC<StateProp> { props ->
             inputVal = haizAadat
             disabled = tuhrAadat.isNotEmpty() && zaallaCycle.isNotEmpty()
             onChange = { event ->
-                haizAadat = fixInputNumber(event.currentTarget.value)
+                props.mutadaState.haizAadat = fixInputNumber(event.currentTarget.value)
+                haizAadat = props.mutadaState.haizAadat
                 event.currentTarget.validateAadat(3..10)
+                props.updateMutada(props.mutadaState)
             }
         }
     }
@@ -329,9 +338,10 @@ private val MutadaInputs = FC<StateProp> { props ->
                 inputVal = tuhrAadat
                 disabled = haizAadat.isNotEmpty() && zaallaCycle.isNotEmpty()
                 onChange = { event ->
-//                    updateTwo()
-                    tuhrAadat = fixInputNumber(event.currentTarget.value)
+                    props.mutadaState.tuhrAadat = fixInputNumber(event.currentTarget.value)
+                    tuhrAadat = props.mutadaState.tuhrAadat
                     event.currentTarget.validateAadat(15..6 * 30)
+                    props.updateMutada(props.mutadaState)
                 }
             }
         }
@@ -351,9 +361,10 @@ private val MutadaInputs = FC<StateProp> { props ->
                 inputVal = zaallaCycle
                 disabled = haizAadat.isNotEmpty() && tuhrAadat.isNotEmpty()
                 onChange = { event ->
-                    zaallaCycle = fixInputNumber(event.currentTarget.value)
+                    props.mutadaState.zaallaCycle = fixInputNumber(event.currentTarget.value)
+                    zaallaCycle = props.mutadaState.zaallaCycle
                     event.currentTarget.validateAadat(8..6 * 30 + 10)
-//                    updateTwo()
+                    props.updateMutada(props.mutadaState)
                 }
             }
         }
@@ -372,8 +383,10 @@ private val MutadaInputs = FC<StateProp> { props ->
                 inputId = Ids.Inputs.MAWJOODA_TUHR_INPUT
                 inputVal = mawjoodaTuhr
                 onChange = { event ->
-                    mawjoodaTuhr = fixInputNumber(event.currentTarget.value)
+                    props.mutadaState.mawjoodaTuhr = fixInputNumber(event.currentTarget.value)
+                    mawjoodaTuhr = props.mutadaState.mawjoodaTuhr
                     event.currentTarget.validateAadat(5..10000)
+                    props.updateMutada(props.mutadaState)
                 }
             }
             // Faasid?
@@ -389,7 +402,11 @@ private val MutadaInputs = FC<StateProp> { props ->
                     id = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
                     name = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
                     checked = isFaasid
-                    onChange = { event -> isFaasid = event.currentTarget.checked }
+                    onChange = { event ->
+                        props.mutadaState.isFaasid = event.currentTarget.checked
+                        isFaasid = props.mutadaState.isFaasid
+                        props.updateMutada(props.mutadaState)
+                    }
                 }
             }
         }

@@ -45,7 +45,6 @@ private fun parseHREF() {
 fun languageChange() {
     val lang = languageSelector.value
 
-    console.log(lang, languageElements)
     // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
