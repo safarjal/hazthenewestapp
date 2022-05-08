@@ -44,7 +44,8 @@ private fun parseHREF() {
 
 fun languageChange() {
     val lang = languageSelector.value
-    (inputsContainers.first().getChildById("update_lang") as HTMLButtonElement).click()
+
+    console.log(lang, languageElements)
     // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
@@ -53,6 +54,8 @@ fun languageChange() {
         .asList()
         .map { it as HTMLSelectElement }
         .forEach { select -> setOptionInSelect(select) }
+
+    (inputsContainers.first().getChildById("update_lang") as HTMLInputElement).click()
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):MutableList<AadatsOfHaizAndTuhr>{

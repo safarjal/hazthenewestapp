@@ -2,6 +2,7 @@
 
 //package react
 
+import csstype.Visibility
 import csstype.px
 import kotlinx.html.*
 import org.w3c.dom.*
@@ -11,7 +12,7 @@ import react.css.css
 import react.dom.render
 import react.dom.events.ChangeEvent
 import react.dom.html.InputType
-import react.dom.html.ReactHTML.button
+import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.input
@@ -35,8 +36,8 @@ private val Inputs = FC<Props> {
     var masla : String by useState(InputState.masla)
     var type : String by useState(InputState.type)
     var lang : String by useState(InputState.lang)
-    console.log(masla, type, lang)
-    console.log(InputState.masla, InputState.type, InputState.lang)
+
+    println(lang)
 
     MaslaConfigDropdown {
         changeHandler = { newMasla: String -> masla = newMasla }
@@ -57,13 +58,15 @@ private val Inputs = FC<Props> {
         stateType = type
         stateLang = lang
     }
-    button {
-        className = CssC.HIDDEN
+    ReactHTML.input {
+        className = CssC.HIDDEN      // not working because of css
         id = "update_lang"
         css {
             height = 0.px
             width = 0.px
+            visibility = Visibility.hidden
         }
+        checked = lang == Vls.Langs.ENGLISH
         onClick = { lang = languageSelector.value }
     }
 }
@@ -89,16 +92,21 @@ private var MaslaConfigDropdown = FC<StateProp> { props ->
             DropdownOption {
                 optionVal = Vls.Maslas.MUTADA
                 englishText = StringsOfLanguages.ENGLISH.mutada
-                urduText = StringsOfLanguages.URDU.mutada }
+                urduText = StringsOfLanguages.URDU.mutada
+                language = props.stateLang
+            }
             DropdownOption {
                 optionVal = Vls.Maslas.NIFAS
                 englishText = StringsOfLanguages.ENGLISH.nifas
-                urduText = StringsOfLanguages.URDU.nifas }
+                urduText = StringsOfLanguages.URDU.nifas
+                language = props.stateLang
+            }
             if (devmode) {
                 DropdownOption {
                     optionVal = Vls.Maslas.MUBTADIA
                     englishText = StringsOfLanguages.ENGLISH.mubtadia
                     urduText = StringsOfLanguages.URDU.mubtadia
+                    language = props.stateLang
 //                    "dev"
                 }
             }
@@ -110,7 +118,7 @@ private var MaslaConfigDropdown = FC<StateProp> { props ->
                 Label {
                     inputId = Ids.Inputs.ZAALLA_CHECKBOX
                     englishText = "Zaalla"
-                    urduText = "Zaalla"
+                    urduText = "ضالة"
                     language = props.stateLang
                 }
                 input {
@@ -146,20 +154,31 @@ private var TypeConfigDropdown = FC<StateProp>  { props ->
             DropdownOption {
                 optionVal = Vls.Types.DATE_ONLY
                 englishText = StringsOfLanguages.ENGLISH.dateOnly
-                urduText = StringsOfLanguages.URDU.dateOnly }
+                urduText = StringsOfLanguages.URDU.dateOnly
+                language = props.stateLang
+            }
             DropdownOption {
                 optionVal = Vls.Types.DATE_TIME
                 englishText = StringsOfLanguages.ENGLISH.dateAndTime
-                urduText = StringsOfLanguages.URDU.dateAndTime }
+                urduText = StringsOfLanguages.URDU.dateAndTime
+                language = props.stateLang
+            }
             DropdownOption {
                 optionVal = Vls.Types.DURATION
                 englishText = StringsOfLanguages.ENGLISH.duration
-                urduText = StringsOfLanguages.URDU.duration }
+                urduText = StringsOfLanguages.URDU.duration
+                language = props.stateLang
+            }
         }
     }
 }
 
 private var NifasInputs = FC<StateProp> { props ->
+    var pregStart: String by useState("")
+    var pregEnd: String by useState("")
+    var isMustabeen: Boolean by useState(true)
+    var pregAadat: String by useState("")
+
     // Pregnancy Start Time
     if (props.stateType != Vls.Types.DURATION) {
         div {
@@ -172,9 +191,12 @@ private var NifasInputs = FC<StateProp> { props ->
             }
             TimeInput {
                 inputId = Ids.Inputs.PREG_START_TIME_INPUT
+                inputVal = pregStart
+                inputType = props.stateType
                 onChange = { event: ChangeEvent<HTMLElement> ->
-                    findInputContainer(event.currentTarget).pregEndTime.min =
-                        (event.currentTarget as HTMLInputElement).value
+                    var thisElem = event.currentTarget as HTMLInputElement
+                    findInputContainer(thisElem).pregEndTime.min = thisElem.value
+                    pregStart = thisElem.value
                 }
             }
         }
@@ -192,9 +214,12 @@ private var NifasInputs = FC<StateProp> { props ->
             }
             TimeInput {
                 inputId = Ids.Inputs.PREG_END_TIME_INPUT
+                inputVal = pregEnd
+                inputType = props.stateType
                 onChange = { event: ChangeEvent<HTMLElement> ->
-                    findInputContainer(event.currentTarget).pregStartTime.max =
-                        (event.currentTarget as HTMLInputElement).value
+                    var thisElem = event.currentTarget as HTMLInputElement
+                    findInputContainer(thisElem).pregStartTime.min = thisElem.value
+                    pregEnd = thisElem.value
                 }
             }
         }
@@ -210,8 +235,11 @@ private var NifasInputs = FC<StateProp> { props ->
                 type = InputType.checkbox
                 id = Ids.Inputs.MUSTABEEN_CHECKBOX
                 name = Ids.Inputs.MUSTABEEN_CHECKBOX
-                checked = true
-                onChange = { event -> switchWiladatIsqat(findInputContainer(event.currentTarget)) }
+                checked = isMustabeen
+                onChange = { event ->
+                    isMustabeen = event.currentTarget.checked
+                    switchWiladatIsqat(findInputContainer(event.currentTarget))
+                }
             }
         }
     }
@@ -227,13 +255,21 @@ private var NifasInputs = FC<StateProp> { props ->
         }
         NumberInput {
             inputId = Ids.Inputs.AADAT_NIFAS_INPUT
-            inputVal = "" // inputContainerToCopyFrom?.aadatNifas?.value.orEmpty();
-            inputRange = (1..40)
+            inputVal = pregAadat
+            onChange = { event ->
+                pregAadat = fixInputNumber(event.currentTarget.value)
+                event.currentTarget.validateAadat(1..40)
+            }
         }
     }
 }
-
 private val MutadaInputs = FC<StateProp> { props ->
+    var haizAadat: String by useState("")
+    var tuhrAadat: String by useState("")
+    var zaallaCycle: String by useState("")
+    var mawjoodaTuhr: String by useState("")
+    var isFaasid: Boolean by useState(false)
+
     // Aadat of Haiz
     div {
         className = CssC.ROW
@@ -245,9 +281,13 @@ private val MutadaInputs = FC<StateProp> { props ->
         }
         NumberInput {
             inputId = Ids.Inputs.AADAT_HAIZ_INPUT
-            inputVal = "" // inputContainerToCopyFrom?.aadatHaz?.value.orEmpty()
-            inputRange = (3..10)
-            onChange = { event -> onlyTwo(event) }
+            inputVal = haizAadat
+            disabled = tuhrAadat.isNotEmpty() && zaallaCycle.isNotEmpty()
+            onChange = { event ->
+                haizAadat = fixInputNumber(event.currentTarget.value)
+                event.currentTarget.validateAadat(3..10)
+//                updateTwo()
+            }
         }
     }
     // Aadat of Tuhr
@@ -262,9 +302,13 @@ private val MutadaInputs = FC<StateProp> { props ->
             }
             NumberInput {
                 inputId = Ids.Inputs.AADAT_TUHR_INPUT
-                inputVal = "" // inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty()
-                inputRange = (15..6 * 30)
-                onChange = { event -> onlyTwo(event) }
+                inputVal = tuhrAadat
+                disabled = haizAadat.isNotEmpty() && zaallaCycle.isNotEmpty()
+                onChange = { event ->
+//                    updateTwo()
+                    tuhrAadat = fixInputNumber(event.currentTarget.value)
+                    event.currentTarget.validateAadat(15..6 * 30)
+                }
             }
         }
     }
@@ -275,14 +319,18 @@ private val MutadaInputs = FC<StateProp> { props ->
             Label {
                 inputId = Ids.Inputs.ZAALLA_CYCLE_LENGTH
                 englishText = "Cycle Length"
-                urduText = "Cycle Length"
+                urduText = "سائیکل کی لمبائی"
                 language = props.stateLang
             }
             NumberInput {
                 inputId = Ids.Inputs.ZAALLA_CYCLE_LENGTH
-                inputVal = "" // inputContainerToCopyFrom?.cycleLength?.value.orEmpty()
-                inputRange = (8..6 * 30 + 10)
-                onChange = { event -> onlyTwo(event) }
+                inputVal = zaallaCycle
+                disabled = haizAadat.isNotEmpty() && tuhrAadat.isNotEmpty()
+                onChange = { event ->
+                    zaallaCycle = fixInputNumber(event.currentTarget.value)
+                    event.currentTarget.validateAadat(8..6 * 30 + 10)
+//                    updateTwo()
+                }
             }
         }
     }
@@ -298,10 +346,13 @@ private val MutadaInputs = FC<StateProp> { props ->
             }
             NumberInput {
                 inputId = Ids.Inputs.MAWJOODA_TUHR_INPUT
-                inputVal = "" // inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty()
-                inputRange = (15..10000)
+                inputVal = mawjoodaTuhr
+                onChange = { event ->
+                    mawjoodaTuhr = fixInputNumber(event.currentTarget.value)
+                    event.currentTarget.validateAadat(5..10000)
+                }
             }
-            // Fasid?
+            // Faasid?
             div {
                 Label {
                     inputId = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
@@ -313,7 +364,8 @@ private val MutadaInputs = FC<StateProp> { props ->
                     type = InputType.checkbox
                     id = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
                     name = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
-                    checked = false
+                    checked = isFaasid
+                    onChange = { event -> isFaasid = event.currentTarget.checked }
                 }
             }
         }
@@ -362,17 +414,19 @@ private val DropdownOption = FC<DropdownProps> { props ->
 
 external interface TimeInputProps : Props {
     var inputId: String
+    var inputVal: String
+    var inputType: String
     var onChange: (ChangeEvent<HTMLElement>) -> Unit
     var block: (INPUT) -> Unit?
 }
 private var TimeInput = FC<TimeInputProps> { props ->
-    val dateOnly: Boolean by useState(InputState.type == Vls.Types.DATE_ONLY)
-    var inputVal: String by useState("")
+    val dateOnly: Boolean by useState(props.inputType == Vls.Types.DATE_ONLY)
+
     input {
         id = props.inputId
         name = props.inputId
         required = true
-        value = inputVal
+        value = props.inputVal
 
         if (dateOnly) {
             type = InputType.date
@@ -383,10 +437,7 @@ private var TimeInput = FC<TimeInputProps> { props ->
             pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
         }
 
-        onChange = { event ->
-            props.onChange(event)
-            inputVal = event.currentTarget.value
-        }
+        onChange = { event -> props.onChange(event) }
         props.block
     }
 }
@@ -394,7 +445,8 @@ private var TimeInput = FC<TimeInputProps> { props ->
 external interface NumberInputProps : Props {
     var inputId: String
     var inputVal: String?
-    var inputRange: ClosedRange<Int>
+    var disabled: Boolean
+//    var inputRange: ClosedRange<Int>
     var onChange: (ChangeEvent<HTMLInputElement>) -> Unit
     var block: (HTMLInputElement) -> Unit
 }
@@ -402,10 +454,17 @@ private var NumberInput = FC<NumberInputProps> { props ->
     input {
         id = props.inputId
         name = props.inputId
-        value = props.inputVal.orEmpty()
-        //TODO: Uncomment this later after fixing validator
-        onInput = { event -> event.currentTarget.validateAadat(props.inputRange) }
-        onChange = onChange
+        value = props.inputVal
+        disabled = props.disabled
+        onChange = { event -> props.onChange(event) }
         props.block
     }
+}
+private fun fixInputNumber(thisValue: String): String {
+    return if (devmode && thisValue.contains("-")) {
+        thisValue.replace("[^0-9-]".toRegex(), "")
+    } else {
+        thisValue.replace("[^0-9:]".toRegex(), "")
+    }
+
 }
