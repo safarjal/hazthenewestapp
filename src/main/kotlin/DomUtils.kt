@@ -442,13 +442,13 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
             option.value == selectedOption && option.classList.contains(languageSelector.value) }
         ?.selected = true
 }
-fun maslaChanging(event: Event) {
-    val selectedOption = (event.currentTarget as HTMLSelectElement).value
-    inputsContainers.forEach {
-        setOptionInSelect(it.maslaSelect, selectedOption)
-        disableTree(it)
-    }
-}
+//fun maslaChanging(event: Event) {
+//    val selectedOption = (event.currentTarget as HTMLSelectElement).value
+//    inputsContainers.forEach {
+//        setOptionInSelect(it.maslaSelect, selectedOption)
+//        disableTree(it)
+//    }
+//}
 
 // Invising Tree
 private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
@@ -465,10 +465,10 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
                 }
         }
 }
-private fun disableByMasla(inputContainer: HTMLElement) {
-    disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
-}
+//private fun disableByMasla(inputContainer: HTMLElement) {
+//    disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
+//    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
+//}
 fun disableTree(inputContainer: HTMLElement) {
     val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
@@ -507,27 +507,27 @@ fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 
 // Switch Between Wilaadat/Isqaat - Beauty Only
 fun switchWiladatIsqat(inputContainer: HTMLElement) {
-    disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.isMustabeen)
-    disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.isMustabeen)
-
-    // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
-    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
-        .asList()
-        .map { it as HTMLSelectElement }
-        .filter { select -> select.value == Vls.Opts.WILADAT }
-
-    // If mustabeen, select wiladat
-    if (inputContainer.isMustabeen) wiladatSelect.forEach { select ->
-        select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
-            .selected = true
-    }
-    // If !mustabeen, select isqaat
-    else wiladatSelect.forEach { select ->
-        select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
-            .selected = true
-    }
+//    disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.isMustabeen)
+//    disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.isMustabeen)
+//
+//    // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
+//    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
+//        .asList()
+//        .map { it as HTMLSelectElement }
+//        .filter { select -> select.value == Vls.Opts.WILADAT }
+//
+//    // If mustabeen, select wiladat
+//    if (inputContainer.isMustabeen) wiladatSelect.forEach { select ->
+//        select.children.asList().map { it as HTMLOptionElement }
+//            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
+//            .selected = true
+//    }
+//    // If !mustabeen, select isqaat
+//    else wiladatSelect.forEach { select ->
+//        select.children.asList().map { it as HTMLOptionElement }
+//            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
+//            .selected = true
+//    }
 }
 
 // DEALING WITH THE INPUT TABLES
@@ -536,7 +536,7 @@ fun switchWiladatIsqat(inputContainer: HTMLElement) {
 private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
     for (timeInput in inputContainer.timeInputsGroups) {
         for (input in timeInput) {
-            input.disabled = disable
+            input!!.disabled = disable
         }
     }
     for (durationInput in inputContainer.durationInputsGroups) {
@@ -555,16 +555,18 @@ private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, is
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
 
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-        val newValue = convertInputValue(timeInput.value, isDateOnly)
-        val newMin = convertInputValue(timeInput.min, isDateOnly)
-        val newMax = convertInputValue(timeInput.max, isDateOnly)
+        timeInput?.let {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-        timeInput.type = dateInputType.realValue
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
 
-        timeInput.value = newValue
-        timeInput.min = newMin
-        timeInput.max = newMax
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
     }
     switchToDurationTable(inputContainer)
 }
@@ -573,7 +575,7 @@ private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, is
 private fun addBeforeDurationRow(inputContainer: HTMLElement) {
     val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.WILADAT)
     inputContainer.hazDurationInputTableBody.prepend {
-        durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen)
+        durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen ?: true)
     }
     setupFirstRow(inputContainer, true)
 }
@@ -594,7 +596,7 @@ private fun addBeforeInputRow(inputContainer: HTMLElement) {
 private fun addDurationRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     val rowIsDam = row.damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.HAML)
     row.after {
-        durationInputRow(rowIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen)
+        durationInputRow(rowIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen ?: true)
     }
     setupFirstRow(inputContainer, true)
 }
@@ -644,7 +646,7 @@ fun TagConsumer<HTMLElement>.startDurationInputRow(inputContainerToCopyFrom: HTM
                 selectedOption = inputDateRow.damOrTuhr,
                 disable = !isDuration,
                 preg = inputContainerToCopyFrom.isNifas,
-                mustabeen = inputContainerToCopyFrom.isMustabeen
+                mustabeen = inputContainerToCopyFrom.isMustabeen ?: true
             )
         }
     } else { durationInputRow(false, !isDuration) }
@@ -713,13 +715,15 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
 
 // CLONING
 fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
-    if (inputsContainers.size == 1) {
-        addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)
-    }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
+//    addInputs( newUniqueId, inputsContainerToCopyFrom)
 
+    if (inputsContainers.size == 2) {
+        addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)
+        console.log(inputsContainers)
+    }
     addCalcAllButtonIfNeeded()
 
     // Make sure all invises are maintained

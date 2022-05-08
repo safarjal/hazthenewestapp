@@ -18,22 +18,25 @@ import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
-//import kotlinx.serialization.Serializable
-
-fun addInputs(
-    inputId: String,
-    maslaValue: String = Vls.Maslas.MUTADA,
-    typeValue: String = Vls.Types.DATE_ONLY,
-    nifasInputs: NifasValues = NifasValues("", "", true, ""),
-    mutadaInputs: MutadaValues = MutadaValues("", "", "", "",false)
-) {
-    val inputDiv = document.getChildById(inputId)
-    render(Inputs.create {
-        maslaState = maslaValue
-        typeState = typeValue
-        nifasState = nifasInputs
-        mutadaState = mutadaInputs
-    }, inputDiv!!)
+fun addReact(inputsContainerToCopyFrom: HTMLElement? = null) {
+    val reactDiv = inputsContainerToCopyFrom?.reactDiv ?: document.body!!.reactDiv
+    render(ReactInputs.create {
+        maslaState = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
+        typeState = inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY
+        nifasState = NifasValues(
+            inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
+            inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
+            inputsContainerToCopyFrom?.isMustabeen ?: true,
+            inputsContainerToCopyFrom?.aadatNifas?.value ?: ""
+        )
+        mutadaState = MutadaValues(
+            inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
+            inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
+            inputsContainerToCopyFrom?.cycleLength?.value ?: "",
+            inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
+            inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
+        )
+    }, reactDiv!!)
 }
 
 external interface StateProp : Props {
@@ -48,10 +51,10 @@ external interface StateProp : Props {
     var mutadaState: MutadaValues
     var updateMutada: (MutadaValues) -> Unit
 }
-private val Inputs = FC<StateProp> { props ->
-    var masla : String by useState(InputState.masla)
-    var type : String by useState(InputState.type)
-    var lang : String by useState(InputState.lang)
+private val ReactInputs = FC<StateProp> { props ->
+    var lang : String by useState(languageSelector.value)
+    var masla : String by useState(props.maslaState)
+    var type : String by useState(props.typeState)
 
     var nifasInputs: NifasValues by useState(props.nifasState)
     var mutadaInputs: MutadaValues by useState(props.mutadaState)
@@ -219,7 +222,7 @@ private var NifasInputs = FC<StateProp> { props ->
                 inputType = props.typeState
                 onChange = { event: ChangeEvent<HTMLElement> ->
                     val thisElem = event.currentTarget as HTMLInputElement
-                    findInputContainer(thisElem).pregEndTime.min = thisElem.value
+                    findInputContainer(thisElem).pregEndTime!!.min = thisElem.value
                     props.nifasState.pregStart = thisElem.value
                     pregStart = props.nifasState.pregStart
                     props.updateNifas(props.nifasState)
@@ -244,7 +247,7 @@ private var NifasInputs = FC<StateProp> { props ->
                 inputType = props.typeState
                 onChange = { event: ChangeEvent<HTMLElement> ->
                     val thisElem = event.currentTarget as HTMLInputElement
-                    findInputContainer(thisElem).pregStartTime.min = thisElem.value
+                    findInputContainer(thisElem).pregStartTime!!.max = thisElem.value
                     props.nifasState.pregEnd = thisElem.value
                     pregEnd = props.nifasState.pregEnd
                     props.updateNifas(props.nifasState)
@@ -428,7 +431,7 @@ private var TimeInput = FC<TimeInputProps> { props ->
         id = props.inputId
         name = props.inputId
         required = true
-        value = props.inputVal
+        value = convertInputValue(props.inputVal, dateOnly)
 
         if (dateOnly) {
             type = InputType.date
@@ -509,10 +512,4 @@ private val Label = FC<LabelProps> { props ->
         else props.urduText
 //        props.block
     }
-}
-
-object InputState {
-    var lang: String = languageSelector.value
-    var masla: String = Vls.Maslas.MUTADA
-    var type: String = Vls.Types.DATE_ONLY
 }

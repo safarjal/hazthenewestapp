@@ -21,6 +21,7 @@ fun Node.addInputLayout() {
             div(classes = CssC.GRID) { id = Ids.Results.DATES_DIFFERENCE_TABLE }
         }
     }
+    addReact()
 }
 
 fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement? = null) {
@@ -41,13 +42,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         autoComplete = false
         ikhtilafiMasle()
         br()
-        div(classes = CssC.LABEL_INPUT) {
-            id = "abc"
-//            maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
-//            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
-//            nifasInputs(inputContainerToCopyFrom)
-//            mutadaInputs(inputContainerToCopyFrom)
-        }
+        div(classes = CssC.LABEL_INPUT) { id = Ids.InputContainers.REACT_DIV }
         hr()
         questionInput()
         hr()

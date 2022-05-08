@@ -16,7 +16,6 @@ fun main() {
     window.onload = {
         if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
             document.body!!.addInputLayout()
-            addInputs("abc")
             setupRows(inputsContainers.first())
         }
         else mainOtherCalcs()                             // Other Calcs Page
@@ -125,8 +124,8 @@ fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
     with(inputContainer) {
-        val pregnancyStrt = Date(pregStartTime.valueAsNumber)
-        val pregnancyEnd = Date(pregEndTime.valueAsNumber)
+        val pregnancyStrt = Date(pregStartTime?.valueAsNumber ?: 0)
+        val pregnancyEnd = Date(pregEndTime?.valueAsNumber ?: 0)
 
         val typeOfMasla:TypesOfMasla = if(isMubtadia){
             TypesOfMasla.MUBTADIA
@@ -143,9 +142,9 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         val preMaslaValues = PreMaslaValues(
             parseDays(aadatHaz.value),
-            parseDays(aadatTuhr.value),
-            parseDays(mawjoodaTuhr.value),
-            isMawjoodaFasid
+            parseDays(aadatTuhr?.value ?: ""),
+            parseDays(mawjoodaTuhr?.value ?: ""),
+            isMawjoodaFasid ?: false
         )
 
         val ikhtilaafaat = Ikhtilaafaat(
@@ -157,8 +156,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         val pregnancy = Pregnancy(
             pregnancyStrt,
             pregnancyEnd,
-            parseDays(aadatNifas.value),
-            isMustabeen
+            parseDays(aadatNifas?.value ?: ""),
+            isMustabeen ?: true
         )
 
         var allTheInputs=AllTheInputs()
@@ -201,9 +200,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
-        if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
+        if((aadatHaz.value + aadatTuhr?.value + aadatNifas?.value).contains("-") && devmode){
             contentContainer.visibility = false
-            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value)
+            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr?.value ?: "", cycleLength?.value ?: "")
             return
         }
 
@@ -218,7 +217,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
-        populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
+        populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr?.value ?: "", mawjoodaTuhr?.value ?: "")
     }
 }
 private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String) {
@@ -500,34 +499,30 @@ val root_hazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
+val HTMLElement.reactDiv get() = getChildById(Ids.InputContainers.REACT_DIV) as HTMLDivElement
+
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
-//val isDateTime get() = (inputsContainersContainer.firstChild as HTMLElement).isDateTime ?: false
-//val isDateOnly get() = (inputsContainersContainer.firstChild as HTMLElement).isDateOnly ?: true
-//val isDuration get() = (inputsContainersContainer.firstChild as HTMLElement).isDuration ?: false
 
 val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
 val HTMLElement.isNifas get() = maslaSelect.value == Vls.Maslas.NIFAS
 val HTMLElement.isMubtadia get() = maslaSelect.value == Vls.Maslas.MUBTADIA
-//val isMutada get() = (inputsContainersContainer.firstChild as HTMLElement).isMutada ?: true
-//val isNifas get() = (inputsContainersContainer.firstChild as HTMLElement).isNifas ?: false
-//val isMubtadia get() = (inputsContainersContainer.firstChild as HTMLElement).isMubtadia ?: false
 
-val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
-val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement
+val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement?
+val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement?
 
 val HTMLElement.aadatHaz get() = getChildById(Ids.Inputs.AADAT_HAIZ_INPUT) as HTMLInputElement
-val HTMLElement.aadatTuhr get() = getChildById(Ids.Inputs.AADAT_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement
-val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
+val HTMLElement.aadatTuhr get() = getChildById(Ids.Inputs.AADAT_TUHR_INPUT) as HTMLInputElement?
+val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT) as HTMLInputElement?
+val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement?
+val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement?
 
-val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked as Boolean?
+val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked as Boolean?
+val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement)?.checked as Boolean?
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
