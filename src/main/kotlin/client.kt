@@ -144,7 +144,7 @@ fun parseEntries(inputContainer: HTMLElement) {
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr?.value ?: ""),
             parseDays(mawjoodaTuhr?.value ?: ""),
-            isMawjoodaFasid ?: false
+            isMawjoodaFasid
         )
 
         val ikhtilaafaat = Ikhtilaafaat(
@@ -157,7 +157,7 @@ fun parseEntries(inputContainer: HTMLElement) {
             pregnancyStrt,
             pregnancyEnd,
             parseDays(aadatNifas?.value ?: ""),
-            isMustabeen ?: true
+            isMustabeen
         )
 
         var allTheInputs=AllTheInputs()
@@ -520,9 +520,9 @@ val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT
 val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement?
 val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement?
 
-val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked as Boolean?
-val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked as Boolean?
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement)?.checked as Boolean?
+val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement)?.checked as Boolean?
+val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement)?.checked as Boolean? ?: true
+val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement)?.checked as Boolean? ?: false
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement

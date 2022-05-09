@@ -470,11 +470,11 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
 //    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
 //}
 fun disableTree(inputContainer: HTMLElement) {
-    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
-    if (inputContainer.isMubtadia) {
-        mawjoodaFasidCheck.checked = true
-        mawjoodaFasidCheck.disabled = true
-    }
+//    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+//    if (inputContainer.isMubtadia) {
+//        mawjoodaFasidCheck.checked = true
+//        mawjoodaFasidCheck.disabled = true
+//    }
 }
 
 // Ensure Aadaat in Range
@@ -575,7 +575,7 @@ private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, is
 private fun addBeforeDurationRow(inputContainer: HTMLElement) {
     val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.WILADAT)
     inputContainer.hazDurationInputTableBody.prepend {
-        durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen ?: true)
+        durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen)
     }
     setupFirstRow(inputContainer, true)
 }
@@ -596,7 +596,7 @@ private fun addBeforeInputRow(inputContainer: HTMLElement) {
 private fun addDurationRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     val rowIsDam = row.damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.HAML)
     row.after {
-        durationInputRow(rowIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen ?: true)
+        durationInputRow(rowIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen)
     }
     setupFirstRow(inputContainer, true)
 }
@@ -646,7 +646,7 @@ fun TagConsumer<HTMLElement>.startDurationInputRow(inputContainerToCopyFrom: HTM
                 selectedOption = inputDateRow.damOrTuhr,
                 disable = !isDuration,
                 preg = inputContainerToCopyFrom.isNifas,
-                mustabeen = inputContainerToCopyFrom.isMustabeen ?: true
+                mustabeen = inputContainerToCopyFrom.isMustabeen
             )
         }
     } else { durationInputRow(false, !isDuration) }
@@ -718,19 +718,18 @@ fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-//    addInputs( newUniqueId, inputsContainerToCopyFrom)
+    addReact(inputsContainerToCopyFrom)
 
     if (inputsContainers.size == 2) {
         addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)
-        console.log(inputsContainers)
     }
     addCalcAllButtonIfNeeded()
 
     // Make sure all invises are maintained
     languageChange()
-    disableTree(clonedInputsContainer)
+//    disableTree(clonedInputsContainer)
     shrinkAnswer(true)
-    disableTime()
+//    disableTime()
 //    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
@@ -740,7 +739,7 @@ fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
     if (inputsContainers.size == 1) calculateAllDiv.replaceChildren {  }
     shrinkAnswer(false)
-    disableTime()
+//    disableTime()
 }
 
 private fun shrinkAnswer(shrink: Boolean = true) {

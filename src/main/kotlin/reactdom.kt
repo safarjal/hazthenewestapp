@@ -19,6 +19,20 @@ import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
 fun addReact(inputsContainerToCopyFrom: HTMLElement? = null) {
+    println(inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA)
+    println(inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY)
+    println(NifasValues(
+        inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
+        inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
+        inputsContainerToCopyFrom?.isMustabeen ?: true,
+        inputsContainerToCopyFrom?.aadatNifas?.value ?: "").pregStart)
+    println(MutadaValues(
+        inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
+        inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
+        inputsContainerToCopyFrom?.cycleLength?.value ?: "",
+        inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
+        inputsContainerToCopyFrom?.isMawjoodaFasid ?: false))
+
     val reactDiv = inputsContainerToCopyFrom?.reactDiv ?: document.body!!.reactDiv
     render(ReactInputs.create {
         maslaState = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
@@ -36,7 +50,7 @@ fun addReact(inputsContainerToCopyFrom: HTMLElement? = null) {
             inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
             inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
         )
-    }, reactDiv!!)
+    }, reactDiv)
 }
 
 external interface StateProp : Props {
@@ -425,7 +439,7 @@ external interface TimeInputProps : Props {
     var block: (INPUT) -> Unit?
 }
 private var TimeInput = FC<TimeInputProps> { props ->
-    val dateOnly: Boolean by useState(props.inputType == Vls.Types.DATE_ONLY)
+    val dateOnly = props.inputType == Vls.Types.DATE_ONLY
 
     input {
         id = props.inputId
