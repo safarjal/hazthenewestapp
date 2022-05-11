@@ -474,7 +474,7 @@ fun drawCompareTable(
     }
 
     GlobalScope.launch {
-        val canvas = comparisonGrid.toCanvas(backgroundColor = null)
+        val canvas = comparisonGrid.toCanvas()
         comparisonGrid.replaceChildren(canvas)
         comparisonGrid.classList.replace(CssC.GRID, CssC.COLUMN)
         comparisonGrid.appendChild {
