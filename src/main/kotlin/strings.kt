@@ -110,7 +110,7 @@ val urduStrings = Strings(
 
     )
 val englishStrings = Strings(
-    "${UnicodeChars.MEMO}<b>Answer:</b>\n\n",
+    "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
     "\"The bleeding and purity (tuh’r) has been in the following " +
             "sequence for the menstruation beginner:\\n\\n\"",
