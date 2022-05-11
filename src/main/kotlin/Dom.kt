@@ -31,9 +31,7 @@ fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement?
             removeInputsContainerButton()
         }
         addInputsContainerButton()
-println("7")
         inputForm(inputContainerToCopyFrom)
-println("8")
         content()
     }
 }
@@ -49,9 +47,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         questionInput()
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
-println("f")
         haizDurationInputTable(inputContainerToCopyFrom)
-println("g")
         calculateButton()
         hr()
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
@@ -140,9 +136,7 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
             }
         }
         tbody {
-println("9")
             startDurationInputRow(inputContainerToCopyFrom, isDuration)
-println("10")
         }
     }
 }

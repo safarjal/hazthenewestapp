@@ -140,12 +140,12 @@ fun parseEntries(inputContainer: HTMLElement) {
             TypesOfInputs.DURATION
         }else{TypesOfInputs.DATE_AND_TIME}
 
-        val preMaslaValues = if (!isDuration) PreMaslaValues(       //clean
+        val preMaslaValues = PreMaslaValues(
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr?.value ?: ""),
             parseDays(mawjoodaTuhr?.value ?: ""),
             isMawjoodaFasid
-        ) else PreMaslaValues(parseDays(aadatHaz.value), parseDays(aadatTuhr?.value ?: ""), parseDays(""), false)
+        )
 
         val ikhtilaafaat = Ikhtilaafaat(
             ikhtilaf1,
@@ -153,16 +153,12 @@ fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf3,
             ikhtilaf4)
 
-        var pregnancy: Pregnancy = if (isNifas) {
-            Pregnancy(
+        var pregnancy: Pregnancy = Pregnancy(
                 pregnancyStrt,
                 pregnancyEnd,
                 parseDays(aadatNifas?.value ?: ""),
                 isMustabeen
             )
-        } else {
-            Pregnancy(pregnancyStrt, pregnancyEnd, parseDays(""), true)     //clean
-        }
 
         var allTheInputs=AllTheInputs()
 
@@ -493,6 +489,8 @@ fun drawCompareTable(
 // VALS
 const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 const val IS_DEFAULT_INPUT_MODE_MUTADA = true
+const val DEFAULT_MASLA = Vls.Maslas.MUTADA
+const val DEFAULT_TYPE = Vls.Types.DATE_ONLY
 
 private val inputsContainersContainer get() = document.getElementById(Ids.InputContainers.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
@@ -524,9 +522,9 @@ val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT
 val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement?
 val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement?
 
-val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement)?.checked as Boolean?
-val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement)?.checked as Boolean? ?: true
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement)?.checked as Boolean? ?: false
+val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement?)?.checked ?: false
+val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement?)?.checked ?: true
+val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement?)?.checked ?: false
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement

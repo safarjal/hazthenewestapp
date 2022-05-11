@@ -465,27 +465,14 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
                 }
         }
 }
-//private fun disableByMasla(inputContainer: HTMLElement) {
-//    disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
-//    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
-//}
-fun disableTree(inputContainer: HTMLElement) {
-//    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
-//    if (inputContainer.isMubtadia) {
-//        mawjoodaFasidCheck.checked = true
-//        mawjoodaFasidCheck.disabled = true
-//    }
-}
 
 // Ensure Aadaat in Range
 fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-") && devmode) {
-//        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
-//            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
             require( arr.all { it.toInt() in validityRange } ) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {
@@ -544,7 +531,7 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-    disableTree(inputContainer)
+//    disableTree(inputContainer)
 }
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
     disableDateTable(inputContainer, isDuration)
@@ -646,7 +633,7 @@ fun TagConsumer<HTMLElement>.startDurationInputRow(inputContainerToCopyFrom: HTM
                 selectedOption = inputDateRow.damOrTuhr,
                 disable = !isDuration,
                 preg = inputContainerToCopyFrom.isNifas,
-                mustabeen = if (inputContainerToCopyFrom.isNifas) inputContainerToCopyFrom.isMustabeen else true //clean
+                mustabeen = inputContainerToCopyFrom.isMustabeen
             )
         }
     } else { durationInputRow(false, !isDuration) }

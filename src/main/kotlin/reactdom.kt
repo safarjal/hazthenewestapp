@@ -19,42 +19,28 @@ import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
 fun addReact(inputsContainerToCopyFrom: HTMLElement? = null, clonedInputsContainer: HTMLElement? = null) {
-//    val masla = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
-//    val type = inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY
-//    val nifas = if (masla == Vls.Maslas.NIFAS) NifasValues(
-//        inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
-//        inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
-//        inputsContainerToCopyFrom?.isMustabeen ?: true,
-//        inputsContainerToCopyFrom?.aadatNifas?.value ?: ""
-//    ) else NifasValues("", "", true, "")
-//    val mutada = if (type != Vls.Types.DURATION) MutadaValues(
-//    inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
-//    inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
-//    inputsContainerToCopyFrom?.cycleLength?.value ?: "",
-//    inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
-//    inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
-//    ) else MutadaValues(
-//    inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
-//    inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
-//    inputsContainerToCopyFrom?.cycleLength?.value ?: "", "", false)
+    val masla = inputsContainerToCopyFrom?.maslaSelect?.value ?: DEFAULT_MASLA
+    val type = inputsContainerToCopyFrom?.typeSelect?.value ?: DEFAULT_TYPE
+    val nifas = NifasValues(
+        inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
+        inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
+        inputsContainerToCopyFrom?.isMustabeen ?: true,
+        inputsContainerToCopyFrom?.aadatNifas?.value ?: ""
+    )
+    val mutada = MutadaValues(
+        inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
+        inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
+        inputsContainerToCopyFrom?.cycleLength?.value ?: "",
+        inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
+        inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
+    )
 
     val reactDiv = clonedInputsContainer?.reactDiv ?: document.body!!.reactDiv
     render(ReactInputs.create {
-        maslaState = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
-        typeState = inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY
-        nifasState = NifasValues(
-            inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
-            inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
-            inputsContainerToCopyFrom?.isMustabeen ?: true,
-            inputsContainerToCopyFrom?.aadatNifas?.value ?: ""
-        )
-        mutadaState = MutadaValues(
-            inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
-            inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
-            inputsContainerToCopyFrom?.cycleLength?.value ?: "",
-            inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
-            inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
-        )
+        maslaState = masla
+        typeState = type
+        nifasState = nifas
+        mutadaState = mutada
     }, reactDiv)
 }
 
@@ -79,12 +65,14 @@ private val ReactInputs = FC<StateProp> { props ->
     var mutadaInputs: MutadaValues by useState(props.mutadaState)
 
     MaslaConfigDropdown {
-        dropdownChangeHandler = { newMasla: String -> masla = newMasla }
+        maslaState = masla
         langState = lang
+        dropdownChangeHandler = { newMasla: String -> masla = newMasla }
     }
     TypeConfigDropdown {
-        dropdownChangeHandler = { newType: String -> type = newType }
+        typeState = type
         langState = lang
+        dropdownChangeHandler = { newType: String -> type = newType }
     }
     if(masla == Vls.Maslas.NIFAS) {
         NifasInputs {
