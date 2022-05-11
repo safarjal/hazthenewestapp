@@ -19,19 +19,24 @@ import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
 fun addReact(inputsContainerToCopyFrom: HTMLElement? = null, clonedInputsContainer: HTMLElement? = null) {
-    println(inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA)
-    println(inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY)
-    println(NifasValues(
-        inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
-        inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
-        inputsContainerToCopyFrom?.isMustabeen ?: true,
-        inputsContainerToCopyFrom?.aadatNifas?.value ?: "").pregStart)
-    println(MutadaValues(
-        inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
-        inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
-        inputsContainerToCopyFrom?.cycleLength?.value ?: "",
-        inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
-        inputsContainerToCopyFrom?.isMawjoodaFasid ?: false))
+//    val masla = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
+//    val type = inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY
+//    val nifas = if (masla == Vls.Maslas.NIFAS) NifasValues(
+//        inputsContainerToCopyFrom?.pregStartTime?.value ?: "",
+//        inputsContainerToCopyFrom?.pregEndTime?.value ?: "",
+//        inputsContainerToCopyFrom?.isMustabeen ?: true,
+//        inputsContainerToCopyFrom?.aadatNifas?.value ?: ""
+//    ) else NifasValues("", "", true, "")
+//    val mutada = if (type != Vls.Types.DURATION) MutadaValues(
+//    inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
+//    inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
+//    inputsContainerToCopyFrom?.cycleLength?.value ?: "",
+//    inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
+//    inputsContainerToCopyFrom?.isMawjoodaFasid ?: false
+//    ) else MutadaValues(
+//    inputsContainerToCopyFrom?.aadatHaz?.value ?: "",
+//    inputsContainerToCopyFrom?.aadatTuhr?.value ?: "",
+//    inputsContainerToCopyFrom?.cycleLength?.value ?: "", "", false)
 
     val reactDiv = clonedInputsContainer?.reactDiv ?: document.body!!.reactDiv
     render(ReactInputs.create {

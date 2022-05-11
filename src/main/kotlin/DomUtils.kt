@@ -646,7 +646,7 @@ fun TagConsumer<HTMLElement>.startDurationInputRow(inputContainerToCopyFrom: HTM
                 selectedOption = inputDateRow.damOrTuhr,
                 disable = !isDuration,
                 preg = inputContainerToCopyFrom.isNifas,
-                mustabeen = inputContainerToCopyFrom.isMustabeen
+                mustabeen = if (inputContainerToCopyFrom.isNifas) inputContainerToCopyFrom.isMustabeen else true //clean
             )
         }
     } else { durationInputRow(false, !isDuration) }

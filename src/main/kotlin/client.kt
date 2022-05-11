@@ -140,12 +140,12 @@ fun parseEntries(inputContainer: HTMLElement) {
             TypesOfInputs.DURATION
         }else{TypesOfInputs.DATE_AND_TIME}
 
-        val preMaslaValues = PreMaslaValues(
+        val preMaslaValues = if (!isDuration) PreMaslaValues(       //clean
             parseDays(aadatHaz.value),
             parseDays(aadatTuhr?.value ?: ""),
             parseDays(mawjoodaTuhr?.value ?: ""),
             isMawjoodaFasid
-        )
+        ) else PreMaslaValues(parseDays(aadatHaz.value), parseDays(aadatTuhr?.value ?: ""), parseDays(""), false)
 
         val ikhtilaafaat = Ikhtilaafaat(
             ikhtilaf1,
@@ -161,7 +161,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 isMustabeen
             )
         } else {
-            Pregnancy(pregnancyStrt, pregnancyEnd, parseDays(""), true)
+            Pregnancy(pregnancyStrt, pregnancyEnd, parseDays(""), true)     //clean
         }
 
         var allTheInputs=AllTheInputs()
