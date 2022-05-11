@@ -18,7 +18,7 @@ import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
-fun addReact(inputsContainerToCopyFrom: HTMLElement? = null) {
+fun addReact(inputsContainerToCopyFrom: HTMLElement? = null, clonedInputsContainer: HTMLElement? = null) {
     println(inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA)
     println(inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY)
     println(NifasValues(
@@ -33,7 +33,7 @@ fun addReact(inputsContainerToCopyFrom: HTMLElement? = null) {
         inputsContainerToCopyFrom?.mawjoodaTuhr?.value ?: "",
         inputsContainerToCopyFrom?.isMawjoodaFasid ?: false))
 
-    val reactDiv = inputsContainerToCopyFrom?.reactDiv ?: document.body!!.reactDiv
+    val reactDiv = clonedInputsContainer?.reactDiv ?: document.body!!.reactDiv
     render(ReactInputs.create {
         maslaState = inputsContainerToCopyFrom?.maslaSelect?.value ?: Vls.Maslas.MUTADA
         typeState = inputsContainerToCopyFrom?.typeSelect?.value ?: Vls.Types.DATE_ONLY

@@ -718,7 +718,7 @@ fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
-    addReact(inputsContainerToCopyFrom)
+    addReact(inputsContainerToCopyFrom, clonedInputsContainer)
 
     if (inputsContainers.size == 2) {
         addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)

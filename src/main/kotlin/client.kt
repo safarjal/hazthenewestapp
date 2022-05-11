@@ -153,12 +153,16 @@ fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf3,
             ikhtilaf4)
 
-        val pregnancy = Pregnancy(
-            pregnancyStrt,
-            pregnancyEnd,
-            parseDays(aadatNifas?.value ?: ""),
-            isMustabeen
-        )
+        var pregnancy: Pregnancy = if (isNifas) {
+            Pregnancy(
+                pregnancyStrt,
+                pregnancyEnd,
+                parseDays(aadatNifas?.value ?: ""),
+                isMustabeen
+            )
+        } else {
+            Pregnancy(pregnancyStrt, pregnancyEnd, parseDays(""), true)
+        }
 
         var allTheInputs=AllTheInputs()
 
