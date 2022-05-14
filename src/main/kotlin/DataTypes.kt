@@ -2,6 +2,21 @@
 
 import kotlin.js.Date
 
+data class NifasValues(
+    var pregStart: String,
+    var pregEnd: String,
+    var isMustabeen: Boolean,
+    var pregAadat: String,
+)
+
+data class MutadaValues(
+    var haizAadat: String,
+    var tuhrAadat: String,
+    var zaallaCycle: String,
+    var mawjoodaTuhr: String,
+    var isFaasid: Boolean
+)
+
 data class Strings(
     val answer: String,
     val headerline: String,

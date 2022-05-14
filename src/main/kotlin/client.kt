@@ -17,13 +17,8 @@ fun main() {
         if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
-            document.addEventListener(Events.VISIBILITY_CHANGE, {
-                if (!document.isHidden) {
-                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-                }
-            })
-        } else mainOtherCalcs()                             // Other Calcs Page
-
+        }
+        else mainOtherCalcs()                             // Other Calcs Page
         parseHREF()
     }
 }
@@ -48,6 +43,7 @@ private fun parseHREF() {
 
 fun languageChange() {
     val lang = languageSelector.value
+
     // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
@@ -56,6 +52,8 @@ fun languageChange() {
         .asList()
         .map { it as HTMLSelectElement }
         .forEach { select -> setOptionInSelect(select) }
+
+    (inputsContainers.first().getChildById("update_lang") as HTMLInputElement).click()
 }
 
 fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):MutableList<AadatsOfHaizAndTuhr>{
@@ -126,8 +124,8 @@ fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
     with(inputContainer) {
-        val pregnancyStrt = Date(pregStartTime.valueAsNumber)
-        val pregnancyEnd = Date(pregEndTime.valueAsNumber)
+        val pregnancyStrt = Date(pregStartTime?.valueAsNumber ?: 0)
+        val pregnancyEnd = Date(pregEndTime?.valueAsNumber ?: 0)
 
         val typeOfMasla:TypesOfMasla = if(isMubtadia){
             TypesOfMasla.MUBTADIA
@@ -144,8 +142,8 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         val preMaslaValues = PreMaslaValues(
             parseDays(aadatHaz.value),
-            parseDays(aadatTuhr.value),
-            parseDays(mawjoodaTuhr.value),
+            parseDays(aadatTuhr?.value ?: ""),
+            parseDays(mawjoodaTuhr?.value ?: ""),
             isMawjoodaFasid
         )
 
@@ -155,12 +153,12 @@ fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf3,
             ikhtilaf4)
 
-        val pregnancy = Pregnancy(
-            pregnancyStrt,
-            pregnancyEnd,
-            parseDays(aadatNifas.value),
-            isMustabeen
-        )
+        var pregnancy: Pregnancy = Pregnancy(
+                pregnancyStrt,
+                pregnancyEnd,
+                parseDays(aadatNifas?.value ?: ""),
+                isMustabeen
+            )
 
         var allTheInputs=AllTheInputs()
 
@@ -202,9 +200,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
-        if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
+        if((aadatHaz.value + aadatTuhr?.value + aadatNifas?.value).contains("-") && devmode){
             contentContainer.visibility = false
-            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value)
+            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr?.value ?: "", cycleLength?.value ?: "")
             return
         }
 
@@ -219,7 +217,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
-        populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
+        populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr?.value ?: "", mawjoodaTuhr?.value ?: "")
     }
 }
 private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String) {
@@ -249,7 +247,9 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
         }
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    if (output.headerList.size > 2) {
+        drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    }
 }
 
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
@@ -394,7 +394,9 @@ fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    if (output.headerList.size > 2) {
+        drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    }
 }
 
 fun drawCompareTable(
@@ -487,15 +489,19 @@ fun drawCompareTable(
 // VALS
 const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 const val IS_DEFAULT_INPUT_MODE_MUTADA = true
+const val DEFAULT_MASLA = Vls.Maslas.MUTADA
+const val DEFAULT_TYPE = Vls.Types.DATE_ONLY
 
 private val inputsContainersContainer get() = document.getElementById(Ids.InputContainers.INPUT_CONTAINERS_CONTAINER) as HTMLElement
 @Suppress("UNCHECKED_CAST")
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
-private val root_hazapp = document.getElementsByClassName("root").asList()
+val root_hazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
+
+val HTMLElement.reactDiv get() = getChildById(Ids.InputContainers.REACT_DIV) as HTMLDivElement
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
@@ -507,18 +513,18 @@ val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
 val HTMLElement.isNifas get() = maslaSelect.value == Vls.Maslas.NIFAS
 val HTMLElement.isMubtadia get() = maslaSelect.value == Vls.Maslas.MUBTADIA
 
-val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement
-val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement
+val HTMLElement.pregStartTime get() = getChildById(Ids.Inputs.PREG_START_TIME_INPUT) as HTMLInputElement?
+val HTMLElement.pregEndTime get() = getChildById(Ids.Inputs.PREG_END_TIME_INPUT) as HTMLInputElement?
 
 val HTMLElement.aadatHaz get() = getChildById(Ids.Inputs.AADAT_HAIZ_INPUT) as HTMLInputElement
-val HTMLElement.aadatTuhr get() = getChildById(Ids.Inputs.AADAT_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT) as HTMLInputElement
-val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement
-val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
+val HTMLElement.aadatTuhr get() = getChildById(Ids.Inputs.AADAT_TUHR_INPUT) as HTMLInputElement?
+val HTMLElement.mawjoodaTuhr get() = getChildById(Ids.Inputs.MAWJOODA_TUHR_INPUT) as HTMLInputElement?
+val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as HTMLInputElement?
+val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement?
 
-val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement?)?.checked ?: false
+val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement?)?.checked ?: true
+val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement?)?.checked ?: false
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement

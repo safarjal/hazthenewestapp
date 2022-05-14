@@ -84,23 +84,23 @@ fun FlowContent.timeInput(
 ) {
     customDateTimeInput(isDateOnlyLayout) {
         required = true
-        onClickFunction = { event ->
-            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-        }
+//        onClickFunction = { event ->
+//            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+//        }
         block()
     }
 }
 
-fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
-    var disable = true
-    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
-    timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
-        disabled = disable
-        id = inputId
-        name = inputId
-        block()
-    }
-}
+//fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
+//    var disable = true
+//    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
+//    timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
+//        disabled = disable
+//        id = inputId
+//        name = inputId
+//        block()
+//    }
+//}
 
 fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
     label {
@@ -442,13 +442,13 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
             option.value == selectedOption && option.classList.contains(languageSelector.value) }
         ?.selected = true
 }
-fun maslaChanging(event: Event) {
-    var selectedOption = (event.currentTarget as HTMLSelectElement).value
-    inputsContainers.forEach { it ->
-        setOptionInSelect(it.maslaSelect, selectedOption)
-        disableTree(it)
-    }
-}
+//fun maslaChanging(event: Event) {
+//    val selectedOption = (event.currentTarget as HTMLSelectElement).value
+//    inputsContainers.forEach {
+//        setOptionInSelect(it.maslaSelect, selectedOption)
+//        disableTree(it)
+//    }
+//}
 
 // Invising Tree
 private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
@@ -465,41 +465,14 @@ private fun disableByClass(classSelector: String, inputContainer: HTMLElement, d
                 }
         }
 }
-private fun disableByMasla(inputContainer: HTMLElement) {
-    disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
-    disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
-}
-fun disableTree(inputContainer: HTMLElement) {
-    val isNifas = inputContainer.isNifas
-    val isMubtadia = inputContainer.isMubtadia
-    val isDateTime = !inputContainer.isDuration
-    val isMustabeen  = inputContainer.isMustabeen
-
-    disableByClass(CssC.DATETIME_AADAT, inputContainer, !isDateTime)
-    disableByMasla(inputContainer)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateTime)
-    disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
-    disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
-
-    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
-    if (inputContainer.isMubtadia) {
-        mawjoodaFasidCheck.checked = true
-        mawjoodaFasidCheck.disabled = true
-    }
-
-    disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
-}
 
 // Ensure Aadaat in Range
-private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
+fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-") && devmode) {
-//        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
-//            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
             require( arr.all { it.toInt() in validityRange } ) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {
@@ -521,40 +494,27 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
 
 // Switch Between Wilaadat/Isqaat - Beauty Only
 fun switchWiladatIsqat(inputContainer: HTMLElement) {
-    disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.isMustabeen)
-    disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.isMustabeen)
-
-    // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
-    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
-        .asList()
-        .map { it as HTMLSelectElement }
-        .filter { select -> select.value == Vls.Opts.WILADAT }
-
-    // If mustabeen, select wiladat
-    if (inputContainer.isMustabeen) wiladatSelect.forEach { select ->
-        select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
-            .selected = true
-    }
-    // If !mustabeen, select isqaat
-    else wiladatSelect.forEach { select ->
-        select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
-            .selected = true
-    }
-}
-
-// Ensure only two of AadatHaiz, AadatTuhr, CycleLength active at a time
-fun onlyTwo(event: Event) {
-    val inputContainer = findInputContainer(event)
-    val inputsList = listOf(inputContainer.aadatHaz, inputContainer.aadatTuhr, inputContainer.cycleLength)
-    var inputsInUse = 0
-    inputsList.forEach { if (it.value.isNotEmpty()) inputsInUse += 1 }
-    if (inputsInUse == 2) inputsList.first { it.value.isEmpty() }.disabled = true
-    else if (inputsInUse < 2) {
-        inputsList.forEach { it.disabled = false }
-        disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
-    }
+//    disableByClass(CssC.MUSTABEEN, inputContainer, !inputContainer.isMustabeen)
+//    disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.isMustabeen)
+//
+//    // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
+//    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
+//        .asList()
+//        .map { it as HTMLSelectElement }
+//        .filter { select -> select.value == Vls.Opts.WILADAT }
+//
+//    // If mustabeen, select wiladat
+//    if (inputContainer.isMustabeen) wiladatSelect.forEach { select ->
+//        select.children.asList().map { it as HTMLOptionElement }
+//            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
+//            .selected = true
+//    }
+//    // If !mustabeen, select isqaat
+//    else wiladatSelect.forEach { select ->
+//        select.children.asList().map { it as HTMLOptionElement }
+//            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
+//            .selected = true
+//    }
 }
 
 // DEALING WITH THE INPUT TABLES
@@ -563,7 +523,7 @@ fun onlyTwo(event: Event) {
 private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inputContainer.isDuration) {
     for (timeInput in inputContainer.timeInputsGroups) {
         for (input in timeInput) {
-            input.disabled = disable
+            input!!.disabled = disable
         }
     }
     for (durationInput in inputContainer.durationInputsGroups) {
@@ -571,41 +531,31 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
             input.asDynamic().disabled = !disable
         }
     }
-//    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
-    disableTree(inputContainer)
+//    disableTree(inputContainer)
 }
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
     disableDateTable(inputContainer, isDuration)
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
-private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
+private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean) {
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
 
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-        val newValue = convertInputValue(timeInput.value, isDateOnly)
-        val newMin = convertInputValue(timeInput.min, isDateOnly)
-        val newMax = convertInputValue(timeInput.max, isDateOnly)
+        timeInput?.let {
+            val newValue = convertInputValue(timeInput.value, isDateOnly)
+            val newMin = convertInputValue(timeInput.min, isDateOnly)
+            val newMax = convertInputValue(timeInput.max, isDateOnly)
 
-        val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
-        timeInput.type = dateInputType.realValue
+            val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
+            timeInput.type = dateInputType.realValue
 
-        timeInput.value = newValue
-        timeInput.min = newMin
-        timeInput.max = newMax
-    }
-    if (isDateTime) {
-        setMaxToCurrentTimeForTimeInputs(inputContainer)
+            timeInput.value = newValue
+            timeInput.min = newMin
+            timeInput.max = newMax
+        }
     }
     switchToDurationTable(inputContainer)
-}
-fun onClickTypeConfigurationSelectDropdown(event: Event) {
-    val selected = (event.currentTarget as HTMLSelectElement).value
-    val inputContainer = findInputContainer(event)
-    val isDateOnly = inputContainer.isDateOnly
-    val isDateTime = inputContainer.isDateTime
-    // Ensure all input containers are same type
-    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
 }
 
 // Add new rows at the start
@@ -650,7 +600,7 @@ private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
 
 // Setup the changing rows
 fun setupRows(inputContainer: HTMLElement) {
-    setMaxToCurrentTimeForTimeInputs(inputContainer)
+//    setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer, false)
     setupFirstRow(inputContainer, true)
 }
@@ -698,15 +648,6 @@ private fun onChangeDurationOption(event: Event) {
 }
 
 // Dealing with DateTime Inputs Max/Min Times
-fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
-//    val currentTime = currentTimeString(inputContainer.isDateOnly)
-    for (timeInputsGroup in inputContainer.timeInputsGroups) {
-        for (timeInput in timeInputsGroup.asReversed()) {
-//            timeInput.max = currentTime
-            if (timeInput.value.isNotEmpty()) break
-        }
-    }
-}
 private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
     setMinMaxForTimeInputsOnInput(
         findInputContainer(event),
@@ -761,20 +702,21 @@ private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLEleme
 
 // CLONING
 fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
-    if (inputsContainers.size == 1) {
-        addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)
-    }
     val clonedInputsContainer = inputsContainerToCopyFrom.after {
         inputFormDiv(inputsContainerToCopyFrom)
     }.single()
+    addReact(inputsContainerToCopyFrom, clonedInputsContainer)
 
+    if (inputsContainers.size == 2) {
+        addTheRemoveInputsContainerButton(inputsContainerToCopyFrom)
+    }
     addCalcAllButtonIfNeeded()
 
     // Make sure all invises are maintained
     languageChange()
-    disableTree(clonedInputsContainer)
+//    disableTree(clonedInputsContainer)
     shrinkAnswer(true)
-    disableTime()
+//    disableTime()
 //    switchWiladatIsqat(clonedInputsContainer)  TODO: DOES WEIRDNESS. FIX
     setupFirstRow(clonedInputsContainer, inputsContainerToCopyFrom.isDuration)
 }
@@ -784,7 +726,7 @@ fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
     if (inputsContainers.size == 1) calculateAllDiv.replaceChildren {  }
     shrinkAnswer(false)
-    disableTime()
+//    disableTime()
 }
 
 private fun shrinkAnswer(shrink: Boolean = true) {

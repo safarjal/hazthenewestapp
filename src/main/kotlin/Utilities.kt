@@ -57,6 +57,8 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
 
 fun findInputContainer(event: Event) =
     (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER)}!!
+fun findInputContainer(element: Element) =
+    element.getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER)}!!
 fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
 var Element.visibility: Boolean
@@ -278,6 +280,7 @@ object Ids {
         const val INPUT_CONTAINER = "input_container"
         const val INPUTS_CONTAINER_CLONE_BUTTON = "inputs_container_clone_button"
         const val INPUTS_CONTAINER_REMOVE_BUTTON = "inputs_container_remove_button"
+        const val REACT_DIV = "react_div"
     }
     object InputTables {
         const val HAIZ_INPUT_TABLE = "haiz_input_table"
