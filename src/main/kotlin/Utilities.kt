@@ -117,7 +117,7 @@ fun convertInputValue(value: String, isDateOnly: Boolean): String {
         .toDateInputString(isDateOnly)
 }
 
-fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
+//fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
 
 fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date { return Date(date.getTime() + timeInMilliseconds) }
 
@@ -433,5 +433,5 @@ object UnicodeChars {
     const val HAND_WRITING = "&#9997;&#65039;"           // HAND_WRITING
     const val BLUE_SWIRL = "\uD83C\uDF00"
     const val ABACUS = "&#129518;"
-    const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+//    const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 }
