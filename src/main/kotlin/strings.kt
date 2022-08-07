@@ -113,7 +113,7 @@ val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
     "\"The bleeding and purity (tuh’r) has been in the following " +
-            "sequence for the menstruation beginner:\\n\\n\"",
+            "sequence for the menstruation beginner:\n\n"",
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\n",
     "You are in the days of your purity (tuh’r) right now, so keep up your ritual " +
