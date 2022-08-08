@@ -50,6 +50,7 @@ main {
 }
 
 footer {
+  font-family: 'Mea Culpa', cursive;
   text-align: center;
   margin: 20px;
   position: fixed;
@@ -57,7 +58,6 @@ footer {
 }
 
 footer a {
-  font-family: 'Mea Culpa', cursive;
   font-weight: bold;
   font-size: larger;
   text-decoration: none;
