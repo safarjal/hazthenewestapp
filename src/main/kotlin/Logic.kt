@@ -245,6 +245,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDu
         adatsOfTuhrList,
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr,
         allTheInputs.ikhtilaafaat.ayyameQabliyyaIkhtilaf)
+
     val endingOutputValues = calculateEndingOutputValues(fixedDurations,
         allTheInputs.preMaslaValues,
         adatsOfHaizList,
@@ -1052,7 +1053,7 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
   return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
 }
 fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?, ayyameQabliyyaIkhtilaf: Boolean){
-    if(!ayyameQabliyyaIkhtilaf){
+    if(!ayyameQabliyyaIkhtilaf){//the ikhtilaf button is not on
         //figure out aadat for the last fixed duration
         //for that, we need aadats befor it
         //we need to find out what aadats were, at this point.
@@ -1102,6 +1103,8 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
     //so, for example 15B could have a first 3 days of istihaza before, then
     // 7 days of haiz, then 3 days of istihaza after. this will make all those duration.
 
+    //it should also make less than 3 haizes at the end of periods
+
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM && //as this is the last dam, less than 3 can be made haiz
             fixedDurations[i].days>10 &&
@@ -1110,7 +1113,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
             val diffInPakis = fixedDurations[i].biggerThanTen!!.gp-fixedDurations[i].biggerThanTen!!.mp
             if(fixedDurations[i].timeInMilliseconds>=diffInPakis){
                 fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,diffInPakis,fixedDurations[i].startDate)
-                if(diffInPakis > fixedDurations[i].timeInMilliseconds){
+                if(fixedDurations[i].timeInMilliseconds > diffInPakis){//excluding the equal scenario
                     val haizStartDate = addTimeToDate(fixedDurations[i].startDate, diffInPakis)
                     val haizDuration = fixedDurations[i].timeInMilliseconds-diffInPakis
                     fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.LESS_THAN_3_HAIZ,haizDuration, haizStartDate)
