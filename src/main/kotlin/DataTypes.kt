@@ -137,7 +137,7 @@ data class PreMaslaValues(
 data class Ikhtilaafaat(
     val ghairMustabeenIkhtilaaf:Boolean = false,
     val daurHaizIkhtilaf:Boolean = false,
-    val ayyameQabliyyaIkhtilaf: Boolean = false,
+    var ayyameQabliyyaIkhtilaf: Boolean = false,
     val mubtadiaIkhitilaf: Boolean = false
 )
 

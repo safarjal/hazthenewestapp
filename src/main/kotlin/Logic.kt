@@ -43,6 +43,11 @@ fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
     adatsOfHaizList +=AadatAfterIndexOfFixedDuration(-1,-1)
     adatsOfTuhrList +=AadatAfterIndexOfFixedDuration(-1,-1)
 
+    if(allTheInputs.typeOfInput==TypesOfInputs.DURATION){
+        // this is because ayyam-e-qabliyya cannot apply to a past masla, and durations is all past maslas
+        allTheInputs.ikhtilaafaat.ayyameQabliyyaIkhtilaf = true //so we will turn off ayyam-e-qabliyya
+    }
+
     if(allTheInputs.typeOfMasla==TypesOfMasla.NIFAS){
         return handleNifas(allTheInputs, fixedDurations, adatsOfHaizList, adatsOfTuhrList)
     }else if(allTheInputs.typeOfMasla==TypesOfMasla.MUBTADIA){
@@ -91,7 +96,7 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
             allTheInputs.ikhtilaafaat.daurHaizIkhtilaf
         )
     }
-    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf)
+    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf, allTheInputs.typeOfInput)
     checkForAyyameQabliyya(fixedDurations,
         adatsOfHaizList,
         adatsOfTuhrList,
@@ -153,7 +158,7 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
             adatsOfTuhrList,
             allTheInputs.ikhtilaafaat.daurHaizIkhtilaf
         )){return NO_OUTPUT}
-    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf)
+    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf, allTheInputs.typeOfInput)
     checkForAyyameQabliyya(fixedDurations,
         adatsOfHaizList,
         adatsOfTuhrList,
@@ -203,7 +208,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
             adatsOfTuhrList,
             allTheInputs.ikhtilaafaat.daurHaizIkhtilaf
         )){return NO_OUTPUT}
-    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf)
+    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf, allTheInputs.typeOfInput)
     checkForAyyameQabliyya(fixedDurations,
         adatsOfHaizList,
         adatsOfTuhrList,allTheInputs.preMaslaValues.inputtedMawjoodahTuhr,
@@ -239,7 +244,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDu
             adatsOfTuhrList,
             allTheInputs.ikhtilaafaat.daurHaizIkhtilaf
         )){return NO_OUTPUT}
-    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf)
+    addDurationsToDams(fixedDurations, allTheInputs.ikhtilaafaat.daurHaizIkhtilaf, allTheInputs.typeOfInput)
     checkForAyyameQabliyya(fixedDurations,
         adatsOfHaizList,
         adatsOfTuhrList,
@@ -1096,7 +1101,7 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHai
 
 
 }
-fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkhtilaf:Boolean){
+fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkhtilaf:Boolean, typesOfInputs: TypesOfInputs){
     //What this function does?
     //It creates a list of durations associated with each fixed duration
     //each duration contains it's type, it's starting date, and it's duration
@@ -1105,11 +1110,14 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
 
     //it should also make less than 3 haizes at the end of periods
 
+    //in input:durations, we expect all info to be not current, and solve according to that, so lastIndex is not relevant
+
     for (i in fixedDurations.indices){
         if(fixedDurations[i].type==DurationType.DAM && //as this is the last dam, less than 3 can be made haiz
             fixedDurations[i].days>10 &&
             fixedDurations[i].biggerThanTen!!.qism==Soortain.A_3 &&
-            i==fixedDurations.lastIndex){//A-3 switching to aadat
+            i==fixedDurations.lastIndex &&
+            typesOfInputs!=TypesOfInputs.DURATION){//A-3 switching to aadat
             val diffInPakis = fixedDurations[i].biggerThanTen!!.gp-fixedDurations[i].biggerThanTen!!.mp
             if(fixedDurations[i].timeInMilliseconds>=diffInPakis){
                 fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,diffInPakis,fixedDurations[i].startDate)
@@ -1154,7 +1162,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                 if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
                     (istihazaAfter>aadatTuhr &&
                             istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
-                            i==fixedDurations.lastIndex)){
+                            i==fixedDurations.lastIndex && typesOfInputs!=TypesOfInputs.DURATION)){
 
                     //daur
                     //find quotient and remainder
@@ -1187,7 +1195,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.HAIZ,remainder-aadatTuhr,addTimeToDate(aadatTuhrStartDate,aadatTuhr))
                     }else if(remainder>aadatTuhr
                         && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
-                        && i==fixedDurations.lastIndex){//it is the last period, and ends in less than 3 haiz
+                        && i==fixedDurations.lastIndex && typesOfInputs!=TypesOfInputs.DURATION){//it is the last period, and ends in less than 3 haiz
                         fixedDurations[i].biggerThanTen!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr
@@ -1235,7 +1243,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                 if(istihazaAfter>=aadatTuhr+3*MILLISECONDS_IN_A_DAY||
                     (istihazaAfter>aadatTuhr &&
                             istihazaAfter<aadatTuhr+3*MILLISECONDS_IN_A_DAY &&
-                            i == fixedDurations.lastIndex)){
+                            i == fixedDurations.lastIndex && typesOfInputs!=TypesOfInputs.DURATION)){
 
                     //daur
                     //find quotient and remainder
@@ -1259,7 +1267,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                         //there is nothing more to be added
                     }else if(remainder>aadatTuhr
                         && remainder<aadatTuhr+3*MILLISECONDS_IN_A_DAY
-                        && i==fixedDurations.lastIndex){//it is the last period, and ends in less than 3 haiz
+                        && i==fixedDurations.lastIndex && typesOfInputs!=TypesOfInputs.DURATION){//it is the last period, and ends in less than 3 haiz
                         fixedDurations[i].biggerThanForty!!.durationsList+=Duration(DurationType.ISTIHAZA_AFTER,aadatTuhr,aadatTuhrStartDate)
                         aadatTuhrEndDate = addTimeToDate(aadatTuhrStartDate,(aadatTuhr))
                         val lastHaiz = remainder-aadatTuhr
