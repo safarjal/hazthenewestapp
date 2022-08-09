@@ -24,7 +24,6 @@
 </head>
 
 <body>
-  <div id="bg"></div>
   <header>
     <div class="tabs" style="direction: ltr;">
       <button class="tab selected" id="english-tab" onclick="onChangeFunction('english')">
@@ -33,54 +32,44 @@
       <button class="tab rtl" id="urdu-tab" onclick="onChangeFunction('urdu')">اردو</button>
     </div>
   </header>
-  <div class="bg-i side right"></div>
   <main>
     <h1 class="english">Haidh and Nifas Calculator</h1>
     <h1 class="urdu lang-invisible">حيض و نفاس کیلکولیٹر</h1>
-    <section class="side right">
-      <div class="english">
-        <a class="page-link" id="first-row" href="./hazapp.html?lang=en">
-          <div class="row">
+    <section id="mid">
+      <img id="side-image" src="./images/side-img.jpeg" alt="">
+      <div id="links">
+        <div class="link">
+          <a class="page-link english" id="first-row" href="./hazapp.html?lang=en">
             <img class="icon" src="./images/calendar.svg" alt="Haidh and Istihadha Calculator"
               title="Haidh and Istihadha Calculator">
             <h2>Haidh and Nifas</h2>
-          </div>
-        </a>
-        <a class="page-link" id="second-row" href="./other-calcs.html?lang=en">
-          <div class="row">
-            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page"
-              title="Other Calcutations Page">
-            <h2>Calculations</h2>
-          </div>
-        </a>
-        <a class="page-link" id="third-row" href="./instructions.html?lang=en">
-          <div class="row">
-            <img class="icon" src="./images/instructions.svg" alt="FAQ Page" title="FAQ Page">
-            <h2>Instructions</h2>
-          </div>
-        </a>
-      </div>
-      <div class="urdu lang-invisible">
-        <a class="page-link" id="first-row" href="./hazapp.html">
-          <div class="row">
+          </a>
+          <a class="page-link urdu lang-invisible" id="first-row" href="./hazapp.html">
             <img class="icon" src="./images/calendar.svg" alt="Haidh and Istihadha Calculator"
               title="Haidh and Istihadha Calculator">
             <h2 class="urdu">حيض و نفاس</h2>
-          </div>
-        </a>
-        <a class="page-link" id="second-row" href="./other-calcs.html">
-          <div class="row">
-            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page"
-              title="Other Calcutations Page">
+          </a>
+        </div>
+        <div class="link">
+          <a class="page-link english" id="second-row" href="./other-calcs.html?lang=en">
+            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page" title="Other Calcutations Page">
+            <h2>Calculations</h2>
+          </a>
+          <a class="page-link urdu lang-invisible" id="second-row" href="./other-calcs.html">
+            <img class="icon" src="./images/calculator.svg" alt="Other Calcutations Page" title="Other Calcutations Page">
             <h2 class="urdu"> دیگر حساب </h2>
-          </div>
-        </a>
-        <a class="page-link" id="third-row" href="./instructions.html">
-          <div class="row">
+          </a>
+        </div>
+        <div class="link">
+          <a class="page-link english" id="third-row" href="./instructions.html?lang=en">
+            <img class="icon" src="./images/instructions.svg" alt="FAQ Page" title="FAQ Page">
+            <h2>Instructions</h2>
+          </a>
+          <a class="page-link urdu lang-invisible" id="third-row" href="./instructions.html">
             <img class="icon" src="./images/instructions.svg" alt="FAQ Page" title="FAQ Page">
             <h2 class="urdu"> ہدایات </h2>
-          </div>
-        </a>
+          </a>
+        </div>
       </div>
     </section>
   </main>

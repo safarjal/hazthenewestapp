@@ -13,11 +13,13 @@
 }
 
 body {
-  position: relative;
   background-color: #cbb6c7;
   border: 8px groove #724a6d;
   min-height: 100vh;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 body * {
@@ -50,24 +52,12 @@ button.selected {
   box-shadow: 0 0 5px 5px;
 }
 
-.bg-i {
-  background-image: url(./images/side-img.jpeg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  position: absolute;
-  top: 36vh;
-  right: calc(100vw - calc(55vh * 0.3));
-  bottom: 14vh;
-  left: 0;
-}
-
-@media (min-width: 900px) {
-  .bg-i {
-    top: 36vh;
-    right: calc(100vw - calc(55vh * 0.3));
-    bottom: 14vh;
-    left: 0;
-  }
+#side-image {
+  width: min(30vw, 160px);
+  min-height: 300px;
+  margin-top: 20vh;
+  margin-bottom: 10vh;
+  aspect-ratio: 3.2 / 8.5;
 }
 
 h1 {
@@ -78,41 +68,33 @@ h1 {
   margin: 4rem 1rem;
 }
 
-section {
+#mid {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 95px;
-  margin-bottom: 65px;
+  align-items: center;
+}
+
+#links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(13px, 4vw, 1.5rem);
+  margin: 15vh max(-10vw, -15px) 0 max(-10vw, -15px);
 }
 
 .page-link {
-  margin-top: 2rem;
   display: flex;
   align-items: center;
+  width: 50vw;
+  padding: clamp(13px, 4vw, 1.5rem);
   color: black;
   background: #6e4a6e;
-  position: absolute;
-  top: 35vh;
-  left: calc(calc(55vh * 0.3) - calc(calc(55vh * 0.3) * 0.2));
 }
 
 #second-row {
   background: #ae8a98;
-  margin-top: calc(3.25rem + calc(clamp(13px, 6vw, 1.8rem) * 3));
 }
 
 #third-row {
   background: #dbcfd9;
-  margin-top: calc(4.5rem + calc(clamp(13px, 6vw, 1.8rem) * 6));
-  margin-bottom: 5.5rem;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  width: 50vw;
-  padding: clamp(13px, 6vw, 1.5rem);
 }
 
 .icon {
@@ -128,10 +110,6 @@ h2 {
 }
 
 footer {
-  position: absolute;
-  right: 10px;
-  bottom: 8px;
-  left: 10px;
   margin-top: 2rem;
   text-align: center;
 }
@@ -141,5 +119,4 @@ a {
   font-size: larger;
   text-decoration: none;
   color: #3d0e3c;
-  /* border-radius: 25px; */
 }
