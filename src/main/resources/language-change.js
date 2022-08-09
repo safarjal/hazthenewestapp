@@ -9,7 +9,7 @@ const onChangeFunction = (e) => {
   document.body.classList.toggle("rtl", e == "urdu")
 
   if (englishTab) englishTab.classList.toggle("selected", e == "english")
-  if (englishTab && urduTab) urduTab.classList.toggle("selected", e == "urdu")
+  if (urduTab) urduTab.classList.toggle("selected", e == "urdu")
 }
 
 function getUrlVars() {

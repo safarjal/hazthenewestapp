@@ -443,8 +443,8 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
         ?.selected = true
 }
 fun maslaChanging(event: Event) {
-    var selectedOption = (event.currentTarget as HTMLSelectElement).value
-    inputsContainers.forEach { it ->
+    val selectedOption = (event.currentTarget as HTMLSelectElement).value
+    inputsContainers.forEach {
         setOptionInSelect(it.maslaSelect, selectedOption)
         disableTree(it)
     }
