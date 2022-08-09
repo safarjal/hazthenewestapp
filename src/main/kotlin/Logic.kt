@@ -114,7 +114,6 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
 }
 fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
     addStartDateToFixedDurations(fixedDurations)
-
     markAllTuhrsInPregnancyAsHaml(fixedDurations, allTheInputs.pregnancy!!, allTheInputs.ikhtilaafaat.ghairMustabeenIkhtilaaf)
     //the above also added start of pregnancy
 
@@ -192,6 +191,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
     makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations,allTheInputs.pregnancy) //also, marking them as Dam in
     val newNifasAadat = dealWithDamInMuddateNifas(fixedDurations,allTheInputs.pregnancy, allTheInputs.language)
         ?: return NO_OUTPUT
+
     val newMawjoodaPakiValues = removeDamLessThan3(
         fixedDurations,
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L,
@@ -221,6 +221,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         adatsOfTuhrList,
         allTheInputs.pregnancy.aadatNifas, newNifasAadat, TypesOfMasla.NIFAS)
     putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
+
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
         endingOutputValues, allTheInputs.typeOfInput)
@@ -518,6 +519,11 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                 //do update aadat
                 return fixedDurations[i].timeInMilliseconds
             }
+        }else if(i == fixedDurations.lastIndex){//there is no reported bleeding after wiladat
+            //technically, she may have an aadat of 0? this is worth checking, but for us,
+            // dealing with real world cases, we will assume that her bleeding after wiladat
+            // just hasn't finished yet, so hasn't been entered. so her previous aadat still holds.
+            return pregnancy.aadatNifas
         }
         i++
     }
@@ -567,13 +573,12 @@ fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pr
     for (i in fixedDurations.indices){
         val endDateOfFixedDuration = fixedDurations[i].endDate
         if(fixedDurations[i].type == DurationType.TUHR &&
-            fixedDurations[i].startDate.getTime() < pregnancy.birthTime.getTime() &&
-            endDateOfFixedDuration.getTime() > pregnancy.pregStartTime.getTime()){
+            fixedDurations[i].startDate.getTime() <= pregnancy.birthTime.getTime() &&
+            endDateOfFixedDuration.getTime() >= pregnancy.pregStartTime.getTime()){
             if(isTuhrInHamlAadatInGhairMustabeenIkhtilaf && !pregnancy.mustabeenUlKhilqat){
                 //in non mustabeen ulkhilqah, when the ikhtilafi masla is on, do not mark tuhr as tuhr in haml
             }else{
                 fixedDurations[i].type = DurationType.TUHR_IN_HAML
-
             }
         }
     }
@@ -787,7 +792,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
     // - amount of dam left after haiz
     // - new aadats of haiz and tuhr
     // - we use a function dealWithIstihazaAfter, to figure out if aadat of haiz needs to be updated in case of daur
-//    println("started bigger than 10")
     val inputtedAadatHaz = preMaslaValues.inputtedAadatHaiz
     val inputtedAadatTuhr = preMaslaValues.inputtedAadatTuhr
     val inputtedMawjoodaTuhr = preMaslaValues.inputtedMawjoodahTuhr
@@ -809,7 +813,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
     if (inputtedMawjoodaTuhr!= null && inputtedMawjoodaTuhr>=15*MILLISECONDS_IN_A_DAY){
         mawjoodaTuhr = inputtedMawjoodaTuhr
     }
-
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
@@ -838,6 +841,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             }
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAS_PERIOD && fixedDurations[i].days>40){
+
             //check if we have aadaat.
             // first check for nifas aadat
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
@@ -873,7 +877,6 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             }
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
-
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==-1L ||aadatTuhr==-1L){
                 //give error message

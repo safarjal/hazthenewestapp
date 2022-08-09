@@ -3940,6 +3940,28 @@ class LogicTest {
         assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds)
     }
     @Test
+    fun bugMaslaDurationsNifasIssue166() {
+        //inputs : 8D 24T 8D Pregnancy 60D 10T Birth
+        val durations = listOf<Duration>(
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.TUHR,parseDays("24")!!),
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.HAML,parseDays("0")!!),
+            Duration(DurationType.DAM,parseDays("60")!!),
+            Duration(DurationType.TUHR,parseDays("10")!!),
+            Duration(DurationType.WILADAT_ISQAT,parseDays("0")!!),
+
+            )
+        val output = handleEntries(convertDurationsIntoEntries(durations, AllTheInputs(
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(aadatNifas = parseDays("40")!!,
+                mustabeenUlKhilqat = true)
+        )
+        ))
+        assertEquals(parseDays("8"),output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(parseDays("24"),output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
     fun bugMaslaIssue170() {
         //NIFAS MASLA insufficient final values
         val entries = listOf<Entry>(
