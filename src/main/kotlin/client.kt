@@ -58,9 +58,10 @@ fun languageChange() {
         .forEach { select -> setOptionInSelect(select) }
 }
 
-fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):MutableList<AadatsOfHaizAndTuhr>{
-    val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>()
-    val aadatHaizList = mutableListOf<Int>()
+fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatNifas: String):MutableList<AadatsOfHaizAndTuhr>{
+    //this returns an array conating all the possibilities we want to plug in and try
+    val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
+    val aadatHaizList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
     if(aadatHaz!=""){
         val haizStart = parseRange(aadatHaz)[0]
         val haizEnd = parseRange(aadatHaz)[1]
@@ -85,6 +86,19 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):Mutabl
         aadatTuhrList += -1
     }
 
+    val aadatNifasList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
+    if(aadatNifas!=""){//nifas aadat isn't blank
+        val nifasStart = parseRange(aadatNifas)[0] //parse range function splits it and returns the 2 values on either end of the dash
+        val nifasEnd = parseRange(aadatNifas)[1]
+        if(nifasStart!=null && nifasEnd!=null){
+            for (i in nifasStart .. nifasEnd){
+                aadatNifasList += i
+            }
+        }
+    }else{
+        aadatNifasList += -1
+    }
+    println(aadatNifasList)
     if(cycleLength==""){//there is no cycle length
         if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
             aadatTuhrList+= aadatTuhr.toInt()
@@ -92,12 +106,12 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):Mutabl
         if(!aadatHaz.contains(('-')) && aadatHaz != ""){//if haiz aadat doen't have -, then just enter that one habit
             aadatHaizList+= aadatHaz.toInt()
         }
-
         for(tuhrAadat in aadatTuhrList){
             for (aadatHaiz in aadatHaizList){
                 combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz*MILLISECONDS_IN_A_DAY,tuhrAadat*MILLISECONDS_IN_A_DAY)
             }
         }
+
 
     }else{//there is cycle length, and only one of haiz or tuhr, which is ranged
         if(aadatTuhrList[0]==-1){//there is no tuhr aadat  - haiz aadat is a range
@@ -119,7 +133,20 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String):Mutabl
 
 
     }
-    return combosToTry
+    if(!aadatNifas.contains(('-')) && aadatNifas != ""){//if nifas aadat doen't have -, then just enter that one habit
+        aadatNifasList+= aadatNifas.toInt()
+    }
+    if(aadatNifasList[0]!=-1){//we do have a nifas aadat
+        val combosToTryWithNifas = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
+        for (combo in combosToTry){
+            for (nifasAadat in aadatNifasList){
+                combosToTryWithNifas+=AadatsOfHaizAndTuhr(combo.aadatHaiz, combo.aadatTuhr, nifasAadat*MILLISECONDS_IN_A_DAY)
+            }
+        }
+        return combosToTryWithNifas
+    }else{//we don't have a nifas aadat
+        return combosToTry
+    }
 }
 
 fun parseEntries(inputContainer: HTMLElement) {
@@ -204,7 +231,7 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
-            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value)
+            handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value, aadatNifas.value)
             return
         }
 
@@ -222,11 +249,12 @@ fun parseEntries(inputContainer: HTMLElement) {
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
     }
 }
-private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String) {
-    val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength)
+private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String, aadatNifas:String) {
+    val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength, aadatNifas)
     val listOfLists = mutableListOf<MutableList<Entry>>()
     val listOfDescriptions = mutableListOf<String>()
-    for (aadatCombo in combosToTry){
+    println(combosToTry)
+    for (aadatCombo in combosToTry){ //go through combos and input them into logic and get their output
         if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
             allTheInputs.preMaslaValues.inputtedAadatTuhr=null
         }else{
@@ -237,15 +265,32 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
         }else{
             allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
         }
+        if(aadatCombo.aadatNifas==-1*MILLISECONDS_IN_A_DAY){
+            allTheInputs.pregnancy!!.aadatNifas=null
+        }else{
+            allTheInputs.pregnancy!!.aadatNifas=aadatCombo.aadatNifas
+        }
         val output = handleEntries(allTheInputs)
         if (output == NO_OUTPUT) return //we gotta put this line so we don't keep on getting error messages every time it puts in a new value. gotta break at first error
         listOfLists+=output.hazDatesList
-        if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
-            listOfDescriptions += "${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
-        }else if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
-            listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
-        }else{
-            listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+
+        //create a description for each combo
+        if(aadatCombo.aadatNifas!=null && aadatCombo.aadatNifas!=-1*MILLISECONDS_IN_A_DAY){//aadat nifas exists
+            if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
+                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+            }else if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
+                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
+            }else{
+                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+            }
+        }else{//no nifas
+            if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
+                listOfDescriptions += "${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+            }else if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
+                listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
+            }else{
+                listOfDescriptions += "${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+            }
         }
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
