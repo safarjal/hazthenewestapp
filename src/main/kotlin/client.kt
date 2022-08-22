@@ -98,7 +98,6 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatN
     }else{
         aadatNifasList += -1
     }
-    println(aadatNifasList)
     if(cycleLength==""){//there is no cycle length
         if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
             aadatTuhrList+= aadatTuhr.toInt()
@@ -253,7 +252,6 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
     val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength, aadatNifas)
     val listOfLists = mutableListOf<MutableList<Entry>>()
     val listOfDescriptions = mutableListOf<String>()
-    println(combosToTry)
     for (aadatCombo in combosToTry){ //go through combos and input them into logic and get their output
         if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
             allTheInputs.preMaslaValues.inputtedAadatTuhr=null
@@ -277,11 +275,11 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
         //create a description for each combo
         if(aadatCombo.aadatNifas!=null && aadatCombo.aadatNifas!=-1*MILLISECONDS_IN_A_DAY){//aadat nifas exists
             if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
-                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+                listOfDescriptions += "(${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)})/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
             }else if(aadatCombo.aadatTuhr==-1*MILLISECONDS_IN_A_DAY){
-                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
+                listOfDescriptions += "(${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)})/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}"
             }else{
-                listOfDescriptions += "${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
+                listOfDescriptions += "(${(aadatCombo.aadatNifas!! /MILLISECONDS_IN_A_DAY)})/${(aadatCombo.aadatHaiz/MILLISECONDS_IN_A_DAY)}/${(aadatCombo.aadatTuhr/MILLISECONDS_IN_A_DAY)}"
             }
         }else{//no nifas
             if(aadatCombo.aadatHaiz==-1*MILLISECONDS_IN_A_DAY){
