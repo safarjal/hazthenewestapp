@@ -106,7 +106,7 @@ val urduStrings = Strings(
     "مسئلے کا عنوان",
     "سوال",
     "اسقاط",
-    "duration1 حیض اور duration299999k,   پاکی کی عادت تھی۔ ",
+    "duration1 حیض اور duration2 پاکی کی عادت تھی۔ ",
     "duration1 کے طہر فاسد کے بعد:\n\n"
 
 
