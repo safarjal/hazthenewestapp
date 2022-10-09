@@ -107,6 +107,8 @@ data class Strings(
     val titleTextFieldLabel:String,
     val questionTextFieldLabel:String,
     val isqat: String,
+    val preMaslaHabitOfHaizAndTuhr: String,
+    val preMaslaValueOfMawjoodaPaki: String,
     )
 
 

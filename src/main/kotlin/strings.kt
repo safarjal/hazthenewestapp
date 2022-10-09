@@ -106,6 +106,8 @@ val urduStrings = Strings(
     "مسئلے کا عنوان",
     "سوال",
     "اسقاط",
+    "duration1 حیض اور duration299999k,   پاکی کی عادت تھی۔ ",
+    "duration1 کے طہر فاسد کے بعد:\n\n"
 
 
     )
@@ -244,6 +246,8 @@ val englishStrings = Strings(
     "Masla Title",
     "Question",
     "Miscarriage",
+    "Previous habit was duration1 in haidh and duration2 in purity. ",
+    "After duration1 of invalid tuhr: \n\n"
 
 
     )

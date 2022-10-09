@@ -1,6 +1,37 @@
 @file:Suppress("SpellCheckingInspection")
 import kotlin.js.Date
 
+fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages{
+    var englishStr = ""
+    var urduStr = ""
+    if(preMaslaValues.inputtedAadatHaiz!=null &&
+        preMaslaValues.inputtedAadatTuhr!=null &&
+        preMaslaValues.inputtedMawjoodahTuhr!=null){//we have all 3 pre masla values
+
+        //add line about previous habits
+        urduStr += StringsOfLanguages.URDU.preMaslaHabitOfHaizAndTuhr
+            .replace("duration1", daysHoursMinutesDigital(preMaslaValues.inputtedAadatHaiz!!,TypesOfInputs.DURATION,Vls.Langs.URDU))
+            .replace("duration2", daysHoursMinutesDigital(preMaslaValues.inputtedAadatTuhr!!,TypesOfInputs.DURATION,Vls.Langs.URDU))
+
+        englishStr += StringsOfLanguages.ENGLISH.preMaslaHabitOfHaizAndTuhr
+            .replace("duration1", daysHoursMinutesDigital(preMaslaValues.inputtedAadatHaiz!!,TypesOfInputs.DURATION,Vls.Langs.ENGLISH))
+            .replace("duration2", daysHoursMinutesDigital(preMaslaValues.inputtedAadatTuhr!!,TypesOfInputs.DURATION,Vls.Langs.ENGLISH))
+
+        //add line about mawjooda paki
+        urduStr += StringsOfLanguages.URDU.preMaslaValueOfMawjoodaPaki
+            .replace("duration1", daysHoursMinutesDigital(preMaslaValues.inputtedMawjoodahTuhr!!,TypesOfInputs.DURATION,Vls.Langs.URDU))
+
+        englishStr += StringsOfLanguages.ENGLISH.preMaslaValueOfMawjoodaPaki
+            .replace("duration1", daysHoursMinutesDigital(preMaslaValues.inputtedMawjoodahTuhr!!,TypesOfInputs.DURATION,Vls.Langs.ENGLISH))
+        //remove the word fasid or invalid, if tuhr was saheeh
+        if(!preMaslaValues.isMawjoodaFasid){//if tuhr is not fasid
+            urduStr=urduStr.replace("فاسد ", "")
+            englishStr=englishStr.replace("invalid ", "")
+        }
+    }
+    return OutputStringsLanguages(urduStr,englishStr)
+}
+
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
                                   pregnancy: Pregnancy,
                                   endingOutputValues: EndingOutputValues,
@@ -16,10 +47,10 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
 }
 fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
-                                 typeOfInput: TypesOfInputs):OutputTexts{
+                                 typeOfInput: TypesOfInputs, preMaslaValues: PreMaslaValues):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues).englishString
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
 
@@ -27,11 +58,12 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
 }
 fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 endingOutputValues: EndingOutputValues,
-                                typeOfInput: TypesOfInputs):OutputTexts{
+                                typeOfInput: TypesOfInputs,
+                                preMaslaValues: PreMaslaValues):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
 
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues).englishString
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
 
@@ -161,10 +193,13 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
-fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs, typesOfMasla: TypesOfMasla):OutputStringsLanguages{
+fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs, typesOfMasla: TypesOfMasla, preMaslaValues: PreMaslaValues):OutputStringsLanguages{
     //ToDo: figure out how to do languages for real
     var strUrdu = StringsOfLanguages.URDU.answer //جواب:
     var strEnglish = StringsOfLanguages.ENGLISH.answer //جواب:
+
+    strUrdu+= addPreMaslaValuesText(preMaslaValues).urduString
+    strEnglish += addPreMaslaValuesText(preMaslaValues).englishString
 
     if(typesOfMasla==TypesOfMasla.MUTADAH){
         strUrdu += StringsOfLanguages.URDU.headerline //اس ترتیب سے خون آیا اور پاکی ملی

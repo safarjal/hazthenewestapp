@@ -109,7 +109,8 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
     putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringMubtadia(fixedDurations,
         endingOutputValues,
-        allTheInputs.typeOfInput)
+        allTheInputs.typeOfInput,
+        allTheInputs.preMaslaValues)
 
 }
 fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
@@ -258,7 +259,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDu
         adatsOfTuhrList,
         -1L, typesOfMasla = TypesOfMasla.MUTADAH)
     putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
-    return generateOutputStringMutadah(fixedDurations, endingOutputValues, allTheInputs.typeOfInput)
+    return generateOutputStringMutadah(fixedDurations, endingOutputValues, allTheInputs.typeOfInput, allTheInputs.preMaslaValues)
 
 }
 
