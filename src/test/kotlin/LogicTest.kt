@@ -3891,6 +3891,77 @@ class LogicTest {
         assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
     }
     @Test
+    fun bugMaslaIssue195() {
+        //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
+        val entries = listOf<Entry>(
+            Entry(Date(2022,6,13,8,30), Date(2022, 6, 23, 11,0)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(
+                    parseDays("8:19"),
+                    parseDays("26:6"),
+                    parseDays("18:11")
+                )
+            )
+        )
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.DAM, parseDays("10:2:30")!!,
+                biggerThanTen = BiggerThanTenDm(0,0,0,0,Soortain.A_3,0, 0, 0, 0,
+                    durationsList= mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE,parseDays("7:19")!!),
+                        Duration(DurationType.LESS_THAN_3_HAIZ, parseDays("2:7:30")!!)
+                    ),
+                    aadatTuhr = 0
+                )
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("8:19")!!, parseDays("26:6")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(Date(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedFixedDurations.size, output.fixedDurations.size)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList.size, output.fixedDurations[0].biggerThanTen!!.durationsList.size)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].type, output.fixedDurations[0].biggerThanTen!!.durationsList[0].type)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].type, output.fixedDurations[0].biggerThanTen!!.durationsList[1].type)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds)
+    }
+    @Test
+    fun bugMaslaDurationsNifasIssue166() {
+        //inputs : 8D 24T 8D Pregnancy 60D 10T Birth
+        val durations = listOf<Duration>(
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.TUHR,parseDays("24")!!),
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.HAML,parseDays("0")!!),
+            Duration(DurationType.DAM,parseDays("60")!!),
+            Duration(DurationType.TUHR,parseDays("10")!!),
+            Duration(DurationType.WILADAT_ISQAT,parseDays("0")!!),
+
+            )
+        val output = handleEntries(convertDurationsIntoEntries(durations, AllTheInputs(
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(aadatNifas = parseDays("40")!!,
+                mustabeenUlKhilqat = true)
+        )
+        ))
+        assertEquals(parseDays("8"),output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(parseDays("24"),output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
     fun bugMaslaIssue170() {
         //NIFAS MASLA insufficient final values
         val entries = listOf<Entry>(

@@ -7,8 +7,8 @@ val urduStrings = Strings(
     "<b>واللہ تعالی اعلم بالصواب</b>\n\n",
     "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n",
     "فی الحال آپ کے حیض کے دن ہیں۔ خون جاری رہنے کی صورت میں عبادات سے رکیں۔\n\n",
-    "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر<b> date1 کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n",
-    "اگر date1 تک بھی خون جاری ہی رہے  تب بھی date1<b> کو غسل کر کے اپنی عبادات شروع کر دیں۔</b>\n\n",
+    "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>date1 کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n",
+    "اگر date1 تک بھی خون جاری ہی رہے  تب بھی <b>date1 کو غسل کر کے اپنی عبادات شروع کر دیں۔</b>\n\n",
     "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
     "\n<b>حمل</b>\n",
     "\n<b>ولادت date1</b>\n",
@@ -106,14 +106,16 @@ val urduStrings = Strings(
     "مسئلے کا عنوان",
     "سوال",
     "اسقاط",
+    "duration1 حیض اور duration2 پاکی کی عادت تھی۔ ",
+    "duration1 کے طہر فاسد کے بعد:\n\n"
 
 
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
     "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
-    "\"The bleeding and purity (tuh’r) has been in the following " +
-            "sequence for the menstruation beginner:\\n\\n\"",
+    "The bleeding and purity (tuh’r) has been in the following " +
+            "sequence for the menstruation beginner:\n\n",
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\n",
     "You are in the days of your purity (tuh’r) right now, so keep up your ritual " +
@@ -244,6 +246,8 @@ val englishStrings = Strings(
     "Masla Title",
     "Question",
     "Miscarriage",
+    "Previous habit was duration1 in haidh and duration2 in purity. ",
+    "After duration1 of invalid tuhr: \n\n"
 
 
     )
