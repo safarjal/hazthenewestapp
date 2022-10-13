@@ -71,6 +71,7 @@ body {
 .lang-invisible,
 .invisible {
   display: none !important;
+  visibility: hidden !important;
 }
 
 .hidden {
