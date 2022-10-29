@@ -4001,6 +4001,44 @@ class LogicTest {
 
     }
     @Test
+    fun testAadatFromMiddle() {
+        //issue #200
+        val entries = listOf<Entry>(
+            Entry(Date(2022,5,1), Date(2022, 5, 30)),
+            Entry(Date(2022,7,1), Date(2022, 7, 7)),
+            Entry(Date(2022,8,1), Date(2022, 8, 7)),
+            Entry(Date(2022,9,1), Date(2022, 9, 13)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                typeOfInput = TypesOfInputs.DATE_ONLY
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("6")!!, parseDays("25")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,10,2), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.UNSOLVED_DAM, parseDays("29")!!),
+            FixedDuration(DurationType.UNSOLVED_TUHR_PRESUMED_FASID, parseDays("32")!!),
+        )
+        assertEquals(expectedFixedDurations[0].type, output.fixedDurations[0].type)
+        assertEquals(expectedFixedDurations[1].type, output.fixedDurations[1].type)
+        assertEquals(expectedFixedDurations[0].days, output.fixedDurations[0].days)
+        assertEquals(expectedFixedDurations[1].days, output.fixedDurations[1].days)
+
+    }
+    @Test
     fun testDaysHoursMinutesDigitalIssue171() {
         //if value is 0
         val inputtedMilliseconds = 0L

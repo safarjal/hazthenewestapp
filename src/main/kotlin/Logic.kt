@@ -47,7 +47,6 @@ fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
         // this is because ayyam-e-qabliyya cannot apply to a past masla, and durations is all past maslas
         allTheInputs.ikhtilaafaat.ayyameQabliyyaIkhtilaf = true //so we will turn off ayyam-e-qabliyya
     }
-
     if(allTheInputs.typeOfMasla==TypesOfMasla.NIFAS){
         return handleNifas(allTheInputs, fixedDurations, adatsOfHaizList, adatsOfTuhrList)
     }else if(allTheInputs.typeOfMasla==TypesOfMasla.MUBTADIA){
@@ -786,24 +785,29 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                             adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
                             adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
                             endOfDaurIkhtilaf: Boolean):Boolean{
-
-    //This basically adds this info to each fixed duration of dam:
-    // - istihaza before haiz duration
+    //This basically adds this info to each fixedduration of dam:
+    // - istihaza-before-haiz duration
     // - haiz duration
     // - amount of dam left after haiz
     // - new aadats of haiz and tuhr
-    // - we use a function dealWithIstihazaAfter, to figure out if aadat of haiz needs to be updated in case of daur
+    // - we use a function dealWithIstihazaAfter, to figure out if
+    // aadat of haiz needs to be updated in case of daur
     val inputtedAadatHaz = preMaslaValues.inputtedAadatHaiz
     val inputtedAadatTuhr = preMaslaValues.inputtedAadatTuhr
     val inputtedMawjoodaTuhr = preMaslaValues.inputtedMawjoodahTuhr
     val isMawjoodaFasid  = preMaslaValues.isMawjoodaFasid
 
-
+    //check if we have aadat, as we will need it for solving. put it in an adatsOfHaiz/Tuhr list.
     var aadatHaz:Long = -1
     var aadatTuhr:Long = -1
     var mawjoodaTuhr:Long = -1
 
-    if (inputtedAadatHaz != null && inputtedAadatHaz>=3*MILLISECONDS_IN_A_DAY && inputtedAadatHaz<=10*MILLISECONDS_IN_A_DAY){
+    //if we have an inputted adat and it is correct
+    //(it should be correct in every instance as there
+    // is a checker on the input, but no harm in double checking.)
+    if (inputtedAadatHaz != null &&
+        inputtedAadatHaz>=3*MILLISECONDS_IN_A_DAY &&
+        inputtedAadatHaz<=10*MILLISECONDS_IN_A_DAY){
         aadatHaz = inputtedAadatHaz
         adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,-1)
     }
@@ -817,13 +821,14 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
-        //get aadat if dam is less than 10
+        //get aadat if dam is less than 10. add it to the adat list.
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10&&fixedDurations[i].days>=3){
             aadatHaz = fixedDurations[i].timeInMilliseconds
             adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
+            //if there is a tuhr before this, AND it is not fasid, then the tuhr can also be adat.
             if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
                 aadatTuhr = fixedDurations[i-1].timeInMilliseconds
-                //if aadat is bigger than or equal to 6 months
+                //if aadat of tuhr is bigger than or equal to 6 months
                 if(aadatTuhr>=30*6*MILLISECONDS_IN_A_DAY){
                     //make aadat 2 months
                     aadatTuhr = 30*2*MILLISECONDS_IN_A_DAY
@@ -832,23 +837,26 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 }
                 adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
             }else if(i==0 && mawjoodaTuhr!=-1L && !isMawjoodaFasid){
+                //if mawjooda tuhr is not fasid, then it can be adat tuhr
                 aadatTuhr = mawjoodaTuhr
                 //if aadat is bigger than or equal to 6 months
                 if(aadatTuhr>=30*6*MILLISECONDS_IN_A_DAY){
                     //make aadat 2 months
                     aadatTuhr = 30*2*MILLISECONDS_IN_A_DAY
                 }
+                //(we don't have to mark that as a super long tuhr, cuz
+                // this is not an actual tuhr, just the inputted tuhr amount.
                 adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
             }
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAS_PERIOD && fixedDurations[i].days>40){
-
             //check if we have aadaat.
             // first check for nifas aadat
+            //it Must exist as we specified that it had to.
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             val istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
 
-            //if istihaza after is less than 15, so ther is no possibilty of daur,
+            //if istihaza after is less than 15, so there is no possibilty of daur,
             // and it is followed by a Tuhr-e tamm, then we don't need aadats just yet
             if((istihazaAfter<18*MILLISECONDS_IN_A_DAY && i != fixedDurations.lastIndex)||
                     istihazaAfter<15*MILLISECONDS_IN_A_DAY){
@@ -860,14 +868,36 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             }else{
                 //we do need aadaat
                 //we don't need mawjoodah paki
+
+                //If we get to a dam we cannot solve,
+                // becuase no aadat, we don't give error, just mark it as unsolved and go on.
+                //we are only going to give error if this is the last
+
                 if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
-                    //give error message
-                    if(language==Vls.Langs.ENGLISH){
-                        window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
-                    }else if(language==Vls.Langs.URDU){
-                        window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                    //mark that dam as unsolved
+                    fixedDurations[i].type = DurationType.UNSOLVED_DAM
+                    //if it has a tuhr behind it, mark it as unsolved
+                    if(i>0 && fixedDurations[i-1].type == DurationType.TUHR){
+                        fixedDurations[i-1].type == DurationType.UNSOLVED_TUHR_PRESUMED_FASID
                     }
-                    return false
+                    //if it has a tuhr in front of it, mark it as unsolved
+                    if(i<fixedDurations.lastIndex && fixedDurations[i+1].type==DurationType.TUHR){
+                        fixedDurations[i+1].type == DurationType.UNSOLVED_TUHR_PRESUMED_FASID
+                    }
+                    println(fixedDurations)
+
+                    //if we got to the end, and we were still marking
+                    // dam as unsolved, then run the error message
+
+                    if(i==fixedDurations.lastIndex || i==fixedDurations.lastIndex-1){
+                        //give error message
+                        if(language==Vls.Langs.ENGLISH){
+                            window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                        }else if(language==Vls.Langs.URDU){
+                            window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                        }
+                        return false
+                    }
                 }
 
                 val haiz = aadatHaz
@@ -880,27 +910,57 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
             if(aadatHaz==-1L ||aadatTuhr==-1L){
-                //give error message
-                if(language==Vls.Langs.ENGLISH){
-                    window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
-                }else if(language==Vls.Langs.URDU){
-                    window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                //if we do not have aadat
+                //mark that dam as unsolvable
+                fixedDurations[i].type=DurationType.UNSOLVED_DAM
+
+                //mark the tuhr after it as potentially unsolvable.
+                //if it exists
+                if(i<fixedDurations.lastIndex&&fixedDurations[i+1].type==DurationType.TUHR){
+                    fixedDurations[i+1].type=DurationType.UNSOLVED_TUHR_PRESUMED_FASID
                 }
-                return false
-            }
-            else{//we have aadat
-                if(mawjoodaTuhr==-1L && i<1){//if mawjoodah tuhr doesn't exist and the first period is bigger than 10
-                    //give error message
+                //mark the tuhr before it as potentially fasid
+                //if it exists
+                if(i>0&&fixedDurations[i-1].type==DurationType.TUHR){
+                    fixedDurations[i-1].type=DurationType.UNSOLVED_TUHR_PRESUMED_FASID
+                }
+
+                //give error message
+                //only if this is the last
+                if(i>=fixedDurations.lastIndex-1){
                     if(language==Vls.Langs.ENGLISH){
-                        window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                        window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
                     }else if(language==Vls.Langs.URDU){
-                        window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
+                        window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                     }
                     return false
+                }
+            }
+            else{//we have aadat
+                if(mawjoodaTuhr==-1L &&
+                    (i<1||fixedDurations[i-1].type==DurationType.UNSOLVED_TUHR_PRESUMED_FASID)){
+                    //if mawjoodah tuhr doesn't exist and the first period is bigger than 10
+
+                    //mark this dam as unsolvable
+                    fixedDurations[i].type=DurationType.UNSOLVED_DAM
+                    //if there is a tuhr after it, mark it as unsolved
+                    if(i<fixedDurations.lastIndex && fixedDurations[i+1].type==DurationType.TUHR){
+                        fixedDurations[i+1].type=DurationType.UNSOLVED_TUHR_PRESUMED_FASID
+                    }
+                    //if I is the last index, then give error
+                    if(i==fixedDurations.lastIndex||i==fixedDurations.lastIndex-1){
+                        //give error message
+                        if(language==Vls.Langs.ENGLISH){
+                            window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                        }else if(language==Vls.Langs.URDU){
+                            window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
+                        }
+                        return false
+                    }
                 }else{
 
                     //set the mawjoodah tuhr to previous tuhr, if it exists
-                    if(i>0){
+                    if(i>0 && fixedDurations[i-1].type!=DurationType.UNSOLVED_TUHR_PRESUMED_FASID){
                         mawjoodaTuhr = fixedDurations[i-1].timeInMilliseconds + fixedDurations[i-1].istihazaAfter
                     }
                 }
