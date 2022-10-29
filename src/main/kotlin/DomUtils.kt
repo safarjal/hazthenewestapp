@@ -337,8 +337,8 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && !mustabeen,
             Vls.Opts.WILADAT,
-            "Isqaat",
-            "Isqaat in Urdu",
+            StringsOfLanguages.ENGLISH.isqat,
+            StringsOfLanguages.URDU.isqat,
             CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!preg || mustabeen) CssC.INVIS else null
         )
     }
