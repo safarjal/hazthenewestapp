@@ -1649,8 +1649,6 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
         val qism = fixedDurations.last().biggerThanTen!!.qism
         //A-3
         if(qism==Soortain.A_3){
-//            println("1 got here")
-//            println(fixedDurations.last())
             val mp = fixedDurations.last().biggerThanTen!!.mp
             val gp = fixedDurations.last().biggerThanTen!!.gp
             val startOfAadat = addTimeToDate(fixedDurations.last().startDate, gp-mp)//this is start of aadat
@@ -1701,7 +1699,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                 }
 
             }else if(startOfAadat.getTime()<=fixedDurations.last().endDate.getTime()){//A-3 entered into aadat
-                if(lastDuration.type==DurationType.HAIZ){
+                if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
                     val lessThanThreeDate = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
                     futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
                 }else{
@@ -1718,7 +1716,8 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                 futureDatesList+=FutureDateType(ihtiyatiGhuslDate, TypesOfFutureDates.IHTIYATI_GHUSL)
             }
         }
-        else if(fixedDurations.last().biggerThanTen!!.istihazaAfter>=aadats.aadatTuhr){//daur
+        else if(fixedDurations.last().
+            biggerThanTen!!.istihazaAfter>=aadats.aadatTuhr){//daur
 //            println("daur")
             if(lastDuration.type==DurationType.ISTIHAZA_AFTER && lastDuration.timeInMilliseconds<aadats.aadatTuhr){
                 val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)

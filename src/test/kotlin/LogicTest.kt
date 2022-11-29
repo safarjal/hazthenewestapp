@@ -4001,6 +4001,43 @@ class LogicTest {
 
     }
     @Test
+    fun bugMaslaIssue201() {
+        //wrong future advice date given
+        val entries = listOf<Entry>(
+            Entry(Date(2022,9,23), Date(2022, 10, 26)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                PreMaslaValues(parseDays("9"),parseDays("54"),parseDays("22")),
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("9")!!, parseDays("54")!!),
+                mutableListOf(
+                    FutureDateType(Date(2022,10,27), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+
+    }
+
+
+    @Test
     fun testDaysHoursMinutesDigitalIssue171() {
         //if value is 0
         val inputtedMilliseconds = 0L
