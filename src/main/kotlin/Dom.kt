@@ -2,8 +2,8 @@
 @file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+//import kotlinx.coroutines.GlobalScope
+//import kotlinx.coroutines.launch
 import kotlinx.html.dom.append
 import kotlinx.html.*
 import kotlinx.html.form
@@ -70,14 +70,10 @@ private fun FlowContent.ikhtilafiMasle() {
                 span(classes = CssC.ENGLISH) { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = CssC.URDU) { StringsOfLanguages.URDU.ikhtilafimasail }
             }
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1,
-                Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2,
-                Strings::aadatIncreasingAtEndOfDaurIkhtilaf, extraClasses = CssC.DEV)
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3,
-                Strings::ayyameqabliyyaikhtilaf, extraClasses = CssC.DEV)
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4,
-                Strings::mubtadiaikhitilaf, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, Strings::aadatIncreasingAtEndOfDaurIkhtilaf, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3, Strings::ayyameqabliyyaikhtilaf, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4, Strings::mubtadiaikhitilaf, extraClasses = CssC.DEV)
         }
     }
 }
@@ -86,6 +82,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
     val isMutada = inputContainerToCopyFrom?.isMutada ?: IS_DEFAULT_INPUT_MODE_MUTADA
     val isNifas = inputContainerToCopyFrom?.isNifas ?: !IS_DEFAULT_INPUT_MODE_MUTADA
     val isMubtadia = inputContainerToCopyFrom?.isMubtadia ?: !IS_DEFAULT_INPUT_MODE_MUTADA
+
     div(classes = CssC.ROW) {
         makeLabel(Ids.Inputs.MASLA_TYPE_SELECT, Strings::typeOfMasla)
         select {
@@ -119,9 +116,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
         makeLabel(Ids.Inputs.INPUT_TYPE_SELECT, Strings::typeOfInput)
         select {
             id = Ids.Inputs.INPUT_TYPE_SELECT
-            onChangeFunction = { event ->
-                onClickTypeConfigurationSelectDropdown(event)
-            }
+            onChangeFunction = { event -> onClickTypeConfigurationSelectDropdown(event) }
             makeDropdownOptions(isDateOnly, Vls.Types.DATE_ONLY, Strings::dateOnly)
             makeDropdownOptions(isDateTime, Vls.Types.DATE_TIME, Strings::dateAndTime)
             makeDropdownOptions(isDuration, Vls.Types.DURATION, Strings::duration)
@@ -215,20 +210,12 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
 
 private fun TagConsumer<HTMLElement>.questionInput() {
     details(classes = CssC.DEV) {
-        summary {
-            makeSpans( Strings::titleTextFieldLabel)
-        }
-        div(classes = CssC.ROW) {
-            makeTextAreaInput(Ids.Inputs.INPUT_DESCRIPTION, "36px")
-        }
+        summary { makeSpans( Strings::titleTextFieldLabel) }
+        div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_DESCRIPTION, "36px") }
     }
     details {
-        summary {
-            makeSpans( Strings::questionTextFieldLabel)
-        }
-        div(classes = CssC.ROW) {
-            makeTextAreaInput(Ids.Inputs.INPUT_QUESTION)
-        }
+        summary { makeSpans( Strings::questionTextFieldLabel) }
+        div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_QUESTION) }
     }
 }
 
@@ -244,9 +231,7 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 th { addBeforeButton() }
             }
         }
-        tbody {
-            startInputRow(inputContainerToCopyFrom, isDuration)
-        }
+        tbody { startInputRow(inputContainerToCopyFrom, isDuration) }
     }
 }
 
@@ -262,9 +247,7 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
                 th { addBeforeButton(true) }
             }
         }
-        tbody {
-            startDurationInputRow(inputContainerToCopyFrom, isDuration)
-        }
+        tbody { startDurationInputRow(inputContainerToCopyFrom, isDuration) }
     }
 }
 
@@ -272,22 +255,12 @@ private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
-        onClickFunction = { event ->
-                setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-                GlobalScope.launch {
-                    saveCustomer()
-                }
-        }
+        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
-        onClickFunction = { event ->
-                setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-                GlobalScope.launch {
-                    println(saveCustomer())
-                }
-        }
+        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
     }
 }
 

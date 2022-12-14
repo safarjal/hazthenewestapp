@@ -1,7 +1,11 @@
 @file:Suppress("SpellCheckingInspection")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
@@ -22,7 +26,12 @@ fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
     div(classes = divClass) {
         small(classes = btnClass)
         button(classes = btnClass) {
-            onClickFunction = { event -> copyText(event) }
+            onClickFunction = { event ->
+                copyText(event)
+                GlobalScope.launch {
+                    println(saveCustomer())
+                }
+            }
             +"Copy ⎙"
         }
     }
