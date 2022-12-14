@@ -1,5 +1,9 @@
 @file:Suppress("SpellCheckingInspection")
+@file:OptIn(DelicateCoroutinesApi::class)
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.dom.append
 import kotlinx.html.*
 import kotlinx.html.form
@@ -272,12 +276,22 @@ private fun FlowContent.calculateButton() {
     button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
-        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
+        onClickFunction = { event ->
+                setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+                GlobalScope.launch {
+                    saveCustomer()
+                }
+        }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
-        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
+        onClickFunction = { event ->
+                setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+                GlobalScope.launch {
+                    println(saveCustomer())
+                }
+        }
     }
 }
 
