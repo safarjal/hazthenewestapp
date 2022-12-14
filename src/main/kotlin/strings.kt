@@ -107,9 +107,9 @@ val urduStrings = Strings(
     "سوال",
     "اسقاط",
     "duration1 حیض اور duration2 پاکی کی عادت تھی۔ ",
-    "duration1 کے طہر فاسد کے بعد:\n\n"
-
-
+    "duration1 کے طہر فاسد کے بعد:\n\n",
+    "Zaalla",
+    "Cycle Length"
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -247,9 +247,9 @@ val englishStrings = Strings(
     "Question",
     "Miscarriage",
     "Previous habit was duration1 in haidh and duration2 in purity. ",
-    "After duration1 of invalid tuhr: \n\n"
-
-
+    "After duration1 of invalid tuhr: \n\n",
+    "Zaalla",
+    "Cycle Length",
     )
 
 object StringsOfLanguages{

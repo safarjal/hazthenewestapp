@@ -102,18 +102,18 @@ fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, input
     }
 }
 
-fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
+fun FlowContent.makeLabel(inputId: String, text: Strings.() -> String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
     label {
         htmlFor = inputId
         classes = setOf(CssC.ENGLISH, extraClasses)
         block()
-        +englishText
+        +StringsOfLanguages.ENGLISH.text()
     }
     label {
         htmlFor = inputId
         classes = setOf(CssC.URDU, extraClasses)
         block()
-        +urduText
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -127,10 +127,10 @@ fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
     }
 }
 
-fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduText: String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
+fun FlowContent.makeIkhtilafiMasla(inputId: String, text: Strings.() -> String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
-            makeLabel(inputId, englishText, urduText)
+            makeLabel(inputId, text)
             makeSwitch(inputId)
         }
         block()
@@ -140,8 +140,7 @@ fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduTex
 fun TagConsumer<HTMLElement>.makeDropdownOptions(
     isSelected: Boolean,
     optionVal: String,
-    englishText: String,
-    urduText: String,
+    text: Strings.() -> String,
     extraClasses: String = "",
     block: OPTION.() -> Unit = {}
 ) {
@@ -155,7 +154,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         value = optionVal
         id = optionVal
         block()
-        +englishText
+        +StringsOfLanguages.ENGLISH.text()
     }
     option {
         classes = setOfNotNull(
@@ -167,7 +166,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         value = optionVal
         id = optionVal
         block()
-        +urduText
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -190,6 +189,17 @@ fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, bl
     span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
         +urduText
+    }
+}
+
+fun TagConsumer<HTMLElement>.makeSpans(text: Strings.() -> String, block: SPAN.() -> Unit = {}) {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+        block()
+        +StringsOfLanguages.ENGLISH.text()
+    }
+    span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
+        block()
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -316,29 +326,21 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(
         name = Ids.Row.INPUT_TYPE_OF_DURATION
         disabled = disable
         onChangeFunction = { event -> onChangeDurationOption(event) }
-        makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, StringsOfLanguages.ENGLISH.dam, StringsOfLanguages.URDU.dam)
-        makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, StringsOfLanguages.ENGLISH.tuhr, StringsOfLanguages.URDU.tuhr)
-        makeDropdownOptions(
-            selectedOption == Vls.Opts.HAML,
-            Vls.Opts.HAML,
-            StringsOfLanguages.ENGLISH.pregduration,
-            StringsOfLanguages.URDU.pregduration,
+        makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, Strings::dam)
+        makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, Strings::tuhr)
+        makeDropdownOptions(selectedOption == Vls.Opts.HAML, Vls.Opts.HAML, Strings::pregduration,
             CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
         )
         // Wiladat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && mustabeen,
-            Vls.Opts.WILADAT,
-            StringsOfLanguages.ENGLISH.birthduration,
-            StringsOfLanguages.URDU.birthduration,
+            Vls.Opts.WILADAT, Strings::birthduration,
             CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!preg || !mustabeen) CssC.INVIS else null
         )
         // Isqaat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && !mustabeen,
-            Vls.Opts.WILADAT,
-            StringsOfLanguages.ENGLISH.isqat,
-            StringsOfLanguages.URDU.isqat,
+            Vls.Opts.WILADAT, Strings::isqat,
             CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!preg || mustabeen) CssC.INVIS else null
         )
     }

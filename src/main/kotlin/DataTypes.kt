@@ -109,6 +109,8 @@ data class Strings(
     val isqat: String,
     val preMaslaHabitOfHaizAndTuhr: String,
     val preMaslaValueOfMawjoodaPaki: String,
+    val zaalla: String,
+    val zaallaCycleLength: String,
     )
 
 
