@@ -5,8 +5,8 @@ import kotlinx.browser.window
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
+import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import kotlin.js.Date
 
 // MAKE ELEMENTS

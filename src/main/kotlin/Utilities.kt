@@ -1,8 +1,8 @@
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
+import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import kotlin.js.Date
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
