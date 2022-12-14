@@ -399,6 +399,7 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
                     }
                 }
             }
+            else -> error("Not Blood")
         }
     }
     if (mawjodahtuhreditable != null) {

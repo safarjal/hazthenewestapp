@@ -590,6 +590,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
                     strEnglish+= haizLine(duration.startTime,duration.endDate,typeOfInput).englishString
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
+                else -> error("Not Blood")
             }
         }
 
@@ -641,6 +642,7 @@ fun outputStringBiggerThan40HallDuration(fixedDurations: MutableList<FixedDurati
                     )
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
+                else -> error("Not Blood")
             }
         }
          }
@@ -721,6 +723,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
                     strEnglish+= haizLine(duration.startTime,duration.endDate,typeOfInput).englishString
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
+                else -> error("Not Blood")
             }
         }
         strUrdu += StringsOfLanguages.URDU.dashesline
