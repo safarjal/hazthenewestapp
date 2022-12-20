@@ -131,7 +131,6 @@ data class Strings(
     val zaallaCycleLength: String,
     )
 
-@Serializable
 data class AllTheInputs(
     val entries: List<Entry>?= null,
     val preMaslaValues: PreMaslaValues = PreMaslaValues(null,null, null, false),
@@ -140,10 +139,38 @@ data class AllTheInputs(
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language:String = Vls.Langs.URDU,
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
+)
+
+// Todo: make proper uid
+@Serializable
+data class SaveData(
     val uid: Int = Random.nextInt(0, 100),
+    val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
+    val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
+    val entries: List<Entry>?= null,
+    val answerEnglish: String = "",
+    val answerUrdu: String = "",
+    val others: OtherValues = OtherValues(null,null, null, false),
 )
 
 @Serializable
+data class OtherValues(
+    var inputtedAadatHaiz: Long? = null,
+    var inputtedAadatTuhr: Long? = null,
+    var inputtedMawjoodahTuhr: Long? = null,
+    var isMawjoodaFasid: Boolean? = false,
+    @Serializable(with = DateAsLongSerializer::class)
+    val pregStartTime: Date? = null,
+    @Serializable(with = DateAsLongSerializer::class)
+    val birthTime: Date? = null,
+    val aadatNifas: Long? = null,
+    val mustabeenUlKhilqat: Boolean? = false,
+    val ghairMustabeenIkhtilaaf: Boolean = false,
+    val daurHaizIkhtilaf: Boolean = false,
+    var ayyameQabliyyaIkhtilaf: Boolean = false,
+    val mubtadiaIkhitilaf: Boolean = false
+)
+
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,
     var inputtedAadatTuhr: Long? = null,
