@@ -7,6 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.js.Date
+import kotlin.random.Random
 
 object DateAsLongSerializer : KSerializer<Date> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
@@ -130,8 +131,6 @@ data class Strings(
     val zaallaCycleLength: String,
     )
 
-
-
 @Serializable
 data class AllTheInputs(
     val entries: List<Entry>?= null,
@@ -141,8 +140,8 @@ data class AllTheInputs(
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language:String = Vls.Langs.URDU,
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
+    val uid: Int = Random.nextInt(0, 100),
 )
-
 
 @Serializable
 data class PreMaslaValues(
@@ -150,8 +149,7 @@ data class PreMaslaValues(
     var inputtedAadatTuhr: Long? = null,
     var inputtedMawjoodahTuhr: Long? = null,
     var isMawjoodaFasid: Boolean = false,
-
-    )
+)
 
 @Serializable
 data class Ikhtilaafaat(

@@ -28,9 +28,6 @@ fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
         button(classes = btnClass) {
             onClickFunction = { event ->
                 copyText(event)
-                GlobalScope.launch {
-                    println(saveCustomer())
-                }
             }
             +"Copy ⎙"
         }

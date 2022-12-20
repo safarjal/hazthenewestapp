@@ -14,6 +14,7 @@ import kotlin.js.Date
 // START PROGRAM
 fun main() {
     window.onload = {
+        GlobalScope.launch { sendData() }
         if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
@@ -228,13 +229,17 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
+//        GlobalScope.launch {
+//            sendData(allTheInputs)
+//        }
+
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value, aadatNifas.value)
             return
         }
 
-        @Suppress("UnsafeCastFromDynamic")
+//        @Suppress("UnsafeCastFromDynamic")
         var output:OutputTexts
         if(allTheInputs.entries!=null){
             output = handleEntries(allTheInputs)
