@@ -229,10 +229,6 @@ fun parseEntries(inputContainer: HTMLElement) {
                 ikhtilaafaat)
         }
 
-//        GlobalScope.launch {
-//            sendData(allTheInputs)
-//        }
-
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value, aadatNifas.value)
@@ -246,6 +242,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             output = NO_OUTPUT
         }
+        GlobalScope.launch { sendData(inputContainer, output) }
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
@@ -576,10 +573,10 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CON
 
 private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_DESCRIPTION) as HTMLTextAreaElement)
 
-private val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
-private val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
-private val HTMLElement.ikhtilaf3 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement).checked
-private val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement).checked
+val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
+val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
+val HTMLElement.ikhtilaf3 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement).checked
+val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement).checked
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }

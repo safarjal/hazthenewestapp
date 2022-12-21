@@ -2,8 +2,6 @@
 @file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.coroutines.DelicateCoroutinesApi
-//import kotlinx.coroutines.GlobalScope
-//import kotlinx.coroutines.launch
 import kotlinx.html.dom.append
 import kotlinx.html.*
 import kotlinx.html.form

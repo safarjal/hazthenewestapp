@@ -144,10 +144,10 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: Int = Random.nextInt(0, 100),
-    val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
-    val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
-    val entries: List<Entry>?= null,
+    val uid: Int = Random.nextInt(0, 1000),
+    val typeOfMasla: String = Vls.Maslas.MUTADA,
+    val typeOfInput: String = Vls.Types.DATE_ONLY,
+    val entries: List<Entry>? = null,
     val answerEnglish: String = "",
     val answerUrdu: String = "",
     val others: OtherValues = OtherValues(null,null, null, false),
