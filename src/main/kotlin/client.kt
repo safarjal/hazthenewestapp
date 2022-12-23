@@ -14,8 +14,9 @@ import kotlin.js.Date
 // START PROGRAM
 fun main() {
     window.onload = {
-        GlobalScope.launch { sendData() }
-        if (root_hazapp.isNotEmpty() && askPassword()) {    // Hazapp Page
+        if (root_hazapp.isNotEmpty() && askPassword()) {
+//            console.log(randomUUID())
+            // Hazapp Page
             document.body!!.addInputLayout()
             setupRows(inputsContainers.first())
             document.addEventListener(Events.VISIBILITY_CHANGE, {
@@ -312,8 +313,8 @@ fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aada
 fun validateNifasDurations(durations:List<Duration>):Boolean{
     //this is ensuring that we have both pregnancy and birth, and only one of each.
 
-    //I am wondering if, if preg or birth, or both are missing, we can just arbitrarily add them to the start of the masla.
-    //it seems possible, but idk if that is what we want.
+    //I am wondering if, when preg, or birth, or both are missing, we can just arbitrarily add them to the start of the masla.
+    //it seems possible, but IDK if that is what we want.
 
     var pregnancy=false
     var wiladatIsqat=false

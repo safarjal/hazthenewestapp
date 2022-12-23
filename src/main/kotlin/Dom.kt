@@ -1,6 +1,3 @@
-@file:Suppress("SpellCheckingInspection")
-@file:OptIn(DelicateCoroutinesApi::class)
-
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.html.dom.append
 import kotlinx.html.*
