@@ -144,31 +144,38 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: Int = Random.nextInt(0, 1000),
+    val uid: Long, // = Random.nextInt(0, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
     val typeOfInput: String = Vls.Types.DATE_ONLY,
-    val entries: List<Entry>? = null,
+    val entries: List<SaveEntries>? = null,
     val answerEnglish: String = "",
     val answerUrdu: String = "",
-    val others: OtherValues = OtherValues(null,null, null, false),
+    val others: OtherValues? = null,
+)
+
+@Serializable
+data class SaveEntries(
+    val startTime: String,
+    val endTime: String,
 )
 
 @Serializable
 data class OtherValues(
-    var inputtedAadatHaiz: Long? = null,
-    var inputtedAadatTuhr: Long? = null,
-    var inputtedMawjoodahTuhr: Long? = null,
+    val question: String? = null,
+    var aadatHaiz: String? = null,
+    var aadatTuhr: String? = null,
+    var mawjoodahTuhr: String? = null,
     var isMawjoodaFasid: Boolean? = false,
-    @Serializable(with = DateAsLongSerializer::class)
-    val pregStartTime: Date? = null,
-    @Serializable(with = DateAsLongSerializer::class)
-    val birthTime: Date? = null,
-    val aadatNifas: Long? = null,
+//    @Serializable(with = DateAsLongSerializer::class)
+    val pregStartTime: String? = null,
+//    @Serializable(with = DateAsLongSerializer::class)
+    val birthTime: String? = null,
+    val aadatNifas: String? = null,
     val mustabeenUlKhilqat: Boolean? = false,
     val ghairMustabeenIkhtilaaf: Boolean = false,
     val daurHaizIkhtilaf: Boolean = false,
     var ayyameQabliyyaIkhtilaf: Boolean = false,
-    val mubtadiaIkhitilaf: Boolean = false
+    val mubtadiaIkhitilaf: Boolean = false,
 )
 
 data class PreMaslaValues(

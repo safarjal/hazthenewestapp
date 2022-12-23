@@ -5,45 +5,30 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import org.w3c.dom.HTMLElement
-import kotlin.js.Date
-import kotlin.random.Random
-
-//  {"entries": [
-//      {"startTime":1669852800000,"endTime":1670457600000},
-//      {"startTime":1672185600000,"endTime":1672444800000}],
-//  "preMaslaValues":{
-//      "inputtedAadatHaiz":432000000,
-//      "inputtedAadatTuhr":1296000000,
-//      "inputtedMawjoodahTuhr":1296000000},
-//  "pregnancy":{
-//      "pregStartTime":0,
-//      "birthTime":0,
-//      "aadatNifas":null,
-//      "mustabeenUlKhilqat":true},
-//  "language":"english"}
 
 // TODO: Precook info:
-//  1. false to string???
 //  2. uid!!!
 suspend fun sendData(inputElement: HTMLElement, outputTexts: OutputTexts): String {
     with(inputElement) {
         val entries = haizInputDatesRows.map { row ->
-            Entry(
-                startTime = Date(row.startTimeInput.valueAsNumber),
-                endTime = Date(row.endTimeInput.valueAsNumber)
+            SaveEntries(
+                startTime = row.startTimeInput.value,
+                endTime = row.endTimeInput.value
             )
         }
 
         val toSend = SaveData(
-            uid = Random.nextInt(0, 100),
+            uid = getTimeMillis(),
             typeOfMasla = maslaSelect.value,
             typeOfInput = typeSelect.value,
             entries = entries,
             answerEnglish = outputTexts.englishText,
             answerUrdu = outputTexts.urduText,
             others = OtherValues(
+                question = questionText.value,
                 aadatHaiz = aadatHaz.value,
                 aadatTuhr = aadatTuhr.value,
                 mawjoodahTuhr = mawjoodaTuhr.value,
