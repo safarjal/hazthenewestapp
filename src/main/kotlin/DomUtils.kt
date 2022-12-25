@@ -660,7 +660,7 @@ private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     setupRows(inputContainer)
 }
 
-// Setup the changing rows
+// Set up the changing rows
 fun setupRows(inputContainer: HTMLElement) {
     setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer, false)
@@ -854,23 +854,26 @@ private fun copyText(event: Event) {
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
+
     val small = div?.querySelector("small")
     var smallTxt = "Not Copied"
 
     var response: Json = json(Pair("id", null))
-    val job = GlobalScope.launch { response = sendData(inputContainer) }
+    val job = GlobalScope.launch { response = getData(inputContainer) }
     job.invokeOnCompletion {
         console.log(response["id"])
         if (response["id"] != null) {
-            copyTxt = "_Id: ${response["id"]}_\n" + copyTxt
+            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
             smallTxt = " Saved and Copied "
-        } else {
             copyTxt.let { window.navigator.clipboard.writeText(it) }
+        } else {
             smallTxt = " Copied "
+            copyTxt.let { window.navigator.clipboard.writeText(it) }
+            window.alert("Masla has not been saved. However, it has copied.")
         }
-        copyTxt.let { window.navigator.clipboard.writeText(it) }
+
         small?.innerHTML?.let { small.innerHTML = smallTxt }
-        window.setTimeout({ small?.innerHTML = "" }, 1000)
+        window.setTimeout({ small?.innerHTML = "" }, 3000)
     }
 }
 

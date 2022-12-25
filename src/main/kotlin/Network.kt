@@ -1,4 +1,4 @@
-import com.benasher44.uuid.uuid4
+//import com.benasher44.uuid.uuid4
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.js.*
@@ -10,9 +10,10 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import org.w3c.dom.HTMLElement
+import kotlin.js.Json
 import kotlin.random.Random
 
-suspend fun sendData(inputElement: HTMLElement): kotlin.js.Json {
+suspend fun getData(inputElement: HTMLElement): Json {
     with(inputElement) {
         val entries = haizInputDatesRows.map { row ->
             SaveEntries(
@@ -44,18 +45,20 @@ suspend fun sendData(inputElement: HTMLElement): kotlin.js.Json {
                 mubtadiaIkhitilaf = ikhtilaf4,
             )
         )
-
-        val client = HttpClient(Js) {
-            install(ContentNegotiation) { json(Json) }
-        }
-        val response: HttpResponse = client.post("http://localhost:3000/maslas/") {
-            headers {
-                append(HttpHeaders.AccessControlAllowOrigin, "*")
-            }
-            contentType(ContentType.Application.Json)
-            setBody(toSend)
-        }
-
-        return JSON.parse(response.body())
+        return sendData(toSend)
     }
+}
+suspend fun sendData(toSend: SaveData): Json {
+    val client = HttpClient(Js) {
+        install(ContentNegotiation) { json(Json) }
+    }
+    val response: HttpResponse = client.post("http://localhost:3000/maslas/") {
+        headers {
+            append(HttpHeaders.AccessControlAllowOrigin, "*")
+        }
+        contentType(ContentType.Application.Json)
+        setBody(toSend)
+    }
+
+    return JSON.parse(response.body())
 }
