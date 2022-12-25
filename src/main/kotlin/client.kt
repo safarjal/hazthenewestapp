@@ -249,6 +249,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
+        contentContainer.scrollIntoView()
     }
 }
 private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String, aadatNifas:String) {
