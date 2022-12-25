@@ -22,6 +22,7 @@ dependencies {
     implementation("io.ktor:ktor-client-js:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("com.benasher44:uuid:0.6.0")
 }
 
 kotlin {
@@ -29,7 +30,12 @@ kotlin {
         binaries.executable()
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    // In 1.7.20:
+                    enabled = true
+                    // In 1.8.0:
+//                    enabled.set(true)
+                }
             }
         }
     }

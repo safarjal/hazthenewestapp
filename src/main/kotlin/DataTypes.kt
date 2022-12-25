@@ -1,24 +1,19 @@
 @file:Suppress("SpellCheckingInspection")
 
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlin.js.Date
 import kotlin.random.Random
 
-object DateAsLongSerializer : KSerializer<Date> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
-    override fun serialize(encoder: Encoder, value: Date) {
-        encoder.encodeLong(value.getTime().toLong())
-    }
-
-    override fun deserialize(decoder: Decoder): Date {
-        return Date(decoder.decodeLong())
-    }
-}
+//object DateAsLongSerializer : KSerializer<Date> {
+//    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
+//    override fun serialize(encoder: Encoder, value: Date) {
+//        encoder.encodeLong(value.getTime().toLong())
+//    }
+//
+//    override fun deserialize(decoder: Decoder): Date {
+//        return Date(decoder.decodeLong())
+//    }
+//}
 
 data class Strings(
     val answer: String,
@@ -144,12 +139,12 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: Long, // = Random.nextInt(0, 1000).toString(),
+    val uid: String, // = Random.nextInt(0, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
-    val answerEnglish: String = "",
-    val answerUrdu: String = "",
+    val answerEnglish: String? = "",
+    val answerUrdu: String? = "",
     val others: OtherValues? = null,
 )
 
@@ -178,6 +173,10 @@ data class OtherValues(
     val mubtadiaIkhitilaf: Boolean = false,
 )
 
+data class NetworkResponse(
+    val status: Int = 0,
+    val body: String = "",
+)
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,
     var inputtedAadatTuhr: Long? = null,
@@ -185,7 +184,6 @@ data class PreMaslaValues(
     var isMawjoodaFasid: Boolean = false,
 )
 
-@Serializable
 data class Ikhtilaafaat(
     val ghairMustabeenIkhtilaaf: Boolean = false,
     val daurHaizIkhtilaf: Boolean = false,
@@ -194,25 +192,20 @@ data class Ikhtilaafaat(
 )
 
 
-@Serializable
 enum class TypesOfInputs {
     DATE_ONLY,
     DATE_AND_TIME,
     DURATION
 }
 
-@Serializable
 enum class TypesOfMasla {
     MUBTADIA,
     MUTADAH,
     NIFAS
 }
 
-@Serializable
 data class Entry(
-    @Serializable(with = DateAsLongSerializer::class)
     val startTime: Date,
-    @Serializable(with = DateAsLongSerializer::class)
     val endTime: Date
 )
 enum class TypesOfFutureDates {
@@ -257,11 +250,8 @@ class InfoForCompareTable(
     val resultColors: List<Int>
 )
 
-@Serializable
 data class Pregnancy(
-    @Serializable(with = DateAsLongSerializer::class)
     val pregStartTime: Date = ARBITRARY_DATE,
-    @Serializable(with = DateAsLongSerializer::class)
     val birthTime: Date = ARBITRARY_DATE,
     var aadatNifas: Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat: Boolean,

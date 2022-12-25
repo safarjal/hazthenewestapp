@@ -237,13 +237,13 @@ fun parseEntries(inputContainer: HTMLElement) {
         }
 
 //        @Suppress("UnsafeCastFromDynamic")
-        var output:OutputTexts
+        val output:OutputTexts
         if(allTheInputs.entries!=null){
             output = handleEntries(allTheInputs)
         }else{
             output = NO_OUTPUT
         }
-        GlobalScope.launch { sendData(inputContainer, output) }
+
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
@@ -568,8 +568,8 @@ val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX)
 val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement).checked
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
-private val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
-private val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
+val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
+val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
 
 private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_DESCRIPTION) as HTMLTextAreaElement)

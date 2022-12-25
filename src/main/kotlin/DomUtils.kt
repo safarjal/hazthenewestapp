@@ -1,6 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
+import com.benasher44.uuid.uuid4
+import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -29,7 +31,7 @@ fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
             onClickFunction = { event ->
                 copyText(event)
             }
-            +"Copy ⎙"
+            +"Save and Copy ⎙"
         }
     }
 }
@@ -848,14 +850,21 @@ private fun copyText(event: Event) {
     val questionTxt = findInputContainer(event).questionText.value
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
-
-    val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
+    val uuid: String = uuid4().toString()
+    val copyTxt = "_Id: ${uuid}_\n*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
     copyTxt.let { window.navigator.clipboard.writeText(it) }
 
     val small = div?.querySelector("small")
-    small?.innerHTML?.let { small.innerHTML = " Copied " }
 
-    window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
+    var response = NetworkResponse(0, "")
+    val job = GlobalScope.launch { response = sendData(findInputContainer(event)) }
+    job.invokeOnCompletion {
+        println(response.body)
+        if (response.status in 200..299) {
+            small?.innerHTML?.let { small.innerHTML = " Saved and Copied " }
+            window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
+        }
+    }
 }
 
 // COMPARE
