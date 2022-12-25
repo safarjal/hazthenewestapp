@@ -1,5 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
+import io.ktor.util.date.*
 import kotlinx.serialization.*
 import kotlin.js.Date
 import kotlin.random.Random
@@ -139,7 +140,7 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: String, // = Random.nextInt(0, 1000).toString(),
+    val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
@@ -173,10 +174,6 @@ data class OtherValues(
     val mubtadiaIkhitilaf: Boolean = false,
 )
 
-data class NetworkResponse(
-    val status: Int = 0,
-    val body: String = "",
-)
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,
     var inputtedAadatTuhr: Long? = null,

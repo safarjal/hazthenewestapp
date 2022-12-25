@@ -7,12 +7,12 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 import org.w3c.dom.HTMLElement
+import kotlin.random.Random
 
-// TODO: Precook info:
-//  2. uid!!!
-suspend fun sendData(inputElement: HTMLElement): NetworkResponse {
+suspend fun sendData(inputElement: HTMLElement): kotlin.js.Json {
     with(inputElement) {
         val entries = haizInputDatesRows.map { row ->
             SaveEntries(
@@ -22,7 +22,7 @@ suspend fun sendData(inputElement: HTMLElement): NetworkResponse {
         }
 
         val toSend = SaveData(
-            uid = uuid4().toString(),
+            uid = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
             typeOfMasla = maslaSelect.value,
             typeOfInput = typeSelect.value,
             entries = entries,
@@ -56,6 +56,6 @@ suspend fun sendData(inputElement: HTMLElement): NetworkResponse {
             setBody(toSend)
         }
 
-        return NetworkResponse(response.status.value, response.body())
+        return JSON.parse(response.body())
     }
 }

@@ -1,7 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
-import com.benasher44.uuid.uuid4
+//import com.benasher44.uuid.uuid4
 import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -14,6 +14,8 @@ import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Date
+import kotlin.js.Json
+import kotlin.js.json
 
 // MAKE ELEMENTS
 fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
@@ -845,25 +847,30 @@ private fun getNow(): String {
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
+    val inputContainer = findInputContainer(event)
 
     val dateStr = getNow()
-    val questionTxt = findInputContainer(event).questionText.value
+    val questionTxt = inputContainer.questionText.value
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
-    val uuid: String = uuid4().toString()
-    val copyTxt = "_Id: ${uuid}_\n*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
-    copyTxt.let { window.navigator.clipboard.writeText(it) }
-
+    var copyTxt = "*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
     val small = div?.querySelector("small")
+    var smallTxt = "Not Copied"
 
-    var response = NetworkResponse(0, "")
-    val job = GlobalScope.launch { response = sendData(findInputContainer(event)) }
+    var response: Json = json(Pair("id", null))
+    val job = GlobalScope.launch { response = sendData(inputContainer) }
     job.invokeOnCompletion {
-        println(response.body)
-        if (response.status in 200..299) {
-            small?.innerHTML?.let { small.innerHTML = " Saved and Copied " }
-            window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
+        console.log(response["id"])
+        if (response["id"] != null) {
+            copyTxt = "_Id: ${response["id"]}_\n" + copyTxt
+            smallTxt = " Saved and Copied "
+        } else {
+            copyTxt.let { window.navigator.clipboard.writeText(it) }
+            smallTxt = " Copied "
         }
+        copyTxt.let { window.navigator.clipboard.writeText(it) }
+        small?.innerHTML?.let { small.innerHTML = smallTxt }
+        window.setTimeout({ small?.innerHTML = "" }, 1000)
     }
 }
 
