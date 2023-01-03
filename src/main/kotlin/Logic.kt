@@ -1946,8 +1946,22 @@ fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>, inputte
         //A-3 shifting to A-2, has entered aadat, but not 3 days into makan yet
         //we will give it previous aadat of haiz and tuhr, according to A-1, though it could remain A-3
         //as this is an unusual and unique thing, we deal with it first
-        return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
-            adatsOfTuhrList[adatsOfTuhrList.lastIndex-1].aadat)
+
+        //if the current tuhr was fasid, nd hence not aadat, then we give the last tuhr as habit,
+        // otherwise the one before it
+        if(adatsOfTuhrList.last().aadat==fixedDurations.last().biggerThanTen!!.mp &&
+                adatsOfTuhrList.last().aadat!=fixedDurations.last().biggerThanTen!!.gp){
+            //the last aadat we have is the mawjoodah paki
+            //so we return the tuhr before it as aadat
+            return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
+                adatsOfTuhrList[adatsOfTuhrList.lastIndex-1].aadat)
+        }else{
+            //the last aadat is not mawjooda paki for whatever reason
+            //so we return the last tuhr as aadat
+            return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
+                adatsOfTuhrList[adatsOfTuhrList.lastIndex].aadat)
+
+        }
     }
     if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         return AadatsOfHaizAndTuhr(fixedDurations.last().ayyameqabliyya!!.aadatHaiz, fixedDurations.last().ayyameqabliyya!!.aadatTuhr)
