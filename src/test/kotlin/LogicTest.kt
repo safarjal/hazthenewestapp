@@ -4001,6 +4001,43 @@ class LogicTest {
 
     }
     @Test
+    fun bugMaslaIssue203() {
+        //Wrong tuhr habit
+//        15 April - 20 April
+//                7 May - 15 May
+//                June, july, aug clean
+//        2 Sep - 10 Sep
+//                18 Oct - 20 Oct
+//                9 Nov - 22 Nov
+//                3 Dec - 1 day
+//                7 Dec - 30 dec on and off.
+        val entries = listOf<Entry>(
+            Entry(Date(2022,3,15), Date(2022, 3, 20)),
+            Entry(Date(2022,4,7), Date(2022, 4, 15)),
+            Entry(Date(2022,8,2), Date(2022, 8, 10)),
+            Entry(Date(2022,9,18), Date(2022, 9, 20)),
+            Entry(Date(2022,10,9), Date(2022, 10, 22)),
+            Entry(Date(2022,11,3), Date(2022, 11, 3)),
+            Entry(Date(2022,11,7), Date(2022, 11, 30)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("8")!!, parseDays("110")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+    }
+    @Test
     fun bugMaslaIssue201() {
         //wrong future advice date given
         val entries = listOf<Entry>(
