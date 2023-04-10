@@ -122,7 +122,10 @@ data class AllTheInputs(
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language:String = Vls.Langs.URDU,
-    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(false,false,false,false),
+    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(true,
+        false,
+        false,
+        false),
 
 
 )

@@ -173,6 +173,7 @@ class LogicTest {
             entries,
             typeOfInput = TypesOfInputs.DATE_ONLY,
             typeOfMasla = TypesOfMasla.NIFAS,
+            ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
             pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)),
         )
         val haizDateList = output.hazDatesList
@@ -3736,7 +3737,8 @@ class LogicTest {
                 preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
                 typeOfMasla = TypesOfMasla.NIFAS,
                 pregnancy = Pregnancy(
-                    mustabeenUlKhilqat = false)
+                    mustabeenUlKhilqat = false),
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
             )
         ))
 
@@ -3831,7 +3833,8 @@ class LogicTest {
                 preMaslaValues = PreMaslaValues(inputtedMawjoodahTuhr = parseDays("31")!!),
                 typeOfMasla = TypesOfMasla.NIFAS,
                 pregnancy = Pregnancy(Date(2022,2,21), Date(2022, 3,15),
-                    mustabeenUlKhilqat = false)
+                    mustabeenUlKhilqat = false),
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
             )
         )
 
@@ -4105,6 +4108,33 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
+
+    }
+
+    @Test
+    fun issue206TestingIsqat() {
+        val entries = listOf<Entry>(
+            Entry(Date(2022,10,28), Date(2022, 11, 4)),
+            Entry(Date(2022,11,27), Date(2023, 0, 1)),
+            Entry(Date(2023,0,20), Date(2023, 0, 25)),
+            Entry(Date(2023,2,22), Date(2023, 3, 9)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(Date(2023,0,25),Date(2023,2,22),mustabeenUlKhilqat = false)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("56")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
 
     }
 
