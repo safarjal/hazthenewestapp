@@ -3891,6 +3891,41 @@ class LogicTest {
         assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
     }
     @Test
+    fun Issue207() {
+        //making sure that 6 months greater tuhr doesn't cause ayyame qabliyya
+        val entries = listOf(
+            Entry(Date(2022,5,14), Date(2022, 5, 21)),
+            Entry(Date(2022,6,18), Date(2022, 6, 24)),
+            Entry(Date(2023,0,29), Date(2023, 1, 8)),
+            Entry(Date(2023,2,27), Date(2023, 3, 6)),
+
+            )
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("10")!!,
+                ayyameqabliyya = null
+            ),
+        )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("47")!!)
+//        println("Actual Tuhr Aadat is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
+
+        assertEquals(expectedFixedDurations.last().ayyameqabliyya, fixedDurations.last().ayyameqabliyya)
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
     fun bugMaslaIssue195() {
         //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
         val entries = listOf<Entry>(
