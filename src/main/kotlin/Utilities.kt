@@ -36,7 +36,6 @@ private fun ChildNode.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit,
     insertRelative((this as Node).ownerDocument!!, block, insert)
 
 fun Node.appendChild(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> appendChild(node) }
-@Suppress("MoveLambdaOutsideParentheses", "RedundantLambdaArrow")
 fun Element.replaceChildren(block: TagConsumer<HTMLElement>.() -> Unit) =
     replaceChildren(*insertRelative(block).toTypedArray())
 fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> before(node) }
@@ -94,8 +93,8 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
  * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about its
  * requirement here for now...
  */
-@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-@OptIn(ExperimentalTime::class)
+//@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+//@OptIn(ExperimentalTime::class)
 fun Date.offsetLocalTimeToUtc() =
     Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
 

@@ -64,9 +64,8 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatN
     //this returns an array conating all the possibilities we want to plug in and try
     val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
     val aadatHaizList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
-    if(aadatHaz!=""){
-        val haizStart = parseRange(aadatHaz)[0]
-        val haizEnd = parseRange(aadatHaz)[1]
+    if(aadatHaz != ""){
+        val (haizStart, haizEnd) = parseRange(aadatHaz)
         if(haizStart!=null && haizEnd!=null){
             for (i in haizStart .. haizEnd){
                 aadatHaizList += i

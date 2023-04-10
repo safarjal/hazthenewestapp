@@ -303,7 +303,7 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableLis
 
     for(futureDate in futureDates){
         val date = futureDate.date
-        val type= futureDate.futureDates
+        val type = futureDate.futureDates
         when (type) {
             TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
                 strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
@@ -837,7 +837,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
                 )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-
+        println("Placeholder")
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputStringUrdu = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1",
             daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.URDU)
@@ -846,7 +846,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
             daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.ENGLISH)
         )
     }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
-
+        println("Placeholder")
     }
     return OutputStringsLanguages(outputStringUrdu, outputStringEnglish)
 }
@@ -974,7 +974,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
             )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-
+        println("Placeholder")
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         outputStringUrdu = StringsOfLanguages.URDU.twomonthstuhr.replace("duration1",
             daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.URDU)
