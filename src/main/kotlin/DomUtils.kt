@@ -6,16 +6,12 @@ import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Date
-import kotlin.js.Json
-import kotlin.js.json
 
 // MAKE ELEMENTS
 fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
@@ -28,13 +24,14 @@ fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Un
 
 fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
     div(classes = divClass) {
-        small(classes = btnClass)
         button(classes = btnClass) {
             onClickFunction = { event ->
                 copyText(event)
             }
             +"Save and Copy ⎙"
         }
+        br()
+        small(classes = btnClass)
     }
 }
 
@@ -223,6 +220,16 @@ fun FlowContent.makeTextAreaInput(inputId: String, height: String = "auto", bloc
             txtarea.dir = "auto"
             txtarea.style.height = height
             txtarea.style.height = "${txtarea.scrollHeight + 6}px"
+        }
+    }
+}
+
+fun TagConsumer<HTMLElement>.makeTzOptions() {
+    tzStrings.forEach {
+        option {
+            value = it.tz
+            id = it.tz
+            +it.info
         }
     }
 }
@@ -484,15 +491,16 @@ private fun disableByMasla(inputContainer: HTMLElement) {
 fun disableTree(inputContainer: HTMLElement) {
     val isNifas = inputContainer.isNifas
     val isMubtadia = inputContainer.isMubtadia
-    val isDateTime = !inputContainer.isDuration
+    val isDateOrTime = !inputContainer.isDuration
     val isMustabeen  = inputContainer.isMustabeen
 
-    disableByClass(CssC.DATETIME_AADAT, inputContainer, !isDateTime)
+    disableByClass(CssC.DATE_OR_TIME_AADAT, inputContainer, !isDateOrTime)
     disableByMasla(inputContainer)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateTime)
+    disableByClass("${CssC.DATE_OR_TIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateOrTime)
+    disableByClass("${CssC.DATE_OR_TIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateOrTime)
     disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
     disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
+    disableByClass(CssC.DATETIME_ONLY, inputContainer, !inputContainer.isDateTime)
 
     val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
@@ -856,25 +864,23 @@ private fun copyText(event: Event) {
     var copyTxt = "*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
 
     val small = div?.querySelector("small")
-    var smallTxt = "Not Copied"
-
-    var response: Json = json(Pair("id", null))
-    val job = GlobalScope.launch { response = getData(inputContainer) }
-    job.invokeOnCompletion {
-        console.log(response["id"])
-        if (response["id"] != null) {
-            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
-            smallTxt = " Saved and Copied "
-            copyTxt.let { window.navigator.clipboard.writeText(it) }
-        } else {
-            smallTxt = " Copied "
-            copyTxt.let { window.navigator.clipboard.writeText(it) }
-            window.alert("Masla has not been saved. However, it has copied.")
-        }
-
-        small?.innerHTML?.let { small.innerHTML = smallTxt }
-        window.setTimeout({ small?.innerHTML = "" }, 3000)
-    }
+    var smallTxt = " Copied "
+//    var response: Json = json(Pair("id", null))
+//    val job = GlobalScope.launch { response = getData(inputContainer) }
+//    job.invokeOnCompletion {
+//        console.log(response["id"])
+//        if (response["id"] != null) {
+//            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
+//            smallTxt = " Saved and Copied "
+//            copyTxt.let { window.navigator.clipboard.writeText(it) }
+//        } else {
+//            smallTxt = " Copied "
+//            copyTxt.let { window.navigator.clipboard.writeText(it) }
+//            window.alert("Masla has not been saved. However, it has copied.")
+//        }
+//    }
+    small?.innerHTML?.let { small.innerHTML = smallTxt }
+    window.setTimeout({ small?.innerHTML = "" }, 3000)
 }
 
 // COMPARE

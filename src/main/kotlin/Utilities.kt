@@ -5,7 +5,7 @@ import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Date
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
+//import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 // HTML DOM MANIP
@@ -325,6 +325,8 @@ object Ids {
         const val MASLA_TYPE_SELECT = "masla_type_select"
         const val ZAALLA_CHECKBOX = "zaalla_checkbox"
         const val INPUT_TYPE_SELECT = "input_type_select"
+        const val IS_DAYLIGHT_SAVINGS = "is_daylight_savings"
+        const val SELECT_LOCALE = "select_locale"
         const val PREG_END_TIME_INPUT = "preg_end_time_input"
         const val PREG_START_TIME_INPUT = "preg_start_time_input"
         const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
@@ -352,7 +354,8 @@ object CssC {
     const val NIFAS = "nifas"                       // Switch. Put on any input that only shows when Nifas
     const val ZAALLA = "zaalla"                     // Switch. Put on any input that only shows when Zaalla
     const val MUTADA = "mutada"                     // Switch. Put on any input that only shows when NOT Mubtadia
-    const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
+    const val DATE_OR_TIME_AADAT = "datetime_aadat" // Switch. Put on any input that only shows when NOT Duration
+    const val DATETIME_ONLY = "datetime_only"       // Switch. Put on any input that only shows when Datetime
     const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
     const val NOT_MUSTABEEN = "not-mustabeen"       // Switch. Between Isqat/Wiladat
     const val TITLE_CELL = "title_cell"

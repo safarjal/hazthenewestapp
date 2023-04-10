@@ -125,6 +125,7 @@ data class Strings(
     val preMaslaValueOfMawjoodaPaki: String,
     val zaalla: String,
     val zaallaCycleLength: String,
+    val isDaylightSavings: String,
     )
 
 data class AllTheInputs(
@@ -138,6 +139,7 @@ data class AllTheInputs(
         false,
         false,
         false),
+)
 
 // Todo: make proper uid
 @Serializable
@@ -370,4 +372,9 @@ data class AadatAfterIndexOfFixedDuration(
 data class OutputStringsLanguages(
     var urduString:String,
     var englishString: String
+)
+
+data class TzInfo (
+    val info: String,
+    val tz: String
 )

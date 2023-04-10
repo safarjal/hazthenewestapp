@@ -1,4 +1,3 @@
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.html.dom.append
 import kotlinx.html.*
 import kotlinx.html.form
@@ -116,12 +115,27 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
             makeDropdownOptions(isDateTime, Vls.Types.DATE_TIME, Strings::dateAndTime)
             makeDropdownOptions(isDuration, Vls.Types.DURATION, Strings::duration)
         }
+        div {
+            makeLabel(Ids.Inputs.IS_DAYLIGHT_SAVINGS, Strings::isDaylightSavings)
+            checkBoxInput {
+                id = Ids.Inputs.IS_DAYLIGHT_SAVINGS
+                classes = setOf(CssC.DATETIME_ONLY, CssC.INVIS)
+                onChangeFunction = {}
+                disabled = true
+            }
+        }
+        select {
+            id = Ids.Inputs.SELECT_LOCALE
+            classes = setOf(CssC.DATETIME_ONLY, CssC.INVIS)
+            disabled = true
+            makeTzOptions()
+        }
     }
 }
 
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Pregnancy Start Time
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATETIME_AADAT}") {
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATE_OR_TIME_AADAT}") {
         makeLabel(Ids.Inputs.PREG_START_TIME_INPUT, Strings::pregnancyStartTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_START_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregStartTime?.value ?: ""
@@ -131,7 +145,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     // Pregnancy End Time
-    div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
+    div(classes = "${CssC.ROW} ${CssC.DATE_OR_TIME_AADAT} ${CssC.NIFAS} ${CssC.INVIS}") {
         makeLabel(Ids.Inputs.PREG_END_TIME_INPUT, Strings::birthMiscarrriageTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_END_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregEndTime?.value ?: ""
@@ -188,7 +202,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
         }
     }
     // Mawjooda Tuhr
-    div(classes = "${CssC.ROW} ${CssC.DATETIME_AADAT}") {
+    div(classes = "${CssC.ROW} ${CssC.DATE_OR_TIME_AADAT}") {
         makeLabel(Ids.Inputs.MAWJOODA_TUHR_INPUT, Strings::mawjoodahTuhr)
         makeNumberInput(Ids.Inputs.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
         // Fasid?
