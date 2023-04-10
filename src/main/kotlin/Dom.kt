@@ -116,12 +116,12 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
             makeDropdownOptions(isDuration, Vls.Types.DURATION, Strings::duration)
         }
         div {
+            classes = setOf(CssC.DATETIME_ONLY, CssC.INVIS)
+
             makeLabel(Ids.Inputs.IS_DAYLIGHT_SAVINGS, Strings::isDaylightSavings)
             checkBoxInput {
                 id = Ids.Inputs.IS_DAYLIGHT_SAVINGS
-                classes = setOf(CssC.DATETIME_ONLY, CssC.INVIS)
-                onChangeFunction = {}
-                disabled = true
+                onChangeFunction = {timezoneSelector.disabled = !timezoneSelector.disabled}
             }
         }
         select {
