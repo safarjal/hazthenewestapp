@@ -1061,7 +1061,10 @@ fun fiveSoortain(mp: Long, gp: Long, dm: Long, hz:Long):FiveSoortainOutput{
     }
   return FiveSoortainOutput(soorat,istihazaBefore,haiz,istihazaAfter, aadatTuhrChanges)
 }
-fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?, ayyameQabliyyaIkhtilaf: Boolean){
+fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,
+                           adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                           adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
+                           inputtedMawjoodaTuhr: Long?, ayyameQabliyyaIkhtilaf: Boolean){
     if(!ayyameQabliyyaIkhtilaf){//the ikhtilaf button is not on
         //figure out aadat for the last fixed duration
         //for that, we need aadats befor it
@@ -1077,12 +1080,18 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,adatsOfHai
         }
         for(adat in adatsOfTuhrList){
             if(adat.index<fixedDurations.lastIndex){
-                gp= adat.aadat
+                //check if it is bigger than 6 motnhs
+                if(adat.index>0 &&  fixedDurations[adat.index-1].type==DurationType.TUHR_BIGGER_THAN_6_MONTHS){
+                    gp=fixedDurations[adat.index-1].timeInMilliseconds
+                }else{
+                    gp= adat.aadat
+                }
             }else{
                 break
             }
         }
         //now we have aadaat
+
         var mp = inputtedMawjoodaTuhr
         if(fixedDurations.size>1){
             mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds+
