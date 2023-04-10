@@ -4,9 +4,7 @@ import kotlinx.html.dom.createTree
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Date
-import kotlin.time.DurationUnit
 //import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
@@ -95,12 +93,15 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
  */
 //@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 //@OptIn(ExperimentalTime::class)
-fun Date.offsetLocalTimeToUtc() =
-    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+//fun Date.offsetLocalTimeToUtc() =
+//    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+
+fun Date.getLocalTime() =
+    Date(toLocaleString("en-US", dateLocaleOptions {timeZone = timezoneSelector.value}))
 
 fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
     val date = Date(dateString)
-    return if (isDateOnly) date else date.offsetLocalTimeToUtc()
+    return if (isDateOnly) date else date.getLocalTime()
 }
 
 fun Date.toDateInputString(isDateOnly: Boolean): String {
