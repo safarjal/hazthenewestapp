@@ -542,6 +542,8 @@ val inputsContainers get() = inputsContainersContainer.children.asList() as List
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 private val root_hazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
+val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
+val timezoneSelector get() = document.getChildById(Ids.Inputs.SELECT_LOCALE) as HTMLSelectElement
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
