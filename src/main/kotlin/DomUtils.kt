@@ -155,9 +155,9 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         classes = setOfNotNull(
             CssC.ENGLISH,
             extraClasses,
-            if (languageSelector.value != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
+            if (languageSelected != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
         )
-        selected = isSelected && languageSelector.value == Vls.Langs.ENGLISH
+        selected = isSelected && languageSelected == Vls.Langs.ENGLISH
         value = optionVal
         id = optionVal
         block()
@@ -167,9 +167,9 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         classes = setOfNotNull(
             CssC.URDU,
             extraClasses,
-            if (languageSelector.value != Vls.Langs.URDU) CssC.LANG_INVIS else null
+            if (languageSelected != Vls.Langs.URDU) CssC.LANG_INVIS else null
         )
-        selected = isSelected && languageSelector.value == Vls.Langs.URDU
+        selected = isSelected && languageSelected == Vls.Langs.URDU
         value = optionVal
         id = optionVal
         block()
@@ -189,22 +189,22 @@ fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: 
 }
 
 fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
-    span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +englishText
     }
-    span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
         +urduText
     }
 }
 
 fun TagConsumer<HTMLElement>.makeSpans(text: Strings.() -> String, block: SPAN.() -> Unit = {}) {
-    span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +StringsOfLanguages.ENGLISH.text()
     }
-    span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
         +StringsOfLanguages.URDU.text()
     }
@@ -418,7 +418,7 @@ private fun TagConsumer<HTMLElement>.calcAllBtn() {
         classes = setOf(
             CssC.CALC_BTN,
             CssC.ENGLISH,
-            if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.INVIS
+            if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.INVIS
         )
         +"Calculate All"
         onClickFunction = { calcAll() }
@@ -427,7 +427,7 @@ private fun TagConsumer<HTMLElement>.calcAllBtn() {
         classes = setOf(
             CssC.CALC_BTN,
             CssC.URDU,
-            if (languageSelector.value == Vls.Langs.URDU) "" else CssC.INVIS
+            if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
         )
         +"Calculate All"
         onClickFunction = { calcAll() }
@@ -458,7 +458,7 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
         .asList()
         .map { it as HTMLOptionElement }
         .firstOrNull { option ->
-            option.value == selectedOption && option.classList.contains(languageSelector.value) }
+            option.value == selectedOption && option.classList.contains(languageSelected) }
         ?.selected = true
 }
 fun maslaChanging(event: Event) {
@@ -513,7 +513,7 @@ fun disableTree(inputContainer: HTMLElement) {
 
 // Ensure Aadaat in Range
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
+    val errormessage = if(languageSelected == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-") && devmode) {
 //        println("DASH!")
@@ -843,11 +843,11 @@ private fun getNow(): String {
     val now = Date.now()
     val day = Date(now).getDate()
     val month = Date(now).getMonth()
-    if (languageSelector.value == Vls.Langs.URDU){
+    if (languageSelected == Vls.Langs.URDU){
         val urduMonth = urduMonthNames[month]
         val urduDay:String = if (day == 1) "یکم" else day.toString()
         dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
-    }else if(languageSelector.value == Vls.Langs.ENGLISH){
+    }else if(languageSelected == Vls.Langs.ENGLISH){
         dateStr = Date(now).toDateString().drop(4)
     }
     return dateStr
@@ -879,6 +879,8 @@ private fun copyText(event: Event) {
 //            window.alert("Masla has not been saved. However, it has copied.")
 //        }
 //    }
+    copyTxt.let { window.navigator.clipboard.writeText(it) }
+
     small?.innerHTML?.let { small.innerHTML = smallTxt }
     window.setTimeout({ small?.innerHTML = "" }, 3000)
 }

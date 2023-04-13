@@ -14,7 +14,7 @@ import kotlin.js.Date
 // START PROGRAM
 fun main() {
     window.onload = {
-        if (root_hazapp.isNotEmpty() && askPassword()) {
+        if (rootHazapp.isNotEmpty() && askPassword()) {
 //            console.log(randomUUID())
             // Hazapp Page
             document.body!!.addInputLayout()
@@ -49,7 +49,7 @@ private fun parseHREF() {
 }
 
 fun languageChange() {
-    val lang = languageSelector.value
+    val lang = languageSelected
     // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
@@ -116,7 +116,7 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatN
     }else{//there is cycle length, and only one of haiz or tuhr, which is ranged
         if(aadatTuhrList[0]==-1){//there is no tuhr aadat  - haiz aadat is a range
             for(haizAadat in aadatHaizList){
-                var tuhrAadat = parseDays(cycleLength)?.minus(haizAadat*MILLISECONDS_IN_A_DAY)
+                val tuhrAadat = parseDays(cycleLength)?.minus(haizAadat*MILLISECONDS_IN_A_DAY)
                 if(tuhrAadat!=null && tuhrAadat>=15*MILLISECONDS_IN_A_DAY){
                     combosToTry+=AadatsOfHaizAndTuhr(haizAadat*MILLISECONDS_IN_A_DAY, tuhrAadat)
                 }
@@ -124,7 +124,7 @@ fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatN
 
         }else if(aadatHaizList[0]==-1){//there is no haiz aadat - tuhr aadat is a range
             for(tuhrAadat in aadatTuhrList){//got through each tuhr aadat, figure out if it's composite haiz is a viablr haiz, if so, add it to the combos
-                var haizAadat = parseDays(cycleLength)?.minus(tuhrAadat*MILLISECONDS_IN_A_DAY)
+                val haizAadat = parseDays(cycleLength)?.minus(tuhrAadat*MILLISECONDS_IN_A_DAY)
                 if(haizAadat!=null && haizAadat>=3*MILLISECONDS_IN_A_DAY && haizAadat<=10*MILLISECONDS_IN_A_DAY){
                     combosToTry+=AadatsOfHaizAndTuhr(haizAadat, tuhrAadat*MILLISECONDS_IN_A_DAY)
                 }
@@ -209,7 +209,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 typeOfMasla,
                 pregnancy,
                 typesOfInputs,
-                languageSelector.value,
+                languageSelected,
                 ikhtilaafaat)
             allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
         }else{
@@ -225,7 +225,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 typeOfMasla,
                 pregnancy,
                 typesOfInputs,
-                languageSelector.value,
+                languageSelected,
                 ikhtilaafaat)
         }
 
@@ -455,7 +455,7 @@ fun drawCompareTable(
     comparisonGrid.style.setProperty("--columns",  "${headerList.size}")
     comparisonGrid.style.setProperty("--rows",  "${listOfDescriptions.size - 1}")
     comparisonGrid.replaceChildren {
-        val lang = languageSelector.value
+        val lang = languageSelected
         val dur = inputsContainers.first().isDuration
         val titleClasses = "${CssC.TITLE_CELL} ${lang}-align ${if (dur) CssC.HIDDEN else ""}"
 
@@ -539,10 +539,10 @@ private val inputsContainersContainer get() = document.getElementById(Ids.InputC
 @Suppress("UNCHECKED_CAST")
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
-val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
-private val root_hazapp = document.getElementsByClassName("root").asList()
+private val rootHazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
+val languageSelected get() = languageSelector.value
 val timezoneSelector get() = document.getChildById(Ids.Inputs.SELECT_LOCALE) as HTMLSelectElement
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
