@@ -858,7 +858,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1199,7 +1199,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
                     FutureDateType(Date(2022,2, 31), TypesOfFutureDates.A3_CHANGING_TO_A2)
                 )
@@ -1227,10 +1227,10 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
                     FutureDateType(Date(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
-                    FutureDateType(Date(2022,2, 21), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                    FutureDateType(Date(2022,2, 21), TypesOfFutureDates.END_OF_AADAT_TUHR)
 
                 )
             )
@@ -1257,14 +1257,14 @@ class LogicTest {
 
         val expectedEndingOutputValues =
             EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
+                true,
+                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
                     FutureDateType(Date(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
-                    FutureDateType(Date(2022,2, 24), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
+//                    FutureDateType(Date(2022,2, 24), TypesOfFutureDates.BEFORE_THREE_DAYS),
+//                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+//                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+//                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
 
                 )
             )
@@ -2041,7 +2041,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("18")!!),
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("34")!!),
                 mutableListOf(
                     FutureDateType(Date(2022, 3, 2), TypesOfFutureDates.A3_CHANGING_TO_A2),
                 )
@@ -4137,7 +4137,33 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
 
     }
-
+    @Test
+    fun testMuftiAhmadMumtazMasla208() {
+        val entries = listOf<Entry>(
+            Entry(Date(2023,0,0), Date(2023, 0, 11)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(
+                    3*MILLISECONDS_IN_A_DAY,
+                    179*MILLISECONDS_IN_A_DAY,
+                    15*MILLISECONDS_IN_A_DAY,
+                    false
+                )
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("179")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
 
     @Test
     fun testDaysHoursMinutesDigitalIssue171() {

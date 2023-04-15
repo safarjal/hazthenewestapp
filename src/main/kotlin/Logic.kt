@@ -918,7 +918,14 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 if(output.aadatTuhrChanges && ((i<1 && !isMawjoodaFasid) ||
                             (i>0 && fixedDurations[i-1].type==DurationType.TUHR))){//and it exists
                     //if mp is not tuhrefaasid or tuhr in haml
-                    aadatTuhr = mp
+
+                    //adding Mufti Mumtaz rule: If situation is A-3 then tuhr aadat doesn't change if
+                    // it is the last dam
+                    if(output.soorat==Soortain.A_3 && i==fixedDurations.lastIndex){
+                        //aadat stays the same
+                    }else{
+                        aadatTuhr = mp
+                    }
                     //if aadat is bigger than or equal to 6 months
                     if(aadatTuhr>=30*6*MILLISECONDS_IN_A_DAY){
                         //make aadat 2 months
