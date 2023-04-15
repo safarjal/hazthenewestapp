@@ -60,7 +60,7 @@ fun languageChange() {
         .forEach { select -> setOptionInSelect(select) }
 }
 
-fun makeRangeArray(aadatHaz:String,aadatTuhr:String, cycleLength: String, aadatNifas: String):MutableList<AadatsOfHaizAndTuhr>{
+fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadatNifas: String):MutableList<AadatsOfHaizAndTuhr>{
     //this returns an array conating all the possibilities we want to plug in and try
     val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
     val aadatHaizList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
@@ -215,8 +215,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
-                    startTime = Date(row.startTimeInput.valueAsNumber),
-                    endTime = Date(row.endTimeInput.valueAsNumber)
+                    startTime = Date(Date(row.startTimeInput.valueAsNumber).getLocalTime()),
+                    endTime = Date(Date(row.endTimeInput.valueAsNumber).getLocalTime())
                 )
             }
             allTheInputs = AllTheInputs(

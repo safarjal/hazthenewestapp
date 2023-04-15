@@ -96,12 +96,12 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 //fun Date.offsetLocalTimeToUtc() =
 //    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
 
-fun Date.getLocalTime() =
-    Date(toLocaleString("en-US", dateLocaleOptions {timeZone = timezoneSelector.value}))
+fun Date.getLocalTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
+    toLocaleString("en-US", dateLocaleOptions {timeZone = tz})
 
 fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
     val date = Date(dateString)
-    return if (isDateOnly) date else date.getLocalTime()
+    return if (isDateOnly) date else Date(date.getLocalTime())
 }
 
 fun Date.toDateInputString(isDateOnly: Boolean): String {
@@ -172,18 +172,18 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         var strDays = days.toString()
 
         when (days) {
-            1.0 -> strDays += " day"
             0.0 -> strDays = ""
+            1.0 -> strDays += " day"
             else -> strDays += " days"
         }
         when (hours) {
-            1.0 -> strHours += " hour"
             0.0 -> strHours = ""
+            1.0 -> strHours += " hour"
             else -> strHours += " hours"
         }
         when (minutes) {
-            1.0 -> strMinutes += " minute"
             0.0 -> strMinutes = ""
+            1.0 -> strMinutes += " minute"
             else -> strMinutes += " minutes"
         }
 
