@@ -96,12 +96,14 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 //fun Date.offsetLocalTimeToUtc() =
 //    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
 
-fun Date.getLocalTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
-    toLocaleString("en-US", dateLocaleOptions {timeZone = tz})
+fun String.getLocalDateTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
+    LocalDateTime.parse(this).addTimeZone(tz)
 
+fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
+    ZonedDateTime.of(this, ZoneId.of(tz))
 fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
     val date = Date(dateString)
-    return if (isDateOnly) date else Date(date.getLocalTime())
+    return if (isDateOnly) date else Date(dateString.getLocalDateTime().toString())
 }
 
 fun Date.toDateInputString(isDateOnly: Boolean): String {
