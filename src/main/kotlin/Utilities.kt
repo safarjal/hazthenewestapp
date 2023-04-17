@@ -1,3 +1,8 @@
+import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
+import kotlinx.datetime.internal.JSJoda.ZoneId
+import kotlinx.datetime.internal.JSJoda.ZonedDateTime
+import kotlinx.datetime.toInstant
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
@@ -101,12 +106,13 @@ fun String.getLocalDateTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" 
 
 fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
     ZonedDateTime.of(this, ZoneId.of(tz))
-fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
-    val date = Date(dateString)
-    return if (isDateOnly) date else Date(dateString.getLocalDateTime().toString())
+
+fun String.getUTC() = this.getLocalDateTime().toInstant()
+fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Instant {
+    return if (isDateOnly) Instant.parse(dateString) else dateString.getUTC()
 }
 
-fun Date.toDateInputString(isDateOnly: Boolean): String {
+fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
     val string = toISOString().takeWhile { it != letterToTrimFrom }
     return if (isDateOnly) string
