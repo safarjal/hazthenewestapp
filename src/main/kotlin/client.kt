@@ -11,6 +11,12 @@ import kotlinx.html.js.*
 import org.w3c.dom.*
 import kotlin.js.Date
 
+@JsModule("@js-joda/timezone")
+@JsNonModule
+external object JsJodaTimeZoneModule
+
+private val jsJodaTz = JsJodaTimeZoneModule
+
 // START PROGRAM
 fun main() {
     window.onload = {
