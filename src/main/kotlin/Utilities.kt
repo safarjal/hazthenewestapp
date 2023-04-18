@@ -1,7 +1,5 @@
-import kotlinx.datetime.internal.JSJoda.Instant
-import kotlinx.datetime.internal.JSJoda.LocalDateTime
-import kotlinx.datetime.internal.JSJoda.ZoneId
-import kotlinx.datetime.internal.JSJoda.ZonedDateTime
+import kotlinx.datetime.internal.JSJoda.*
+import kotlinx.datetime.internal.JSJoda.Duration
 import kotlinx.datetime.toInstant
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
@@ -107,10 +105,26 @@ fun String.getLocalDateTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" 
 fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
     ZonedDateTime.of(this, ZoneId.of(tz))
 
-fun String.getUTC() = this.getLocalDateTime().toInstant()
-fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Instant {
-    return if (isDateOnly) Instant.parse(dateString) else dateString.getUTC()
+fun String.getUTC() = getLocalDateTime().toInstant()
+
+fun String.instantFromDate() = Instant.from(LocalDate.parse(this))
+
+fun String.instantFromString(timezone: Boolean = false): Instant {
+    return if (isEmpty())
+        return Instant.EPOCH
+    else if (timezone)
+        getUTC()
+    else if(contains("T"))
+        Instant.from(LocalDateTime.parse(this))
+    else
+        Instant.from(LocalDate.parse(this))
 }
+
+fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Instant {
+    return dateString.instantFromString(!isDateOnly)
+}
+
+fun Instant.getTime() = toEpochMilli().toLong()
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
