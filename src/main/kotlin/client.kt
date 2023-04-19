@@ -223,8 +223,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
-                    startTime = row.startTimeInput.value.instant(!isDateTime),
-                    endTime = row.endTimeInput.value.instant(!isDateTime)
+                    startTime = row.startTimeInput.value.instant(isDateTime),
+                    endTime = row.endTimeInput.value.instant(isDateTime)
                 )
             }
             allTheInputs = AllTheInputs(

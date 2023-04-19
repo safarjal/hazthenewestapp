@@ -89,9 +89,10 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value) =
     ZonedDateTime.of(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
-fun String.getTZed(tz: String = "") = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
+fun String.getUTC(tz: String = timezoneSelector.value) = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
+fun Instant.getLocal(tz: String = timezoneSelector.value) = LocalDateTime.ofInstant(this, ZoneId.of(tz))
 
-fun String.instant(timezone: Boolean = false, tz: String = ""): Instant {
+fun String.instant(timezone: Boolean = false, tz: String = timezoneSelector.value): Instant {
     return if (isEmpty())
         Instant.EPOCH
     else if(!contains("T"))
@@ -215,11 +216,13 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
  fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-     val localstring = LocalDateTime.ofInstant(date, ZoneId.UTC)
-     val day = localstring.dayOfMonth()
-     val month = localstring.month()
-     var hours = localstring.hour().toInt()
-     val minutesStr = localstring.minute().toInt().leadingZero()
+
+     val localStr = date.getLocal()
+     val day = localStr.dayOfMonth()
+     val month = localStr.month()
+     var hours = localStr.hour().toInt()
+     println("hrs: $hours")
+     val minutesStr = localStr.minute().toInt().leadingZero()
 
      if(languageNames==Vls.Langs.ENGLISH){
 //         2023-04-02T00:22:00Z
