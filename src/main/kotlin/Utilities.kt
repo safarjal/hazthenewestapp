@@ -135,7 +135,7 @@ fun parseRange(input: String):Array<Int?>{
 }
 
 fun parseDays(input: String): Long? {
-    if(input.contains('-')) return null
+    if (input.contains('-')) return null
     if (input.isEmpty()) return null
 
     val sections = input.split(':')
@@ -218,18 +218,14 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
      val localstring = LocalDateTime.ofInstant(date, ZoneId.UTC)
+     val day = localstring.dayOfMonth()
+     val month = localstring.month()
+     var hours = localstring.hour().toInt()
+     val minutesStr = localstring.minute().toInt().leadingZero()
 
      if(languageNames==Vls.Langs.ENGLISH){
-         //   Sat, 05 Jun 2021 06:21:59 GMT
 //         2023-04-02T00:22:00Z
-
-         val dateStr = "${localstring.dayOfMonth()} ${localstring.month().toString().lowercase().replaceFirstChar { it.titlecase() }}"
-
-         var hours = localstring.hour().toInt()
-         print("Hrs: ")
-         println(hours)
-
-         val minutesStr = localstring.minute().toString()
+         val dateStr = "$day ${month.toString().lowercase().replaceFirstChar { it.titlecase() }}"
 
          var ampm = "am"
          if (hours >=12) {
@@ -241,38 +237,31 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
          val hoursStr:String = hours.toString()
 
          return if (isDateOnly) dateStr //05 Jun 2021
-         else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30pm
+         else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30 pm
      }
      else if(languageNames==Vls.Langs.URDU){
-         val day = localstring.dayOfMonth()
-         val month = localstring.monthValue().toInt()
-         val urduMonth = urduMonthNames[month]
+//         val monthStr = month.displayName(TextStyle.FULL, Locale)
+         val urduMonth = urduMonthNames[month.value().toInt()]
          val urduDay:String = if (day == 1) "یکم" else day.toString()
 
          if (isDateOnly) return ("$urduDay $urduMonth")
          else { //has time too
-             var hours = localstring.hour().toInt()
-             val minutes = localstring.minute().toInt()
-             val strMinutes:String = if(minutes < 10) "0${minutes}" else minutes.toString()
-
              val ampm = when (hours) {
                  in 4..11 -> "صبح" //4am-11am
                  in 12..14 -> "دوپہر" //12pm-2pm
                  in 15..18 -> "شام" //3pm-6pm
                  else -> "رات" //7pm-3am
              }
-
              if (hours >=12) hours -= 12
              if (hours == 0) hours = 12
 
-             return ("$urduDay $urduMonth $ampm $hours:$strMinutes بجے").trim().trimEnd()
+             return "$urduDay $urduMonth $ampm $hours:$minutesStr بجے".trim().trimEnd()
          }
-
      }
      return ""
  }
 
-fun difference(date1:Instant,date2:Instant):Long { return (date2.getMillisLong()-date1.getMillisLong()) }
+fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong() - date1.getMillisLong()) }
 
 fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
 fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
