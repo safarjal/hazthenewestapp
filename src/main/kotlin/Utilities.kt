@@ -110,7 +110,7 @@ fun Instant.getMillisLong() = toEpochMilli().toLong()
 
 fun Int.leadingZero() = if (this < 10) "0$this" else toString()
 fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
-    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
+    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
@@ -232,13 +232,13 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
          //   Sat, 05 Jun 2021 06:21:59 GMT
 //         2023-04-02T00:22:00Z
 
-         var dateStr = "${localstring.dayOfMonth()} ${localstring.month().toString().lowercase().replaceFirstChar { it.titlecase() }}"
+         val dateStr = "${localstring.dayOfMonth()} ${localstring.month().toString().lowercase().replaceFirstChar { it.titlecase() }}"
 
          var hours = localstring.hour().toInt()
          print("Hrs: ")
          println(hours)
 
-         var minutesStr = localstring.minute().toString()
+         val minutesStr = localstring.minute().toString()
 
          var ampm = "am"
          if (hours >=12) {
