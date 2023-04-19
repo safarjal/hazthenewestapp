@@ -142,18 +142,10 @@ fun parseDays(input: String): Long? {
 
     val sections = input.split(':')
 
-    val days = sections[0].toLong()
-    var millisecs:Long = days * MILLISECONDS_IN_A_DAY
-
-    val hours = sections.getOrNull(1)?.toInt() ?: return millisecs
-    require(hours in 0 until 24) { "Invalid hours value" }
-    millisecs += hours * MILLISECONDS_IN_AN_HOUR
-
-    val minutes = sections.getOrNull(2)?.toInt() ?: return millisecs
-    require(minutes in 0 until 60) { "Invalid minutes value" }
-    millisecs += minutes * MILLISECONDS_IN_A_MINUTE
-
-    return millisecs
+    var dur = Duration.ofDays(sections[0].toInt())
+        .plusHours(sections.getOrNull(1)?.toInt() ?: 0)
+        .plusMinutes(sections.getOrNull(2)?.toInt() ?: 0)
+    return dur.toMillis().toLong()
 }
 
 fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
