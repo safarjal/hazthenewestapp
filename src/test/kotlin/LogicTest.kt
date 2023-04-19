@@ -2133,7 +2133,7 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(10*MILLISECONDS_IN_A_DAY, -1),
                 mutableListOf(
-                    FutureDateType(instant(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY)
+                    FutureDateType(Instant.EPOCH, TypesOfFutureDates.TEN_DAYS_EXACTLY)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2572,7 +2572,7 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, -1L),
                 mutableListOf(
-                    FutureDateType(instant(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY),
+                    FutureDateType(Instant.EPOCH, TypesOfFutureDates.TEN_DAYS_EXACTLY),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2844,7 +2844,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaDurationCase1a() {
         //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
-        val arbitraryTime = instant(0,0,0)
+        val arbitraryTime = Instant.EPOCH
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
@@ -2947,7 +2947,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaDurationCase1b() {
         //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
-        val arbitraryTime = instant(0,0,0)
+        val arbitraryTime = Instant.EPOCH
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
@@ -3051,7 +3051,7 @@ class LogicTest {
 
     @Test
     fun testingMubtadiaDurationCase2a() {
-        val arbitraryTime = instant(0,0,0)
+        val arbitraryTime = Instant.EPOCH
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
@@ -3125,7 +3125,7 @@ class LogicTest {
     }
     @Test
     fun testingMubtadiaDurationCase2b() {
-        val arbitraryTime = instant(0,0,0)
+        val arbitraryTime = Instant.EPOCH
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
@@ -4150,7 +4150,7 @@ class LogicTest {
     @Test
     fun testMuftiAhmadMumtazMasla208() {
         val entries = listOf<Entry>(
-            Entry(instant(2023,0,0), instant(2023, 0, 11)),
+            Entry(instant(2023,0,1), instant(2023, 0, 12)),
         )
         val output = handleEntries(
             AllTheInputs(
