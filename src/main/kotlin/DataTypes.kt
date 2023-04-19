@@ -256,7 +256,7 @@ class InfoForCompareTable(
 data class Pregnancy(
     val pregStartTime: Instant = ARBITRARY_DATE,
     val birthTime: Instant = ARBITRARY_DATE,
-    var aadatNifas: Long? = 40*MILLISECONDS_IN_A_DAY,
+    var aadatNifas: Long? = 40.getMilliDays(),
     val mustabeenUlKhilqat: Boolean,
 )
 

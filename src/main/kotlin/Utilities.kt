@@ -5,8 +5,6 @@ import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import kotlin.js.Date
-//import kotlin.time.ExperimentalTime
 
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
@@ -142,7 +140,7 @@ fun parseDays(input: String): Long? {
 
     val sections = input.split(':')
 
-    var dur = Duration.ofDays(sections[0].toInt())
+    val dur = Duration.ofDays(sections[0].toInt())
         .plusHours(sections.getOrNull(1)?.toInt() ?: 0)
         .plusMinutes(sections.getOrNull(2)?.toInt() ?: 0)
     return dur.toMillis().toLong()
@@ -275,6 +273,8 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
 
 fun difference(date1:Instant,date2:Instant):Long { return (date2.getMillisLong()-date1.getMillisLong()) }
 
+fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
+fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
 // VALS TO USE
 object Ids {
     const val LANGUAGE = "language"

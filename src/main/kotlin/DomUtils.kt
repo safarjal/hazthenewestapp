@@ -529,7 +529,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
         value = value.replace("[^0-9:]".toRegex(), "")
         val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
         setCustomValidity(try {
-            val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
+            val days = (parseDays(value)?.getDays())?.toDouble()
             require(days == null || days in doubleValidityRange) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {

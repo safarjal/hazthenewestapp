@@ -10,6 +10,10 @@ import kotlin.test.assertEquals
     Alternately, you can alter the fun instant() to have a timezone sting input which would be empty by default.
     It would be passed along to the .instant(timezone) as ==> .instant(timezoneBool, timezoneString)
  */
+/* TODO 2: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
+    AS SUCH, IF YOU FEEL LIKE IT, YOU CAN MOVE BACK ALL THE MONTH NUMBERS AND
+    REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
+ */
 
 // 2023-04-02T00:22:00Z
 // 2020-05-14T00:00:00:00Z
@@ -29,24 +33,24 @@ class LogicTest {
     @Test
     fun testRemoveDamLessThan3(){
         val durations = mutableListOf(
-            FixedDuration(DurationType.TUHR, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*15)),
-            FixedDuration(DurationType.DAM, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*2)),
-            FixedDuration(DurationType.TUHR, timeInMilliseconds= (MILLISECONDS_IN_A_DAY*15))
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds= (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays()))
         )
         removeDamLessThan3(durations)
         //expected that the size will be 1
         assertEquals(1,durations.size)
         //expected that the duration will be 32 days.
         assertEquals(DurationType.TUHREFAASID,durations[0].type)
-        assertEquals(32*MILLISECONDS_IN_A_DAY, durations[0].timeInMilliseconds)
+        assertEquals(32.getMilliDays(), durations[0].timeInMilliseconds)
     }
 
     @Test
     fun testRemoveTuhrLessThan15(){
         val fixedDurations = mutableListOf(
-            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2)),
-            FixedDuration(DurationType.TUHR, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2)),
-            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2))
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
         )
         removeTuhrLessThan15(fixedDurations)
         assertEquals(1, fixedDurations.size)
@@ -55,23 +59,23 @@ class LogicTest {
     }
     @Test
     fun testFiveSoortain(){
-        val mp:Long = 21L*MILLISECONDS_IN_A_DAY
-        val gp = 16L*MILLISECONDS_IN_A_DAY
-        val dm = 11L*MILLISECONDS_IN_A_DAY
-        val hz = 7L*MILLISECONDS_IN_A_DAY
+        val mp = 21.getMilliDays()
+        val gp = 16.getMilliDays()
+        val dm = 11.getMilliDays()
+        val hz = 7.getMilliDays()
         val output:FiveSoortainOutput = fiveSoortain(mp,gp,dm,hz)
         assertEquals(Soortain.B_3, output.soorat)
         assertEquals(0L, output.istihazaBefore)
-        assertEquals(7*MILLISECONDS_IN_A_DAY, output.haiz)
-        assertEquals(4*MILLISECONDS_IN_A_DAY, output.istihazaAfter)
+        assertEquals(7.getMilliDays(), output.haiz)
+        assertEquals(4.getMilliDays(), output.istihazaAfter)
         assertEquals(true, output.aadatTuhrChanges)
     }
     @Test
     fun testAddIndicesToFixedDurations(){
         val fixedDurations = mutableListOf(
-            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2)),
-            FixedDuration(DurationType.TUHR, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2)),
-            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2))
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
         )
         addIndicesToFixedDurations(fixedDurations)
         assertEquals(0,fixedDurations[0].indices[0])
@@ -86,9 +90,9 @@ class LogicTest {
 //    fun testAddStartDateToFixedDurations(){
 //        firstStartTime = instant(2020,7,31)
 //        val fixedDurations = mutableListOf(
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*3).toLong())
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.millisFromDays()).toLong()),
+//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.millisFromDays()).toLong()),
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (3.millisFromDays()).toLong())
 //        )
 //        assertEquals(instant(2020,7,31),fixedDurations[0].startDate)
 //        assertEquals(instant(2020,8,2),fixedDurations[0].startDate)
@@ -132,7 +136,7 @@ class LogicTest {
             pregnancy = Pregnancy(
                 instant(2020,9,6),
                 instant(2021,5,15),
-                25*MILLISECONDS_IN_A_DAY,
+                25.getMilliDays(),
                 true))
         )
         val haizDateList = output.hazDatesList
@@ -184,7 +188,7 @@ class LogicTest {
             typeOfInput = TypesOfInputs.DATE_ONLY,
             typeOfMasla = TypesOfMasla.NIFAS,
             ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
-            pregnancy = Pregnancy(instant(2021,4,21),instant(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)),
+            pregnancy = Pregnancy(instant(2021,4,21),instant(2021,6,25),25.getMilliDays(),mustabeenUlKhilqat = false)),
         )
         val haizDateList = output.hazDatesList
 
@@ -235,7 +239,7 @@ class LogicTest {
         }
         val expectedEndingOutputValues = EndingOutputValues(
             true,
-            AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY,21*MILLISECONDS_IN_A_DAY),
+            AadatsOfHaizAndTuhr(6.getMilliDays(),21.getMilliDays()),
             mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
@@ -272,7 +276,7 @@ class LogicTest {
             assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
-        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY,24*MILLISECONDS_IN_A_DAY), mutableListOf())
+        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7.getMilliDays(),24.getMilliDays()), mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
 //        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
@@ -308,7 +312,7 @@ class LogicTest {
         }
 
         val expectedEndingOutputValues =
-            EndingOutputValues(true, AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY,64*MILLISECONDS_IN_A_DAY), mutableListOf())
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(4.getMilliDays(),64.getMilliDays()), mutableListOf())
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         //since no future date was provided, it won't be part of the test
@@ -348,7 +352,7 @@ class LogicTest {
         }
 
         val expectedEndingOutputValues =
-            EndingOutputValues(true, AadatsOfHaizAndTuhr(9*MILLISECONDS_IN_A_DAY,62*MILLISECONDS_IN_A_DAY),
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(9.getMilliDays(),62.getMilliDays()),
 //                FutureDateType(instant(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2)
                 mutableListOf()
             )
@@ -401,7 +405,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(10 * MILLISECONDS_IN_A_DAY, 22 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(10.getMilliDays(), 22.getMilliDays()),
 //                FutureDateType(instant(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
@@ -431,7 +435,7 @@ class LogicTest {
         val output = handleEntries(AllTheInputs(
             entries,
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(instant(2020, 3, 26), instant(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+            pregnancy = Pregnancy(instant(2020, 3, 26), instant(2021, 1, 14), 40.getMilliDays(), mustabeenUlKhilqat = true))
         )
         val haizDateList = output.hazDatesList
 
@@ -454,7 +458,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY, parseDays("40")!!),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 21.getMilliDays(), parseDays("40")!!),
 //                FutureDateType(instant(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
@@ -502,7 +506,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 35 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 35.getMilliDays()),
 //                FutureDateType(instant(2021, 4, 6), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
@@ -564,7 +568,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(3 * MILLISECONDS_IN_A_DAY, 19 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(3.getMilliDays(), 19.getMilliDays()),
 //                FutureDateType(instant(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
@@ -595,7 +599,7 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(entries,
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(instant(2020, 5, 10), instant(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+            pregnancy = Pregnancy(instant(2020, 5, 10), instant(2021, 2, 5), 40.getMilliDays(), mustabeenUlKhilqat = true))
         )
         val haizDateList = output.hazDatesList
 
@@ -617,7 +621,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(8 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(8.getMilliDays(), 21.getMilliDays()),
                 mutableListOf()
 
             )
@@ -671,7 +675,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(7 * MILLISECONDS_IN_A_DAY, 24 * MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(7.getMilliDays(), 24.getMilliDays()),
                 mutableListOf(
 
                 )
@@ -715,7 +719,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(7.getMilliDays(), 15.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -735,7 +739,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, -1),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), -1),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -758,7 +762,7 @@ class LogicTest {
 //        val expectedEndingOutputValues =
 //            EndingOutputValues(
 //                false,
-//                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 27*MILLISECONDS_IN_A_DAY),
+//                AadatsOfHaizAndTuhr(5.millisFromDays(), 27.millisFromDays()),
 //                mutableListOf()
 //            )
 //        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -776,7 +780,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, -1),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), -1),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -792,13 +796,13 @@ class LogicTest {
         val output = handleEntries(
             AllTheInputs(entries,
                 PreMaslaValues(
-            8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY)))
+            8.getMilliDays(),
+            30.getMilliDays())))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 30.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -819,12 +823,12 @@ class LogicTest {
         val output = handleEntries(
             AllTheInputs(entries,
                 PreMaslaValues(
-            8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY)))
+            8.getMilliDays(),
+            30.getMilliDays())))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 23.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -842,13 +846,13 @@ class LogicTest {
             Entry(instant(2022, 2, 2), instant(2022, 2, 16))
 
         val output = handleEntries(AllTheInputs(
-            entries,PreMaslaValues(8*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY)))
+            entries,PreMaslaValues(8.getMilliDays(),
+            30.getMilliDays())))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 24*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 24.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -864,12 +868,12 @@ class LogicTest {
         val output = handleEntries(
             AllTheInputs(entries,
                 PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 30.getMilliDays(),false)))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -884,13 +888,13 @@ class LogicTest {
 
         val output = handleEntries(
             AllTheInputs(entries, PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 30.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(3*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(3.getMilliDays(), 60.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -905,13 +909,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            30.getMilliDays(), 60.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -926,13 +930,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(entries,
             PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,true)))
+            5.getMilliDays(),
+            30.getMilliDays(), 60.getMilliDays(),true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 30.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -947,13 +951,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,true)))
+            5.getMilliDays(),
+            60.getMilliDays(), 30.getMilliDays(),true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -968,13 +972,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
+            6.getMilliDays(),
+            15.getMilliDays(), 17.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 17.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -989,13 +993,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
+            6.getMilliDays(),
+            15.getMilliDays(), 17.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 17.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1010,14 +1014,14 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+            6.getMilliDays(),
+            15.getMilliDays(), 17.getMilliDays(),false),
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 17.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1033,14 +1037,14 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            6*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+            6.getMilliDays(),
+            15.getMilliDays(), 17.getMilliDays(),false),
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 17.getMilliDays()),
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1078,14 +1082,14 @@ class LogicTest {
         val output = handleEntries(AllTheInputs(
             entries,
             PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY),
+            5.getMilliDays(),
+            15.getMilliDays()),
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 15.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2,4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1111,13 +1115,13 @@ class LogicTest {
         val output = handleEntries(
             AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            15*MILLISECONDS_IN_A_DAY)))
+            5.getMilliDays(),
+            15.getMilliDays())))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(3*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(3.getMilliDays(), 15.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(instant(2022, 2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
@@ -1141,15 +1145,15 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            7*MILLISECONDS_IN_A_DAY,
-            25*MILLISECONDS_IN_A_DAY,
-                20*MILLISECONDS_IN_A_DAY,
+            7.getMilliDays(),
+            25.getMilliDays(),
+                20.getMilliDays(),
                 false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(7.getMilliDays(), 25.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 7), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 )
@@ -1172,13 +1176,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            7*MILLISECONDS_IN_A_DAY,
-            25*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY,false)))
+            7.getMilliDays(),
+            25.getMilliDays(), 20.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(7.getMilliDays(), 25.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,3, 14), TypesOfFutureDates.END_OF_AADAT_HAIZ),
@@ -1204,13 +1208,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 30.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 31), TypesOfFutureDates.A3_CHANGING_TO_A2)
                 )
@@ -1232,13 +1236,13 @@ class LogicTest {
             Entry(instant(2022, 2, 1), instant(2022, 2, 12))
 
         val output = handleEntries(AllTheInputs(entries, PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 15.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
 //                    FutureDateType(instant(2022,2, 21), TypesOfFutureDates.END_OF_AADAT_TUHR)
@@ -1263,13 +1267,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 15.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
 //                    FutureDateType(instant(2022,2, 24), TypesOfFutureDates.BEFORE_THREE_DAYS),
@@ -1297,14 +1301,14 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            30*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)
+            5.getMilliDays(),
+            30.getMilliDays(), 60.getMilliDays(),false)
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
 
@@ -1328,13 +1332,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            59*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            59.getMilliDays(), 60.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,4, 4), TypesOfFutureDates.END_OF_AADAT_TUHR),
 
@@ -1358,13 +1362,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            60*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            60.getMilliDays(), 15.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 60.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 18), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
                     FutureDateType(instant(2022,3, 20), TypesOfFutureDates.END_OF_AADAT_HAIZ),
@@ -1390,13 +1394,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            18*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            18.getMilliDays(), 18.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 18.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1422,13 +1426,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)
+            5.getMilliDays(),
+            28.getMilliDays(), 18.getMilliDays(),false)
         ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 null,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 28.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 11), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
                     FutureDateType(instant(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
@@ -1451,14 +1455,14 @@ class LogicTest {
             Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false),
+            5.getMilliDays(),
+            28.getMilliDays(), 18.getMilliDays(),false),
             ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
         ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 28.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1486,13 +1490,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            28.getMilliDays(), 17.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 null,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 28.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 12), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
                     FutureDateType(instant(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
@@ -1517,15 +1521,15 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            28*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY,false),
+            5.getMilliDays(),
+            28.getMilliDays(), 17.getMilliDays(),false),
             ikhtilaafaat = Ikhtilaafaat(ayyameQabliyyaIkhtilaf = true)
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 28.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1551,13 +1555,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY,false)))
+            5.getMilliDays(),
+            17.getMilliDays(), 18.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 17.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1583,14 +1587,14 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false),
+            5.getMilliDays(),
+            17.getMilliDays(), 30.getMilliDays(),false),
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 17.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
@@ -1616,13 +1620,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries, PreMaslaValues(
-            5*MILLISECONDS_IN_A_DAY,
-            17*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY,false),
+            5.getMilliDays(),
+            17.getMilliDays(), 30.getMilliDays(),false),
         ))
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), 30.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
@@ -1647,13 +1651,13 @@ class LogicTest {
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
-            9*MILLISECONDS_IN_A_DAY,
-            21*MILLISECONDS_IN_A_DAY, 23*MILLISECONDS_IN_A_DAY,true)))
+            9.getMilliDays(),
+            21.getMilliDays(), 23.getMilliDays(),true)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(5.getMilliDays(), 21.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 4), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                     FutureDateType(instant(2022,2, 5), TypesOfFutureDates.AFTER_TEN_DAYS),
@@ -1684,14 +1688,14 @@ class LogicTest {
             entries,
             typeOfMasla = TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(instant(2021, 5, 10), instant(2022, 2, 5),
-                40*MILLISECONDS_IN_A_DAY,
+                40.getMilliDays(),
                 mustabeenUlKhilqat = true)
         ))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(8.getMilliDays(), 21.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
@@ -1721,7 +1725,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(6.getMilliDays(), 25.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
                     FutureDateType(instant(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
@@ -1744,13 +1748,13 @@ class LogicTest {
         entries +=//each month has to be one minus the real
             Entry(instant(2022, 2, 1), instant(2022, 2, 12))
         val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
-            6*MILLISECONDS_IN_A_DAY,
-            20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
+            6.getMilliDays(),
+            20.getMilliDays(), 15.getMilliDays(),false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
-                AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY),
+                AadatsOfHaizAndTuhr(6.getMilliDays(), 20.getMilliDays()),
                 mutableListOf(
                     FutureDateType(instant(2022,3, 1), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
@@ -1902,7 +1906,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 false,
-                AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, -1),
+                AadatsOfHaizAndTuhr(4.getMilliDays(), -1),
                 mutableListOf(
                     FutureDateType(instant(2022,2, 11), TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 )
@@ -1933,7 +1937,7 @@ class LogicTest {
             false),
             typeOfMasla = TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(instant(2021, 11, 12,0,0), instant(2021, 11, 30, 0,0),
-                40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = false)))
+                40.getMilliDays(), mustabeenUlKhilqat = false)))
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2132,7 +2136,7 @@ class LogicTest {
         val expectedEndingOutputValues =
             EndingOutputValues(
                 null,
-                AadatsOfHaizAndTuhr(10*MILLISECONDS_IN_A_DAY, -1),
+                AadatsOfHaizAndTuhr(10.getMilliDays(), -1),
                 mutableListOf(
                     FutureDateType(Instant.EPOCH, TypesOfFutureDates.TEN_DAYS_EXACTLY)
                 )
@@ -2602,7 +2606,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(instant(2022,4,7).plusMillis(30*MILLISECONDS_IN_A_DAY), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,4,7).plusMillis(30.getMilliDays()), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -3510,7 +3514,7 @@ class LogicTest {
             durations,
             AllTheInputs(
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(aadatNifas= 40*MILLISECONDS_IN_A_DAY,
+                pregnancy = Pregnancy(aadatNifas= 40.getMilliDays(),
                     mustabeenUlKhilqat = true)
             )
         ))
@@ -3573,7 +3577,7 @@ class LogicTest {
             AllTheInputs(
                 preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("27")!!),
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(aadatNifas =  35*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true)
+                pregnancy = Pregnancy(aadatNifas =  35.getMilliDays(), mustabeenUlKhilqat = true)
             )
         ))
 
@@ -3592,7 +3596,7 @@ class LogicTest {
                 DurationType.DAM_IN_NIFAS_PERIOD,
                 parseDays("156")!!,
                 biggerThanForty = BiggerThanFortyNifas(
-                    35*MILLISECONDS_IN_A_DAY,
+                    35.getMilliDays(),
                     0,0,0,0,
                     mutableListOf(
                         Duration(DurationType.NIFAS, parseDays("35")!!),
@@ -3652,7 +3656,7 @@ class LogicTest {
             AllTheInputs(
                 preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(aadatNifas = 38*MILLISECONDS_IN_A_DAY,
+                pregnancy = Pregnancy(aadatNifas = 38.getMilliDays(),
                     mustabeenUlKhilqat = true)
             )
         ))
@@ -3681,7 +3685,7 @@ class LogicTest {
                 DurationType.DAM_IN_NIFAS_PERIOD,
                 parseDays("41")!!,
                 biggerThanForty = BiggerThanFortyNifas(
-                    38*MILLISECONDS_IN_A_DAY,
+                    38.getMilliDays(),
                     0,0,0,0,
                     mutableListOf(
                         Duration(DurationType.NIFAS, parseDays("38")!!),
@@ -3932,7 +3936,7 @@ class LogicTest {
             ),
         )
         val expectedAadats = AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("47")!!)
-//        println("Actual Tuhr Aadat is ${output.endingOutputValues.aadats!!.aadatTuhr/MILLISECONDS_IN_A_DAY}")
+//        println("Actual Tuhr Aadat is ${output.endingOutputValues.aadats!!.aadatTuhr.daysFromMillis()}")
 
         assertEquals(expectedFixedDurations.last().ayyameqabliyya, fixedDurations.last().ayyameqabliyya)
         assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -4158,9 +4162,9 @@ class LogicTest {
                 entries,
                 typeOfMasla = TypesOfMasla.MUTADAH,
                 preMaslaValues = PreMaslaValues(
-                    3*MILLISECONDS_IN_A_DAY,
-                    179*MILLISECONDS_IN_A_DAY,
-                    15*MILLISECONDS_IN_A_DAY,
+                    3.getMilliDays(),
+                    179.getMilliDays(),
+                    15.getMilliDays(),
                     false
                 )
             )
@@ -4191,14 +4195,14 @@ class LogicTest {
     fun testDurationsMawjoodahPaki() {
         var durations = listOf<Duration>(
             Duration(DurationType.DAM,0L),
-            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays())
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
         var expectedFixedDurations = listOf<FixedDuration>(
-            FixedDuration(DurationType.TUHREFAASID, 15*MILLISECONDS_IN_A_DAY),
-            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+            FixedDuration(DurationType.TUHREFAASID, 15.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
         assertEquals(expectedFixedDurations.size, fixedDurations.size)
         for(i in fixedDurations.indices){
@@ -4222,16 +4226,16 @@ class LogicTest {
     @Test
     fun testDurationsMawjoodahPakiCase2() {
         var durations = listOf<Duration>(
-            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.DAM, 0*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 0.getMilliDays()),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays()),
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
         var expectedFixedDurations = listOf<FixedDuration>(
-            FixedDuration(DurationType.TUHREFAASID, 30*MILLISECONDS_IN_A_DAY),
-            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+            FixedDuration(DurationType.TUHREFAASID, 30.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
         assertEquals(expectedFixedDurations.size, fixedDurations.size)
         for(i in fixedDurations.indices){
@@ -4255,16 +4259,16 @@ class LogicTest {
     @Test
     fun testDurationsMawjoodahPakiCase3() {
         var durations = listOf<Duration>(
-            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.DAM, 2*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.TUHR, 15*MILLISECONDS_IN_A_DAY),
-            Duration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 2.getMilliDays()),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays()),
         )
         var output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
         var expectedFixedDurations = listOf<FixedDuration>(
-            FixedDuration(DurationType.TUHREFAASID, 32*MILLISECONDS_IN_A_DAY),
-            FixedDuration(DurationType.DAM, 5*MILLISECONDS_IN_A_DAY)
+            FixedDuration(DurationType.TUHREFAASID, 32.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
         assertEquals(expectedFixedDurations.size, fixedDurations.size)
         for(i in fixedDurations.indices){
