@@ -1,4 +1,5 @@
 @file:Suppress("SpellCheckingInspection")
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlin.js.Date
 
 fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages{
@@ -527,7 +528,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
     var strUrdu = ""
     var strEnglish = ""
 
-    fun haizLine(sd:Date, ed:Date, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+    fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
             StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
                 languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
@@ -537,7 +538,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
-    fun istihazaLine(sd:Date, ed:Date, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
             StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
                 languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
@@ -657,7 +658,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
     var strUrdu = ""
     var strEnglish = ""
 
-    fun nifasLine(sd:Date, ed:Date, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+    fun nifasLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
             StringsOfLanguages.URDU.nifasdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
                 languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
@@ -667,7 +668,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
-    fun haizLine(sd:Date, ed:Date, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+    fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
             StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
                 languagedDateFormat(ed, typeOfInput, Vls.Langs.URDU)
@@ -677,7 +678,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
-    fun istihazaLine(sd:Date, ed:Date, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
             StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
                 languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
@@ -739,7 +740,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
     var outputStringEnglish = ""
     if (fixedDurations[index].type==DurationType.DAM||
         fixedDurations[index].type==DurationType.DAM_MUBTADIA){
-        val sd:Date = fixedDurations[index].startDate
+        val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             outputStringUrdu = StringsOfLanguages.URDU.durationHaiz.replace("duration1",
@@ -855,7 +856,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
     var outputStringEnglish = ""
     if (fixedDurations[index].type==DurationType.DAM||
         fixedDurations[index].type==DurationType.DAM_MUBTADIA){
-        val sd:Date = fixedDurations[index].startDate
+        val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             outputStringUrdu = StringsOfLanguages.URDU.haizdays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
