@@ -6,10 +6,11 @@ import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
-import kotlin.js.Date
 
 @JsModule("@js-joda/timezone")
 @JsNonModule
@@ -159,8 +160,9 @@ fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
     with(inputContainer) {
-        val pregnancyStrt = Date(pregStartTime.valueAsNumber)
-        val pregnancyEnd = Date(pregEndTime.valueAsNumber)
+//        NOTE: BECAUSE PREG ISALWAYS DATE NOT TIME, I AM NOT APPLYING TO LOCAL BUT TO INSTANT
+        val pregnancyStrt = pregStartTime.value.instant()
+        val pregnancyEnd = pregEndTime.value.instant()
 
         val typeOfMasla:TypesOfMasla = if(isMubtadia){
             TypesOfMasla.MUBTADIA
@@ -221,8 +223,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
-                    startTime = Date(Date(row.startTimeInput.valueAsNumber).getLocalTime()),
-                    endTime = Date(Date(row.endTimeInput.valueAsNumber).getLocalTime())
+                    startTime = row.startTimeInput.value.instant(!isDateTime),
+                    endTime = row.endTimeInput.value.instant(!isDateTime)
                 )
             }
             allTheInputs = AllTheInputs(
@@ -366,7 +368,7 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
     var isMawjoodaFasid = allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
     val entries= mutableListOf<Entry>()
     var pregnancyEnd = ARBITRARY_DATE
-    var pregnancyStrt:Date = ARBITRARY_DATE
+    var pregnancyStrt: Instant = ARBITRARY_DATE
 
     //as there is no way that entries can begin with a tuhr, and we are translating durations to entries,
     // we will put a beginning tuhr in mawjoodah paki.
