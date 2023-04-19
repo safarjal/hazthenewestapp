@@ -1,6 +1,5 @@
 import kotlinx.datetime.internal.JSJoda.*
 import kotlinx.datetime.internal.JSJoda.Duration
-import kotlinx.datetime.toInstant
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
@@ -89,63 +88,44 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
+fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value) =
+    ZonedDateTime.of(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
-/* Looks like the compiler argument for opting in to experimental features
- * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about its
- * requirement here for now...
- */
-//@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-//@OptIn(ExperimentalTime::class)
-//fun Date.offsetLocalTimeToUtc() =
-//    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+fun String.getUTC(tz: String = "") = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
 
-fun String.getLocalDateTime(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
-    LocalDateTime.parse(this).addTimeZone(tz)
-
-fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value.ifEmpty { "UTC" }) =
-    ZonedDateTime.of(this, ZoneId.of(tz))
-
-fun String.getUTC() = getLocalDateTime().toInstant()
-
-fun String.instantFromDate() = Instant.from(LocalDate.parse(this))
-
-fun String.instantFromString(timezone: Boolean = false): Instant {
+fun String.instant(timezone: Boolean = false, tz: String = ""): Instant {
     return if (isEmpty())
-        return Instant.EPOCH
+        Instant.EPOCH
+    else if(!contains("T"))
+        Instant.parse("${this}T00:00:00Z")
     else if (timezone)
-        getUTC()
+        getUTC(tz)
     else if(contains("T"))
-        Instant.from(LocalDateTime.parse(this))
+        Instant.parse("$this:00Z")
     else
-        Instant.from(LocalDate.parse(this))
+        Instant.EPOCH
 }
 
-fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Instant {
-    return dateString.instantFromString(!isDateOnly)
-}
-
-fun Instant.getTime() = toEpochMilli().toLong()
+fun Instant.getMillisLong() = toEpochMilli().toLong()
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    val string = toISOString().takeWhile { it != letterToTrimFrom }
+    val string = toString().takeWhile { it != letterToTrimFrom }
     return if (isDateOnly) string
     else string.take(16) // Drop any precision below minutes (seconds, milliseconds, etc.)
 }
 
 fun convertInputValue(value: String, isDateOnly: Boolean): String {
     if (value.isEmpty()) return ""
-    return parseToLocalDate(value, !isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
+    return value.instant(!isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
         .toDateInputString(isDateOnly)
 }
 
-//fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
-
-fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date { return Date(date.getTime() + timeInMilliseconds) }
+fun addTimeToDate(date: Instant,timeInMilliseconds:Long): Instant { return date.plusMillis(timeInMilliseconds) }
 
 fun parseRange(input: String):Array<Int?>{
     val sections = input.split('-')
-    var array:Array<Int?> = arrayOf()
+    val array:Array<Int?> = arrayOf()
     for (i in sections.indices){
         array[i]= (parseDays(sections[i])?.div(MILLISECONDS_IN_A_DAY))?.toInt()
     }
@@ -225,8 +205,8 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
 
         val strHours = when (hours) {
-            1.0 -> "$hours گھنٹہ"
             0.0 -> ""
+            1.0 -> "$hours گھنٹہ"
             else -> "$hours گھنٹے"
         }
         val strMinutes = if (minutes == 0.0) "" else "$minutes منٹ"
@@ -239,15 +219,23 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
     return ""
 }
 
- fun languagedDateFormat(date: Date, typeOfInput: TypesOfInputs, languageNames: String):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
+     val localstring = LocalDateTime.ofInstant(date, ZoneId.UTC)
+
      if(languageNames==Vls.Langs.ENGLISH){
          //   Sat, 05 Jun 2021 06:21:59 GMT
-         var dateStr = (date.toUTCString()).dropLast(18).drop(5)
-         if(dateStr.startsWith("0")) dateStr = dateStr.drop(1)
-         var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
-         val minutesStr = (date.toUTCString()).dropLast(7).drop(20)
+//         2023-04-02T00:22:00Z
+
+         var dateStr = "${localstring.dayOfMonth()} ${localstring.month().toString().lowercase().replaceFirstChar { it.titlecase() }}"
+
+         var hours = localstring.hour().toInt()
+         print("Hrs: ")
+         println(hours)
+
+         var minutesStr = localstring.minute().toString()
+
          var ampm = "am"
          if (hours >=12) {
              hours -= 12
@@ -261,15 +249,15 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
          else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30pm
      }
      else if(languageNames==Vls.Langs.URDU){
-         val day = date.getUTCDate().toString()
-         val month = date.getUTCMonth()
+         val day = localstring.dayOfMonth()
+         val month = localstring.monthValue().toInt()
          val urduMonth = urduMonthNames[month]
-         val urduDay:String = if (day == "1") "یکم" else day
+         val urduDay:String = if (day == 1) "یکم" else day.toString()
 
          if (isDateOnly) return ("$urduDay $urduMonth")
          else { //has time too
-             var hours = date.getUTCHours()
-             val minutes = date.getUTCMinutes()
+             var hours = localstring.hour().toInt()
+             val minutes = localstring.minute().toInt()
              val strMinutes:String = if(minutes < 10) "0${minutes}" else minutes.toString()
 
              val ampm = when (hours) {
@@ -289,7 +277,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
      return ""
  }
 
-fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTime()).toLong() }
+fun difference(date1:Instant,date2:Instant):Long { return (date2.getMillisLong()-date1.getMillisLong()) }
 
 // VALS TO USE
 object Ids {
@@ -440,7 +428,7 @@ const val MILLISECONDS_IN_AN_HOUR = 3600000
 const val MILLISECONDS_IN_A_MINUTE = 60000
 
 val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
-val ARBITRARY_DATE = Date(0,0,0)
+val ARBITRARY_DATE = Instant.EPOCH
 val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائ", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر")
 
