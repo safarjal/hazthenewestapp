@@ -13,10 +13,6 @@ import kotlin.test.assertEquals
 
 // 2023-04-02T00:22:00Z
 // 2020-05-14T00:00:00:00Z
-fun Int.leadingZero() = if (this < 10) "0$this" else toString()
-fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
-    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
-
 
 class LogicTest {
 //    @Test

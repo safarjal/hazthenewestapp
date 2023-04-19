@@ -453,7 +453,7 @@ fun compareResults() {
 }
 
 fun drawCompareTable(
-    headerList:List<Date>,
+    headerList:List<Instant>,
     listOfColorsOfDaysList: List<List<Int>>,
     resultColors: List<Int>,
     listOfDescriptions: List<String>
@@ -470,10 +470,11 @@ fun drawCompareTable(
         // Month Row
         oneRow(true, "", false) {
             for (header in headerList) {
-                val date = header.getDate()
+                var headerDate = LocalDateTime.from(header)
+                val date = headerDate.dayOfMonth()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {
-                        makeSpans(englishMonthNames[header.getMonth()], urduMonthNames[header.getMonth()])
+                        makeSpans(englishMonthNames[headerDate.monthValue().toInt()], urduMonthNames[headerDate.monthValue().toInt()])
                     }
                 }
             }
@@ -483,7 +484,7 @@ fun drawCompareTable(
         oneRow(true, "", false) {
             for (i in headerList.indices) {
                 val header = headerList[i]
-                val date = header.getDate().toString()
+                val date = LocalDateTime.from(header).dayOfMonth().toString()
 
                 div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     +date

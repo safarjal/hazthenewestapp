@@ -266,7 +266,6 @@ private fun FlowContent.calculateButton() {
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event ->
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-
         }
     }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
