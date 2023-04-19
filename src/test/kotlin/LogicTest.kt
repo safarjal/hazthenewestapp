@@ -1,16 +1,30 @@
 @file:Suppress("SpellCheckingInspection")
 
-import kotlin.js.Date
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
+/* TODO: MAKE TIMEZONE TESTS.
+    This  would be done by giving a timezone info, which can be found in tzStrings.
+    Then you would just say, instant(yr, mth, d, hr, m, true).
+    Alternately, you can alter the fun instant() to have a timezone sting input which would be empty by default.
+    It would be passed along to the .instant(timezone) as ==> .instant(timezoneBool, timezoneString)
+ */
+
+// 2023-04-02T00:22:00Z
+// 2020-05-14T00:00:00:00Z
+fun Int.leadingZero() = if (this < 10) "0$this" else toString()
+fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
+    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
+
 
 class LogicTest {
 //    @Test
 //    fun testHandleEntries() {
 //        val istimrar = false
 //        val entries = listOf(
-//            Entry(Date(), Date()),
-//            Entry(Date(), Date())
+//            Entry(instant(), instant()),
+//            Entry(instant(), instant())
 //        )
 //        val result = handleEntries(entries, istimrar)
 //        assertNotNull(result) // TODO: Replace this with actual test
@@ -74,15 +88,15 @@ class LogicTest {
     }
 //    @Test
 //    fun testAddStartDateToFixedDurations(){
-//        firstStartTime = Date(2020,7,31)
+//        firstStartTime = instant(2020,7,31)
 //        val fixedDurations = mutableListOf(
 //            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
 //            FixedDuration(DurationType.TUHR, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*2).toLong()),
 //            FixedDuration(DurationType.DAM, timeInMilliseconds = (MILLISECONDS_IN_A_DAY*3).toLong())
 //        )
-//        assertEquals(Date(2020,7,31),fixedDurations[0].startDate)
-//        assertEquals(Date(2020,8,2),fixedDurations[0].startDate)
-//        assertEquals(Date(2020,8,5),fixedDurations[0].startDate)
+//        assertEquals(instant(2020,7,31),fixedDurations[0].startDate)
+//        assertEquals(instant(2020,8,2),fixedDurations[0].startDate)
+//        assertEquals(instant(2020,8,5),fixedDurations[0].startDate)
 //
 //    }
 
@@ -90,22 +104,22 @@ class LogicTest {
     fun realWorldLogicTest(){
         val entries = mutableListOf<Entry>()
         entries+=//14 jun - 20 Jun
-            Entry(Date(2020,5,14), Date(2020,5,20))
+            Entry(instant(2020,5,14), instant(2020,5,20))
         entries+=//20 Jul - 27 Jul
-            Entry(Date(2020,6,20), Date(2020,6,27))
+            Entry(instant(2020,6,20), instant(2020,6,27))
         entries+=//30 Aug - 1 Oct
-            Entry(Date(2020,7,30), Date(2020,9,1))
+            Entry(instant(2020,7,30), instant(2020,9,1))
 
         val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
         val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList += Entry(Date(2020,5,14), Date(2020,5,20))
-        expectedHaizDatesList += Entry(Date(2020,6,20), Date(2020,6,27))
-        expectedHaizDatesList += Entry(Date(2020,7,30), Date(2020,8,2))
+        expectedHaizDatesList += Entry(instant(2020,5,14), instant(2020,5,20))
+        expectedHaizDatesList += Entry(instant(2020,6,20), instant(2020,6,27))
+        expectedHaizDatesList += Entry(instant(2020,7,30), instant(2020,8,2))
 
         for(i in haizDateList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
     }
@@ -113,15 +127,15 @@ class LogicTest {
     @Test
     fun realWorldLogicTest1(){
         val entries = listOf(
-            Entry(Date(2020,3,15), Date(2020,3,21)),
-            Entry(Date(2020,4,7), Date(2020,4,14)),
-            Entry(Date(2021,5,14), Date(2021,9,6)))
+            Entry(instant(2020,3,15), instant(2020,3,21)),
+            Entry(instant(2020,4,7), instant(2020,4,14)),
+            Entry(instant(2021,5,14), instant(2021,9,6)))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfInput = TypesOfInputs.DATE_ONLY, typeOfMasla = TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(
-                Date(2020,9,6),
-                Date(2021,5,15),
+                instant(2020,9,6),
+                instant(2021,5,15),
                 25*MILLISECONDS_IN_A_DAY,
                 true))
         )
@@ -134,17 +148,17 @@ class LogicTest {
 //        From 18 8 2021 to 25 8 2021
 //        From 10 9 2021 to 17 9 2021
         val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList += Entry(Date(2020,3,15), Date(2020,3,21))
-        expectedHaizDatesList += Entry(Date(2020,4,7), Date(2020,4,14))
-        expectedHaizDatesList += Entry(Date(2021,5,15), Date(2021,6,10))
-        expectedHaizDatesList += Entry(Date(2021,6,26), Date(2021,7,2))
-        expectedHaizDatesList += Entry(Date(2021,7,18), Date(2021,7,25))
-        expectedHaizDatesList += Entry(Date(2021,8,10), Date(2021,8,17))
-        expectedHaizDatesList += Entry(Date(2021,9,3), Date(2021,9,6))
+        expectedHaizDatesList += Entry(instant(2020,3,15), instant(2020,3,21))
+        expectedHaizDatesList += Entry(instant(2020,4,7), instant(2020,4,14))
+        expectedHaizDatesList += Entry(instant(2021,5,15), instant(2021,6,10))
+        expectedHaizDatesList += Entry(instant(2021,6,26), instant(2021,7,2))
+        expectedHaizDatesList += Entry(instant(2021,7,18), instant(2021,7,25))
+        expectedHaizDatesList += Entry(instant(2021,8,10), instant(2021,8,17))
+        expectedHaizDatesList += Entry(instant(2021,9,3), instant(2021,9,6))
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
     }
@@ -159,37 +173,37 @@ class LogicTest {
         //6 oct - 6 Oct
         val entries = mutableListOf<Entry>()
         entries+=//each month has to be one minus the real
-            Entry(Date(2021,3,23), Date(2021,3,28))
+            Entry(instant(2021,3,23), instant(2021,3,28))
         entries+=
-            Entry(Date(2021,4,15), Date(2021,4,21))
+            Entry(instant(2021,4,15), instant(2021,4,21))
         entries+=//30 Aug - 1 Oct
-            Entry(Date(2021,6,25), Date(2021,8,14))
+            Entry(instant(2021,6,25), instant(2021,8,14))
         entries+=//30 Aug - 1 Oct
-            Entry(Date(2021,8,14), Date(2021,8,21))
+            Entry(instant(2021,8,14), instant(2021,8,21))
         entries+=//30 Aug - 1 Oct
-            Entry(Date(2021,9,6), Date(2021,9,6))
+            Entry(instant(2021,9,6), instant(2021,9,6))
 
         val output = handleEntries(AllTheInputs(
             entries,
             typeOfInput = TypesOfInputs.DATE_ONLY,
             typeOfMasla = TypesOfMasla.NIFAS,
             ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
-            pregnancy = Pregnancy(Date(2021,4,21),Date(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)),
+            pregnancy = Pregnancy(instant(2021,4,21),instant(2021,6,25),25*MILLISECONDS_IN_A_DAY,mustabeenUlKhilqat = false)),
         )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList += Entry(Date(2021,3,23), Date(2021,3,28))
-        expectedHaizDatesList += Entry(Date(2021,4,15), Date(2021,4,21))
-        expectedHaizDatesList += Entry(Date(2021,6,25), Date(2021,6,31))
-        expectedHaizDatesList += Entry(Date(2021,7,17), Date(2021,7,23))
-        expectedHaizDatesList += Entry(Date(2021,8,9), Date(2021,8,15))
-        expectedHaizDatesList += Entry(Date(2021,9,6), Date(2021,9,6))
+        expectedHaizDatesList += Entry(instant(2021,3,23), instant(2021,3,28))
+        expectedHaizDatesList += Entry(instant(2021,4,15), instant(2021,4,21))
+        expectedHaizDatesList += Entry(instant(2021,6,25), instant(2021,6,31))
+        expectedHaizDatesList += Entry(instant(2021,7,17), instant(2021,7,23))
+        expectedHaizDatesList += Entry(instant(2021,8,9), instant(2021,8,15))
+        expectedHaizDatesList += Entry(instant(2021,9,6), instant(2021,9,6))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
     }
@@ -197,31 +211,31 @@ class LogicTest {
     fun mashqiSawal1(){
         val entries = mutableListOf<Entry>()
         entries+=//each month has to be one minus the real
-            Entry(Date(2020,11,25), Date(2020,11,30))
+            Entry(instant(2020,11,25), instant(2020,11,30))
         entries+=
-            Entry(Date(2021,0,20), Date(2021,0,22))
+            Entry(instant(2021,0,20), instant(2021,0,22))
         entries+=
-            Entry(Date(2021,0,25), Date(2021,0,26))
+            Entry(instant(2021,0,25), instant(2021,0,26))
         entries+=
-            Entry(Date(2021,1,13), Date(2021,1,20))
+            Entry(instant(2021,1,13), instant(2021,1,20))
         entries+=
-            Entry(Date(2021,2,3), Date(2021,2,3))
+            Entry(instant(2021,2,3), instant(2021,2,3))
         entries+=
-            Entry(Date(2021,2,6), Date(2021,2,9))
+            Entry(instant(2021,2,6), instant(2021,2,9))
 
         val output = handleEntries(AllTheInputs(
             entries,typeOfInput = TypesOfInputs.DATE_ONLY))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList += Entry(Date(2020,11,25), Date(2020,11,30))
-        expectedHaizDatesList += Entry(Date(2021,0,20), Date(2021,0,26))
-        expectedHaizDatesList += Entry(Date(2021,1,16), Date(2021,1,22))
+        expectedHaizDatesList += Entry(instant(2020,11,25), instant(2020,11,30))
+        expectedHaizDatesList += Entry(instant(2021,0,20), instant(2021,0,26))
+        expectedHaizDatesList += Entry(instant(2021,1,16), instant(2021,1,22))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
         val expectedEndingOutputValues = EndingOutputValues(
             true,
@@ -237,13 +251,13 @@ class LogicTest {
     fun mashqiSawal2(){
         val entries = mutableListOf<Entry>()
         entries+=//each month has to be one minus the real
-            Entry(Date(2020,11,5), Date(2020,11,14))
+            Entry(instant(2020,11,5), instant(2020,11,14))
         entries+=
-            Entry(Date(2021,0,5), Date(2021,0,14))
+            Entry(instant(2021,0,5), instant(2021,0,14))
         entries+=
-            Entry(Date(2021,1,7), Date(2021,1,13))
+            Entry(instant(2021,1,7), instant(2021,1,13))
         entries+=
-            Entry(Date(2021,1,21), Date(2021,2,11))
+            Entry(instant(2021,1,21), instant(2021,2,11))
 
 
         val output = handleEntries(AllTheInputs(
@@ -251,15 +265,15 @@ class LogicTest {
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
-        expectedHaizDatesList += Entry(Date(2020,11,5), Date(2020,11,14))
-        expectedHaizDatesList += Entry(Date(2021,0,5), Date(2021,0,14))
-        expectedHaizDatesList += Entry(Date(2021,1,7), Date(2021,1,14))
-        expectedHaizDatesList += Entry(Date(2021,2,10), Date(2021,2,11))
+        expectedHaizDatesList += Entry(instant(2020,11,5), instant(2020,11,14))
+        expectedHaizDatesList += Entry(instant(2021,0,5), instant(2021,0,14))
+        expectedHaizDatesList += Entry(instant(2021,1,7), instant(2021,1,14))
+        expectedHaizDatesList += Entry(instant(2021,2,10), instant(2021,2,11))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY,24*MILLISECONDS_IN_A_DAY), mutableListOf())
@@ -272,11 +286,11 @@ class LogicTest {
     fun mashqiSawal3(){
         val entries = mutableListOf<Entry>()
         entries+=//each month has to be one minus the real
-            Entry(Date(2020,3,29), Date(2020,4,6))
+            Entry(instant(2020,3,29), instant(2020,4,6))
         entries+=
-            Entry(Date(2020,4,26), Date(2020,4,30))
+            Entry(instant(2020,4,26), instant(2020,4,30))
         entries+=
-            Entry(Date(2020,7,2), Date(2020,7,16))
+            Entry(instant(2020,7,2), instant(2020,7,16))
 
 
         val output = handleEntries(AllTheInputs(entries))
@@ -284,17 +298,17 @@ class LogicTest {
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020,3,29), Date(2020,4,6))
+            Entry(instant(2020,3,29), instant(2020,4,6))
         expectedHaizDatesList +=
-            Entry(Date(2020,4,26), Date(2020,4,30))
+            Entry(instant(2020,4,26), instant(2020,4,30))
         expectedHaizDatesList +=
-            Entry(Date(2020,7,2), Date(2020,7,6))
+            Entry(instant(2020,7,2), instant(2020,7,6))
 
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
@@ -309,13 +323,13 @@ class LogicTest {
     fun mashqiSawal4(){
         val entries = mutableListOf<Entry>()
         entries+=//each month has to be one minus the real
-            Entry(Date(2020,3,16), Date(2020,3,24))
+            Entry(instant(2020,3,16), instant(2020,3,24))
         entries+=
-            Entry(Date(2020,4,23), Date(2020,5,1))
+            Entry(instant(2020,4,23), instant(2020,5,1))
         entries+=
-            Entry(Date(2020,7,2), Date(2020,7,17))
+            Entry(instant(2020,7,2), instant(2020,7,17))
         entries+=
-            Entry(Date(2020,8,5), Date(2020,8,28))
+            Entry(instant(2020,8,5), instant(2020,8,28))
 
 
         val output = handleEntries(AllTheInputs(entries))
@@ -323,23 +337,23 @@ class LogicTest {
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020,3,16), Date(2020,3,24))
+            Entry(instant(2020,3,16), instant(2020,3,24))
         expectedHaizDatesList +=
-            Entry(Date(2020,4,23), Date(2020,5,1))
+            Entry(instant(2020,4,23), instant(2020,5,1))
         expectedHaizDatesList +=
-            Entry(Date(2020,7,2), Date(2020,7,11))
+            Entry(instant(2020,7,2), instant(2020,7,11))
         expectedHaizDatesList +=
-            Entry(Date(2020,8,5), Date(2020,8,14))
+            Entry(instant(2020,8,5), instant(2020,8,14))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for(i in expectedHaizDatesList.indices){
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
             EndingOutputValues(true, AadatsOfHaizAndTuhr(9*MILLISECONDS_IN_A_DAY,62*MILLISECONDS_IN_A_DAY),
-//                FutureDateType(Date(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2)
+//                FutureDateType(instant(2020,9,12), TypesOfFutureDates.A3_CHANGING_TO_A2)
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
@@ -351,48 +365,48 @@ class LogicTest {
     fun mashqiSawal5() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2020, 6, 2), Date(2020, 6, 4))
+            Entry(instant(2020, 6, 2), instant(2020, 6, 4))
         entries +=
-            Entry(Date(2020, 6, 8), Date(2020, 6, 10))
+            Entry(instant(2020, 6, 8), instant(2020, 6, 10))
         entries +=
-            Entry(Date(2020, 7, 1), Date(2020, 7, 3))
+            Entry(instant(2020, 7, 1), instant(2020, 7, 3))
         entries +=
-            Entry(Date(2020, 7, 7), Date(2020, 7, 9))
+            Entry(instant(2020, 7, 7), instant(2020, 7, 9))
         entries +=
-            Entry(Date(2020, 7, 31), Date(2020, 8, 4))
+            Entry(instant(2020, 7, 31), instant(2020, 8, 4))
         entries +=
-            Entry(Date(2020, 8, 7), Date(2020, 8, 10))
+            Entry(instant(2020, 8, 7), instant(2020, 8, 10))
         entries +=
-            Entry(Date(2020, 8, 29), Date(2020, 9, 4))
+            Entry(instant(2020, 8, 29), instant(2020, 9, 4))
         entries +=
-            Entry(Date(2020, 9, 7), Date(2020, 9, 8))
+            Entry(instant(2020, 9, 7), instant(2020, 9, 8))
         entries +=
-            Entry(Date(2020, 9, 21), Date(2020, 10, 2))
+            Entry(instant(2020, 9, 21), instant(2020, 10, 2))
 
         val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020, 6, 2), Date(2020, 6, 10))
+            Entry(instant(2020, 6, 2), instant(2020, 6, 10))
         expectedHaizDatesList +=
-            Entry(Date(2020, 7, 1), Date(2020, 7, 9))
+            Entry(instant(2020, 7, 1), instant(2020, 7, 9))
         expectedHaizDatesList +=
-            Entry(Date(2020, 7, 31), Date(2020, 8, 10))
+            Entry(instant(2020, 7, 31), instant(2020, 8, 10))
         expectedHaizDatesList +=
-            Entry(Date(2020, 9, 2), Date(2020, 9, 12))
+            Entry(instant(2020, 9, 2), instant(2020, 9, 12))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(10 * MILLISECONDS_IN_A_DAY, 22 * MILLISECONDS_IN_A_DAY),
-//                FutureDateType(Date(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(instant(2020, 10, 3), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
@@ -410,42 +424,42 @@ class LogicTest {
     fun mashqiSawal6() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2020, 1, 27), Date(2020, 2, 3))
+            Entry(instant(2020, 1, 27), instant(2020, 2, 3))
         entries +=
-            Entry(Date(2020, 2, 25), Date(2020, 2, 31))
+            Entry(instant(2020, 2, 25), instant(2020, 2, 31))
         entries +=
-            Entry(Date(2020, 3, 21), Date(2020, 3, 26))
+            Entry(instant(2020, 3, 21), instant(2020, 3, 26))
         entries +=
-            Entry(Date(2021, 1, 14), Date(2021, 3, 14))
+            Entry(instant(2021, 1, 14), instant(2021, 3, 14))
 
         val output = handleEntries(AllTheInputs(
             entries,
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(Date(2020, 3, 26), Date(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+            pregnancy = Pregnancy(instant(2020, 3, 26), instant(2021, 1, 14), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
         )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020, 1, 27), Date(2020, 2, 3))
+            Entry(instant(2020, 1, 27), instant(2020, 2, 3))
         expectedHaizDatesList +=
-            Entry(Date(2020, 2, 25), Date(2020, 2, 31))
+            Entry(instant(2020, 2, 25), instant(2020, 2, 31))
         expectedHaizDatesList +=
-            Entry(Date(2020, 3, 21), Date(2020, 3, 26))
+            Entry(instant(2020, 3, 21), instant(2020, 3, 26))
         expectedHaizDatesList +=
-            Entry(Date(2021, 1, 14), Date(2021, 2, 26))
+            Entry(instant(2021, 1, 14), instant(2021, 2, 26))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 21 * MILLISECONDS_IN_A_DAY, parseDays("40")!!),
-//                FutureDateType(Date(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(instant(2021, 3, 16), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
@@ -463,13 +477,13 @@ class LogicTest {
     fun mashqiSawal7() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 0, 19), Date(2021, 0, 26))
+            Entry(instant(2021, 0, 19), instant(2021, 0, 26))
         entries +=
-            Entry(Date(2021, 1, 15), Date(2021, 1, 20))
+            Entry(instant(2021, 1, 15), instant(2021, 1, 20))
         entries +=
-            Entry(Date(2021, 2, 27), Date(2021, 3, 3))
+            Entry(instant(2021, 2, 27), instant(2021, 3, 3))
         entries +=
-            Entry(Date(2021, 3, 12), Date(2021, 3, 12))
+            Entry(instant(2021, 3, 12), instant(2021, 3, 12))
 
 
         val output = handleEntries(AllTheInputs(entries))
@@ -477,23 +491,23 @@ class LogicTest {
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2021, 0, 19), Date(2021, 0, 26))
+            Entry(instant(2021, 0, 19), instant(2021, 0, 26))
         expectedHaizDatesList +=
-            Entry(Date(2021, 1, 15), Date(2021, 1, 20))
+            Entry(instant(2021, 1, 15), instant(2021, 1, 20))
         expectedHaizDatesList +=
-            Entry(Date(2021, 2, 27), Date(2021, 3, 1))
+            Entry(instant(2021, 2, 27), instant(2021, 3, 1))
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(5 * MILLISECONDS_IN_A_DAY, 35 * MILLISECONDS_IN_A_DAY),
-//                FutureDateType(Date(2021, 4, 6), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(instant(2021, 4, 6), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
@@ -511,51 +525,51 @@ class LogicTest {
     fun mashqiSawal8() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2020, 10, 24), Date(2020, 10, 30))
+            Entry(instant(2020, 10, 24), instant(2020, 10, 30))
         entries +=
-            Entry(Date(2020, 11, 16), Date(2020, 11, 22))
+            Entry(instant(2020, 11, 16), instant(2020, 11, 22))
         entries +=
-            Entry(Date(2021, 0, 10), Date(2021, 0, 18))
+            Entry(instant(2021, 0, 10), instant(2021, 0, 18))
         entries +=
-            Entry(Date(2021, 1, 1), Date(2021, 1, 10))
+            Entry(instant(2021, 1, 1), instant(2021, 1, 10))
         entries +=
-            Entry(Date(2021, 1, 23), Date(2021, 2, 3))
+            Entry(instant(2021, 1, 23), instant(2021, 2, 3))
         entries +=
-            Entry(Date(2021, 2, 22), Date(2021, 2, 28))
+            Entry(instant(2021, 2, 22), instant(2021, 2, 28))
         entries +=
-            Entry(Date(2021, 3, 10), Date(2021, 3, 23))
+            Entry(instant(2021, 3, 10), instant(2021, 3, 23))
 
         val output = handleEntries(AllTheInputs(entries))
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020, 10, 24), Date(2020, 10, 30))
+            Entry(instant(2020, 10, 24), instant(2020, 10, 30))
         expectedHaizDatesList +=
-            Entry(Date(2020, 11, 16), Date(2020, 11, 22))
+            Entry(instant(2020, 11, 16), instant(2020, 11, 22))
         expectedHaizDatesList +=
-            Entry(Date(2021, 0, 10), Date(2021, 0, 13))
+            Entry(instant(2021, 0, 10), instant(2021, 0, 13))
         expectedHaizDatesList +=
-            Entry(Date(2021, 1, 1), Date(2021, 1, 4))
+            Entry(instant(2021, 1, 1), instant(2021, 1, 4))
         expectedHaizDatesList +=
-            Entry(Date(2021, 1, 23), Date(2021, 1, 26))
+            Entry(instant(2021, 1, 23), instant(2021, 1, 26))
         expectedHaizDatesList +=
-            Entry(Date(2021, 2, 22), Date(2021, 2, 25))
+            Entry(instant(2021, 2, 22), instant(2021, 2, 25))
         expectedHaizDatesList +=
-            Entry(Date(2021, 3, 13), Date(2021, 3, 16))
+            Entry(instant(2021, 3, 13), instant(2021, 3, 16))
 
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
             EndingOutputValues(
                 true,
                 AadatsOfHaizAndTuhr(3 * MILLISECONDS_IN_A_DAY, 19 * MILLISECONDS_IN_A_DAY),
-//                FutureDateType(Date(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
+//                FutureDateType(instant(2021, 4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 mutableListOf()
             )
         assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
@@ -573,35 +587,35 @@ class LogicTest {
     fun mashqiSawal9() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real, so does day
-            Entry(Date(2020, 4, 4), Date(2020, 4, 12))
+            Entry(instant(2020, 4, 4), instant(2020, 4, 12))
         entries +=
-            Entry(Date(2020, 5, 2), Date(2020, 5, 10))
+            Entry(instant(2020, 5, 2), instant(2020, 5, 10))
         entries +=
-            Entry(Date(2021, 2, 5), Date(2021, 3, 4))
+            Entry(instant(2021, 2, 5), instant(2021, 3, 4))
         entries +=
-            Entry(Date(2021, 3, 14), Date(2021, 3, 18))
+            Entry(instant(2021, 3, 14), instant(2021, 3, 18))
         entries +=
-            Entry(Date(2021, 3, 23), Date(2021, 3, 23))
+            Entry(instant(2021, 3, 23), instant(2021, 3, 23))
 
         val output = handleEntries(AllTheInputs(entries,
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(Date(2020, 5, 10), Date(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
+            pregnancy = Pregnancy(instant(2020, 5, 10), instant(2021, 2, 5), 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = true))
         )
         val haizDateList = output.hazDatesList
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020, 4, 4), Date(2020, 4, 12))
+            Entry(instant(2020, 4, 4), instant(2020, 4, 12))
         expectedHaizDatesList +=
-            Entry(Date(2020, 5, 2), Date(2020, 5, 10))
+            Entry(instant(2020, 5, 2), instant(2020, 5, 10))
         expectedHaizDatesList +=
-            Entry(Date(2021, 2, 5), Date(2021, 3, 14))
+            Entry(instant(2021, 2, 5), instant(2021, 3, 14))
 
         assertEquals(haizDateList.size, expectedHaizDatesList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
@@ -627,13 +641,13 @@ class LogicTest {
     @Test
     fun bugMasla1() {
         val entries = listOf(
-            Entry(Date(2020, 10, 27), Date(2020, 11, 7)),
-            Entry(Date(2020, 11, 31), Date(2021, 0, 7)),
-            Entry(Date(2021, 0, 26), Date(2021, 1, 1)),
-            Entry(Date(2021, 1, 11), Date(2021, 1, 23)),
-            Entry(Date(2021, 1, 28), Date(2021, 2, 2)),
-            Entry(Date(2021, 10, 12), Date(2021, 11, 26)),
-            Entry(Date(2021, 11, 30), Date(2022, 0, 8))
+            Entry(instant(2020, 10, 27), instant(2020, 11, 7)),
+            Entry(instant(2020, 11, 31), instant(2021, 0, 7)),
+            Entry(instant(2021, 0, 26), instant(2021, 1, 1)),
+            Entry(instant(2021, 1, 11), instant(2021, 1, 23)),
+            Entry(instant(2021, 1, 28), instant(2021, 2, 2)),
+            Entry(instant(2021, 10, 12), instant(2021, 11, 26)),
+            Entry(instant(2021, 11, 30), instant(2022, 0, 8))
         )
 
         val output = handleEntries(AllTheInputs(entries, ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)))
@@ -641,21 +655,21 @@ class LogicTest {
 
         val expectedHaizDatesList = mutableListOf<Entry>()
         expectedHaizDatesList +=
-            Entry(Date(2020, 10, 27), Date(2020, 11, 7))
+            Entry(instant(2020, 10, 27), instant(2020, 11, 7))
         expectedHaizDatesList +=
-            Entry(Date(2020, 11, 31), Date(2021, 0, 7))
+            Entry(instant(2020, 11, 31), instant(2021, 0, 7))
         expectedHaizDatesList +=
-            Entry(Date(2021, 0, 31), Date(2021, 1, 7))
+            Entry(instant(2021, 0, 31), instant(2021, 1, 7))
         expectedHaizDatesList +=
-            Entry(Date(2021, 10, 12), Date(2021, 10, 19))
+            Entry(instant(2021, 10, 12), instant(2021, 10, 19))
         expectedHaizDatesList +=
-            Entry(Date(2021, 11, 13), Date(2021, 11, 20))
+            Entry(instant(2021, 11, 13), instant(2021, 11, 20))
 
         assertEquals(expectedHaizDatesList.size, haizDateList.size)
 
         for (i in expectedHaizDatesList.indices) {
-            assertEquals(haizDateList[i].startTime.getTime(), expectedHaizDatesList[i].startTime.getTime())
-            assertEquals(haizDateList[i].endTime.getTime(), expectedHaizDatesList[i].endTime.getTime())
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
         }
 
         val expectedEndingOutputValues =
@@ -674,7 +688,7 @@ class LogicTest {
     fun testingAadatCase1() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 0), Date(2022, 2, 2))
+            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -692,7 +706,7 @@ class LogicTest {
     fun testingAadatCase1part2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 0), Date(2022, 2, 2))
+            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
 
         val output = handleEntries(AllTheInputs(
             entries,
@@ -716,9 +730,9 @@ class LogicTest {
     fun testingAadatCase2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 0), Date(2022, 1, 5))
+            Entry(instant(2022, 1, 0), instant(2022, 1, 5))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 0), Date(2022, 2, 2))
+            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -736,11 +750,11 @@ class LogicTest {
     fun testingAadatCase2part2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 1), Date(2022, 0, 5))
+            Entry(instant(2022, 0, 1), instant(2022, 0, 5))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 1), Date(2022, 1, 6))
+            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -758,7 +772,7 @@ class LogicTest {
     fun testingAadatCase3() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 1), Date(2022, 0, 5))
+            Entry(instant(2022, 0, 1), instant(2022, 0, 5))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -776,7 +790,7 @@ class LogicTest {
     fun testingAadatCase3Part2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 1), Date(2022, 0, 5))
+            Entry(instant(2022, 0, 1), instant(2022, 0, 5))
 
         val output = handleEntries(
             AllTheInputs(entries,
@@ -799,11 +813,11 @@ class LogicTest {
         //A-1
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 1), Date(2022, 0, 9))
+            Entry(instant(2022, 0, 1), instant(2022, 0, 9))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 1), Date(2022, 1, 6))
+            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 27), Date(2022, 2, 10))
+            Entry(instant(2022, 1, 27), instant(2022, 2, 10))
 
         val output = handleEntries(
             AllTheInputs(entries,
@@ -824,11 +838,11 @@ class LogicTest {
         //B-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 1), Date(2022, 0, 9))
+            Entry(instant(2022, 0, 1), instant(2022, 0, 9))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 1), Date(2022, 1, 6))
+            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 2), Date(2022, 2, 16))
+            Entry(instant(2022, 2, 2), instant(2022, 2, 16))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(8*MILLISECONDS_IN_A_DAY,
@@ -848,7 +862,7 @@ class LogicTest {
         //A-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 21), Date(2022, 2, 4))
+            Entry(instant(2022, 1, 21), instant(2022, 2, 4))
 
         val output = handleEntries(
             AllTheInputs(entries,
@@ -869,7 +883,7 @@ class LogicTest {
         //A-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 21), Date(2022, 2, 26))
+            Entry(instant(2022, 1, 21), instant(2022, 2, 26))
 
         val output = handleEntries(
             AllTheInputs(entries, PreMaslaValues(
@@ -890,7 +904,7 @@ class LogicTest {
         //B-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 21), Date(2022, 2, 26))
+            Entry(instant(2022, 1, 21), instant(2022, 2, 26))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -911,7 +925,7 @@ class LogicTest {
         //B-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 21), Date(2022, 2, 26))
+            Entry(instant(2022, 1, 21), instant(2022, 2, 26))
 
         val output = handleEntries(AllTheInputs(entries,
             PreMaslaValues(
@@ -932,7 +946,7 @@ class LogicTest {
         //A-3 becoming A-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 1), Date(2022, 2, 1))
+            Entry(instant(2022, 1, 1), instant(2022, 2, 1))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -953,7 +967,7 @@ class LogicTest {
         //daur ending in istehaza
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 31))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -974,7 +988,7 @@ class LogicTest {
         //daur ending in haiz, less than 3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 12))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -995,7 +1009,7 @@ class LogicTest {
         //daur ending in istehaza, more than aadat, less than 10
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 19))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 19))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1018,7 +1032,7 @@ class LogicTest {
         //daur ending in haiz, 3, less than aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 15))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 15))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1040,7 +1054,7 @@ class LogicTest {
         //daur ending in haiz, 3, less than aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -1049,7 +1063,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
+                    FutureDateType(instant(2022,2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1062,7 +1076,7 @@ class LogicTest {
         //daur ending in haiz, 3, less than aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,
@@ -1076,9 +1090,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2,4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022, 2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
+                    FutureDateType(instant(2022,2,4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022, 2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1086,7 +1100,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1095,7 +1109,7 @@ class LogicTest {
         //daur ending in haiz, 3, less than aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 4))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 4))
 
         val output = handleEntries(
             AllTheInputs(
@@ -1108,8 +1122,8 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(3*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022, 2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022, 2,11), TypesOfFutureDates.AFTER_TEN_DAYS)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1117,7 +1131,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1126,7 +1140,7 @@ class LogicTest {
         //A-1
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 21))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 21))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1140,7 +1154,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 7), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    FutureDateType(instant(2022,3, 7), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1148,7 +1162,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1157,7 +1171,7 @@ class LogicTest {
         //A-1 about to end
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 7))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 7))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1169,10 +1183,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(7*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 14), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 14), TypesOfFutureDates.IHTIYATI_GHUSL),
-                    FutureDateType(Date(2022,3, 14), TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,3, 14), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 14), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 14), TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1180,7 +1194,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1189,7 +1203,7 @@ class LogicTest {
         //A-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 12))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1201,7 +1215,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.A3_CHANGING_TO_A2)
+                    FutureDateType(instant(2022,2, 31), TypesOfFutureDates.A3_CHANGING_TO_A2)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1209,7 +1223,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1218,7 +1232,7 @@ class LogicTest {
         //A-3 - but daur ending in tuhr
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 12))
 
         val output = handleEntries(AllTheInputs(entries, PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
@@ -1229,8 +1243,8 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
-                    FutureDateType(Date(2022,2, 21), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    FutureDateType(instant(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
+                    FutureDateType(instant(2022,2, 21), TypesOfFutureDates.END_OF_AADAT_TUHR)
 
                 )
             )
@@ -1239,7 +1253,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1248,7 +1262,7 @@ class LogicTest {
         //A-3 - but daur ending in haiz
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 21))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 21))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1260,11 +1274,11 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
-                    FutureDateType(Date(2022,2, 24), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
+                    FutureDateType(instant(2022,3, 15), TypesOfFutureDates.A3_CHANGING_TO_A2),
+                    FutureDateType(instant(2022,2, 24), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,2, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
 
                 )
             )
@@ -1273,7 +1287,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1282,7 +1296,7 @@ class LogicTest {
         //B-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 21))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 21))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1295,7 +1309,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
 
                     )
             )
@@ -1304,7 +1318,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1313,7 +1327,7 @@ class LogicTest {
         //B-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 21))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 21))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1325,7 +1339,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 4), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,4, 4), TypesOfFutureDates.END_OF_AADAT_TUHR),
 
                     )
             )
@@ -1334,7 +1348,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1343,7 +1357,7 @@ class LogicTest {
         //A-3 shifting to A-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 15))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 15))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1355,10 +1369,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 60*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 18), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
-                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,3, 20), TypesOfFutureDates.IHTIYATI_GHUSL)
+                    FutureDateType(instant(2022,3, 18), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(instant(2022,3, 20), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 20), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,3, 20), TypesOfFutureDates.IHTIYATI_GHUSL)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1366,7 +1380,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1375,7 +1389,7 @@ class LogicTest {
         //ihtiyati ghusl dam less than 3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1387,10 +1401,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 18*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1398,7 +1412,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1407,7 +1421,7 @@ class LogicTest {
         //ayyame qabliyya
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1419,8 +1433,8 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1428,7 +1442,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1437,7 +1451,7 @@ class LogicTest {
         //ayyame qabliyya switch on
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
             5*MILLISECONDS_IN_A_DAY,
@@ -1449,10 +1463,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1460,7 +1474,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1471,7 +1485,7 @@ class LogicTest {
         //another ayyame qabliyyah
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1483,8 +1497,8 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 12), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
+                    FutureDateType(instant(2022,2, 12), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1492,7 +1506,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1501,7 +1515,7 @@ class LogicTest {
         //ihtiyati ghusl dam less than 3 - A-3
         //another ayyame qabliyyah with ayyame qabliyya off
         val entries = listOf(
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
         )
 
         val output = handleEntries(AllTheInputs(
@@ -1516,10 +1530,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 28*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1527,7 +1541,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1536,7 +1550,7 @@ class LogicTest {
         //ihtiyati ghusl dam less than 3 - B-2
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1548,10 +1562,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 5), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 5), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1559,7 +1573,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1568,7 +1582,7 @@ class LogicTest {
         //ihtiyati ghusl dam less than 3 - B-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 3))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1581,10 +1595,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 17*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1592,7 +1606,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1601,7 +1615,7 @@ class LogicTest {
         //ihtiyati ghusl dam less than 3 - B-3
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 5))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 5))
 
         val output = handleEntries(AllTheInputs(
             entries, PreMaslaValues(
@@ -1613,9 +1627,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, 30*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 6), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1623,7 +1637,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1632,7 +1646,7 @@ class LogicTest {
         //A-3 changing to A-1
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 23), Date(2022, 1, 28))
+            Entry(instant(2022, 1, 23), instant(2022, 1, 28))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1644,9 +1658,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 4), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,2, 5), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,2, 2), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 4), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 5), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,2, 2), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1654,7 +1668,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1663,16 +1677,16 @@ class LogicTest {
         //pregnancy
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 4, 4), Date(2021, 4, 12))
+            Entry(instant(2021, 4, 4), instant(2021, 4, 12))
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 5, 2), Date(2021, 5, 10))
+            Entry(instant(2021, 5, 2), instant(2021, 5, 10))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 5), Date(2022, 3, 23))
+            Entry(instant(2022, 2, 5), instant(2022, 3, 23))
 
         val output = handleEntries(AllTheInputs(
             entries,
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(Date(2021, 5, 10), Date(2022, 2, 5),
+            pregnancy = Pregnancy(instant(2021, 5, 10), instant(2022, 2, 5),
                 40*MILLISECONDS_IN_A_DAY,
                 mustabeenUlKhilqat = true)
         ))
@@ -1682,7 +1696,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(8*MILLISECONDS_IN_A_DAY, 21*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,4, 5), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1690,7 +1704,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1698,11 +1712,11 @@ class LogicTest {
     fun bugMaslaDescribedInIssue116() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 11, 10), Date(2021, 11, 16))
+            Entry(instant(2021, 11, 10), instant(2021, 11, 16))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 0, 9), Date(2022, 0, 16))
+            Entry(instant(2022, 0, 9), instant(2022, 0, 16))
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 1, 10), Date(2022, 2, 15))
+            Entry(instant(2022, 1, 10), instant(2022, 2, 15))
 
         val output = handleEntries(AllTheInputs(
             entries))
@@ -1712,10 +1726,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 25*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
-                    FutureDateType(Date(2022,2, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,2, 16), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,2, 19), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,2, 19), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,2, 19), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1723,7 +1737,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1731,7 +1745,7 @@ class LogicTest {
     fun bugMaslaOccured17March2022() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 12))
         val output = handleEntries(AllTheInputs(entries,PreMaslaValues(
             6*MILLISECONDS_IN_A_DAY,
             20*MILLISECONDS_IN_A_DAY, 15*MILLISECONDS_IN_A_DAY,false)))
@@ -1741,7 +1755,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(6*MILLISECONDS_IN_A_DAY, 20*MILLISECONDS_IN_A_DAY),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 1), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,3, 1), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1749,7 +1763,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1782,7 +1796,7 @@ class LogicTest {
     fun bugMaslaDescribedInIssue130() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 4, 13,0), Date(2022, 2, 17, 6,45))
+            Entry(instant(2022, 2, 4, 13,0), instant(2022, 2, 17, 6,45))
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
             parseDays("7:20:30"),
@@ -1793,7 +1807,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("7:20:30")!!, parseDays("17:17:30")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 30, 3,0), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,2, 30, 3,0), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1801,7 +1815,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1828,35 +1842,35 @@ class LogicTest {
                     durationsList= mutableListOf(
                         Duration(type=DurationType.HAIZ,
                             timeInMilliseconds=433740000,
-                            startTime=Date(2021,1,27,8,10)),
+                            startTime=instant(2021,1,27,8,10)),
                         Duration(type=DurationType.ISTIHAZA_AFTER,
                             timeInMilliseconds=1903140000,
-                            startTime=Date(2021,2,4,8,39)),
+                            startTime=instant(2021,2,4,8,39)),
                         Duration(type=DurationType.HAIZ,
                             timeInMilliseconds=433740000,
-                            startTime=Date(2021,2,26,9,18)),
+                            startTime=instant(2021,2,26,9,18)),
                         Duration(type=DurationType.ISTIHAZA_AFTER,
                             timeInMilliseconds=1903140000,
-                            startTime=Date(2021,2,31,9,47)),
+                            startTime=instant(2021,2,31,9,47)),
                         Duration(type=DurationType.HAIZ,
                             timeInMilliseconds=433740000,
-                            startTime= Date(2021,3,22,10,26)),
+                            startTime= instant(2021,3,22,10,26)),
                         Duration(type=DurationType.ISTIHAZA_AFTER,
                             timeInMilliseconds=144300000,
-                            startTime= Date(2021, 8,27,10,55)))),
+                            startTime= instant(2021, 8,27,10,55)))),
                 biggerThanForty=null,
-                startDate= Date(2021,1,27,8,10))
+                startDate= instant(2021,1,27,8,10))
 
         val endtime = fixedDuration1.endDate
-        val expectedentime = Date(2021,3,29, 3,0)
-        assertEquals(endtime.getTime(), expectedentime.getTime())
+        val expectedentime = instant(2021,3,29, 3,0)
+        assertEquals(endtime.getMillisLong(), expectedentime.getMillisLong())
     }
     @Test
     fun testingMubtadiaFinalOutputsCase1() {
         //dam less than 3, no aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 2))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 2))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -1866,7 +1880,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(-1, -1),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1874,7 +1888,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1883,7 +1897,7 @@ class LogicTest {
         //dam more than 3, no aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 5))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 5))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -1893,7 +1907,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(4*MILLISECONDS_IN_A_DAY, -1),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 11), TypesOfFutureDates.END_OF_AADAT_HAIZ)
+                    FutureDateType(instant(2022,2, 11), TypesOfFutureDates.END_OF_AADAT_HAIZ)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1901,7 +1915,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1909,9 +1923,9 @@ class LogicTest {
     fun testBugMaslaIssue134() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 9, 14,15,20), Date(2021, 11, 15,6,0))
+            Entry(instant(2021, 9, 14,15,20), instant(2021, 11, 15,6,0))
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 11, 30,15,20), Date(2022, 2, 28,0,27))
+            Entry(instant(2021, 11, 30,15,20), instant(2022, 2, 28,0,27))
 
         val output = handleEntries(
             AllTheInputs(
@@ -1921,7 +1935,7 @@ class LogicTest {
             parseDays("27:6:20"),
             false),
             typeOfMasla = TypesOfMasla.NIFAS,
-            pregnancy = Pregnancy(Date(2021, 11, 12,0,0), Date(2021, 11, 30, 0,0),
+            pregnancy = Pregnancy(instant(2021, 11, 12,0,0), instant(2021, 11, 30, 0,0),
                 40*MILLISECONDS_IN_A_DAY, mustabeenUlKhilqat = false)))
 
         val expectedEndingOutputValues =
@@ -1929,7 +1943,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("6:16:40")!!, parseDays("27:6:20")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 11,12,20), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    FutureDateType(instant(2022,3, 11,12,20), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -1937,7 +1951,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -1946,9 +1960,9 @@ class LogicTest {
         //A-2 Masla
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 8, 15), Date(2021, 9, 24))
+            Entry(instant(2021, 8, 15), instant(2021, 9, 24))
         entries +=//each month has to be one minus the real
-            Entry(Date(2021, 10, 8), Date(2021, 10, 24))
+            Entry(instant(2021, 10, 8), instant(2021, 10, 24))
 
         val output = handleEntries(AllTheInputs(
             entries,PreMaslaValues(
@@ -1956,7 +1970,7 @@ class LogicTest {
             parseDays("27")),
             TypesOfMasla.NIFAS,
             pregnancy = Pregnancy(
-                Date(2021, 3, 15), Date(2021, 8, 15),
+                instant(2021, 3, 15), instant(2021, 8, 15),
                 null, mustabeenUlKhilqat = true
             ))
         )
@@ -1966,9 +1980,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, parseDays("27")!!),
                 mutableListOf(
-                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2021, 10, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
+                    FutureDateType(instant(2021, 10, 26), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2021, 10, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2021, 10, 26), TypesOfFutureDates.IHTIYATI_GHUSL)
 
                 )
             )
@@ -1979,8 +1993,8 @@ class LogicTest {
 
         for (i in output.endingOutputValues.futureDateType.indices) {
             assertEquals(
-                expectedEndingOutputValues.futureDateType[i].date.getTime(),
-                output.endingOutputValues.futureDateType[i].date.getTime()
+                expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),
+                output.endingOutputValues.futureDateType[i].date.getMillisLong()
             )
             assertEquals(
                 expectedEndingOutputValues.futureDateType[i].futureDates,
@@ -1992,9 +2006,9 @@ class LogicTest {
     fun testBugMaslaIssue138a() {
         //AyyameQabliyya
         val entries = mutableListOf(//each month has to be one minus the real
-            Entry(Date(2022, 0, 13), Date(2022, 0, 19)),
-            Entry(Date(2022, 1, 22), Date(2022, 1, 27)),
-            Entry(Date(2022, 2, 17), Date(2022, 2, 31)),
+            Entry(instant(2022, 0, 13), instant(2022, 0, 19)),
+            Entry(instant(2022, 1, 22), instant(2022, 1, 27)),
+            Entry(instant(2022, 2, 17), instant(2022, 2, 31)),
 
         )
 
@@ -2005,7 +2019,7 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("34")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022, 3, 2), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
+                    FutureDateType(instant(2022, 3, 2), TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2015,8 +2029,8 @@ class LogicTest {
 
         for (i in output.endingOutputValues.futureDateType.indices) {
             assertEquals(
-                expectedEndingOutputValues.futureDateType[i].date.getTime(),
-                output.endingOutputValues.futureDateType[i].date.getTime()
+                expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),
+                output.endingOutputValues.futureDateType[i].date.getMillisLong()
             )
             assertEquals(
                 expectedEndingOutputValues.futureDateType[i].futureDates,
@@ -2028,9 +2042,9 @@ class LogicTest {
     fun testBugMaslaIssue138b() {
         //AyyameQabliyya turned
         val entries = mutableListOf(//each month has to be one minus the real
-            Entry(Date(2022, 0, 13), Date(2022, 0, 19)),
-            Entry(Date(2022, 1, 22), Date(2022, 1, 27)),
-            Entry(Date(2022, 2, 17), Date(2022, 2, 31)),
+            Entry(instant(2022, 0, 13), instant(2022, 0, 19)),
+            Entry(instant(2022, 1, 22), instant(2022, 1, 27)),
+            Entry(instant(2022, 2, 17), instant(2022, 2, 31)),
 
             )
 
@@ -2043,7 +2057,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("18")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022, 3, 2), TypesOfFutureDates.A3_CHANGING_TO_A2),
+                    FutureDateType(instant(2022, 3, 2), TypesOfFutureDates.A3_CHANGING_TO_A2),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2053,8 +2067,8 @@ class LogicTest {
 
         for (i in output.endingOutputValues.futureDateType.indices) {
             assertEquals(
-                expectedEndingOutputValues.futureDateType[i].date.getTime(),
-                output.endingOutputValues.futureDateType[i].date.getTime()
+                expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),
+                output.endingOutputValues.futureDateType[i].date.getMillisLong()
             )
             assertEquals(
                 expectedEndingOutputValues.futureDateType[i].futureDates,
@@ -2066,13 +2080,13 @@ class LogicTest {
     fun testBugMaslaIssue147() {
         //missing ihtiyati ghusl
         val entries = mutableListOf(//each month has to be one minus the real
-            Entry(Date(2021, 10, 8), Date(2021, 10, 13)),
-            Entry(Date(2021, 10, 30), Date(2021, 11, 8)),
-            Entry(Date(2021, 11, 28), Date(2022, 0, 2)),
-            Entry(Date(2022, 0, 16), Date(2022, 0, 25)),
-            Entry(Date(2022, 1, 11), Date(2022, 1, 21)),
-            Entry(Date(2022, 2, 10), Date(2022, 2, 22)),
-            Entry(Date(2022, 3, 8), Date(2022, 3, 8)),
+            Entry(instant(2021, 10, 8), instant(2021, 10, 13)),
+            Entry(instant(2021, 10, 30), instant(2021, 11, 8)),
+            Entry(instant(2021, 11, 28), instant(2022, 0, 2)),
+            Entry(instant(2022, 0, 16), instant(2022, 0, 25)),
+            Entry(instant(2022, 1, 11), instant(2022, 1, 21)),
+            Entry(instant(2022, 2, 10), instant(2022, 2, 22)),
+            Entry(instant(2022, 3, 8), instant(2022, 3, 8)),
 
             )
 
@@ -2085,10 +2099,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("17")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022, 3, 11), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022, 3, 18), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022, 3, 18), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022, 3, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022, 3, 11), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022, 3, 18), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022, 3, 18), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022, 3, 16), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2098,8 +2112,8 @@ class LogicTest {
 
         for (i in output.endingOutputValues.futureDateType.indices) {
             assertEquals(
-                expectedEndingOutputValues.futureDateType[i].date.getTime(),
-                output.endingOutputValues.futureDateType[i].date.getTime()
+                expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),
+                output.endingOutputValues.futureDateType[i].date.getMillisLong()
             )
             assertEquals(
                 expectedEndingOutputValues.futureDateType[i].futureDates,
@@ -2113,7 +2127,7 @@ class LogicTest {
         //dam 10, no aadat
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 11))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 11))
 
         val output = handleEntries(AllTheInputs(
             entries,typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2123,7 +2137,7 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(10*MILLISECONDS_IN_A_DAY, -1),
                 mutableListOf(
-                    FutureDateType(Date(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY)
+                    FutureDateType(instant(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2131,7 +2145,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2139,7 +2153,7 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase4a() {
         //dam >10, no aadat
         val entries = listOf(
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 12))
         )
 
         val output = handleEntries(AllTheInputs(
@@ -2150,7 +2164,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    FutureDateType(instant(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2159,7 +2173,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
 
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2167,7 +2181,7 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase4b() {//ikhtilaf
         //dam >10, no aadat
         val entries = listOf(
-            Entry(Date(2022, 2, 1), Date(2022, 2, 12))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 12))
         )
 
         val output = handleEntries(AllTheInputs(
@@ -2181,7 +2195,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("20")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                    FutureDateType(instant(2022,2, 31), TypesOfFutureDates.END_OF_AADAT_TUHR)
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2189,7 +2203,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2198,7 +2212,7 @@ class LogicTest {
         //dam >10, no aadat ends at end of istehaza, start of daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 31))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2208,9 +2222,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2218,7 +2232,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2227,7 +2241,7 @@ class LogicTest {
         //dam >10, no aadat ends at end of istehaza, start of daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 2, 31))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 31))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
@@ -2238,10 +2252,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("20")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+//                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IC_FORBIDDEN_DATE),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2249,7 +2263,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2258,7 +2272,7 @@ class LogicTest {
         //dam >10, no aadat ends at start of haiz less than 3, start of daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 1))
 
         val output = handleEntries(AllTheInputs(
             entries,typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2268,9 +2282,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2278,7 +2292,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2287,7 +2301,7 @@ class LogicTest {
         //dam >10, no aadat ends at start of haiz less than 3, start of daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 1))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 1))
 
         val output = handleEntries( AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA, ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
@@ -2298,9 +2312,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("20")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 3), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2308,7 +2322,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2317,7 +2331,7 @@ class LogicTest {
         //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 5))
 
         val output = handleEntries(AllTheInputs(
             entries,typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2327,8 +2341,8 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2336,7 +2350,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2346,7 +2360,7 @@ class LogicTest {
 
         //dam >10, no aadat ends at start of haiz bigger than 3, less than 10 start of daur
         val entries = listOf(
-            Entry(Date(2022, 2, 1), Date(2022, 3, 5))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 5))
         )
 
         val output = handleEntries(AllTheInputs(
@@ -2358,8 +2372,8 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, parseDays("20")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,3, 10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2367,7 +2381,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2376,7 +2390,7 @@ class LogicTest {
         //dam >10, no aadat ends at end of haiz 10  daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 10))
 
         val output = handleEntries(AllTheInputs(
             entries,typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2386,7 +2400,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2394,7 +2408,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2404,7 +2418,7 @@ class LogicTest {
         //dam >10, no aadat ends at end of haiz 10  daur
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(Date(2022, 2, 1), Date(2022, 3, 10))
+            Entry(instant(2022, 2, 1), instant(2022, 3, 10))
 
         val output = handleEntries(AllTheInputs(
             entries, typeOfMasla = TypesOfMasla.MUBTADIA))
@@ -2414,7 +2428,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(-1L, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,3, 30), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2422,7 +2436,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2430,9 +2444,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase9() {
         //dam <3,  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 8)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 8)),
 
         )
 
@@ -2443,9 +2457,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,4, 10), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2453,7 +2467,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2461,9 +2475,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase10() {
         //dam >3,  <aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 10)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 10)),
 
             )
 
@@ -2474,8 +2488,8 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("3")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,4, 11), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2483,7 +2497,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2491,9 +2505,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase11() {
         //dam >3,  >aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 11)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 11)),
 
             )
 
@@ -2504,7 +2518,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2512,7 +2526,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2520,9 +2534,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase12() {
         //dam >3,  >aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 12)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 12)),
 
             )
 
@@ -2533,7 +2547,7 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("5")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,4, 17), TypesOfFutureDates.AFTER_TEN_DAYS),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2541,7 +2555,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2549,9 +2563,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase13() {
         //dam 10 aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 17)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 17)),
 
             )
 
@@ -2562,7 +2576,7 @@ class LogicTest {
                 null,
                 AadatsOfHaizAndTuhr(parseDays("10")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY),
+                    FutureDateType(instant(0,0, 0), TypesOfFutureDates.TEN_DAYS_EXACTLY),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2570,7 +2584,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2578,9 +2592,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase14() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 4, 18)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 4, 18)),
 
             )
 
@@ -2591,7 +2605,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(addTimeToDate(Date(2022,4,7),30*MILLISECONDS_IN_A_DAY), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,4,7).plusMillis(30*MILLISECONDS_IN_A_DAY), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2599,7 +2613,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2607,9 +2621,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase15() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 5, 7)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 5, 7)),
 
             )
 
@@ -2620,9 +2634,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,5,9), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,5,9), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2630,7 +2644,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2638,9 +2652,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase16() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 5, 8)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 5, 8)),
 
             )
 
@@ -2651,9 +2665,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,5,9), TypesOfFutureDates.BEFORE_THREE_DAYS),
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,5,9), TypesOfFutureDates.BEFORE_THREE_DAYS),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2661,7 +2675,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2669,9 +2683,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase17() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 5, 9)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 5, 9)),
 
             )
 
@@ -2682,8 +2696,8 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("3")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,5,10), TypesOfFutureDates.IHTIYATI_GHUSL),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2691,7 +2705,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2699,9 +2713,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase18() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 5, 10)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 5, 10)),
 
             )
 
@@ -2712,7 +2726,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,6,6), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,6,6), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2720,7 +2734,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2728,9 +2742,9 @@ class LogicTest {
     fun testingMubtadiaFinalOutputsCase19() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 3, 1), Date(2022, 3, 5)),
-            Entry(Date(2022, 3, 22), Date(2022, 3, 22)),
-            Entry(Date(2022, 4, 7), Date(2022, 5, 11)),
+            Entry(instant(2022, 3, 1), instant(2022, 3, 5)),
+            Entry(instant(2022, 3, 22), instant(2022, 3, 22)),
+            Entry(instant(2022, 4, 7), instant(2022, 5, 11)),
 
             )
 
@@ -2741,7 +2755,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("4")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,6,6), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,6,6), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2749,7 +2763,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
@@ -2757,7 +2771,7 @@ class LogicTest {
     fun testingMubtadiaUsingInputtedAadat() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
+            Entry(instant(2022, 2, 1), instant(2022, 2, 18)),
             )
 
         val output = handleEntries(AllTheInputs(
@@ -2768,7 +2782,7 @@ class LogicTest {
 
         val hazDatesList = output.hazDatesList
         val expectedHazDatesList = mutableListOf(
-            Entry(Date(2022, 2, 1), Date(2022,2,8))
+            Entry(instant(2022, 2, 1), instant(2022,2,8))
         )
 
         val expectedEndingOutputValues =
@@ -2776,7 +2790,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("7")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,2,31), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,2,31), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2784,19 +2798,19 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
         for(i in hazDatesList.indices){
-            assertEquals(hazDatesList[i].startTime.getTime(), expectedHazDatesList[i].startTime.getTime())
-            assertEquals(hazDatesList[i].endTime.getTime(), expectedHazDatesList[i].endTime.getTime())
+            assertEquals(hazDatesList[i].startTime.getMillisLong(), expectedHazDatesList[i].startTime.getMillisLong())
+            assertEquals(hazDatesList[i].endTime.getMillisLong(), expectedHazDatesList[i].endTime.getMillisLong())
         }
     }
     @Test
     fun testingMubtadiaUsingInputtedAadat2() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
-            Entry(Date(2022, 2, 1), Date(2022, 2, 18)),
+            Entry(instant(2022, 2, 1), instant(2022, 2, 18)),
         )
 
         val output = handleEntries(AllTheInputs(
@@ -2807,7 +2821,7 @@ class LogicTest {
 
         val hazDatesList = output.hazDatesList
         val expectedHazDatesList = mutableListOf(
-            Entry(Date(2022, 2, 2), Date(2022,2,9))
+            Entry(instant(2022, 2, 2), instant(2022,2,9))
         )
 
         val expectedEndingOutputValues =
@@ -2815,7 +2829,7 @@ class LogicTest {
                 true,
                 AadatsOfHaizAndTuhr(parseDays("7")!!, -1L),
                 mutableListOf(
-                    FutureDateType(Date(2022,3,1), TypesOfFutureDates.END_OF_AADAT_TUHR),
+                    FutureDateType(instant(2022,3,1), TypesOfFutureDates.END_OF_AADAT_TUHR),
                 )
             )
         assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
@@ -2823,18 +2837,18 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
         for(i in hazDatesList.indices){
-            assertEquals(hazDatesList[i].startTime.getTime(), expectedHazDatesList[i].startTime.getTime())
-            assertEquals(hazDatesList[i].endTime.getTime(), expectedHazDatesList[i].endTime.getTime())
+            assertEquals(hazDatesList[i].startTime.getMillisLong(), expectedHazDatesList[i].startTime.getMillisLong())
+            assertEquals(hazDatesList[i].endTime.getMillisLong(), expectedHazDatesList[i].endTime.getMillisLong())
         }
     }
     @Test
     fun testingMubtadiaDurationCase1a() {
         //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
-        val arbitraryTime = Date(0,0,0)
+        val arbitraryTime = instant(0,0,0)
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
@@ -2937,7 +2951,7 @@ class LogicTest {
     @Test
     fun testingMubtadiaDurationCase1b() {
         //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
-        val arbitraryTime = Date(0,0,0)
+        val arbitraryTime = instant(0,0,0)
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
@@ -3041,7 +3055,7 @@ class LogicTest {
 
     @Test
     fun testingMubtadiaDurationCase2a() {
-        val arbitraryTime = Date(0,0,0)
+        val arbitraryTime = instant(0,0,0)
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
@@ -3115,7 +3129,7 @@ class LogicTest {
     }
     @Test
     fun testingMubtadiaDurationCase2b() {
-        val arbitraryTime = Date(0,0,0)
+        val arbitraryTime = instant(0,0,0)
         val durations = listOf(
             Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
             Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
@@ -3822,8 +3836,8 @@ class LogicTest {
     fun bugMaslaIssue168() {
         //writitng isqat line twice
         val entries = listOf(
-            Entry(Date(2022,1,13), Date(2022, 1, 21)),
-            Entry(Date(2022,2,27), Date(2022, 3, 19)),
+            Entry(instant(2022,1,13), instant(2022, 1, 21)),
+            Entry(instant(2022,2,27), instant(2022, 3, 19)),
 
         )
 
@@ -3832,7 +3846,7 @@ class LogicTest {
                 entries,
                 preMaslaValues = PreMaslaValues(inputtedMawjoodahTuhr = parseDays("31")!!),
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(Date(2022,2,21), Date(2022, 3,15),
+                pregnancy = Pregnancy(instant(2022,2,21), instant(2022, 3,15),
                     mustabeenUlKhilqat = false),
                 ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
             )
@@ -3897,10 +3911,10 @@ class LogicTest {
     fun Issue207() {
         //making sure that 6 months greater tuhr doesn't cause ayyame qabliyya
         val entries = listOf(
-            Entry(Date(2022,5,14), Date(2022, 5, 21)),
-            Entry(Date(2022,6,18), Date(2022, 6, 24)),
-            Entry(Date(2023,0,29), Date(2023, 1, 8)),
-            Entry(Date(2023,2,27), Date(2023, 3, 6)),
+            Entry(instant(2022,5,14), instant(2022, 5, 21)),
+            Entry(instant(2022,6,18), instant(2022, 6, 24)),
+            Entry(instant(2023,0,29), instant(2023, 1, 8)),
+            Entry(instant(2023,2,27), instant(2023, 3, 6)),
 
             )
 
@@ -3932,7 +3946,7 @@ class LogicTest {
     fun bugMaslaIssue195() {
         //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
         val entries = listOf<Entry>(
-            Entry(Date(2022,6,13,8,30), Date(2022, 6, 23, 11,0)),
+            Entry(instant(2022,6,13,8,30), instant(2022, 6, 23, 11,0)),
         )
         val output = handleEntries(
             AllTheInputs(
@@ -3961,9 +3975,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("8:19")!!, parseDays("26:6")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
                     //it wants the last to be 26, even though this is A-2
                 )
             )
@@ -4003,17 +4017,17 @@ class LogicTest {
     fun bugMaslaIssue170() {
         //NIFAS MASLA insufficient final values
         val entries = listOf<Entry>(
-            Entry(Date(2021,4,21), Date(2021, 4, 27)),
-            Entry(Date(2021,5,21), Date(2021, 5, 27)),
+            Entry(instant(2021,4,21), instant(2021, 4, 27)),
+            Entry(instant(2021,5,21), instant(2021, 5, 27)),
             //preg +Birth
-            Entry(Date(2022,2,4), Date(2022, 2, 28)),
-            Entry(Date(2022,3,20), Date(2022, 3, 25)),
+            Entry(instant(2022,2,4), instant(2022, 2, 28)),
+            Entry(instant(2022,3,20), instant(2022, 3, 25)),
         )
         val output = handleEntries(
             AllTheInputs(
                 entries,
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(Date(2021,5,27), Date(2022, 2,4), aadatNifas = parseDays("40")!!,
+                pregnancy = Pregnancy(instant(2021,5,27), instant(2022, 2,4), aadatNifas = parseDays("40")!!,
                     mustabeenUlKhilqat = true)
             )
         )
@@ -4022,9 +4036,9 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("23")!!, parseDays("24")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
-                    FutureDateType(Date(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,3,26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,3,30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(instant(2022,3,28), TypesOfFutureDates.IHTIYATI_GHUSL),
                     //it wants the last to be 26, even though this is A-2
                 )
             )
@@ -4033,7 +4047,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
 
@@ -4050,13 +4064,13 @@ class LogicTest {
 //                3 Dec - 1 day
 //                7 Dec - 30 dec on and off.
         val entries = listOf<Entry>(
-            Entry(Date(2022,3,15), Date(2022, 3, 20)),
-            Entry(Date(2022,4,7), Date(2022, 4, 15)),
-            Entry(Date(2022,8,2), Date(2022, 8, 10)),
-            Entry(Date(2022,9,18), Date(2022, 9, 20)),
-            Entry(Date(2022,10,9), Date(2022, 10, 22)),
-            Entry(Date(2022,11,3), Date(2022, 11, 3)),
-            Entry(Date(2022,11,7), Date(2022, 11, 30)),
+            Entry(instant(2022,3,15), instant(2022, 3, 20)),
+            Entry(instant(2022,4,7), instant(2022, 4, 15)),
+            Entry(instant(2022,8,2), instant(2022, 8, 10)),
+            Entry(instant(2022,9,18), instant(2022, 9, 20)),
+            Entry(instant(2022,10,9), instant(2022, 10, 22)),
+            Entry(instant(2022,11,3), instant(2022, 11, 3)),
+            Entry(instant(2022,11,7), instant(2022, 11, 30)),
         )
         val output = handleEntries(
             AllTheInputs(
@@ -4079,7 +4093,7 @@ class LogicTest {
     fun bugMaslaIssue201() {
         //wrong future advice date given
         val entries = listOf<Entry>(
-            Entry(Date(2022,9,23), Date(2022, 10, 26)),
+            Entry(instant(2022,9,23), instant(2022, 10, 26)),
         )
         val output = handleEntries(
             AllTheInputs(
@@ -4093,10 +4107,10 @@ class LogicTest {
                 false,
                 AadatsOfHaizAndTuhr(parseDays("9")!!, parseDays("54")!!),
                 mutableListOf(
-                    FutureDateType(Date(2022,10,27), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
-                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-                    FutureDateType(Date(2022,11,3), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    FutureDateType(instant(2022,10,27), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(instant(2022,11,3), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(instant(2022,11,3), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(instant(2022,11,3), TypesOfFutureDates.IHTIYATI_GHUSL),
                     //it wants the last to be 26, even though this is A-2
                 )
             )
@@ -4105,7 +4119,7 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
         assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
         for(i in output.endingOutputValues.futureDateType.indices){
-            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getTime(),output.endingOutputValues.futureDateType[i].date.getTime())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
 
@@ -4114,16 +4128,16 @@ class LogicTest {
     @Test
     fun issue206TestingIsqat() {
         val entries = listOf<Entry>(
-            Entry(Date(2022,10,28), Date(2022, 11, 4)),
-            Entry(Date(2022,11,27), Date(2023, 0, 1)),
-            Entry(Date(2023,0,20), Date(2023, 0, 25)),
-            Entry(Date(2023,2,22), Date(2023, 3, 9)),
+            Entry(instant(2022,10,28), instant(2022, 11, 4)),
+            Entry(instant(2022,11,27), instant(2023, 0, 1)),
+            Entry(instant(2023,0,20), instant(2023, 0, 25)),
+            Entry(instant(2023,2,22), instant(2023, 3, 9)),
         )
         val output = handleEntries(
             AllTheInputs(
                 entries,
                 typeOfMasla = TypesOfMasla.NIFAS,
-                pregnancy = Pregnancy(Date(2023,0,25),Date(2023,2,22),mustabeenUlKhilqat = false)
+                pregnancy = Pregnancy(instant(2023,0,25),instant(2023,2,22),mustabeenUlKhilqat = false)
             )
         )
         val expectedEndingOutputValues =
