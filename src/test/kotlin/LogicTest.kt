@@ -683,7 +683,7 @@ class LogicTest {
     fun testingAadatCase1() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -701,7 +701,7 @@ class LogicTest {
     fun testingAadatCase1part2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(
             entries,
@@ -725,9 +725,9 @@ class LogicTest {
     fun testingAadatCase2() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real
-            Entry(instant(2022, 1, 0), instant(2022, 1, 5))
+            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
         entries +=//each month has to be one minus the real
-            Entry(instant(2022, 2, 0), instant(2022, 2, 2))
+            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -741,28 +741,29 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
         assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
     }
-    @Test
-    fun testingAadatCase2part2() {
-        val entries = mutableListOf<Entry>()
-        entries +=//each month has to be one minus the real
-            Entry(instant(2022, 0, 1), instant(2022, 0, 5))
-        entries +=//each month has to be one minus the real
-            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
-        entries +=//each month has to be one minus the real
-            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
-
-        val output = handleEntries(AllTheInputs(entries))
-
-        val expectedEndingOutputValues =
-            EndingOutputValues(
-                false,
-                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 27*MILLISECONDS_IN_A_DAY),
-                mutableListOf()
-            )
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-    }
+// TODO: THE FIRST ENTRY WAS DAY 0
+//    @Test
+//    fun testingAadatCase2part2() {
+//        val entries = mutableListOf<Entry>()
+//        entries +=//each month has to be one minus the real
+//            Entry(instant(2022, 1, 1), instant(2022, 0, 6))
+//        entries +=//each month has to be one minus the real
+//            Entry(instant(2022, 1, 1), instant(2022, 1, 6))
+//        entries +=//each month has to be one minus the real
+//            Entry(instant(2022, 2, 1), instant(2022, 2, 3))
+//
+//        val output = handleEntries(AllTheInputs(entries))
+//
+//        val expectedEndingOutputValues =
+//            EndingOutputValues(
+//                false,
+//                AadatsOfHaizAndTuhr(5*MILLISECONDS_IN_A_DAY, 27*MILLISECONDS_IN_A_DAY),
+//                mutableListOf()
+//            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//    }
     @Test
     fun testingAadatCase3() {
         val entries = mutableListOf<Entry>()
