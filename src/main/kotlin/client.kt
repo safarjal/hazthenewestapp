@@ -470,7 +470,7 @@ fun drawCompareTable(
         // Month Row
         oneRow(true, "", false) {
             for (header in headerList) {
-                var headerDate = LocalDateTime.from(header)
+                val headerDate = LocalDateTime.from(header)
                 val date = headerDate.dayOfMonth()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {

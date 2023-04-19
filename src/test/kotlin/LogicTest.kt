@@ -1,5 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -1,9 +1,7 @@
 import kotlinx.browser.document
-import kotlinx.datetime.internal.JSJoda.Instant
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
-import kotlin.js.Date
 
 private val languageSelecter get() = document.getElementById("language") as HTMLSelectElement
 
@@ -32,7 +30,7 @@ fun addCalcsGetDuration(){
     val endDate = addCalcsEndDate.value.instant()
     var strUrdu = ""
     var strEnglish = ""
-    var typesOfInputs:TypesOfInputs
+    val typesOfInputs:TypesOfInputs
     if(isDateOnly){typesOfInputs=TypesOfInputs.DATE_ONLY}
     else{typesOfInputs=TypesOfInputs.DATE_AND_TIME}
 
@@ -70,7 +68,7 @@ fun addListeners(){
 
 fun addCalcsAddTimeToDate() {
     val isDateOnly: Boolean = addCalcsIsDateOnlyAddTimeToDate.checked
-    var typesOfInputs: TypesOfInputs
+    val typesOfInputs: TypesOfInputs
     if (isDateOnly) {
         typesOfInputs = TypesOfInputs.DATE_ONLY
     } else {
