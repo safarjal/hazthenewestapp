@@ -1,7 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
-//import com.benasher44.uuid.uuid4
 import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window

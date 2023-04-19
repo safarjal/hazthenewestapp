@@ -1,6 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 import io.ktor.util.date.*
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.serialization.*
 import kotlin.js.Date
 import kotlin.random.Random
@@ -206,9 +207,10 @@ enum class TypesOfMasla {
 }
 
 data class Entry(
-    val startTime: Date,
-    val endTime: Date
+    val startTime: Instant,
+    val endTime: Instant
 )
+
 enum class TypesOfFutureDates {
     A3_CHANGING_TO_A2,
     END_OF_AADAT_HAIZ,
@@ -226,9 +228,9 @@ enum class TypesOfFutureDates {
 }
 
 class FutureDateType(
-    val date:Date,
+    val date:Instant,
     val futureDates:TypesOfFutureDates,
-    val date2:Date? = null,
+    val date2:Instant? = null,
 )
 class EndingOutputValues(
     val filHaalPaki:Boolean?,
@@ -246,14 +248,14 @@ class OutputTexts (
 
 
 class InfoForCompareTable(
-    val headerList: List<Date>,
+    val headerList: List<Instant>,
     val listOfColorsOfDaysList: List<List<Int>>,
     val resultColors: List<Int>
 )
 
 data class Pregnancy(
-    val pregStartTime: Date = ARBITRARY_DATE,
-    val birthTime: Date = ARBITRARY_DATE,
+    val pregStartTime: Instant = ARBITRARY_DATE,
+    val birthTime: Instant = ARBITRARY_DATE,
     var aadatNifas: Long? = 40*MILLISECONDS_IN_A_DAY,
     val mustabeenUlKhilqat: Boolean,
 )
@@ -303,10 +305,10 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    var startTime: Date = ARBITRARY_DATE
+    var startTime: Instant = ARBITRARY_DATE
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))
+    val endDate: Instant get() = startTime.plusMillis(timeInMilliseconds)
 
 }
 
@@ -318,10 +320,10 @@ data class FixedDuration(
     var ayyameqabliyya:AyyameQabliyya? = null,
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
-    var startDate: Date = Date(1,1,1),
+    var startDate: Instant = Instant.EPOCH,
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date get() = addTimeToDate(this.startDate, this.timeInMilliseconds)
+    val endDate: Instant get() = this.startDate.plusMillis(this.timeInMilliseconds)
 }
 
 data class AyyameQabliyya(
