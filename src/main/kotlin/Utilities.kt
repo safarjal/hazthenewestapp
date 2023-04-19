@@ -89,7 +89,7 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
 fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value) =
     ZonedDateTime.of(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
-fun String.getUTC(tz: String = "") = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
+fun String.getTZed(tz: String = "") = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
 
 fun String.instant(timezone: Boolean = false, tz: String = ""): Instant {
     return if (isEmpty())
@@ -123,7 +123,7 @@ fun convertInputValue(value: String, isDateOnly: Boolean): String {
         .toDateInputString(isDateOnly)
 }
 
-fun addTimeToDate(date: Instant,timeInMilliseconds:Long): Instant { return date.plusMillis(timeInMilliseconds) }
+fun addTimeToDate(date: Instant,timeInMilliseconds:Long): Instant = date.plusMillis(timeInMilliseconds)
 
 fun parseRange(input: String):Array<Int?>{
     val sections = input.split('-')
@@ -161,9 +161,7 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         var isDateOnly = false
         if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
-
         val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
-
         var strHours = hours.toString()
         var strMinutes = minutes.toString()
         var strDays = days.toString()
