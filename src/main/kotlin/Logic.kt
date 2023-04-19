@@ -1,7 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 import kotlinx.browser.window
-import kotlin.js.Date
+import kotlinx.datetime.internal.JSJoda.Instant
 
 //output line 1 is indices of all the things durations that make up the sum of this thingy.
 // we should only write it, if there is more than one index
@@ -14,20 +14,20 @@ import kotlin.js.Date
 // istihazaBefore, Haiz, and IstihazaAfter to generate them
 // and generate daur too
 
-lateinit var firstStartTime:Date
+lateinit var firstStartTime:Instant
 
 fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
     firstStartTime = allTheInputs.entries!![0].startTime
     val times = allTheInputs.entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
-        .map { it.getTime().toLong() }
+        .map { it.getMillisLong() }
     require(times == times.sorted())
     //step 1 - create an array of dam and tuhur durations
     var isDam = true
     val durations = times.zipWithNext { firstTime, secondTime ->
         val type = if (isDam) DurationType.DAM else DurationType.TUHR
         isDam = !isDam
-        Duration(type, secondTime - firstTime, Date(firstTime))
+        Duration(type, secondTime - firstTime, Instant.ofEpochMilli(firstTime))
     }
     val fixedDurations = durations
         .map { duration ->
@@ -228,7 +228,10 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         endingOutputValues, allTheInputs.typeOfInput)
 
 }
-fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDuration>,adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
+fun handleMutadah(allTheInputs: AllTheInputs,
+                  fixedDurations: MutableList<FixedDuration>,
+                  adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                  adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
     removeTuhrLessThan15(fixedDurations)
     val newMawjoodaPakiValues = removeDamLessThan3(
         fixedDurations,
@@ -263,7 +266,11 @@ fun handleMutadah(allTheInputs: AllTheInputs,fixedDurations: MutableList<FixedDu
 
 }
 
-fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>, pregnancy:Pregnancy, inputtedMawjoodaTuhr:Long?,isMawjoodaFasid:Boolean,isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean):Boolean{
+fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>,
+                                     pregnancy:Pregnancy,
+                                     inputtedMawjoodaTuhr:Long?,
+                                     isMawjoodaFasid:Boolean,
+                                     isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean):Boolean{
     if(isMawjoodaFasid){
         return true
     }
@@ -278,9 +285,9 @@ fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>, 
         val pregEndTime = pregnancy.birthTime
         val mawjoodahPakiEndDate = fixedDurations.first().startDate
         val mawjoodahPakiStartDate = addTimeToDate(mawjoodahPakiEndDate, -inputtedMawjoodaTuhr)
-        if((mawjoodahPakiEndDate.getTime()>pregStartTime.getTime()&&mawjoodahPakiEndDate.getTime()<=pregEndTime.getTime())||
-           (mawjoodahPakiStartDate.getTime()>=pregStartTime.getTime()&&mawjoodahPakiStartDate.getTime()<pregEndTime.getTime())||
-           (mawjoodahPakiStartDate.getTime()<=pregStartTime.getTime()&& mawjoodahPakiEndDate.getTime()>=pregEndTime.getTime())){
+        if((mawjoodahPakiEndDate.getMillisLong()>pregStartTime.getMillisLong()&&mawjoodahPakiEndDate.getMillisLong()<=pregEndTime.getMillisLong())||
+           (mawjoodahPakiStartDate.getMillisLong()>=pregStartTime.getMillisLong()&&mawjoodahPakiStartDate.getMillisLong()<pregEndTime.getMillisLong())||
+           (mawjoodahPakiStartDate.getMillisLong()<=pregStartTime.getMillisLong()&& mawjoodahPakiEndDate.getMillisLong()>=pregEndTime.getMillisLong())){
             //either mawjoodah paki start or end date is during preg, or the 2 dates are on either side of preg
             return true
         }
@@ -532,11 +539,11 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
 }
 
 fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDuration>,pregnancy:Pregnancy){
-    val birthDate:Long = pregnancy.birthTime.getTime().toLong()
+    val birthDate:Long = pregnancy.birthTime.getMillisLong()
     val fortyPlusBD = birthDate+(40*MILLISECONDS_IN_A_DAY)
     var i = 0
     while (i<fixedDurations.size){
-        val startTime = fixedDurations[i].startDate.getTime()
+        val startTime = fixedDurations[i].startDate.getMillisLong()
         if(startTime>=birthDate &&
                 startTime<=fortyPlusBD &&
                 fixedDurations[i].type == DurationType.DAM){
@@ -574,8 +581,8 @@ fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pr
     for (i in fixedDurations.indices){
         val endDateOfFixedDuration = fixedDurations[i].endDate
         if(fixedDurations[i].type == DurationType.TUHR &&
-            fixedDurations[i].startDate.getTime() <= pregnancy.birthTime.getTime() &&
-            endDateOfFixedDuration.getTime() >= pregnancy.pregStartTime.getTime()){
+            fixedDurations[i].startDate.getMillisLong() <= pregnancy.birthTime.getMillisLong() &&
+            endDateOfFixedDuration.getMillisLong() >= pregnancy.pregStartTime.getMillisLong()){
             if(isTuhrInHamlAadatInGhairMustabeenIkhtilaf && !pregnancy.mustabeenUlKhilqat){
                 //in non mustabeen ulkhilqah, when the ikhtilafi masla is on, do not mark tuhr as tuhr in haml
             }else{
@@ -587,8 +594,8 @@ fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pr
 
 fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy){
     var i =0
-    val startDateOfHaml = pregnancy.pregStartTime.getTime().toLong()
-    val endDateOfHaml = pregnancy.birthTime.getTime().toLong()
+    val startDateOfHaml = pregnancy.pregStartTime.getMillisLong()
+    val endDateOfHaml = pregnancy.birthTime.getMillisLong()
 
     while(i<fixedDurations.size){
         val endDateOfFixedDuration = fixedDurations[i].endDate
@@ -596,15 +603,15 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
         //this dam started before pregnancy, ends in the middle of pregnancy
         //  ---(pregnancy---  birth)
         if(fixedDurations[i].type == DurationType.DAM &&
-                fixedDurations[i].startDate.getTime()<startDateOfHaml &&
-                endDateOfFixedDuration.getTime()>startDateOfHaml &&
-                endDateOfFixedDuration.getTime()<=endDateOfHaml){
+                fixedDurations[i].startDate.getMillisLong()<startDateOfHaml &&
+                endDateOfFixedDuration.getMillisLong()>startDateOfHaml &&
+                endDateOfFixedDuration.getMillisLong()<=endDateOfHaml){
             //mark the portion in pregnancy as dam in haml. we're gonna have to make more dam???
             //or, we could just shorten it to prepregnancy stae, and leave it as is. who cares about dam in haml?
             //we can even put it in istihazaAfter.
             //maybe that's a bad idea, as it could trigger daur...
             //for now, we are just shortening it.
-            val newDuration = startDateOfHaml - fixedDurations[i].startDate.getTime().toLong()
+            val newDuration = startDateOfHaml - fixedDurations[i].startDate.getMillisLong()
             val timeInHaml = fixedDurations[i].timeInMilliseconds-newDuration
             fixedDurations[i].timeInMilliseconds = newDuration
             //maybe we really should leave an istihaz after here????
@@ -615,8 +622,8 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
         //this started in the middle, ended in the middle of it
         //  (pregnancy ---- birth)
         if(fixedDurations[i].type == DurationType.DAM &&
-                    endDateOfFixedDuration.getTime() <= endDateOfHaml &&
-                    fixedDurations[i].startDate.getTime() >= startDateOfHaml
+                    endDateOfFixedDuration.getMillisLong() <= endDateOfHaml &&
+                    fixedDurations[i].startDate.getMillisLong() >= startDateOfHaml
             ){
 
             //mark it as dam in haml, aka, istihaza.
@@ -625,12 +632,12 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
         //this starts in the middle of pregnancy, ends after it.
         // (pregnancy   ---birth)---
         if(fixedDurations[i].type == DurationType.DAM &&
-                    fixedDurations[i].startDate.getTime()<endDateOfHaml &&
-                    fixedDurations[i].startDate.getTime()>=startDateOfHaml &&
-                    endDateOfFixedDuration.getTime()>endDateOfHaml
+                    fixedDurations[i].startDate.getMillisLong()<endDateOfHaml &&
+                    fixedDurations[i].startDate.getMillisLong()>=startDateOfHaml &&
+                    endDateOfFixedDuration.getMillisLong()>endDateOfHaml
                 ){
 
-            val firstDuration = pregnancy.birthTime.getTime().toLong()-fixedDurations[i].startDate.getTime().toLong()
+            val firstDuration = pregnancy.birthTime.getMillisLong()-fixedDurations[i].startDate.getMillisLong().toLong()
             val secondDuration = fixedDurations[i].timeInMilliseconds-firstDuration
             val secondFixedDuration = FixedDuration(DurationType.DAM,secondDuration, startDate = pregnancy.birthTime)
             fixedDurations.add(i+1,secondFixedDuration)
@@ -641,10 +648,10 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
         //this started before pregnancy began, ends after pregnancy ended
         //  ---(pregnancy----birth)---
         if(fixedDurations[i].type == DurationType.DAM &&
-                fixedDurations[i].startDate.getTime()<startDateOfHaml &&
-                endDateOfFixedDuration.getTime()>endDateOfHaml){
+                fixedDurations[i].startDate.getMillisLong()<startDateOfHaml &&
+                endDateOfFixedDuration.getMillisLong()>endDateOfHaml){
             //make 1 at the start, one at the end, and 1 in the middle
-            val firstDuration = startDateOfHaml-fixedDurations[i].startDate.getTime().toLong()
+            val firstDuration = startDateOfHaml-fixedDurations[i].startDate.getMillisLong()
             val secondDuration = endDateOfHaml-startDateOfHaml
             val thirdDuration = fixedDurations[i].timeInMilliseconds-firstDuration-secondDuration
 
@@ -663,7 +670,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
 
 
 fun addStartDateToFixedDurations(fixedDurations: MutableList<FixedDuration>){
-    var date:Date = firstStartTime
+    var date: Instant = firstStartTime
     for (fixedDuration in fixedDurations){
         fixedDuration.startDate = date
         date = addTimeToDate(date,fixedDuration.timeInMilliseconds)
@@ -1114,7 +1121,9 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,
 
 
 }
-fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkhtilaf:Boolean, typesOfInputs: TypesOfInputs){
+fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>,
+                       endOfDaurIkhtilaf:Boolean,
+                       typesOfInputs: TypesOfInputs){
     //What this function does?
     //It creates a list of durations associated with each fixed duration
     //each duration contains it's type, it's starting date, and it's duration
@@ -1148,7 +1157,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
 
             //bigger than 10
             val istihazaBefore = fixedDurations[i].biggerThanTen!!.istihazaBefore
-            val istihazaBeforeStartDate:Date = fixedDurations[i].startDate
+            val istihazaBeforeStartDate:Instant = fixedDurations[i].startDate
 
             if (istihazaBefore>0){
                 fixedDurations[i].biggerThanTen!!.durationsList += Duration(DurationType.ISTIHAZA_BEFORE,istihazaBefore,istihazaBeforeStartDate)
@@ -1185,9 +1194,9 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                         quotient--
                         remainder += aadatTuhr + aadatHaz
                     }
-                    var aadatTuhrStartDate:Date = istihazaAfterStartDate
-                    var aadatTuhrEndDate:Date
-                    var aadatHaizEndDate:Date
+                    var aadatTuhrStartDate:Instant = istihazaAfterStartDate
+                    var aadatTuhrEndDate:Instant
+                    var aadatHaizEndDate:Instant
 
                     for(j in 1 .. quotient){
                         //add a quotient number of tuhr/hazes
@@ -1262,9 +1271,9 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>, endOfDaurIkht
                     //find quotient and remainder
                     val remainder = istihazaAfter%(aadatHaz+aadatTuhr)
                     val quotient = ((istihazaAfter-remainder)/(aadatHaz+aadatTuhr))
-                    var aadatTuhrStartDate:Date = istihazaAfterStartDate
-                    var aadatTuhrEndDate:Date
-                    var aadatHaizEndDate:Date
+                    var aadatTuhrStartDate:Instant = istihazaAfterStartDate
+                    var aadatTuhrEndDate:Instant
+                    var aadatHaizEndDate:Instant
 
                     for(j in 1 .. quotient){
                         //add a quotient number of tuhr/hazes
@@ -1352,7 +1361,7 @@ fun getHaizDatesList(fixedDurations: MutableList<FixedDuration>):MutableList<Ent
 }
 fun addWiladat(fixedDurations: MutableList<FixedDuration>, pregnancy: Pregnancy){
     for(i in fixedDurations.indices){
-        if(fixedDurations[i].endDate.getTime()>pregnancy.birthTime.getTime()||
+        if(fixedDurations[i].endDate.getMillisLong()>pregnancy.birthTime.getMillisLong()||
                 fixedDurations[i].type==DurationType.DAM_IN_NIFAS_PERIOD){
             val newFixedDuration = FixedDuration(DurationType.WILADAT_ISQAT, 0L, mutableListOf(),startDate = pregnancy.birthTime)
             fixedDurations.add(i,newFixedDuration)
@@ -1368,7 +1377,7 @@ fun addWiladat(fixedDurations: MutableList<FixedDuration>, pregnancy: Pregnancy)
 fun addStartOfPregnancy(fixedDurations: MutableList<FixedDuration>,pregnancy: Pregnancy){
     //add start of pregnancy in fixed periods
     for(i in fixedDurations.indices){
-        if(fixedDurations[i].endDate.getTime()>pregnancy.pregStartTime.getTime()){
+        if(fixedDurations[i].endDate.getMillisLong()>pregnancy.pregStartTime.getMillisLong()){
             val newFixedDuration= FixedDuration(DurationType.HAML,0L, mutableListOf(), startDate = pregnancy.pregStartTime)
             fixedDurations.add(i,newFixedDuration)
             break
@@ -1387,16 +1396,16 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
     var earliestStartTime = listOfLists[0][0].startTime
     var latestEndTime=listOfLists[0].last().endTime
     for (list in listOfLists) {
-        if (list[0].startTime.getTime() <earliestStartTime.getTime())
+        if (list[0].startTime.getMillisLong() <earliestStartTime.getMillisLong())
             earliestStartTime = list[0].startTime
-        if (list[list.lastIndex].endTime.getTime() > latestEndTime.getTime())
+        if (list[list.lastIndex].endTime.getMillisLong() > latestEndTime.getMillisLong())
             latestEndTime = list.last().endTime
     }
     val firstLast = Entry(earliestStartTime, latestEndTime)
 
-    val ndays = ((latestEndTime.getTime()-earliestStartTime.getTime())/MILLISECONDS_IN_A_DAY).toInt()
+    val ndays = ((latestEndTime.getMillisLong()-earliestStartTime.getMillisLong())/MILLISECONDS_IN_A_DAY).toInt()
 
-    val headerList = mutableListOf<Date>()
+    val headerList = mutableListOf<Instant>()
     for(day in 0..(ndays)){//header list is one longer than ndays
         val dateOfDay = addTimeToDate(firstLast.startTime, (day)*MILLISECONDS_IN_A_DAY)
         if(headerList.size<ndays+1){
@@ -1412,15 +1421,15 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
             val header = headerList[i]
             //check if this date is in between a startTime and an endtime
             for(entry in list) {//check the list to see if it is a haiz day
-                if (header.getTime() >= entry.startTime.getTime() && header.getTime() < entry.endTime.getTime()) {
+                if (header.getMillisLong() >= entry.startTime.getMillisLong() && header.getMillisLong() < entry.endTime.getMillisLong()) {
                     //that date is a haiz
                     colorsOfDaysList +=1
                     break
-                }else if (header.getTime() < entry.startTime.getTime()) {
+                }else if (header.getMillisLong() < entry.startTime.getMillisLong()) {
                     //that date is a tuhur
                     colorsOfDaysList +=0
                     break
-                }else if(header.getTime()>=list.last().endTime.getTime()){
+                }else if(header.getMillisLong()>=list.last().endTime.getMillisLong()){
                     colorsOfDaysList +=0
                     break
                 }
@@ -1661,14 +1670,14 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
             val mp = fixedDurations.last().biggerThanTen!!.mp
             val gp = fixedDurations.last().biggerThanTen!!.gp
             val startOfAadat = addTimeToDate(fixedDurations.last().startDate, gp-mp)//this is start of aadat
-            if(startOfAadat.getTime()>fixedDurations.last().endDate.getTime()){//A-3 hasn't entered aadat yet , but could experience duar!
+            if(startOfAadat.getMillisLong()>fixedDurations.last().endDate.getMillisLong()){//A-3 hasn't entered aadat yet , but could experience duar!
                 futureDatesList+= FutureDateType(startOfAadat,TypesOfFutureDates.A3_CHANGING_TO_A2)
                 if((lastDuration.type==DurationType.HAIZ &&
                             lastDuration.timeInMilliseconds<aadats.aadatHaiz)||
                     lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
 //                    println("5")
                     val endDateOfHaiz = addTimeToDate(lastDuration.startTime, aadats.aadatHaiz)
-                    if (endDateOfHaiz.getTime()<startOfAadat.getTime()){
+                    if (endDateOfHaiz.getMillisLong()<startOfAadat.getMillisLong()){
 //                        println("6")
                         futureDatesList+=FutureDateType(endDateOfHaiz,TypesOfFutureDates.END_OF_AADAT_HAIZ)
                         if(typesOfMasla!=TypesOfMasla.MUBTADIA){
@@ -1683,19 +1692,19 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                     }
                 }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER&& lastDuration.timeInMilliseconds<aadats.aadatTuhr){
                     val endDateOfTuhr = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().startTime, aadats.aadatTuhr)
-                    if(endDateOfTuhr.getTime()<startOfAadat.getTime()){
+                    if(endDateOfTuhr.getMillisLong()<startOfAadat.getMillisLong()){
 //                        println("3")
                         futureDatesList+=FutureDateType(endDateOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
                     }
                 }else if(lastDuration.type==DurationType.HAIZ&&lastDuration.timeInMilliseconds==aadats.aadatHaiz){
                     val endDateOfTuhr = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, aadats.aadatTuhr)
-                    if(endDateOfTuhr.getTime()<startOfAadat.getTime()){
+                    if(endDateOfTuhr.getMillisLong()<startOfAadat.getMillisLong()){
 //                        println("4")
                         futureDatesList+=FutureDateType(endDateOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
                     }
                 }else if(lastDuration.type==DurationType.ISTIHAZA_AFTER&&lastDuration.timeInMilliseconds==aadats.aadatTuhr){
                     val endDateOfHaiz = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, aadats.aadatHaiz)
-                    if(endDateOfHaiz.getTime()<startOfAadat.getTime()){
+                    if(endDateOfHaiz.getMillisLong()<startOfAadat.getMillisLong()){
 //                        println("7")
                         val threeDays = addTimeToDate(fixedDurations.last().biggerThanTen!!.durationsList.last().endDate, 3*MILLISECONDS_IN_A_DAY)
                         futureDatesList+=FutureDateType(threeDays,TypesOfFutureDates.BEFORE_THREE_DAYS)
@@ -1707,7 +1716,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                     }
                 }
 
-            }else if(startOfAadat.getTime()<=fixedDurations.last().endDate.getTime()){//A-3 entered into aadat
+            }else if(startOfAadat.getMillisLong()<=fixedDurations.last().endDate.getMillisLong()){//A-3 entered into aadat
                 if(lastDuration.type==DurationType.LESS_THAN_3_HAIZ){
                     val lessThanThreeDate = addTimeToDate(lastDuration.startTime, 3*MILLISECONDS_IN_A_DAY)
                     futureDatesList+= FutureDateType(lessThanThreeDate,TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE)
@@ -1768,9 +1777,9 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                 qism==Soortain.B_3){
                 //these all end on istihaza
                 val endOfTuhr = addTimeToDate(lastDuration.startTime, aadats.aadatTuhr)
-                if(endOfTuhr.getTime()!=lastDuration.endDate.getTime()){
+                if(endOfTuhr.getMillisLong()!=lastDuration.endDate.getMillisLong()){
                     futureDatesList+= FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
-                }else if(endOfTuhr.getTime()==lastDuration.endDate.getTime()){
+                }else if(endOfTuhr.getMillisLong()==lastDuration.endDate.getMillisLong()){
                     val endOfHaz = addTimeToDate(lastDuration.endDate, aadats.aadatHaiz)
                     futureDatesList+= FutureDateType(endOfHaz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
                     futureDatesList+= FutureDateType(endOfHaz, TypesOfFutureDates.IHTIYATI_GHUSL)
@@ -1797,7 +1806,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
         val endOfIstehazaDate = addTimeToDate(fixedDurations.last().startDate,fixedDurations.last().ayyameqabliyya!!.ayyameqabliyya)
         futureDatesList+= FutureDateType(endOfIstehazaDate, TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA)
         val tenDays = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
-        if(tenDays.getTime()>fixedDurations.last().endDate.getTime()){
+        if(tenDays.getMillisLong()>fixedDurations.last().endDate.getMillisLong()){
             futureDatesList+= FutureDateType(tenDays, TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH)
         }
 
@@ -1865,12 +1874,12 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
         (fixedDurations.last().type==DurationType.DAM||
                 fixedDurations.last().type==DurationType.DAM_MUBTADIA)){
         if(fixedDurations.last().type==DurationType.DAM_MUBTADIA){
-            futureDatesList+=FutureDateType(Date(0,0,0), TypesOfFutureDates.TEN_DAYS_EXACTLY)
+            futureDatesList+=FutureDateType(Instant.EPOCH, TypesOfFutureDates.TEN_DAYS_EXACTLY)
 //            var endOfTuhr = addTimeToDate(fixedDurations.last().startDate, 30*MILLISECONDS_IN_A_DAY)
 //            futureDatesList+=FutureDateType(endOfTuhr,TypesOfFutureDates.END_OF_AADAT_TUHR)
 
         }else{//regular dam mutadah, bleeding is 10
-            futureDatesList+=FutureDateType(Date(0,0,0), TypesOfFutureDates.TEN_DAYS_EXACTLY)
+            futureDatesList+=FutureDateType(Instant.EPOCH, TypesOfFutureDates.TEN_DAYS_EXACTLY)
         }
     }
     else if(fixedDurations.last().days>40 && fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
@@ -2234,9 +2243,9 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList
 fun ihtiyatiGhuslCalc(fixedDurations: MutableList<FixedDuration>,
                       adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
                       adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
-                      inputtedMawjoodaTuhr: Long?, typesOfMasla: TypesOfMasla):Date?{
+                      inputtedMawjoodaTuhr: Long?, typesOfMasla: TypesOfMasla):Instant?{
     //ihtiyati ghusl calculation
-    var ihtiyatiGhuslTime:Date? = null
+    var ihtiyatiGhuslTime:Instant? = null
     var mp = -1L
     var gp = getSecondLastAadatOfHaizAndTuhr(adatsOfHaizList,adatsOfTuhrList,fixedDurations,typesOfMasla).aadatTuhr
     val hz = getSecondLastAadatOfHaizAndTuhr(adatsOfHaizList, adatsOfTuhrList,fixedDurations, typesOfMasla).aadatHaiz
@@ -2264,7 +2273,7 @@ fun ihtiyatiGhuslCalc(fixedDurations: MutableList<FixedDuration>,
             }
         }else{//A
             val crossingTen = addTimeToDate(fixedDurations.last().startDate, 10*MILLISECONDS_IN_A_DAY)
-            if(crossingTen.getTime()>=addTimeToDate(fixedDurations.last().startDate, gp-mp).getTime()){
+            if(crossingTen.getMillisLong()>=addTimeToDate(fixedDurations.last().startDate, gp-mp).getMillisLong()){
                 //crossing 10 puts it in aadat or after it
                 ihtiyatiGhuslTime=addTimeToDate(fixedDurations.last().startDate, (gp-mp+hz))
             }else{//A-3
@@ -2282,8 +2291,8 @@ fun ihtiyatiGhuslCalc(fixedDurations: MutableList<FixedDuration>,
     }
 
     if (ihtiyatiGhuslTime != null) {
-        if(ihtiyatiGhuslTime.getTime()>fixedDurations.last().endDate.getTime() &&
-            ihtiyatiGhuslTime.getTime()!=Date(0,0,0).getTime()){
+        if(ihtiyatiGhuslTime.getMillisLong()>fixedDurations.last().endDate.getMillisLong() &&
+            ihtiyatiGhuslTime.getMillisLong()!=Instant.EPOCH.getMillisLong()){
             return ihtiyatiGhuslTime
         }
     }
