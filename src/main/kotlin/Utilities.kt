@@ -147,12 +147,13 @@ fun parseDays(input: String): Long? {
 }
 
 fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
-    val days:Double = kotlin.math.floor((numberOfMilliseconds / MILLISECONDS_IN_A_DAY).toDouble())
-    var milisecsleft = numberOfMilliseconds - days * MILLISECONDS_IN_A_DAY
-    val hours:Double = kotlin.math.floor((milisecsleft / MILLISECONDS_IN_AN_HOUR))
-    milisecsleft -= hours * MILLISECONDS_IN_AN_HOUR
-    val minutes = kotlin.math.floor(milisecsleft / MILLISECONDS_IN_A_MINUTE)
-    return arrayOf(days, hours, minutes)
+    var inst = Duration.ofMillis (numberOfMilliseconds)
+    val days = inst.toDays()
+    inst = inst.minusDays(days)
+    val hours = inst.toHours()
+    inst = inst.minusHours(hours)
+    val minutes = inst.toMinutes()
+    return arrayOf(days.toDouble(), hours.toDouble(), minutes.toDouble())
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs = TypesOfInputs.DURATION, languageNames: String = Vls.Langs.ENGLISH):String {
