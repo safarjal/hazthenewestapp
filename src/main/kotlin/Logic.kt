@@ -730,8 +730,28 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>, inputtedMawj
     while (i<fixedDurations.size-1){
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<3){
             if(i>0){//there is tuhur behind this and in front of it
-                if(fixedDurations[i-1].type==DurationType.TUHR){//if there is one behind it
-                    fixedDurations[i-1].type = DurationType.TUHREFAASID
+                if(fixedDurations[i-1].type==DurationType.TUHR||
+                    fixedDurations[i-1].type==DurationType.TUHREFAASID||
+                    fixedDurations[i-1].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
+                    fixedDurations[i-1].type==DurationType.TUHR_IN_HAML||
+                    fixedDurations[i-1].type==DurationType.TUHREFAASID_IN_HAML||
+                    fixedDurations[i-1].type==DurationType.TUHR_BIGGER_THAN_6_MONTHS||
+                    fixedDurations[i-1].type==DurationType.TUHR_MUBTADIA||
+                    fixedDurations[i-1].type==DurationType.TUHREFAASID_MUBTADIA||
+                    fixedDurations[i-1].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
+                    //if there is one behind it
+                    if(fixedDurations[i-1].type==DurationType.TUHR){//mark it as fasid if it isn;t already
+                        fixedDurations[i-1].type = DurationType.TUHREFAASID
+                    }
+                    if(fixedDurations[i-1].type==DurationType.TUHR_IN_HAML){//mark it as fasid if it isn;t already
+                        fixedDurations[i-1].type = DurationType.TUHREFAASID_IN_HAML
+                    }
+                    if(fixedDurations[i-1].type==DurationType.TUHR_BIGGER_THAN_6_MONTHS){//mark it as fasid if it isn;t already
+                        fixedDurations[i-1].type = DurationType.TUHREFAASID
+                    }
+                    if(fixedDurations[i-1].type==DurationType.TUHR_MUBTADIA){//mark it as fasid if it isn;t already
+                        fixedDurations[i-1].type = DurationType.TUHREFAASID_MUBTADIA
+                    }
                     fixedDurations[i-1].timeInMilliseconds += fixedDurations[i].timeInMilliseconds
                     fixedDurations[i-1].indices.addAll(fixedDurations[i].indices)
 
@@ -744,6 +764,7 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>, inputtedMawj
                     fixedDurations.removeAt(i)
                     i--
                 }
+
             }else{//i is 0 (i should never be less than zero), ie, the first dam is less than 3
                 var newStartDate = fixedDurations[0].startDate
                 //mark the tuhr behind it as fasid

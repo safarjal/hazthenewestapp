@@ -4274,7 +4274,29 @@ class LogicTest {
         }
 
     }
+    @Test
+    fun bugIssue210() {
+        val entries = listOf<Entry>(
+            Entry(Date(2022,0,9), Date(2022, 0, 16)),
+            Entry(Date(2022,1,22), Date(2022, 1, 27)),
 
+            Entry(Date(2022,10,25), Date(2023, 0, 13)),
+            Entry(Date(2023,0,20), Date(2023, 0, 20)),
+            Entry(Date(2023,1,11), Date(2023, 1, 12)),
+            Entry(Date(2023,2,18), Date(2023, 2, 18)),
+            Entry(Date(2023,3,3), Date(2023, 3, 20)),
+        )
+        val output = handleEntries(AllTheInputs(
+            entries, typeOfInput = TypesOfInputs.DATE_ONLY, typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(
+                Date(2022,1,27),
+                Date(2022,10,25),
+                parseDays("40")!!,
+                true))
+        )
+        val expectedtimeInMilliseconds =73*MILLISECONDS_IN_A_DAY
+        assertEquals(output.fixedDurations[7].timeInMilliseconds, expectedtimeInMilliseconds)
+    }
 
 //    @Test
 //    fun testingBugMaslaIssue161() {
