@@ -29,7 +29,6 @@ class LogicTest {
 //        val result = handleEntries(entries, istimrar)
 //        assertNotNull(result) // TODO: Replace this with actual test
 //    }
-
     @Test
     fun testRemoveDamLessThan3(){
         val durations = mutableListOf(

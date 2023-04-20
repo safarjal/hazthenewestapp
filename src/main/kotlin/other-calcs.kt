@@ -79,8 +79,8 @@ fun addCalcsAddTimeToDate() {
         var strResultEnglish = ""
         if (duration != null && date != null) {
             val result = addTimeToDate(date, duration)
-            strResultEnglish = languagedDateFormat(result, typesOfInputs, Vls.Langs.ENGLISH)
-            strResultUrdu = languagedDateFormat(result, typesOfInputs, Vls.Langs.URDU)
+            strResultEnglish = languagedDateFormat(result, typesOfInputs, Vls.Langs.ENGLISH, "UTC")
+            strResultUrdu = languagedDateFormat(result, typesOfInputs, Vls.Langs.URDU, "UTC")
         }
         val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish)
         if (languageSelecter.value == Vls.Langs.URDU) {

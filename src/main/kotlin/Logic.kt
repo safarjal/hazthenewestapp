@@ -109,7 +109,8 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
     return generateOutputStringMubtadia(fixedDurations,
         endingOutputValues,
         allTheInputs.typeOfInput,
-        allTheInputs.preMaslaValues)
+        allTheInputs.preMaslaValues,
+        allTheInputs.timeZone)
 
 }
 fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
@@ -177,7 +178,8 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
         endingOutputValues,
-        allTheInputs.typeOfInput)
+        allTheInputs.typeOfInput,
+        allTheInputs.timeZone)
 
 }
 fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
@@ -224,7 +226,9 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
 
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
-        endingOutputValues, allTheInputs.typeOfInput)
+        endingOutputValues,
+        allTheInputs.typeOfInput,
+        allTheInputs.timeZone)
 
 }
 fun handleMutadah(allTheInputs: AllTheInputs,
@@ -261,7 +265,11 @@ fun handleMutadah(allTheInputs: AllTheInputs,
         adatsOfTuhrList,
         -1L, typesOfMasla = TypesOfMasla.MUTADAH)
     putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
-    return generateOutputStringMutadah(fixedDurations, endingOutputValues, allTheInputs.typeOfInput, allTheInputs.preMaslaValues)
+    return generateOutputStringMutadah(fixedDurations,
+        endingOutputValues,
+        allTheInputs.typeOfInput,
+        allTheInputs.preMaslaValues,
+        allTheInputs.timeZone)
 
 }
 
@@ -1645,7 +1653,7 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>,
     val isMawjoodaFasid = preMaslaValues.isMawjoodaFasid
 
     val filHaalPaki = calculateFilHaal(fixedDurations,adatsOfHaizList,adatsOfTuhrList,inputtedMawjoodaTuhr)
-    var aadaat = finalAadatsOfHaizAndTuhr(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
+    val aadaat = finalAadatsOfHaizAndTuhr(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
     if(typesOfMasla==TypesOfMasla.NIFAS){
         aadaat.aadatNifas = newAadatNifas
     }

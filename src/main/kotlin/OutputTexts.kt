@@ -1,6 +1,5 @@
 @file:Suppress("SpellCheckingInspection")
 import kotlinx.datetime.internal.JSJoda.Instant
-import kotlin.js.Date
 
 fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages{
     var englishStr = ""
@@ -36,51 +35,59 @@ fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages
 fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
                                   pregnancy: Pregnancy,
                                   endingOutputValues: EndingOutputValues,
-                                  typeOfInput: TypesOfInputs):OutputTexts{
+                                  typeOfInput: TypesOfInputs,
+                                  timeZone: String):OutputTexts{
     var englishStr = ""
     var urduStr = ""
     val hazDatesList = getHaizDatesList(fixedDurations)
-    urduStr+= generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput).urduString
-    englishStr+= generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput).englishString
+    urduStr+= generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone).urduString
+    englishStr+= generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone).englishString
 
 
     return OutputTexts(englishStr,urduStr, "",hazDatesList,endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
-                                 typeOfInput: TypesOfInputs, preMaslaValues: PreMaslaValues):OutputTexts{
+                                 typeOfInput: TypesOfInputs,
+                                 preMaslaValues: PreMaslaValues,
+                                 timeZone: String):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues, timeZone).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues, timeZone).englishString
 
-    val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
+    val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
     return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 endingOutputValues: EndingOutputValues,
                                 typeOfInput: TypesOfInputs,
-                                preMaslaValues: PreMaslaValues):OutputTexts{
+                                preMaslaValues: PreMaslaValues,
+                                timeZone: String):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
 
-    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues).urduString
-    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues).englishString
+    val urduStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues, timeZone).urduString
+    val englishStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues, timeZone).englishString
 
-    val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput)
+    val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
     return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 
-fun generateHazDatesStr(hazDatesList: MutableList<Entry>,typeOfInput: TypesOfInputs):String{
+fun generateHazDatesStr(hazDatesList: MutableList<Entry>,typeOfInput: TypesOfInputs, timeZone: String):String{
     val lang = Vls.Langs.ENGLISH
     var str = ""
     for(entry in hazDatesList){
-        str+="From ${languagedDateFormat(entry.startTime,typeOfInput,lang)} to ${languagedDateFormat(entry.endTime,typeOfInput, lang)}<br>"
+        str+="From ${languagedDateFormat(entry.startTime,typeOfInput,lang,timeZone)} to ${languagedDateFormat(entry.endTime,typeOfInput,lang,timeZone)}<br>"
     }
     return str
 }
 
-fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>, pregnancy: Pregnancy, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
+                                           pregnancy: Pregnancy, 
+                                           endingOutputValues: EndingOutputValues, 
+                                           typeOfInput: TypesOfInputs,
+                                           timeZone: String):OutputStringsLanguages{
     val mustabeen = pregnancy.mustabeenUlKhilqat
     val birthTime = pregnancy.birthTime
     var strUrdu = StringsOfLanguages.URDU.answer
@@ -95,10 +102,10 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             if(typeOfInput==TypesOfInputs.DURATION) {
                 strUrdu += outputStringHeaderLineDuration(fixedDurations,index).urduString
                 strEnglish += outputStringHeaderLineDuration(fixedDurations,index).englishString
-                strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index).urduString
-                strEnglish += outputStringBiggerThan10HallDurations(fixedDurations,index).englishString
-                strUrdu += outputStringBiggerThan40HallDuration(fixedDurations,index).urduString
-                strEnglish += outputStringBiggerThan40HallDuration(fixedDurations,index).englishString
+                strUrdu += outputStringBiggerThan10HallDurations(fixedDurations, index).urduString
+                strEnglish += outputStringBiggerThan10HallDurations(fixedDurations, index).englishString
+                strUrdu += outputStringBiggerThan40HallDuration(fixedDurations, index).urduString
+                strEnglish += outputStringBiggerThan40HallDuration(fixedDurations, index).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
                     strUrdu += StringsOfLanguages.URDU.pregduration
                     strEnglish += StringsOfLanguages.ENGLISH.pregduration
@@ -109,20 +116,20 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
 
             }else{
-                strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput).urduString
-                strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput).englishString
-                strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).urduString
-                strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).englishString
-                strUrdu += outputStringBiggerThan40Hall(fixedDurations,index, typeOfInput).urduString
-                strEnglish += outputStringBiggerThan40Hall(fixedDurations,index, typeOfInput).englishString
+                strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone).urduString
+                strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone).englishString
+                strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).urduString
+                strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).englishString
+                strUrdu += outputStringBiggerThan40Hall(fixedDurations,index, typeOfInput, timeZone).urduString
+                strEnglish += outputStringBiggerThan40Hall(fixedDurations,index, typeOfInput, timeZone).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
                     strUrdu += StringsOfLanguages.URDU.preg
                     strEnglish += StringsOfLanguages.ENGLISH.preg
                 }
                 if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                    strUrdu += StringsOfLanguages.URDU.birth.replace("date1", languagedDateFormat(birthTime, typeOfInput, Vls.Langs.URDU))
+                    strUrdu += StringsOfLanguages.URDU.birth.replace("date1", languagedDateFormat(birthTime, typeOfInput, Vls.Langs.URDU, timeZone))
                     strEnglish += StringsOfLanguages.ENGLISH.birth.replace("date1",
-                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.ENGLISH)
+                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                     )
                     if(index<fixedDurations.size-2){//if there is something after wiladat
                         strUrdu += StringsOfLanguages.URDU.afterpregheader
@@ -133,8 +140,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             }
 
         }
-        strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput).urduString
-        strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput).englishString
+        strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).urduString
+        strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).englishString
 
 
 
@@ -146,8 +153,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             if(typeOfInput==TypesOfInputs.DURATION){
                 strUrdu += outputStringHeaderLineDuration(fixedDurations,index, mustabeen).urduString
                 strEnglish += outputStringHeaderLineDuration(fixedDurations,index,mustabeen).englishString
-                strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index).urduString
-                strEnglish += outputStringBiggerThan10HallDurations(fixedDurations,index).englishString
+                strUrdu += outputStringBiggerThan10HallDurations(fixedDurations, index).urduString
+                strEnglish += outputStringBiggerThan10HallDurations(fixedDurations, index).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
                     strUrdu += StringsOfLanguages.URDU.preg
                     strEnglish += StringsOfLanguages.ENGLISH.preg
@@ -162,20 +169,20 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
 
             }else{
-                strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput, mustabeen).urduString
-                strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput, mustabeen).englishString
-                strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).urduString
-                strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).englishString
+                strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone, mustabeen).urduString
+                strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone, mustabeen).englishString
+                strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).urduString
+                strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).englishString
                 if(fixedDurations[index].type==DurationType.HAML){
                     strUrdu += StringsOfLanguages.URDU.preg
                     strEnglish += StringsOfLanguages.ENGLISH.preg
                 }
                 if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
                     strUrdu += StringsOfLanguages.URDU.earlymiscarriage.replace("date1",
-                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.URDU)
+                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.URDU, timeZone)
                     )
                     strEnglish += StringsOfLanguages.ENGLISH.earlymiscarriage.replace("date1",
-                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.ENGLISH)
+                        languagedDateFormat(birthTime, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                     )
                     if(index<fixedDurations.size-2){//if there is something after wiladat
                         strUrdu += StringsOfLanguages.URDU.afterpregheader
@@ -185,8 +192,8 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
             }
 
         }
-        strUrdu += outputStringFinalLines (endingOutputValues, typeOfInput).urduString
-        strEnglish += outputStringFinalLines (endingOutputValues, typeOfInput).englishString
+        strUrdu += outputStringFinalLines (endingOutputValues, typeOfInput, timeZone).urduString
+        strEnglish += outputStringFinalLines (endingOutputValues, typeOfInput, timeZone).englishString
 
     }
 
@@ -194,7 +201,12 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
-fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs, typesOfMasla: TypesOfMasla, preMaslaValues: PreMaslaValues):OutputStringsLanguages{
+fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
+                         endingOutputValues: EndingOutputValues,
+                         typeOfInput: TypesOfInputs,
+                         typesOfMasla: TypesOfMasla,
+                         preMaslaValues: PreMaslaValues,
+                         timeZone: String):OutputStringsLanguages{
     //ToDo: figure out how to do languages for real
     var strUrdu = StringsOfLanguages.URDU.answer //جواب:
     var strEnglish = StringsOfLanguages.ENGLISH.answer //جواب:
@@ -215,20 +227,20 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutpu
         if(typeOfInput==TypesOfInputs.DURATION){
             strUrdu += outputStringHeaderLineDuration(fixedDurations,index).urduString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
             strEnglish += outputStringHeaderLineDuration(fixedDurations,index).englishString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
-            strUrdu += outputStringBiggerThan10HallDurations(fixedDurations,index).urduString
-            strEnglish += outputStringBiggerThan10HallDurations(fixedDurations,index).englishString
+            strUrdu += outputStringBiggerThan10HallDurations(fixedDurations, index).urduString
+            strEnglish += outputStringBiggerThan10HallDurations(fixedDurations, index).englishString
             if(index==fixedDurations.size-1){//if this os the last index
-                strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput).urduString
-                strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput).englishString
+                strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).urduString
+                strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).englishString
             }
         }else{//not durations
-            strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput).urduString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
-            strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput).englishString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
-            strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).urduString
-            strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput).englishString
+            strUrdu += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone).urduString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
+            strEnglish += outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone).englishString //اس تاریخ سے اس تاریخ تک اتنے دن حیض
+            strUrdu += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).urduString
+            strEnglish += outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone).englishString
             if(index==fixedDurations.size-1){//if this os the last index
-                strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput).urduString
-                strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput).englishString
+                strUrdu += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).urduString
+                strEnglish += outputStringFinalLines(endingOutputValues, typeOfInput, timeZone).englishString
             }
         }
         index++
@@ -236,7 +248,9 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>, endingOutpu
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
-fun outputStringFinalLines(endingOutputValues: EndingOutputValues, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
+                           typeOfInput: TypesOfInputs,
+                           timeZone: String):OutputStringsLanguages{
 
     var strUrdu = ""
     var strEnglish = ""
@@ -248,8 +262,8 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues, typeOfInput: 
     strUrdu+=outputStringFilHaalLine(filHaal).urduString
     strEnglish+=outputStringFilHaalLine(filHaal).englishString
     val futureDates = endingOutputValues.futureDateType
-    strUrdu+=outputStringAskAgainLine(typeOfInput,futureDates).urduString
-    strEnglish+=outputStringAskAgainLine(typeOfInput, futureDates).englishString
+    strUrdu+=outputStringAskAgainLine(typeOfInput, futureDates, timeZone).urduString
+    strEnglish+=outputStringAskAgainLine(typeOfInput, futureDates, timeZone).englishString
 
     //plis note down line
     strUrdu+=StringsOfLanguages.URDU.writedown
@@ -298,7 +312,9 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
     }
 }
 
-fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableList<FutureDateType>):OutputStringsLanguages{
+fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
+                             futureDates: MutableList<FutureDateType>,
+                             timeZone: String):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
 
@@ -307,71 +323,71 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableLis
         val type = futureDate.futureDates
         when (type) {
             TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
-                strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
-                strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH))
+                strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+                strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
             }
             TypesOfFutureDates.END_OF_AADAT_TUHR -> {
-                strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
-                strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH))
+                strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+                strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
             }
             TypesOfFutureDates.IC_FORBIDDEN_DATE -> {
-                strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
+                strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.sexnotallowed.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.AFTER_TEN_DAYS -> {
-                strUrdu += StringsOfLanguages.URDU.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
-                strEnglish += StringsOfLanguages.ENGLISH.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH))
+                strUrdu += StringsOfLanguages.URDU.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+                strEnglish += StringsOfLanguages.ENGLISH.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
             }
             TypesOfFutureDates.FORTY_DAYS -> {
-                strUrdu += StringsOfLanguages.URDU.afterfortydays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
+                strUrdu += StringsOfLanguages.URDU.afterfortydays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.afterfortydays.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE -> {
                 strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethreemaslachanges.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethreemaslachanges.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS -> {
                 strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethree.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethree.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.IHTIYATI_GHUSL -> {
-                strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
+                strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.ihtiyatighusl.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
-                strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU))
+                strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.situationmaychange.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH -> {
                 strUrdu += StringsOfLanguages.URDU.beforetendaysayyameqabliyyaallconsideredhaiz.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.beforetendaysayyameqabliyyaallconsideredhaiz.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA -> {
                 strUrdu += StringsOfLanguages.URDU.endofistehazaayyameqabliyya.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.endofistehazaayyameqabliyya.replace("date1",
-                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH)
+                    languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
             }
             TypesOfFutureDates.TEN_DAYS_EXACTLY -> {
@@ -384,7 +400,10 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs, futureDates: MutableLis
     }
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr?):OutputStringsLanguages{
+fun outputStringAadatLine(
+    typeOfInput: TypesOfInputs,
+    aadats: AadatsOfHaizAndTuhr?
+):OutputStringsLanguages{
     //we should probably put in the possibility of tuhr aadat only...
     //and tuhr aadat with nifas
     var strUrdu = ""
@@ -458,7 +477,10 @@ fun outputStringAadatLine(typeOfInput: TypesOfInputs, aadats:AadatsOfHaizAndTuhr
         OutputStringsLanguages(strUrdu, strEnglish)
     }
 }
-fun outputStringBiggerThan10HallDurations(fixedDurations: MutableList<FixedDuration>, index: Int):OutputStringsLanguages{
+fun outputStringBiggerThan10HallDurations(
+    fixedDurations: MutableList<FixedDuration>,
+    index: Int
+):OutputStringsLanguages{
     var strUrdu = ""
     var strEnglish = ""
     val typeOfInput = TypesOfInputs.DURATION
@@ -523,28 +545,31 @@ fun outputStringBiggerThan10HallDurations(fixedDurations: MutableList<FixedDurat
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
 
-fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, index: Int, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
+                                 index: Int,
+                                 typeOfInput: TypesOfInputs,
+                                 timeZone: String):OutputStringsLanguages{
     //legacy code this, I think it's unused
     var strUrdu = ""
     var strEnglish = ""
 
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
-            StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
+            StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.URDU)),
-            StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH)
+            StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
-            StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
+            StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital(difference(sd,ed), typeOfInput, Vls.Langs.URDU)),
-            StringsOfLanguages.ENGLISH.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH)
+            StringsOfLanguages.ENGLISH.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH, timeZone)
             ).replace("duration1", daysHoursMinutesDigital(difference(sd,ed), typeOfInput, Vls.Langs.ENGLISH))
 
         )
@@ -577,10 +602,10 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
                     strUrdu+= istihazaLine(duration.startTime,duration.endDate,typeOfInput).urduString
                     strEnglish+= istihazaLine(duration.startTime,duration.endDate,typeOfInput).englishString
                     strUrdu+= StringsOfLanguages.URDU.istihazadetailslinetwo.replace("date1",
-                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.URDU)
+                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.URDU, timeZone)
                     )
                     strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslinetwo.replace("date1",
-                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.ENGLISH)
+                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.ENGLISH, timeZone)
                     )
                     strUrdu+= StringsOfLanguages.URDU.istihazadetailslineone
                     strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslineone
@@ -601,7 +626,10 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>, ind
 
     return OutputStringsLanguages(strUrdu,strEnglish)
 }
-fun outputStringBiggerThan40HallDuration(fixedDurations: MutableList<FixedDuration>, index: Int):OutputStringsLanguages{
+fun outputStringBiggerThan40HallDuration(
+    fixedDurations: MutableList<FixedDuration>,
+    index: Int
+):OutputStringsLanguages{
     val typeOfInput=TypesOfInputs.DURATION
     var strUrdu = ""
     var strEnglish = ""
@@ -653,38 +681,41 @@ fun outputStringBiggerThan40HallDuration(fixedDurations: MutableList<FixedDurati
     }
     return OutputStringsLanguages(strUrdu, strEnglish)
 }
-fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, index: Int, typeOfInput: TypesOfInputs):OutputStringsLanguages{
+fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
+                                 index: Int,
+                                 typeOfInput: TypesOfInputs,
+                                 timeZone: String):OutputStringsLanguages{
 
     var strUrdu = ""
     var strEnglish = ""
 
     fun nifasLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
-            StringsOfLanguages.URDU.nifasdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
+            StringsOfLanguages.URDU.nifasdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.URDU)),
-            StringsOfLanguages.ENGLISH.nifasdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH)
+            StringsOfLanguages.ENGLISH.nifasdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
-            StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(ed, typeOfInput, Vls.Langs.URDU)
+            StringsOfLanguages.URDU.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(ed, typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.URDU)),
-            StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)).replace("date2",
-                languagedDateFormat(ed, typeOfInput, Vls.Langs.ENGLISH)
+            StringsOfLanguages.ENGLISH.haizdaysinsolution.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("date2",
+                languagedDateFormat(ed, typeOfInput, Vls.Langs.ENGLISH, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,ed)), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return OutputStringsLanguages(
-            StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU)
+            StringsOfLanguages.URDU.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital(difference(sd,ed), typeOfInput, Vls.Langs.URDU)),
-            StringsOfLanguages.ENGLISH.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)).replace("date2",
-                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH)
+            StringsOfLanguages.ENGLISH.istihazadays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("date2",
+                languagedDateFormat(ed,typeOfInput, Vls.Langs.ENGLISH, timeZone)
             ).replace("duration1", daysHoursMinutesDigital(difference(sd,ed), typeOfInput, Vls.Langs.ENGLISH))
         )
     }
@@ -705,10 +736,10 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>, ind
                     strUrdu+= istihazaLine(duration.startTime,duration.endDate, typeOfInput).urduString
                     strEnglish+= istihazaLine(duration.startTime,duration.endDate, typeOfInput).englishString
                     strUrdu+= StringsOfLanguages.URDU.istihazadetailslinetwo.replace("date1",
-                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.URDU)
+                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.URDU, timeZone)
                     )
                     strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslinetwo.replace("date1",
-                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.ENGLISH)
+                        languagedDateFormat(duration.startTime,typeOfInput, Vls.Langs.ENGLISH, timeZone)
                     )
                     strUrdu+= StringsOfLanguages.URDU.istihazadetailslineone
                     strEnglish+= StringsOfLanguages.ENGLISH.istihazadetailslineone
@@ -851,7 +882,11 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
     }
     return OutputStringsLanguages(outputStringUrdu, outputStringEnglish)
 }
-fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: Int, typeOfInput: TypesOfInputs, mustabeen:Boolean = true):OutputStringsLanguages{
+fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
+                           index: Int,
+                           typeOfInput: TypesOfInputs,
+                           timeZone: String,
+                           mustabeen:Boolean = true):OutputStringsLanguages{
     var outputStringUrdu = ""
     var outputStringEnglish = ""
     if (fixedDurations[index].type==DurationType.DAM||
@@ -859,35 +894,35 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
         val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            outputStringUrdu = StringsOfLanguages.URDU.haizdays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(et,typeOfInput, Vls.Langs.URDU)
+            outputStringUrdu = StringsOfLanguages.URDU.haizdays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(et,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.URDU))
             outputStringEnglish = StringsOfLanguages.ENGLISH.haizdays.replace("date1",
-                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-            ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+            ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
                 daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.ENGLISH)
             )
         }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
                 outputStringUrdu = StringsOfLanguages.URDU.continuosbleeding.replace("date1",
-                    languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)
-                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.URDU)).replace("duration1",
+                    languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)
+                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.URDU, timeZone)).replace("duration1",
                     daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.URDU)
                 )
                 outputStringEnglish = StringsOfLanguages.ENGLISH.continuosbleeding.replace("date1",
-                    languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+                    languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
                     daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.ENGLISH)
                 )
             }else{
-                outputStringUrdu = StringsOfLanguages.URDU.blooddays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                    languagedDateFormat(et, typeOfInput, Vls.Langs.URDU)
+                outputStringUrdu = StringsOfLanguages.URDU.blooddays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                    languagedDateFormat(et, typeOfInput, Vls.Langs.URDU, timeZone)
                 ).replace("duration1",
                     daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.URDU)
                 )
                 outputStringEnglish = StringsOfLanguages.ENGLISH.blooddays.replace("date1",
-                    languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+                    languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+                ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
                     daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.ENGLISH)
                 )
             }
@@ -931,21 +966,21 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){
-            outputStringUrdu = StringsOfLanguages.URDU.nifasdays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(et,typeOfInput, Vls.Langs.URDU)
+            outputStringUrdu = StringsOfLanguages.URDU.nifasdays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(et,typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.URDU))
             outputStringEnglish = StringsOfLanguages.ENGLISH.nifasdays.replace("date1",
-                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-            ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+            ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
                 daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.ENGLISH)
             )
         }else{//more than 40
-            outputStringUrdu = StringsOfLanguages.URDU.blooddays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-                languagedDateFormat(et, typeOfInput, Vls.Langs.URDU)
+            outputStringUrdu = StringsOfLanguages.URDU.blooddays.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+                languagedDateFormat(et, typeOfInput, Vls.Langs.URDU, timeZone)
             ).replace("duration1", daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.URDU))
             outputStringEnglish = StringsOfLanguages.ENGLISH.blooddays.replace("date1",
-                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-            ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+                languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+            ).replace("date2", languagedDateFormat(et, typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
                 daysHoursMinutesDigital(fixedDurations[index].timeInMilliseconds,typeOfInput, Vls.Langs.ENGLISH)
             )
         }
@@ -986,12 +1021,12 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
     }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
-        outputStringUrdu = StringsOfLanguages.URDU.daysayyameqabliyya.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU)).replace("date2",
-            languagedDateFormat(et,typeOfInput, Vls.Langs.URDU)
+        outputStringUrdu = StringsOfLanguages.URDU.daysayyameqabliyya.replace("date1", languagedDateFormat(sd, typeOfInput, Vls.Langs.URDU, timeZone)).replace("date2",
+            languagedDateFormat(et,typeOfInput, Vls.Langs.URDU, timeZone)
         ).replace("duration1", daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.URDU))
         outputStringEnglish = StringsOfLanguages.ENGLISH.daysayyameqabliyya.replace("date1",
-            languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH)
-        ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH)).replace("duration1",
+            languagedDateFormat(sd, typeOfInput, Vls.Langs.ENGLISH, timeZone)
+        ).replace("date2", languagedDateFormat(et,typeOfInput, Vls.Langs.ENGLISH, timeZone)).replace("duration1",
             daysHoursMinutesDigital((difference(sd,et)), typeOfInput, Vls.Langs.ENGLISH)
         )
     }
@@ -1010,13 +1045,13 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>, index: In
 //        val endTime = durationType.endTime
 //
 //        if(durationType.type==DateTypes.AYYAAM_E_SHAKK_DUKHOOL){
-//            str += "${UnicodeChars.ORANGE_DIAMOND} <b><em>From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} is ${type}</em></b>\n\n"
+//            str += "${UnicodeChars.ORANGE_DIAMOND} <b><em>From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} is ${type}</em></b>\n\n"
 //        }else if (durationType.type==DateTypes.YAQEENI_PAKI){
-//            str += "${UnicodeChars.WHITE_DIAMOND} From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} is ${type}\n\n"
+//            str += "${UnicodeChars.WHITE_DIAMOND} From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} is ${type}\n\n"
 //        }else if (durationType.type==DateTypes.YAQEENI_NA_PAKI){
-//            str += "${UnicodeChars.RED_DIAMOND} From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} is ${type}\n\n"
+//            str += "${UnicodeChars.RED_DIAMOND} From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} is ${type}\n\n"
 //        }else if (durationType.type==DateTypes.AYYAAM_E_SHAKK_KHUROOJ){
-//            str += "${UnicodeChars.SNOWFLAKE} <b><em>From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)} is ${type}</em></b>\n\n"
+//            str += "${UnicodeChars.SNOWFLAKE} <b><em>From ${languagedDateFormat(startTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} to ${languagedDateFormat(endTime,TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH, timeZone)} is ${type}</em></b>\n\n"
 //        }
 //
 //    }

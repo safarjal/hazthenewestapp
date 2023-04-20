@@ -86,13 +86,13 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
-fun LocalDateTime.addTimeZone(tz: String = timezoneSelector.value) =
-    ZonedDateTime.of(this, ZoneId.of(tz.ifEmpty { "UTC" }))
+fun LocalDateTime.addTimeZone(tz: String?) =
+    ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
 
-fun String.getUTC(tz: String = timezoneSelector.value) = LocalDateTime.parse(this).addTimeZone(tz).toInstant()
-fun Instant.getLocal(tz: String = timezoneSelector.value) = LocalDateTime.ofInstant(this, ZoneId.of(tz))
+fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
+fun Instant.getLocal(tz: String?) = LocalDateTime.ofInstant(this, ZoneId.of(tz ?: "UTC"))
 
-fun String.instant(timezone: Boolean = false, tz: String = timezoneSelector.value): Instant {
+fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
     return if (isEmpty())
         Instant.EPOCH
     else if(!contains("T"))
@@ -108,8 +108,8 @@ fun String.instant(timezone: Boolean = false, tz: String = timezoneSelector.valu
 fun Instant.getMillisLong() = toEpochMilli().toLong()
 
 fun Int.leadingZero() = if (this < 10) "0$this" else toString()
-fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
-    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
+fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
+    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
@@ -213,11 +213,11 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
     return ""
 }
 
- fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
-     val localStr = date.getLocal()
+     val localStr = date.getLocal(timeZone)
      val day = localStr.dayOfMonth()
      val month = localStr.month()
      var hours = localStr.hour().toInt()

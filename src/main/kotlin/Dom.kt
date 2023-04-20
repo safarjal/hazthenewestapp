@@ -106,6 +106,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
     val isDateTime = inputContainerToCopyFrom?.isDateTime ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDateOnly = inputContainerToCopyFrom?.isDateOnly ?: IS_DEFAULT_INPUT_MODE_DATE_ONLY
     val isDuration = inputContainerToCopyFrom?.isDuration ?: !IS_DEFAULT_INPUT_MODE_DATE_ONLY
+
     div(classes = CssC.ROW) {
         makeLabel(Ids.Inputs.INPUT_TYPE_SELECT, Strings::typeOfInput)
         select {
@@ -121,7 +122,10 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
             makeLabel(Ids.Inputs.IS_DAYLIGHT_SAVINGS, Strings::isDaylightSavings)
             checkBoxInput {
                 id = Ids.Inputs.IS_DAYLIGHT_SAVINGS
-                onChangeFunction = {timezoneSelector.disabled = !timezoneSelector.disabled}
+                onChangeFunction = {
+                    val tzs = findInputContainer(it).timezoneSelect
+                    tzs.disabled = !tzs.disabled
+                }
             }
         }
         select {
