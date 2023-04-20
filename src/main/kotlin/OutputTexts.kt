@@ -323,72 +323,116 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
         val type = futureDate.futureDates
         when (type) {
             TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::haizend, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.haizend.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.END_OF_AADAT_TUHR -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::endofpaki, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.endofpaki.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.IC_FORBIDDEN_DATE -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::sexnotallowed, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.sexnotallowed.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.sexnotallowed.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.AFTER_TEN_DAYS -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::aftertendays, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.aftertendays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.FORTY_DAYS -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::afterfortydays, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.afterfortydays.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.afterfortydays.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethreemaslachanges, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethreemaslachanges.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethreemaslachanges.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethree, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.bleedingstopsbeforethree.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.bleedingstopsbeforethree.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.IHTIYATI_GHUSL -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::ihtiyatighusl, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.ihtiyatighusl.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.ihtiyatighusl.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::situationmaychange, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.situationmaychange.replace("date1", languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
                 strEnglish += StringsOfLanguages.ENGLISH.situationmaychange.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::beforetendaysayyameqabliyyaallconsideredhaiz, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.beforetendaysayyameqabliyyaallconsideredhaiz.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.beforetendaysayyameqabliyyaallconsideredhaiz.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA -> {
+                println("*******************")
+                println(arrayOf(strUrdu, strEnglish).replacement(Strings::endofistehazaayyameqabliyya, "date1", date, typeOfInput, timeZone))
                 strUrdu += StringsOfLanguages.URDU.endofistehazaayyameqabliyya.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone)
                 )
                 strEnglish += StringsOfLanguages.ENGLISH.endofistehazaayyameqabliyya.replace("date1",
                     languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone)
                 )
+                println(arrayOf(strUrdu, strEnglish))
+                println("=====================")
             }
             TypesOfFutureDates.TEN_DAYS_EXACTLY -> {
                 strUrdu+= StringsOfLanguages.URDU.tendaysdoghusl

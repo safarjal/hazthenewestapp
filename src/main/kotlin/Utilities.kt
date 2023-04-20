@@ -221,7 +221,6 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
      val day = localStr.dayOfMonth()
      val month = localStr.month()
      var hours = localStr.hour().toInt()
-     println("hrs: $hours")
      val minutesStr = localStr.minute().toInt().leadingZero()
 
      if(languageNames==Vls.Langs.ENGLISH){
@@ -266,6 +265,30 @@ fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong(
 
 fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
 fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
+
+fun replacement(urdu: String,
+                english: String,
+                old: String,
+                baseString: Strings.() -> String,
+                date: Instant,
+                typeOfInput: TypesOfInputs,
+                timeZone: String): Array<String> {
+    val newUrdu = urdu + StringsOfLanguages.URDU.baseString()
+        .replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+    val newEnglish = english + StringsOfLanguages.ENGLISH.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+    return arrayOf(newUrdu, newEnglish)
+}
+
+fun Array<String>.replacement(baseString: Strings.() -> String,
+                              old: String,
+                              date: Instant,
+                              typeOfInput: TypesOfInputs,
+                              timeZone: String): Array<String> {
+    this[0] += StringsOfLanguages.URDU.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+    this[1] += StringsOfLanguages.ENGLISH.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+    return arrayOf(this[0], this[1])
+}
+
 // VALS TO USE
 object Ids {
     const val LANGUAGE = "language"
