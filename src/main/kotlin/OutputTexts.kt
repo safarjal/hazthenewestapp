@@ -10,6 +10,7 @@ fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages
 
         //add line about previous habits
         val (ur1, en1) = replacement(Strings::preMaslaHabitOfHaizAndTuhr, PlcHolder.DUR1, preMaslaValues.inputtedAadatHaiz!!, TypesOfInputs.DURATION)
+            .replacement(PlcHolder.DUR2, preMaslaValues.inputtedAadatTuhr!!, TypesOfInputs.DURATION)
         urduStr += ur1
         englishStr += en1
         //add line about mawjooda paki
@@ -456,6 +457,7 @@ fun outputStringBiggerThan10HallDurations(
                 val (ur, en) = replacement(Strings::followedByHaizAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
+                //maybe we'll wanna add something about itibaar bil khawateem
             }else if(duration.type == DurationType.NIFAS){
                 strUrdu+= StringsOfLanguages.URDU.startingFromNifas
                 strEnglish+= StringsOfLanguages.ENGLISH.startingFromNifas
