@@ -456,6 +456,21 @@ object Vls {                                        // Values
     }
 }
 
+object PlcHolder {
+    const val DT1 = "date1"
+    const val DT2 = "date2"
+    const val DUR1 = "duration1"
+    const val DUR2 = "duration2"
+    const val DUR3 = "duration3"
+    const val FASID = "فاسد "
+    const val INVALID = "invalid "
+
+    object Msg {
+        const val NOT_BLOOD = "Not Blood"
+        const val PLACEHOLDER = "Placeholder"
+    }
+}
+
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
 const val MILLISECONDS_IN_AN_HOUR = 3600000
 const val MILLISECONDS_IN_A_MINUTE = 60000

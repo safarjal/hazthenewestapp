@@ -9,17 +9,17 @@ fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages
         preMaslaValues.inputtedMawjoodahTuhr!=null){//we have all 3 pre masla values
 
         //add line about previous habits
-        var (ur1, en1) = replacement(Strings::preMaslaHabitOfHaizAndTuhr, "duration1", preMaslaValues.inputtedAadatHaiz!!, TypesOfInputs.DURATION)
+        val (ur1, en1) = replacement(Strings::preMaslaHabitOfHaizAndTuhr, PlcHolder.DUR1, preMaslaValues.inputtedAadatHaiz!!, TypesOfInputs.DURATION)
         urduStr += ur1
         englishStr += en1
         //add line about mawjooda paki
-        var (ur2, en2) = replacement(Strings::preMaslaValueOfMawjoodaPaki, "duration1", preMaslaValues.inputtedMawjoodahTuhr!!, TypesOfInputs.DURATION)
+        val (ur2, en2) = replacement(Strings::preMaslaValueOfMawjoodaPaki, PlcHolder.DUR1, preMaslaValues.inputtedMawjoodahTuhr!!, TypesOfInputs.DURATION)
         urduStr += ur2
         englishStr += en2
         //remove the word fasid or invalid, if tuhr was saheeh
         if(!preMaslaValues.isMawjoodaFasid){//if tuhr is not fasid
-            urduStr=urduStr.replace("فاسد ", "")
-            englishStr=englishStr.replace("invalid ", "")
+            urduStr=urduStr.replace(PlcHolder.FASID, "")
+            englishStr=englishStr.replace(PlcHolder.INVALID, "")
         }
     }
     return OutputStringsLanguages(urduStr,englishStr)
@@ -37,7 +37,7 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
     englishStr+= generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone).englishString
 
 
-    return OutputTexts(englishStr,urduStr, "",hazDatesList,endingOutputValues, fixedDurations)
+    return OutputTexts(englishStr, urduStr, "", hazDatesList, endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
@@ -50,7 +50,7 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
-    return OutputTexts(englishStr,urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
+    return OutputTexts(englishStr, urduStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 endingOutputValues: EndingOutputValues,
@@ -120,7 +120,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                     strEnglish += StringsOfLanguages.ENGLISH.preg
                 }
                 if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                    val (ur, en) = replacement(Strings::birth, "date1", birthTime, typeOfInput, timeZone)
+                    val (ur, en) = replacement(Strings::birth, PlcHolder.DT1, birthTime, typeOfInput, timeZone)
                     strUrdu += ur
                     strEnglish += en
 
@@ -171,7 +171,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                     strEnglish += StringsOfLanguages.ENGLISH.preg
                 }
                 if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                    val (ur, en) = replacement(Strings::earlymiscarriage, "date1", birthTime, typeOfInput, timeZone)
+                    val (ur, en) = replacement(Strings::earlymiscarriage, PlcHolder.DT1, birthTime, typeOfInput, timeZone)
                     strUrdu += ur
                     strEnglish += en
                     if(index<fixedDurations.size-2){//if there is something after wiladat
@@ -313,37 +313,37 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
         val type = futureDate.futureDates
         when (type) {
             TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::haizend, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::haizend, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.END_OF_AADAT_TUHR -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::endofpaki, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::endofpaki, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.IC_FORBIDDEN_DATE -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::sexnotallowed, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::sexnotallowed, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.AFTER_TEN_DAYS -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::aftertendays, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::aftertendays, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.FORTY_DAYS -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::afterfortydays, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::afterfortydays, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethreemaslachanges, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethreemaslachanges, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.BEFORE_THREE_DAYS -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethree, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::bleedingstopsbeforethree, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.IHTIYATI_GHUSL -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::ihtiyatighusl, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::ihtiyatighusl, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::situationmaychange, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::situationmaychange, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::beforetendaysayyameqabliyyaallconsideredhaiz, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::beforetendaysayyameqabliyyaallconsideredhaiz, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA -> {
-                arrayOf(strUrdu, strEnglish).replacement(Strings::endofistehazaayyameqabliyya, "date1", date, typeOfInput, timeZone)
+                arrayOf(strUrdu, strEnglish).replacement(Strings::endofistehazaayyameqabliyya, PlcHolder.DT1, date, typeOfInput, timeZone)
             }
             TypesOfFutureDates.TEN_DAYS_EXACTLY -> {
                 strUrdu+= StringsOfLanguages.URDU.tendaysdoghusl
@@ -370,7 +370,7 @@ fun outputStringAadatLine(
         val aadatHaiz = aadats.aadatHaiz
         if(aadatHaiz==-1L && aadatTuhr==-1L){//neither haiz nor tuhr aadat exists
             if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
-                val (ur, en) = replacement(Strings::onlynifashabit, "duration1", aadats.aadatNifas!!, typeOfInput)
+                val (ur, en) = replacement(Strings::onlynifashabit, PlcHolder.DUR1, aadats.aadatNifas!!, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
 
@@ -380,38 +380,38 @@ fun outputStringAadatLine(
             }
         }else if(aadatHaiz!=-1L && aadatTuhr==-1L) {//aadat of haiz exists, but not aadat of tuhr
             if (aadats.aadatNifas != null && aadats.aadatNifas != -1L) {//adat nifas exists
-                val (ur, en) = replacement(Strings::nifasAndHaizHabit, "duration1", aadatHaiz, typeOfInput)
-                    .replacement("duration2", aadats.aadatNifas!!, typeOfInput)
+                val (ur, en) = replacement(Strings::nifasAndHaizHabit, PlcHolder.DUR1, aadatHaiz, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadats.aadatNifas!!, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
 
             } else {//adat nifas doesn't exists
-                val (ur, en) = replacement(Strings::aadatofhaizonly, "duration1", aadatHaiz, typeOfInput)
+                val (ur, en) = replacement(Strings::aadatofhaizonly, PlcHolder.DUR1, aadatHaiz, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }
         }else if(aadatHaiz==-1L && aadatTuhr!=-1L){//aadat tuhr exist and aadat haiz doesn;t exist
             if (aadats.aadatNifas != null && aadats.aadatNifas != -1L) {//adat nifas exists
-                val (ur, en) = replacement(Strings::nifasAndTuhrHabit, "duration1", aadatTuhr, typeOfInput)
-                    .replacement("duration2", aadats.aadatNifas!!, typeOfInput)
+                val (ur, en) = replacement(Strings::nifasAndTuhrHabit, PlcHolder.DUR1, aadatTuhr, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadats.aadatNifas!!, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }else{
-                val (ur, en) = replacement(Strings::onlyTuhrHabit, "duration1", aadatTuhr, typeOfInput)
-                    .replacement("duration2", aadatTuhr, typeOfInput)
+                val (ur, en) = replacement(Strings::onlyTuhrHabit, PlcHolder.DUR1, aadatTuhr, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadatTuhr, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }
         }else{//adats of haiz and tuhr exist
             if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
-                val (ur, en) = replacement(Strings::habitwithnifas, "duration1", aadatHaiz, typeOfInput)
-                    .replacement("duration2", aadatTuhr, typeOfInput)
-                    .replacement("duration3", aadats.aadatNifas!!, typeOfInput)
+                val (ur, en) = replacement(Strings::habitwithnifas, PlcHolder.DUR1, aadatHaiz, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadatTuhr, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadats.aadatNifas!!, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }else{//adat nifas doesn't exists
-                val (ur, en) = replacement(Strings::habitwithnifas, "duration1", aadatHaiz, typeOfInput)
-                    .replacement("duration2", aadatTuhr, typeOfInput)
+                val (ur, en) = replacement(Strings::habitwithnifas, PlcHolder.DUR1, aadatHaiz, typeOfInput)
+                    .replacement(PlcHolder.DUR2, aadatTuhr, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }
@@ -435,25 +435,25 @@ fun outputStringBiggerThan10HallDurations(
 
         for(duration in fixedDurations[index].biggerThanTen!!.durationsList){
             if(duration.type == DurationType.ISTIHAZA_BEFORE){
-                val (ur, en) = replacement(Strings::startingFromIstehaza, "duration1", duration.timeInMilliseconds, typeOfInput)
+                val (ur, en) = replacement(Strings::startingFromIstehaza, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }else if(duration.type == DurationType.HAIZ){
                 if(duration==fixedDurations[index].biggerThanTen!!.durationsList[0]){
-                    val (ur, en) = replacement(Strings::startingFromHaiz, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::startingFromHaiz, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                 }else{
-                    val (ur, en) = replacement(Strings::followedByHaizAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::followedByHaizAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                 }
             }else if(duration.type == DurationType.ISTIHAZA_AFTER){
-                val (ur, en) = replacement(Strings::followedByistehazaAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                val (ur, en) = replacement(Strings::followedByistehazaAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
-                val (ur, en) = replacement(Strings::followedByHaizAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                val (ur, en) = replacement(Strings::followedByHaizAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                 strUrdu += ur
                 strEnglish += en
             }else if(duration.type == DurationType.NIFAS){
@@ -478,16 +478,16 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     var strEnglish = ""
 
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        val (ur, en) = replacement(Strings::haizdaysinsolution, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", ed, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,ed)), typeOfInput)
+        val (ur, en) = replacement(Strings::haizdaysinsolution, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, ed, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
 
         return OutputStringsLanguages(ur, en)
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        val (ur, en) = replacement(Strings::istihazadays, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", ed, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,ed)), typeOfInput)
+        val (ur, en) = replacement(Strings::istihazadays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, ed, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
         return OutputStringsLanguages(ur, en)
     }
 
@@ -517,7 +517,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
                 DurationType.ISTIHAZA_AFTER -> {
                     strUrdu += istihazaLine(duration.startTime,duration.endDate,typeOfInput).urduString
                     strEnglish += istihazaLine(duration.startTime,duration.endDate,typeOfInput).englishString
-                    val (ur, en) = replacement(Strings::istihazadetailslinetwo, "date1", duration.startTime, typeOfInput, timeZone)
+                    val (ur, en) = replacement(Strings::istihazadetailslinetwo, PlcHolder.DT1, duration.startTime, typeOfInput, timeZone)
                     strUrdu += ur
                     strEnglish += en
                     strUrdu += StringsOfLanguages.URDU.istihazadetailslineone
@@ -529,7 +529,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
                     strEnglish+= haizLine(duration.startTime,duration.endDate,typeOfInput).englishString
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
-                else -> error("Not Blood")
+                else -> error(PlcHolder.Msg.NOT_BLOOD)
             }
         }
 
@@ -552,27 +552,27 @@ fun outputStringBiggerThan40HallDuration(
         for(duration in fixedDurations[index].biggerThanForty!!.durationsList){
             when (duration.type) {
                 DurationType.NIFAS -> {
-                    val (ur, en) = replacement(Strings::startingFromNifas, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::startingFromNifas, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                 }
                 DurationType.ISTIHAZA_AFTER -> {
-                    val (ur, en) = replacement(Strings::followedByistehazaAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::followedByistehazaAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                 }
                 DurationType.HAIZ -> {
-                    val (ur, en) = replacement(Strings::followedByHaizAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::followedByHaizAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                 }
                 DurationType.LESS_THAN_3_HAIZ -> {
-                    val (ur, en) = replacement(Strings::followedByHaizAfter, "duration1", duration.timeInMilliseconds, typeOfInput)
+                    val (ur, en) = replacement(Strings::followedByHaizAfter, PlcHolder.DUR1, duration.timeInMilliseconds, typeOfInput)
                     strUrdu += ur
                     strEnglish += en
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
-                else -> error("Not Blood")
+                else -> error(PlcHolder.Msg.NOT_BLOOD)
             }
         }
          }
@@ -591,22 +591,22 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
     var strEnglish = ""
 
     fun nifasLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        val (ur, en) = replacement(Strings::nifasdaysinsolution, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", ed, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,ed)), typeOfInput)
+        val (ur, en) = replacement(Strings::nifasdaysinsolution, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, ed, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
         return OutputStringsLanguages(ur, en)
     }
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        val (ur, en) = replacement(Strings::haizdaysinsolution, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", ed, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,ed)), typeOfInput)
+        val (ur, en) = replacement(Strings::haizdaysinsolution, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, ed, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
         return OutputStringsLanguages(ur, en)
 
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        val (ur, en) = replacement(Strings::istihazadays, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", ed, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,ed)), typeOfInput)
+        val (ur, en) = replacement(Strings::istihazadays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, ed, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
         return OutputStringsLanguages(ur, en)
     }
 
@@ -626,7 +626,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
                     strUrdu+= istihazaLine(duration.startTime,duration.endDate, typeOfInput).urduString
                     strEnglish+= istihazaLine(duration.startTime,duration.endDate, typeOfInput).englishString
 
-                    val (ur, en) = replacement(Strings::istihazadetailslinetwo, "date1", duration.startTime, typeOfInput, timeZone)
+                    val (ur, en) = replacement(Strings::istihazadetailslinetwo, PlcHolder.DT1, duration.startTime, typeOfInput, timeZone)
                     strUrdu += ur
                     strEnglish += en
 
@@ -644,7 +644,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
                     strEnglish+= haizLine(duration.startTime,duration.endDate,typeOfInput).englishString
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
-                else -> error("Not Blood")
+                else -> error(PlcHolder.Msg.NOT_BLOOD)
             }
         }
         strUrdu += StringsOfLanguages.URDU.dashesline
@@ -663,11 +663,11 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            val (ur, en) = replacement(Strings::durationHaiz, "duration1", difference(sd,et), typeOfInput)
+            val (ur, en) = replacement(Strings::durationHaiz, PlcHolder.DUR1, difference(sd,et), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }else{//bigger than 10
-            val (ur, en) = replacement(Strings::durationDam, "duration1", difference(sd,et), typeOfInput)
+            val (ur, en) = replacement(Strings::durationDam, PlcHolder.DUR1, difference(sd,et), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
@@ -676,59 +676,59 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
         fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
         val time = fixedDurations[index].timeInMilliseconds
-        val (ur, en) = replacement(Strings::durationPaki, "duration1", time, typeOfInput)
+        val (ur, en) = replacement(Strings::durationPaki, PlcHolder.DUR1, time, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
-            outputStringUrdu+=StringsOfLanguages.URDU.becamemutadah
-            outputStringEnglish+=StringsOfLanguages.ENGLISH.becamemutadah
+            outputStringUrdu += StringsOfLanguages.URDU.becamemutadah
+            outputStringEnglish += StringsOfLanguages.ENGLISH.becamemutadah
         }
 
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
-        val (ur, en) = replacement(Strings::durationTuhrefasid, "duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+        val (ur, en) = replacement(Strings::durationTuhrefasid, PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
-        val (ur, en) = replacement(Strings::durationTuhreFasidWithAddition, "duration1", fixedDurations[index].istihazaAfter, typeOfInput)
-            .replacement("duration2", (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+        val (ur, en) = replacement(Strings::durationTuhreFasidWithAddition, PlcHolder.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
+            .replacement(PlcHolder.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){
-            val (ur, en) = replacement(Strings::durationNifas, "duration1", difference(sd,et), typeOfInput)
+            val (ur, en) = replacement(Strings::durationNifas, PlcHolder.DUR1, difference(sd,et), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }else{//more than 40
-            val (ur, en) = replacement(Strings::durationDam, "duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+            val (ur, en) = replacement(Strings::durationDam, PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
         if(!isMustabeen){
             val time = fixedDurations[index].timeInMilliseconds
-            val (ur, en) = replacement(Strings::durationPaki, "duration1", time, typeOfInput)
+            val (ur, en) = replacement(Strings::durationPaki, PlcHolder.DUR1, time, typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!isMustabeen){
-            val (ur, en) = replacement(Strings::durationTuhreFasidWithAddition, "duration1", fixedDurations[index].istihazaAfter, typeOfInput)
-                .replacement("duration2", fixedDurations[index].timeInMilliseconds, typeOfInput)
-                .replacement("duration3", (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+            val (ur, en) = replacement(Strings::durationTuhreFasidWithAddition, PlcHolder.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
+                .replacement(PlcHolder.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput)
+                .replacement(PlcHolder.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-        println("Placeholder")
+        println(PlcHolder.Msg.PLACEHOLDER)
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
-        val (ur, en) = replacement(Strings::twomonthstuhr, "duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+        val (ur, en) = replacement(Strings::twomonthstuhr, PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
-        println("Placeholder")
+        println(PlcHolder.Msg.PLACEHOLDER)
     }
     return OutputStringsLanguages(outputStringUrdu, outputStringEnglish)
 }
@@ -744,22 +744,22 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            val (ur, en) = replacement(Strings::haizdays, "date1", sd, typeOfInput, timeZone)
-                .replacement("date2", et, typeOfInput, timeZone)
-                .replacement("duration1", (difference(sd,et)), typeOfInput)
+            val (ur, en) = replacement(Strings::haizdays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+                .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+                .replacement(PlcHolder.DUR1, (difference(sd,et)), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
-                val (ur, en) = replacement(Strings::continuosbleeding, "date1", sd, typeOfInput, timeZone)
-                    .replacement("date2", et, typeOfInput, timeZone)
-                    .replacement("duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+                val (ur, en) = replacement(Strings::continuosbleeding, PlcHolder.DT1, sd, typeOfInput, timeZone)
+                    .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+                    .replacement(PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
                 outputStringUrdu = ur
                 outputStringEnglish = en
             }else{
-                val (ur, en) = replacement(Strings::blooddays, "date1", sd, typeOfInput, timeZone)
-                    .replacement("date2", et, typeOfInput, timeZone)
-                    .replacement("duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+                val (ur, en) = replacement(Strings::blooddays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+                    .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+                    .replacement(PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
                 outputStringUrdu = ur
                 outputStringEnglish = en
             }
@@ -769,69 +769,69 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
         fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
         val time = fixedDurations[index].timeInMilliseconds
-        val (ur, en) = replacement(Strings::pakidays, "duration1", time, typeOfInput)
+        val (ur, en) = replacement(Strings::pakidays, PlcHolder.DUR1, time, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
-            outputStringUrdu+=StringsOfLanguages.URDU.becamemutadah
-            outputStringEnglish+=StringsOfLanguages.ENGLISH.becamemutadah
+            outputStringUrdu += StringsOfLanguages.URDU.becamemutadah
+            outputStringEnglish += StringsOfLanguages.ENGLISH.becamemutadah
         }
 
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
-        val (ur, en) = replacement(Strings::tuhrfasid, "duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+        val (ur, en) = replacement(Strings::tuhrfasid, PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
-        val (ur, en) = replacement(Strings::tuhrfasidwithaddition, "duration1", fixedDurations[index].istihazaAfter, typeOfInput)
-            .replacement("duration2", fixedDurations[index].timeInMilliseconds, typeOfInput)
-            .replacement("duration3", (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+        val (ur, en) = replacement(Strings::tuhrfasidwithaddition, PlcHolder.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
+            .replacement(PlcHolder.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput)
+            .replacement(PlcHolder.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days<=40){
-            val (ur, en) = replacement(Strings::nifasdays, "date1", sd, typeOfInput, timeZone)
-                .replacement("date2", et, typeOfInput, timeZone)
-                .replacement("duration1", difference(sd,et), typeOfInput)
+            val (ur, en) = replacement(Strings::nifasdays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+                .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+                .replacement(PlcHolder.DUR1, difference(sd,et), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }else{//more than 40
-            val (ur, en) = replacement(Strings::blooddays, "date1", sd, typeOfInput, timeZone)
-                .replacement("date2", et, typeOfInput, timeZone)
-                .replacement("duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+            val (ur, en) = replacement(Strings::blooddays, PlcHolder.DT1, sd, typeOfInput, timeZone)
+                .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+                .replacement(PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
         if(!mustabeen){
             val time = fixedDurations[index].timeInMilliseconds
-            val (ur, en) = replacement(Strings::pakidays, "duration1", time, typeOfInput)
+            val (ur, en) = replacement(Strings::pakidays, PlcHolder.DUR1, time, typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!mustabeen){
             val time = fixedDurations[index].timeInMilliseconds
-            val (ur, en) = replacement(Strings::tuhrfasidwithaddition, "duration1", fixedDurations[index].istihazaAfter, typeOfInput)
-                .replacement("duration2", fixedDurations[index].timeInMilliseconds, typeOfInput)
-                .replacement("duration3", (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+            val (ur, en) = replacement(Strings::tuhrfasidwithaddition, PlcHolder.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
+                .replacement(PlcHolder.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput)
+                .replacement(PlcHolder.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
             outputStringUrdu = ur
             outputStringEnglish = en
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-        println("Placeholder")
+        println(PlcHolder.Msg.PLACEHOLDER)
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
-        val (ur, en) = replacement(Strings::twomonthstuhr, "duration1", fixedDurations[index].timeInMilliseconds, typeOfInput)
+        val (ur, en) = replacement(Strings::twomonthstuhr, PlcHolder.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
-        val (ur, en) = replacement(Strings::daysayyameqabliyya, "date1", sd, typeOfInput, timeZone)
-            .replacement("date2", et, typeOfInput, timeZone)
-            .replacement("duration1", (difference(sd,et)), typeOfInput)
+        val (ur, en) = replacement(Strings::daysayyameqabliyya, PlcHolder.DT1, sd, typeOfInput, timeZone)
+            .replacement(PlcHolder.DT2, et, typeOfInput, timeZone)
+            .replacement(PlcHolder.DUR1, (difference(sd,et)), typeOfInput)
         outputStringUrdu = ur
         outputStringEnglish = en
     }
