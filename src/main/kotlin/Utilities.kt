@@ -216,11 +216,11 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
  fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-     val localstring = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
-     val day = localstring.dayOfMonth()
-     val month = localstring.month()
-     var hours = localstring.hour().toInt()
-     val minutesStr = localstring.minute().toInt().leadingZero()
+     val localStr = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
+     val day = localStr.dayOfMonth()
+     val month = localStr.month()
+     var hours = localStr.hour().toInt()
+     val minutesStr = localStr.minute().toInt().leadingZero()
 
      if(languageNames==Vls.Langs.ENGLISH){
 //         2023-04-02T00:22:00Z
