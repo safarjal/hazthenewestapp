@@ -90,7 +90,7 @@ fun LocalDateTime.addTimeZone(tz: String?) =
     ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
 
 fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
-fun Instant.getLocal(tz: String?) = LocalDateTime.ofInstant(this, ZoneId.of(tz ?: "UTC"))
+//fun Instant.getLocal(tz: String = "UTC") = LocalDateTime.ofInstant(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
 fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
     return if (isEmpty())
@@ -213,10 +213,10 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
     return ""
 }
 
- fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-     val localstring = LocalDateTime.ofInstant(date, ZoneId.UTC)
+     val localstring = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
      val day = localstring.dayOfMonth()
      val month = localstring.month()
      var hours = localstring.hour().toInt()
