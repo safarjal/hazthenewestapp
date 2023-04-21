@@ -84,8 +84,8 @@ fun generateHazDatesStr(hazDatesList: MutableList<Entry>,typeOfInput: TypesOfInp
 }
 
 fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
-                                           pregnancy: Pregnancy, 
-                                           endingOutputValues: EndingOutputValues, 
+                                           pregnancy: Pregnancy,
+                                           endingOutputValues: EndingOutputValues,
                                            typeOfInput: TypesOfInputs,
                                            timeZone: String):OutputStringsLanguages{
     val mustabeen = pregnancy.mustabeenUlKhilqat

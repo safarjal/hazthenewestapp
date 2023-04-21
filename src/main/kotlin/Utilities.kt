@@ -90,7 +90,7 @@ fun LocalDateTime.addTimeZone(tz: String?) =
     ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
 
 fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
-fun Instant.getLocal(tz: String?) = LocalDateTime.ofInstant(this, ZoneId.of(tz ?: "UTC"))
+//fun Instant.getLocal(tz: String = "UTC") = LocalDateTime.ofInstant(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
 fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
     return if (isEmpty())
@@ -108,8 +108,8 @@ fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
 fun Instant.getMillisLong() = toEpochMilli().toLong()
 
 fun Int.leadingZero() = if (this < 10) "0$this" else toString()
-fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
-    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
+fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
+    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
@@ -216,12 +216,10 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
  fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-
-     val localStr = date.getLocal(timeZone)
+     val localStr = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
      val day = localStr.dayOfMonth()
      val month = localStr.month()
      var hours = localStr.hour().toInt()
-     println("hrs: $hours")
      val minutesStr = localStr.minute().toInt().leadingZero()
 
      if(languageNames==Vls.Langs.ENGLISH){

@@ -110,7 +110,7 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
         endingOutputValues,
         allTheInputs.typeOfInput,
         allTheInputs.preMaslaValues,
-        allTheInputs.timeZone)
+        allTheInputs.timeZone ?: "UTC")
 
 }
 fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
@@ -179,7 +179,7 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
         allTheInputs.pregnancy,
         endingOutputValues,
         allTheInputs.typeOfInput,
-        allTheInputs.timeZone)
+        allTheInputs.timeZone ?: "UTC")
 
 }
 fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
@@ -228,7 +228,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         allTheInputs.pregnancy,
         endingOutputValues,
         allTheInputs.typeOfInput,
-        allTheInputs.timeZone)
+        allTheInputs.timeZone ?: "UTC")
 
 }
 fun handleMutadah(allTheInputs: AllTheInputs,
@@ -269,7 +269,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,
         endingOutputValues,
         allTheInputs.typeOfInput,
         allTheInputs.preMaslaValues,
-        allTheInputs.timeZone)
+        allTheInputs.timeZone ?: "UTC")
 
 }
 
