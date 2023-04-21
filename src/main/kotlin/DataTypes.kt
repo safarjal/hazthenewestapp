@@ -2,20 +2,9 @@
 
 import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
-import kotlinx.serialization.*
+//import kotlinx.serialization.*
 import kotlin.js.Date
 import kotlin.random.Random
-
-//object DateAsLongSerializer : KSerializer<Date> {
-//    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
-//    override fun serialize(encoder: Encoder, value: Date) {
-//        encoder.encodeLong(value.getTime().toLong())
-//    }
-//
-//    override fun deserialize(decoder: Decoder): Date {
-//        return Date(decoder.decodeLong())
-//    }
-//}
 
 data class Strings(
     val answer: String,
@@ -144,7 +133,7 @@ data class AllTheInputs(
 )
 
 // Todo: make proper uid
-@Serializable
+//@Serializable
 data class SaveData(
     val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
@@ -155,22 +144,20 @@ data class SaveData(
     val others: OtherValues? = null,
 )
 
-@Serializable
+//@Serializable
 data class SaveEntries(
     val startTime: String,
     val endTime: String,
 )
 
-@Serializable
+//@Serializable
 data class OtherValues(
     val question: String? = null,
     var aadatHaiz: String? = null,
     var aadatTuhr: String? = null,
     var mawjoodahTuhr: String? = null,
     var isMawjoodaFasid: Boolean? = false,
-//    @Serializable(with = DateAsLongSerializer::class)
     val pregStartTime: String? = null,
-//    @Serializable(with = DateAsLongSerializer::class)
     val birthTime: String? = null,
     val aadatNifas: String? = null,
     val mustabeenUlKhilqat: Boolean? = false,
@@ -375,6 +362,11 @@ data class AadatAfterIndexOfFixedDuration(
 data class OutputStringsLanguages(
     var urduString:String,
     var englishString: String
+)
+
+data class BuildStrings(
+    var urduString:String = "",
+    var englishString: String = ""
 )
 
 data class TzInfo (

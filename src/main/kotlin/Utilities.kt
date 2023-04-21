@@ -266,51 +266,64 @@ fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong(
 fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
 fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
 
-fun replacement(baseString: Strings.() -> String,
-                old: String,
-                date: Instant,
-                typeOfInput: TypesOfInputs,
-                timeZone: String): Array<String> {
-    val urdu = StringsOfLanguages.URDU.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
-    val english = StringsOfLanguages.ENGLISH.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
-    return arrayOf(urdu, english)
+fun newBuild(annoy: Int): BuildStrings {
+    val ur = annoy.toString()
+    val en = annoy.toString()
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.addStrings(annoy: Int): BuildStrings {
+    val ur = annoy.toString()
+    val en = annoy.toString()
+    return BuildStrings(ur, en)
+}
+fun newBuild(baseString: Strings.() -> String): BuildStrings {
+    val ur = StringsOfLanguages.URDU.baseString()
+    val en = StringsOfLanguages.ENGLISH.baseString()
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.add(newBuildStrings: BuildStrings): BuildStrings {
+    val ur = urduString + newBuildStrings.urduString
+    val en = englishString + newBuildStrings.englishString
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.add(outputStrings: OutputStringsLanguages): BuildStrings {
+    val ur = urduString + outputStrings.urduString
+    val en = englishString + outputStrings.englishString
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.addStr(string: String): BuildStrings {
+    val ur = urduString + string
+    val en = englishString + string
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.addStrings(baseString: Strings.() -> String): BuildStrings {
+    val ur = urduString + StringsOfLanguages.URDU.baseString()
+    val en = englishString + StringsOfLanguages.ENGLISH.baseString()
+    return BuildStrings(ur, en)
 }
 
-fun replacement(baseString: Strings.() -> String,
-                old: String,
-                millis: Long,
-                typeOfInput: TypesOfInputs): Array<String> {
-    val urdu = StringsOfLanguages.URDU.baseString().replace(old, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
-    val english = StringsOfLanguages.ENGLISH.baseString().replace(old, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
-    return arrayOf(urdu, english)
+fun BuildStrings.replace(oldUr: String, newUr:String, oldEn: String, newEn: String): BuildStrings {
+    val ur = urduString.replace(oldUr, newUr)
+    val en = englishString.replace(oldEn, newEn)
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.replaceDT(placeholder: String,
+                           date: Instant,
+                           typeOfInput: TypesOfInputs,
+                           timeZone: String): BuildStrings {
+    val ur = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+    val en = englishString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+    return BuildStrings(ur, en)
+}
+fun BuildStrings.replaceDur(placeholder: String,
+                    millis: Long,
+                    typeOfInput: TypesOfInputs): BuildStrings {
+    val ur = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
+    val en = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
+    return BuildStrings(ur, en)
 }
 
-fun Array<String>.replacement(baseString: Strings.() -> String,
-                              old: String,
-                              date: Instant,
-                              typeOfInput: TypesOfInputs,
-                              timeZone: String): Array<String> {
-    this[0] += StringsOfLanguages.URDU.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
-    this[1] += StringsOfLanguages.ENGLISH.baseString().replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
-    return arrayOf(this[0], this[1])
-}
-
-fun Array<String>.replacement(old: String,
-                              date: Instant,
-                              typeOfInput: TypesOfInputs,
-                              timeZone: String): Array<String> {
-    this[0] = this[0].replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
-    this[1] = this[1].replace(old, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
-    return arrayOf(this[0], this[1])
-}
-
-fun Array<String>.replacement(old: String,
-                              millis: Long,
-                              typeOfInput: TypesOfInputs): Array<String> {
-    this[0] = this[0].replace(old, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
-    this[1] = this[1].replace(old, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
-    return arrayOf(this[0], this[1])
-}
+fun BuildStrings.convert(): OutputStringsLanguages = OutputStringsLanguages(urduString, englishString)
 
 // VALS TO USE
 object Ids {

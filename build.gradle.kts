@@ -24,7 +24,6 @@ dependencies {
     implementation("io.ktor:ktor-client-js:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-//    implementation("com.benasher44:uuid:0.6.0")
 }
 
 kotlin {
