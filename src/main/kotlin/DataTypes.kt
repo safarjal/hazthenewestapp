@@ -360,12 +360,7 @@ data class AadatAfterIndexOfFixedDuration(
 )
 
 data class OutputStringsLanguages(
-    var urduString:String,
-    var englishString: String
-)
-
-data class BuildStrings(
-    var urduString:String = "",
+    var urduString: String = "",
     var englishString: String = ""
 )
 

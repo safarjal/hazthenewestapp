@@ -266,64 +266,47 @@ fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong(
 fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
 fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
 
-fun newBuild(annoy: Int): BuildStrings {
-    val ur = annoy.toString()
-    val en = annoy.toString()
-    return BuildStrings(ur, en)
-}
-fun BuildStrings.addStrings(annoy: Int): BuildStrings {
-    val ur = annoy.toString()
-    val en = annoy.toString()
-    return BuildStrings(ur, en)
-}
-fun newBuild(baseString: Strings.() -> String): BuildStrings {
+fun baseStr(baseString: Strings.() -> String): OutputStringsLanguages {
     val ur = StringsOfLanguages.URDU.baseString()
     val en = StringsOfLanguages.ENGLISH.baseString()
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
-fun BuildStrings.add(newBuildStrings: BuildStrings): BuildStrings {
-    val ur = urduString + newBuildStrings.urduString
-    val en = englishString + newBuildStrings.englishString
-    return BuildStrings(ur, en)
+fun OutputStringsLanguages.add(out: OutputStringsLanguages): OutputStringsLanguages {
+    val ur = urduString + out.urduString
+    val en = englishString + out.englishString
+    return OutputStringsLanguages(ur, en)
 }
-fun BuildStrings.add(outputStrings: OutputStringsLanguages): BuildStrings {
-    val ur = urduString + outputStrings.urduString
-    val en = englishString + outputStrings.englishString
-    return BuildStrings(ur, en)
-}
-fun BuildStrings.addStr(string: String): BuildStrings {
+fun OutputStringsLanguages.addStr(string: String): OutputStringsLanguages {
     val ur = urduString + string
     val en = englishString + string
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
-fun BuildStrings.addStrings(baseString: Strings.() -> String): BuildStrings {
+fun OutputStringsLanguages.addStrings(baseString: Strings.() -> String): OutputStringsLanguages {
     val ur = urduString + StringsOfLanguages.URDU.baseString()
     val en = englishString + StringsOfLanguages.ENGLISH.baseString()
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
 
-fun BuildStrings.replace(oldUr: String, newUr:String, oldEn: String, newEn: String): BuildStrings {
+fun OutputStringsLanguages.replace(oldUr: String, newUr:String, oldEn: String, newEn: String): OutputStringsLanguages {
     val ur = urduString.replace(oldUr, newUr)
     val en = englishString.replace(oldEn, newEn)
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
-fun BuildStrings.replaceDT(placeholder: String,
-                           date: Instant,
-                           typeOfInput: TypesOfInputs,
-                           timeZone: String): BuildStrings {
+fun OutputStringsLanguages.replaceDT(placeholder: String,
+                                     date: Instant,
+                                     typeOfInput: TypesOfInputs,
+                                     timeZone: String): OutputStringsLanguages {
     val ur = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
     val en = englishString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
-fun BuildStrings.replaceDur(placeholder: String,
-                    millis: Long,
-                    typeOfInput: TypesOfInputs): BuildStrings {
+fun OutputStringsLanguages.replaceDur(placeholder: String,
+                                      millis: Long,
+                                      typeOfInput: TypesOfInputs): OutputStringsLanguages {
     val ur = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
     val en = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
-    return BuildStrings(ur, en)
+    return OutputStringsLanguages(ur, en)
 }
-
-fun BuildStrings.convert(): OutputStringsLanguages = OutputStringsLanguages(urduString, englishString)
 
 // VALS TO USE
 object Ids {
