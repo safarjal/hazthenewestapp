@@ -2,6 +2,7 @@
 
 import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
 import kotlin.js.Date
 import kotlin.random.Random
@@ -211,7 +212,10 @@ data class Entry(
     val startTime: Instant,
     val endTime: Instant
 )
-
+data class LocalEntry(
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime
+)
 enum class TypesOfFutureDates {
     A3_CHANGING_TO_A2,
     END_OF_AADAT_HAIZ,

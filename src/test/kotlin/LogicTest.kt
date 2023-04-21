@@ -1,6 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -4190,6 +4191,77 @@ class LogicTest {
         val expectedOutputUrdu = "0 دن"
         assertEquals(outputUrdu, expectedOutputUrdu)
     }
+    @Test
+    fun test1ForDaylightSaving() {
+//        This is in America
+//        Clocks went back one hour on November 6 2022
+//        And one hour ahead on March 12 2023
+//        Since last message, dates of bleeding have been:
+//        ♦12 Oct 9:14pm - 21 Oct 1:05pm
+//        ♦3 Nov 9am - 13 Nov 8:11pm
+//        ♦30 Nov 9:57am - 8 Dec 2:30pm
+//        ♦23 Dec 3:40pm - 3 Jan 1:40pm
+//        ♦18 Jan 10:05am - 26 Jan 4:15pm
+//        ♦9 Feb 2:03pm - 19 Feb 11:31am
+//        ♦8 Mar 11:15am - 18 Mar 11:50pm
+//        ♦2 Apr 10pm - current
+//
+//        Previous habit:
+//        - 18T 14H 17M
+//                - 6B 16H 11M
+//                (T= tuhur B= blood H= hours M = minutes)
+//        ♦12 Oct 9:14pm - 17 Oct 8:44am
+//        (New bleeding habit: 4B 11H 30M)
+//        ♦4 Nov 11:01pm - 9 Nov 9:31am (due to dst) clocks went back an hour on November 6
+//        ♦30 Nov 9:57am - 8 Dec 2:30pm
+//        (New bleeding habit: 8B 4H 33M)
+//        ♦27 Dec 4:47am - 4 Jan 9:20am
+//        ♦22 Jan 11:37pm - 31 Jan 4:10am
+//        🔸Feb: no Haidh since less than 3 days bleeding in makan
+//        ♦8 Mar 11:15am - 16 Mar 4:48pm (due to dst) clocks went forward an hour on March 12
+//        ♦4 Apr 7:05am - 12 Apr 11:38am (if still bleeding)
+
+        val timzn = "America/Los_Angeles"
+
+        val entries = listOf<Entry>(
+            Entry(realInstant(2022,10,12,21,14,true, timzn), realInstant(2022, 10, 21,13,5,true, timzn)),
+            Entry(realInstant(2022,11,3,9,0,true, timzn), realInstant(2022, 11, 13,20,11,true, timzn)),
+            Entry(realInstant(2022,11,30,9,57,true, timzn), realInstant(2022, 12, 8,14,30,true, timzn)),
+            Entry(realInstant(2022,12,23,15,40,true, timzn), realInstant(2023, 1, 3,13,40,true, timzn)),
+            Entry(realInstant(2023,1,18,10,5,true, timzn), realInstant(2023, 1, 26,16,15,true, timzn)),
+            Entry(realInstant(2023,2,9,14,3,true, timzn), realInstant(2023, 2, 19,11,31,true, timzn)),
+            Entry(realInstant(2023,3,8,11,15,true, timzn), realInstant(2023, 3, 18,23,50,true, timzn)),
+            Entry(realInstant(2023,4,2,22,0,true, timzn), realInstant(2023, 4, 12,11,38,true, timzn)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                typeOfInput = TypesOfInputs.DATE_AND_TIME,
+                preMaslaValues = PreMaslaValues(parseDays("4:11:30"),parseDays("18:14:17"), parseDays("18:14:17"),false),
+                timeZone = timzn
+
+            )
+        )
+        val localHazDates = localHazDatesList(output.hazDatesList,timzn)
+        println(localHazDates)
+
+        val expectedlocalHazDates = listOf<LocalEntry>(
+            LocalEntry(LocalDateTime.of(2022,10,12,21,14), LocalDateTime.of(2022,10,17,8,44)),
+            LocalEntry(LocalDateTime.of(2022,11,4,23,1),LocalDateTime.of(2022,11,9,9,31)),
+            LocalEntry(LocalDateTime.of(2022,11,30,9,57),LocalDateTime.of(2022,12,8,14,30)),
+            LocalEntry(LocalDateTime.of(2022,12,27,4,47),LocalDateTime.of(2023,1, 4, 9,20,)),
+            LocalEntry(LocalDateTime.of(2023,1,22,23,37),LocalDateTime.of(2023,1,31,4,10)),
+            LocalEntry(LocalDateTime.of(2023,3,8,11,15),LocalDateTime.of(2023,3,16,16,48)),
+            LocalEntry(LocalDateTime.of(2023,4,4,7,5),LocalDateTime.of(2023,4,12,11,38)),
+        )
+        for(i in localHazDates.indices){
+            assertEquals(localHazDates[i].startTime,expectedlocalHazDates[i].startTime)
+            assertEquals(localHazDates[i].endTime,expectedlocalHazDates[i].endTime)
+        }
+        assertEquals(localHazDates.size,expectedlocalHazDates.size)
+    }
+
     @Test
     fun testDurationsMawjoodahPaki() {
         var durations = listOf<Duration>(
