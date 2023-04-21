@@ -4,14 +4,9 @@ import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.js.Date
 
-/* TODO: MAKE TIMEZONE TESTS.
-    This  would be done by giving a timezone info, which can be found in tzStrings.
-    Then you would just say, instant(yr, mth, d, hr, m, true).
-    Alternately, you can alter the fun instant() to have a timezone sting input which would be empty by default.
-    It would be passed along to the .instant(timezone) as ==> .instant(timezoneBool, timezoneString)
- */
-/* TODO 2: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
+/* TODO: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
     AS SUCH, IF YOU FEEL LIKE IT, YOU CAN MOVE BACK ALL THE MONTH NUMBERS AND
     REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
  */
