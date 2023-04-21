@@ -110,6 +110,8 @@ fun Instant.getMillisLong() = toEpochMilli().toLong()
 fun Int.leadingZero() = if (this < 10) "0$this" else toString()
 fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
     ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
+fun realInstant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, tz: Boolean = false, tzStr: String = ""): Instant =
+    ("$year-${(month).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tz,tzStr)
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
@@ -211,6 +213,14 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         return returnStatement.trim().trimEnd()
     }
     return ""
+}
+fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntry>{
+    return hazDatesList.map { entry ->
+        LocalEntry(
+            LocalDateTime.ofInstant(entry.startTime, ZoneId.of(tz)),
+            LocalDateTime.ofInstant(entry.endTime, ZoneId.of(tz))
+        )
+    }
 }
 
  fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
