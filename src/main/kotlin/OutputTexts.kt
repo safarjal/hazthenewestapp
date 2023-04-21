@@ -193,10 +193,7 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
                            typeOfInput: TypesOfInputs,
                            timeZone: String):OutputStringsLanguages{
     val aadats = endingOutputValues.aadats
-
-//    TODO: FIX
     val newStr = outputStringAadatLine(typeOfInput, aadats)
-
     if (typeOfInput==TypesOfInputs.DURATION) { return newStr }
 
     val filHaal = endingOutputValues.filHaalPaki
@@ -210,15 +207,10 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
     return newStr
 }
 fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
-//    TODO: LATER
-    val filHaalPakiStrUrdu = StringsOfLanguages.URDU.currentpaki
-    val filHaalPakiStrEnglish = StringsOfLanguages.ENGLISH.currentpaki
-    val filHaalHaizStrUrdu = StringsOfLanguages.URDU.currenthaiz
-    val filHaalHaizStrEnglish = StringsOfLanguages.ENGLISH.currenthaiz
     when (filHaalPaki) {
-        true -> return OutputStringsLanguages(filHaalPakiStrUrdu, filHaalPakiStrEnglish)
-        false -> return OutputStringsLanguages(filHaalHaizStrUrdu, filHaalHaizStrEnglish)
-        null -> return OutputStringsLanguages("", "")
+        true -> return baseStr(Strings::currentpaki)
+        false -> return baseStr(Strings::currenthaiz)
+        null -> return OutputStringsLanguages()
 
 //    //right now, we are just going to check to see what last halat is
 //    var istihazaAfter = fixedDurations[index].biggerThanTen?.istihazaAfter ?: return ""
