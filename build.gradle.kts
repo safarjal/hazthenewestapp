@@ -11,20 +11,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-js:1.8.10")
+    testImplementation(kotlin("test"))
+    implementation(kotlin("stdlib-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-html:0.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.4")
     implementation(npm("html2canvas", "1.4.1"))
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation(npm("@js-joda/timezone", "2.3.0"))
 
-//    val ktorVersion = "2.2.1"
-//    implementation("io.ktor:ktor-client-core:$ktorVersion")
-//    implementation("io.ktor:ktor-client-js:$ktorVersion")
-//    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-//    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-////    implementation("com.benasher44:uuid:0.6.0")
+    val ktorVersion = "2.2.1"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-js:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+//    implementation("com.benasher44:uuid:0.6.0")
 }
 
 kotlin {

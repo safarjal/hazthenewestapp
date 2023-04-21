@@ -2,40 +2,40 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="4" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp">
+      <configuration version="5" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId="hazthenewestapp">
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <productionOutputPath>$MODULE_DIR$/../../build/classes/kotlin/main</productionOutputPath>
         <compilerSettings>
-          <option name="additionalArguments" value="-Xir-module-name=me.safar:hazthenewestapp -Xir-only -Xir-per-module-output-name=hazthenewestapp -Xir-produce-klib-dir -opt-in kotlin.RequiresOptIn" />
+          <option name="additionalArguments" value="-Xir-only -Xir-per-module-output-name=hazthenewestapp -Xir-produce-klib-dir -Xir-module-name=me.safar:hazthenewestapp -opt-in kotlin.RequiresOptIn" />
         </compilerSettings>
         <compilerArguments>
-          <option name="outputFile" value="$MODULE_DIR$/../../build/classes/kotlin/main" />
-          <option name="noStdlib" value="true" />
-          <option name="sourceMap" value="true" />
-          <option name="sourceMapEmbedSources" value="never" />
-          <option name="metaInfo" value="true" />
-          <option name="target" value="v5" />
-          <option name="moduleKind" value="umd" />
-          <option name="main" value="call" />
-          <option name="languageVersion" value="1.7" />
-          <option name="apiVersion" value="1.7" />
-          <option name="pluginOptions">
-            <array />
-          </option>
-          <option name="pluginClasspaths">
-            <array>
-              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.7.21/f669044cea0f3007b28d48fdbb67efb1606cec17/kotlin-gradle-plugin-api-1.7.21.jar" />
-              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-native-utils/1.7.21/ad1f260f6458e25318bd161dfc817f2576817ccd/kotlin-native-utils-1.7.21.jar" />
-              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-project-model/1.7.21/d661b8ef85d36b133eea757a50df6b6d581827af/kotlin-project-model-1.7.21.jar" />
-              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-tooling-core/1.7.21/19c84dd609449479dd647cfb8b885f6430501a21/kotlin-tooling-core-1.7.21.jar" />
-              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-util-io/1.7.21/6189c4d41042a074ec2c8d70648ddfd4f97f9880/kotlin-util-io-1.7.21.jar" />
-              <option value="$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar" />
-            </array>
-          </option>
-          <option name="multiPlatform" value="true" />
-          <option name="errors">
-            <ArgumentParseErrors />
-          </option>
+          <flagArguments>
+            <flagArg name="metaInfo" arg="true" />
+            <flagArg name="noStdlib" arg="true" />
+            <flagArg name="sourceMap" arg="true" />
+          </flagArguments>
+          <stringArguments>
+            <stringArg name="main" arg="call" />
+            <stringArg name="moduleKind" arg="umd" />
+            <stringArg name="outputFile" arg="$MODULE_DIR$/../../build/classes/kotlin/main" />
+            <stringArg name="sourceMapEmbedSources" arg="never" />
+            <stringArg name="target" arg="v5" />
+            <stringArg name="apiVersion" arg="1.7" />
+            <stringArg name="languageVersion" arg="1.7" />
+          </stringArguments>
+          <arrayArguments>
+            <arrayArg name="pluginClasspaths">
+              <args>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.7.21/f669044cea0f3007b28d48fdbb67efb1606cec17/kotlin-gradle-plugin-api-1.7.21.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-native-utils/1.7.21/ad1f260f6458e25318bd161dfc817f2576817ccd/kotlin-native-utils-1.7.21.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-project-model/1.7.21/d661b8ef85d36b133eea757a50df6b6d581827af/kotlin-project-model-1.7.21.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-tooling-core/1.7.21/19c84dd609449479dd647cfb8b885f6430501a21/kotlin-tooling-core-1.7.21.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-util-io/1.7.21/6189c4d41042a074ec2c8d70648ddfd4f97f9880/kotlin-util-io-1.7.21.jar</arg>
+                <arg>$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar</arg>
+              </args>
+            </arrayArg>
+            <arrayArg name="pluginOptions" />
+          </arrayArguments>
         </compilerArguments>
       </configuration>
     </facet>
