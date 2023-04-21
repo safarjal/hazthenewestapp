@@ -224,7 +224,7 @@ fun FlowContent.makeTextAreaInput(inputId: String, height: String = "auto", bloc
 }
 
 fun TagConsumer<HTMLElement>.makeTzOptions() {
-    tzStrings.forEach {
+    dtStrings.forEach {
         option {
             value = it.tz
             id = it.tz
