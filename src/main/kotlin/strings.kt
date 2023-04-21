@@ -259,6 +259,12 @@ object StringsOfLanguages{
     val ENGLISH: Strings = englishStrings
 }
 
+var dtStrings = arrayOf (
+    TzInfo("(GMT-08:00) US & Canada","America/Los_Angeles"),
+    TzInfo("(GMT+00:00) Europe","Etc/Greenwich"),
+    TzInfo("(GMT+10:00) Australia","Australia/Canberra"),
+)
+
 var tzStrings = arrayOf <TzInfo> (
     TzInfo("(GMT-12:00) International Date Line West","Etc/GMT+12"),
     TzInfo("(GMT-11:00) Midway Island, Samoa","Pacific/Midway"),

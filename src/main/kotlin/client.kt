@@ -197,6 +197,8 @@ fun parseEntries(inputContainer: HTMLElement) {
             isMustabeen
         )
 
+        val timezone = timezoneSelect.value
+
         var allTheInputs=AllTheInputs()
 
         if(typesOfInputs==TypesOfInputs.DURATION){
@@ -218,8 +220,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                 pregnancy,
                 typesOfInputs,
                 languageSelected,
-                timezoneSelect.value,
-                ikhtilaafaat)
+                ikhtilaafaat,
+                timezone
+                )
             allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
         }else{
             entries = haizInputDatesRows.map { row ->
@@ -235,8 +238,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                 pregnancy,
                 typesOfInputs,
                 languageSelected,
-                timezoneSelect.value,
-                ikhtilaafaat)
+                ikhtilaafaat,
+                timezone
+                )
         }
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
@@ -442,7 +446,6 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
         newPregnancy,
         TypesOfInputs.DURATION,
         allTheOriginalInputs.language,
-        allTheOriginalInputs.timeZone,
         allTheOriginalInputs.ikhtilaafaat
     )
 }

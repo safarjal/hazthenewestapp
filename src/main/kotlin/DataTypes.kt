@@ -125,11 +125,11 @@ data class AllTheInputs(
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language: String = Vls.Langs.URDU,
-    val timeZone: String = "UTC",
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(true,
         false,
         false,
         false),
+    val timeZone: String? = "UTC",
 )
 
 // Todo: make proper uid
