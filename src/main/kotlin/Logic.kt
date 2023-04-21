@@ -70,10 +70,9 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
             allTheInputs.ikhtilaafaat,
             allTheInputs.preMaslaValues,
             allTheInputs.language
-        )
-        if(aadats==null){ return NO_OUTPUT }
+        ) ?: return NO_OUTPUT
         markAllMubtadiaDamsAndTuhrsAsMubtadia(fixedDurations, allTheInputs.ikhtilaafaat.mubtadiaIkhitilaf)
-        //if we got aadats, the we run this portion
+        //if we got aadats, then we run this portion
         if (aadats.aadatHaiz!=-1L && aadats.aadatTuhr!=-1L){
             dealWithBiggerThan10Dam(
                 fixedDurations,
@@ -197,7 +196,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         fixedDurations,
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L,
         allTheInputs.preMaslaValues.isMawjoodaFasid
-    )//this won'e effect dam in haml
+    )//this won't affect dam in haml
     allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
     allTheInputs.preMaslaValues.isMawjoodaFasid=newMawjoodaPakiValues.isMawjoodaFasid
     addStartDateToFixedDurations(fixedDurations)
@@ -381,7 +380,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
             var istehazaBefore: Long = 0
             var haiz:Long
             var istehazaAfter:Long
-            //if there is an addat of tuhr, we would not be in mubtadia any more, so check iztirari
+            //if there is an addat of tuhr, we would not be in mubtadia anymore, so check iztirari
             var mawjoodahTuhr=-1L
             if(i>0 &&
                 (fixedDurations[i-1].type==DurationType.TUHR||
@@ -544,8 +543,7 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
     var i = 0
     while (i<fixedDurations.size){
         val startTime = fixedDurations[i].startDate.getMillisLong()
-        if(startTime>=birthDate &&
-                startTime<=fortyPlusBD &&
+        if(startTime in birthDate..fortyPlusBD &&
                 fixedDurations[i].type == DurationType.DAM){
             //if a dam starts after or at birth, and before or at 40
             //then check the dam before it if it exists, is it in nifas period.
@@ -558,7 +556,7 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
                 fixedDurations.removeAt(i-1)
                 i -= 2
             }else{//there is no dam before this in nifas period
-                val newDuration:Long = startTime.toLong()-birthDate
+                val newDuration:Long = startTime - birthDate
                 fixedDurations[i].startDate=pregnancy.birthTime
                 fixedDurations[i].timeInMilliseconds += newDuration
                 fixedDurations[i].type = DurationType.DAM_IN_NIFAS_PERIOD
@@ -637,7 +635,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
                     endDateOfFixedDuration.getMillisLong()>endDateOfHaml
                 ){
 
-            val firstDuration = pregnancy.birthTime.getMillisLong()-fixedDurations[i].startDate.getMillisLong().toLong()
+            val firstDuration = pregnancy.birthTime.getMillisLong() - fixedDurations[i].startDate.getMillisLong()
             val secondDuration = fixedDurations[i].timeInMilliseconds-firstDuration
             val secondFixedDuration = FixedDuration(DurationType.DAM,secondDuration, startDate = pregnancy.birthTime)
             fixedDurations.add(i+1,secondFixedDuration)
@@ -859,7 +857,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             // and it is followed by a Tuhr-e tamm, then we don't need aadats just yet
             if((istihazaAfter<18.getMilliDays() && i != fixedDurations.lastIndex)||
                     istihazaAfter<15.getMilliDays()){
-                //we do not need aadaat yet
+                //we do not need aadaat yet.
                 //I'm going to run this with a bogus aadat cuz we need it for other stuff
                 dealWithIstihazaAfter(istihazaAfter,3.getMilliDays(),15.getMilliDays(),fixedDurations, i, endOfDaurIkhtilaf)
                 val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, aadatHaz,aadatHaz, aadatTuhr, mutableListOf())
@@ -997,7 +995,7 @@ fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, 
         }
 
     }else if(istihazaAfter==0L){
-
+        println("Shouldn't happen")
     }else{
 
         //else add istihazaAfter to next Tuhr, mark it as fasid
@@ -1133,7 +1131,7 @@ fun addDurationsToDams(fixedDurations: MutableList<FixedDuration>,
                        typesOfInputs: TypesOfInputs){
     //What this function does?
     //It creates a list of durations associated with each fixed duration
-    //each duration contains it's type, it's starting date, and it's duration
+    //each duration contains its type, it's starting date, and it's duration
     //so, for example 15B could have a first 3 days of istihaza before, then
     // 7 days of haiz, then 3 days of istihaza after. this will make all those duration.
 
@@ -1410,7 +1408,7 @@ fun generatInfoForCompareTable(listOfLists: MutableList<List<Entry>>):InfoForCom
     }
     val firstLast = Entry(earliestStartTime, latestEndTime)
 
-    val ndays = ((latestEndTime.getMillisLong()-earliestStartTime.getMillisLong()).getDays()).toInt()
+    val ndays = (latestEndTime.getMillisLong() - earliestStartTime.getMillisLong()).getDays()
 
     val headerList = mutableListOf<Instant>()
     for(day in 0..(ndays)){//header list is one longer than ndays
@@ -1647,7 +1645,7 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>,
     val isMawjoodaFasid = preMaslaValues.isMawjoodaFasid
 
     val filHaalPaki = calculateFilHaal(fixedDurations,adatsOfHaizList,adatsOfTuhrList,inputtedMawjoodaTuhr)
-    var aadaat = finalAadatsOfHaizAndTuhr(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
+    val aadaat = finalAadatsOfHaizAndTuhr(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
     if(typesOfMasla==TypesOfMasla.NIFAS){
         aadaat.aadatNifas = newAadatNifas
     }
@@ -1866,7 +1864,7 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                 }
             }
         }
-        else{//blood is less than 10 and adat of haiz doesn't exists
+        else{//blood is less than 10 and adat of haiz doesn't exist
             if(fixedDurations.last().type == DurationType.DAM_MUBTADIA){
                 val after10Days = addTimeToDate(fixedDurations.last().startDate, 10.getMilliDays())
                 futureDatesList+=FutureDateType(after10Days, TypesOfFutureDates.END_OF_AADAT_HAIZ)
@@ -1968,7 +1966,7 @@ fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>, inputte
         fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
         fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp<=
         fixedDurations.last().timeInMilliseconds){
-        //A-3 shifting to A-2, has entered aadat, but not 3 days into makan yet
+        //A-3 shifting to A-2, has entered aadat, but not 3 days into makan yet.
         //we will give it previous aadat of haiz and tuhr, according to A-1, though it could remain A-3
         //as this is an unusual and unique thing, we deal with it first
 
@@ -1976,12 +1974,12 @@ fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>, inputte
         // otherwise the one before it
         if(adatsOfTuhrList.last().aadat==fixedDurations.last().biggerThanTen!!.mp &&
                 adatsOfTuhrList.last().aadat!=fixedDurations.last().biggerThanTen!!.gp){
-            //the last aadat we have is the mawjoodah paki
-            //so we return the tuhr before it as aadat
+            //the last aadat we have is the mawjoodah paki,
+            // so we return the tuhr before it as aadat
             return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
                 adatsOfTuhrList[adatsOfTuhrList.lastIndex-1].aadat)
         }else{
-            //the last aadat is not mawjooda paki for whatever reason
+            //the last aadat is not mawjooda paki for whatever reason,
             //so we return the last tuhr as aadat
             return AadatsOfHaizAndTuhr(adatsOfHaizList[adatsOfHaizList.lastIndex-1].aadat,
                 adatsOfTuhrList[adatsOfTuhrList.lastIndex].aadat)

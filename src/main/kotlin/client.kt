@@ -223,8 +223,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
-                    startTime = row.startTimeInput.value.instant(!isDateTime),
-                    endTime = row.endTimeInput.value.instant(!isDateTime)
+                    startTime = row.startTimeInput.value.instant(isDateTime, timezoneSelect.value),
+                    endTime = row.endTimeInput.value.instant(isDateTime, timezoneSelect.value)
                 )
             }
             allTheInputs = AllTheInputs(
@@ -551,13 +551,14 @@ private val rootHazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 val languageSelected get() = languageSelector.value
-val timezoneSelector get() = document.getChildById(Ids.Inputs.SELECT_LOCALE) as HTMLSelectElement
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
+
+val HTMLElement.timezoneSelect get() = getChildById(Ids.Inputs.SELECT_LOCALE) as HTMLSelectElement
 
 val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
 val HTMLElement.isMutada get() = maslaSelect.value == Vls.Maslas.MUTADA
