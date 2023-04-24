@@ -18,16 +18,16 @@ val urduStrings = Strings(
     "اگر سائلہ شادی شدہ ہیں تو یہ مسئلہ بھی مدنظر رکھیں: \n \n\nاگر خون رک بھي جاۓ اور غسل کر کے نمازيں بھي شروع کر لي ہوں، تب بھي ${PlcHolder.DT1} سے پہلے صحبت کي اجازت نہيں۔\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>${PlcHolder.DT1} تک آپ کے یقینی پاکی کے دن ہونگے۔</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: حیض: duration1، پاکی: duration2</b>\n\n",
-    "${PlcHolder.DT1} تا date2 کل duration1 حیض کے ہیں۔\n\n",
-    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} تا date2 کل duration1 حیض کے ہیں۔\n\n",
-    "${UnicodeChars.ORANGE_DIAMOND} ${PlcHolder.DT1} تا date2 کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
-    "${PlcHolder.DT1} تا date2 کل duration1 نفاس کے ہیں۔\n\n",
-    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} تا date2 کل duration1 نفاس کے ہیں۔\n\n",
-    "\n\n${PlcHolder.DT1} سے date2 تک کل duration1 خون۔\n\n",
+    "${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 حیض کے ہیں۔\n\n",
+    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 حیض کے ہیں۔\n\n",
+    "${UnicodeChars.ORANGE_DIAMOND} ${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
+    "${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 نفاس کے ہیں۔\n\n",
+    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 نفاس کے ہیں۔\n\n",
+    "\n\n${PlcHolder.DT1} سے ${PlcHolder.DT2} تک کل duration1 خون۔\n\n",
     "${UnicodeChars.HAND_WRITING} <b>مسئلہ کا حل :</b>\n\n",
     "${UnicodeChars.BLACK_SQUARE} اس دوران میں جو نمازیں حیض سمجھ کر چھوڑیں،  ان کی قضاء ضروری ہے۔\n\n",
     "${UnicodeChars.BLACK_SQUARE} ${PlcHolder.DT1} کو اگر غسل کر لیا تھا، تو غسل کے بعد والی نمازیں درست ہیں۔ اگر غسل نہیں کیا تھا، تو جب تک غسل نہیں کیا، اس کی نمازیں قضاء کریں۔\n\n",
-    "\n\n${PlcHolder.DT1} سے date2 تک کل duration1 خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
+    "\n\n${PlcHolder.DT1} سے ${PlcHolder.DT2} تک کل duration1 خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
     "duration1 پاکی۔\n\n",
     "duration1 طہر فاسد۔\n\n",
     "duration1 استحاضہ + duration2 پاکی = duration3 طہر فاسد۔\n\n",
@@ -89,7 +89,7 @@ val urduStrings = Strings(
             "اور اگر ${PlcHolder.DT1} کے بعد بھی خون جاری رہا تو سب عبادات درست رہیں گی۔\n\n",
     "اس وقت آپ کے لیے خون دیکھتے ہی نماز چھوڑنا درست نہیں ہے۔ آپ کو چاہیے کہ ${PlcHolder.DT1} تک عبادات جاری رکھیں۔\n\n" +
             "آپ کے عادت کے دن ${PlcHolder.DT1} کو شروع ہو رہے ہیں۔ اگر خون تب تک جاری رہے تو ${PlcHolder.DT1} سے عابدات چھوڑ دیجیے۔\n\n",
-    "${PlcHolder.DT1} تا date2 کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
+    "${PlcHolder.DT1} تا ${PlcHolder.DT2} کل duration1 خون آیا۔ (یہ ایام قبلیہ کا مسئلہ ہے)۔\n\n",
     "مبتداہ",
     "معتادہ",
     "مسئلے کی نوعیت",
@@ -140,19 +140,19 @@ val englishStrings = Strings(
     "In case this bleeding continues without complete 15 days of purity, " +
             "then <b>until ${PlcHolder.DT1}, are certainly the days of purity (tuhr)</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: Haidh : duration1, Purity (Tuh’r): duration2 \n\n",
-    "${PlcHolder.DT1} to date2, a total of duration1 of period.\n\n",
-    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} to date2, a total of duration1 of period.\n\n",
-    "${UnicodeChars.ORANGE_DIAMOND} ${PlcHolder.DT1} to date2, a total of duration1 of definitive" +
+    "${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of period.\n\n",
+    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of period.\n\n",
+    "${UnicodeChars.ORANGE_DIAMOND} ${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of definitive" +
             " purity (istihadha).\n\n",
-    "${PlcHolder.DT1} to date2, a total of duration1 of post-natal bleeding.\n\n",
-    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} to date2, a total of duration1 of post-natal bleeding.\n\n",
-    "\n\n${PlcHolder.DT1} to date2, a total of duration1 of blood.\n\n",
+    "${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of post-natal bleeding.\n\n",
+    "${UnicodeChars.RED_DIAMOND} ${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of post-natal bleeding.\n\n",
+    "\n\n${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of blood.\n\n",
     "${UnicodeChars.HAND_WRITING} <b>Solution:</b>\n\n",
     "${UnicodeChars.BLACK_SQUARE} If you left any salah thinking of it as haidh and it turned " +
             "out to be istihadha, then make qada of them.\n\n",
     "${UnicodeChars.BLACK_SQUARE} If you performed ghusl on ${PlcHolder.DT1}, salah after " +
             "it are all valid. If you didn't, then make qada of all the salah until you took ghusl.\n\n",
-    "\n\nduration1 of continued bleeding from ${PlcHolder.DT1} to date2 (since you haven’t had 15 " +
+    "\n\nduration1 of continued bleeding from ${PlcHolder.DT1} to ${PlcHolder.DT2} (since you haven’t had 15 " +
             "or more blood-free days at a stretch in there)\n\n",
     "duration1 of purity (tuh’r)\n\n",
     "duration1 of invalid purity (tuh'r-e-faasid)\n\n",
@@ -228,7 +228,7 @@ val englishStrings = Strings(
             "continue idadaat till ${PlcHolder.DT1}, the start of your habit.\n\n" +
             "Your habit days are beginning from ${PlcHolder.DT1}. If bleeding continues till then, then you " +
             "should stop praying from ${PlcHolder.DT1}.\n\n",
-    "${PlcHolder.DT1} to date2, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
+    "${PlcHolder.DT1} to ${PlcHolder.DT2}, a total of duration1 of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadia",
     "Mu'tada",
     "Type of Masla",
