@@ -30,7 +30,7 @@ val urduStrings = Strings(
     "\n\n${PlcHolder.DT1} سے ${PlcHolder.DT2} تک کل ${PlcHolder.DUR1} خون جاری رھا (چونکہ آپ کو دو خون کے درمیان میں 15 دن کی کامل پاکی نہیں ملی ہے اسلیئے یوں سمجھا جائے گا کہ آپ کو مسلسل خون جاری ہی رہا ہے۔)\n\n",
     "${PlcHolder.DUR1} پاکی۔\n\n",
     "${PlcHolder.DUR1} طہر فاسد۔\n\n",
-    "${PlcHolder.DUR1} استحاضہ + ${PlcHolder.DUR2} پاکی = duration3 طہر فاسد۔\n\n",
+    "${PlcHolder.DUR1} استحاضہ + ${PlcHolder.DUR2} پاکی = ${PlcHolder.DUR3} طہر فاسد۔\n\n",
     "${PlcHolder.DUR1} پاکی (چونکہ طہر 6 ماہ سے زیادہ ہے، اس لیے عادت میں 60 دن لیا جاۓ گا۔)\n\n",
     "${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}${UnicodeChars.FAT_DASH}\n\n",
     "اب سے  یہ معتادہ ہیں۔\n\n",
@@ -67,7 +67,7 @@ val urduStrings = Strings(
     "${PlcHolder.DUR1} دم\n\n",
     "${PlcHolder.DUR1} طہر\n\n",
     "${PlcHolder.DUR1} طہر فاسد\n\n",
-    "${PlcHolder.DUR1} استحاضہ + ${PlcHolder.DUR2} پاکی = duration3 طہر فاسد\n\n",
+    "${PlcHolder.DUR1} استحاضہ + ${PlcHolder.DUR2} پاکی = ${PlcHolder.DUR3} طہر فاسد\n\n",
     "${PlcHolder.DUR1} حیض\n\n",
     "${PlcHolder.DUR1} نفاس\n\n",
     "شروع کے ${PlcHolder.DUR1} استحاضہ",
@@ -95,7 +95,7 @@ val urduStrings = Strings(
     "مسئلے کی نوعیت",
     "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
     "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n",
-    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: duration3، حیض: ${PlcHolder.DUR1}، طہر: ${PlcHolder.DUR2}</b>\n\n",
+    "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: ${PlcHolder.DUR3}، حیض: ${PlcHolder.DUR1}، طہر: ${PlcHolder.DUR2}</b>\n\n",
     "\n<b>اسقاط ہوا (غیر مستبین الخلقہ)</b>\n",
     "کیا ایام قبلیہ میں عبادات جاری رہیں گی؟",
     "کیا مبتداہ کے حق میں اضطراری عادت بلکل حقیقی عادت کی طرح ہے؟",
@@ -156,7 +156,7 @@ val englishStrings = Strings(
             "or more blood-free days at a stretch in there)\n\n",
     "${PlcHolder.DUR1} of purity (tuh’r)\n\n",
     "${PlcHolder.DUR1} of invalid purity (tuh'r-e-faasid)\n\n",
-    "${PlcHolder.DUR1} of istihadha + ${PlcHolder.DUR2} of purity (tuh’r) = duration3 of invalid" +
+    "${PlcHolder.DUR1} of istihadha + ${PlcHolder.DUR2} of purity (tuh’r) = ${PlcHolder.DUR3} of invalid" +
             " purity (tuh'r-e-faasid).\n\n",
     "${PlcHolder.DUR1} of purity (tuhr). (Since purity (tuh’r) is of more than 6 months, " +
             "therefore 60 days shall be taken as habit of purity (tuh’r)\n\n",
@@ -197,7 +197,7 @@ val englishStrings = Strings(
     "${PlcHolder.DUR1} dam\n\n",
     "${PlcHolder.DUR1} purity (tuh'r)\n\n",
     "${PlcHolder.DUR1} invalid purity (tuh'r-e-faasid)\n\n",
-    "${PlcHolder.DUR1} of istehadha + ${PlcHolder.DUR2} of purity (tuh'r) = duration3 of invalid purity (tuh'r-e-faasid)\n\n",
+    "${PlcHolder.DUR1} of istehadha + ${PlcHolder.DUR2} of purity (tuh'r) = ${PlcHolder.DUR3} of invalid purity (tuh'r-e-faasid)\n\n",
     "${PlcHolder.DUR1} haidh\n\n",
     "${PlcHolder.DUR1} nifas\n\n",
     "The first ${PlcHolder.DUR1} are istehadha",
@@ -236,7 +236,7 @@ val englishStrings = Strings(
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haidh is 10 days, " +
             "and it is now ten days, please do ghusl and resume your ibadat.\n\n",
-    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : duration3, Haidh : ${PlcHolder.DUR1}, Purity (Tuh’r): ${PlcHolder.DUR2} \n\n",
+    "${UnicodeChars.SNOWFLAKE} Habit: Nifas : ${PlcHolder.DUR3}, Haidh : ${PlcHolder.DUR1}, Purity (Tuh’r): ${PlcHolder.DUR2} \n\n",
     "\n<b>Miscarriage of an undeveloped fetus</b>\n",
     "Will ibadaat be continued during ayyam-e-qabliyya?",
     "Does iztirari habit become real habit in mubtadia?",
