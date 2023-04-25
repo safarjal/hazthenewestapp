@@ -159,7 +159,6 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
                          typesOfMasla: TypesOfMasla,
                          preMaslaValues: PreMaslaValues,
                          timeZone: String): OutputStringsLanguages{
-
     val newStr = baseStr(Strings::answer) //جواب:
         .add(addPreMaslaValuesText(preMaslaValues))
 
@@ -448,23 +447,17 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
     //legacy code this, I think it's unused
     val newStr = OutputStringsLanguages()
 
-    fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        newStr.add(
-            baseStr(Strings::haizdaysinsolution)
+    fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs): OutputStringsLanguages {
+        return baseStr(Strings::haizdaysinsolution)
             .replaceDT(PlcHolder.DT1, sd, typeOfInput, timeZone)
             .replaceDT(PlcHolder.DT2, ed, typeOfInput, timeZone)
             .replaceDur(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
-        )
-        return newStr
     }
-    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        newStr.add(
-            baseStr(Strings::istihazadays)
+    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs): OutputStringsLanguages {
+        return baseStr(Strings::istihazadays)
             .replaceDT(PlcHolder.DT1, sd, typeOfInput, timeZone)
             .replaceDT(PlcHolder.DT2, ed, typeOfInput, timeZone)
             .replaceDur(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
-        )
-        return newStr
     }
 
     if((fixedDurations[index].days>10 &&
@@ -556,29 +549,22 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
     val newStr = OutputStringsLanguages()
 
     fun nifasLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        newStr.add(baseStr(Strings::nifasdaysinsolution)
+        return baseStr(Strings::nifasdaysinsolution)
             .replaceDT(PlcHolder.DT1, sd, typeOfInput, timeZone)
             .replaceDT(PlcHolder.DT2, ed, typeOfInput, timeZone)
             .replaceDur(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
-        )
-        return newStr
     }
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        newStr.add(baseStr(Strings::haizdaysinsolution)
+        return baseStr(Strings::haizdaysinsolution)
             .replaceDT(PlcHolder.DT1, sd, typeOfInput, timeZone)
             .replaceDT(PlcHolder.DT2, ed, typeOfInput, timeZone)
             .replaceDur(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
-        )
-        return newStr
-
     }
-    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
-        newStr.add(baseStr(Strings::istihazadays)
+    fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages {
+        return baseStr(Strings::istihazadays)
             .replaceDT(PlcHolder.DT1, sd, typeOfInput, timeZone)
             .replaceDT(PlcHolder.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(PlcHolder.DUR1, (difference(sd,ed)), typeOfInput)
-        )
-        return newStr
+            .replaceDur(PlcHolder.DUR1, (difference(sd, ed)), typeOfInput)
     }
 
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAS_PERIOD){
