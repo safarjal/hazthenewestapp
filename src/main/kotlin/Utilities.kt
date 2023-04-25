@@ -281,40 +281,40 @@ fun baseStr(baseString: Strings.() -> String): OutputStringsLanguages {
     return OutputStringsLanguages(ur, en)
 }
 fun OutputStringsLanguages.add(out: OutputStringsLanguages): OutputStringsLanguages {
-    val ur = urduString + out.urduString
-    val en = englishString + out.englishString
-    return OutputStringsLanguages(ur, en)
+    urduString += out.urduString
+    englishString += out.englishString
+    return this
 }
 fun OutputStringsLanguages.addStr(string: String): OutputStringsLanguages {
-    val ur = urduString + string
-    val en = englishString + string
-    return OutputStringsLanguages(ur, en)
+    urduString += string
+    englishString += string
+    return this
 }
 fun OutputStringsLanguages.addStrings(baseString: Strings.() -> String): OutputStringsLanguages {
-    val ur = urduString + StringsOfLanguages.URDU.baseString()
-    val en = englishString + StringsOfLanguages.ENGLISH.baseString()
-    return OutputStringsLanguages(ur, en)
+    urduString += StringsOfLanguages.URDU.baseString()
+    englishString += StringsOfLanguages.ENGLISH.baseString()
+    return this
 }
 
 fun OutputStringsLanguages.replace(oldUr: String, newUr:String, oldEn: String, newEn: String): OutputStringsLanguages {
-    val ur = urduString.replace(oldUr, newUr)
-    val en = englishString.replace(oldEn, newEn)
-    return OutputStringsLanguages(ur, en)
+    urduString = urduString.replace(oldUr, newUr)
+    englishString = englishString.replace(oldEn, newEn)
+    return this
 }
 fun OutputStringsLanguages.replaceDT(placeholder: String,
                                      date: Instant,
                                      typeOfInput: TypesOfInputs,
                                      timeZone: String): OutputStringsLanguages {
-    val ur = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
-    val en = englishString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
-    return OutputStringsLanguages(ur, en)
+    urduString = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+    englishString = englishString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+    return this
 }
 fun OutputStringsLanguages.replaceDur(placeholder: String,
                                       millis: Long,
                                       typeOfInput: TypesOfInputs): OutputStringsLanguages {
-    val ur = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
-    val en = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
-    return OutputStringsLanguages(ur, en)
+    urduString = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
+    englishString = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
+    return this
 }
 
 // VALS TO USE
