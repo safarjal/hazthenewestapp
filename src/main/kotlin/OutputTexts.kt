@@ -78,7 +78,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                                            timeZone: String): OutputStringsLanguages{
     val mustabeen = pregnancy.mustabeenUlKhilqat
     val birthTime = pregnancy.birthTime
-    var newStr = baseStr(Strings::answer)
+    val newStr = baseStr(Strings::answer)
 
     if(mustabeen){
         if(fixedDurations[0].type!=DurationType.HAML){
@@ -121,7 +121,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
         for(index in fixedDurations.indices){
             if(typeOfInput==TypesOfInputs.DURATION){
                 newStr.add(outputStringHeaderLineDuration(fixedDurations,index, mustabeen))
-                newStr.add(outputStringBiggerThan10HallDurations(fixedDurations, index))
+                    .add(outputStringBiggerThan10HallDurations(fixedDurations, index))
                 if(fixedDurations[index].type==DurationType.HAML){
                     newStr.addStrings(Strings::preg)
                 }
@@ -133,7 +133,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }else{
                 newStr.add(outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone, mustabeen))
-                newStr.add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
+                    .add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
                 if(fixedDurations[index].type==DurationType.HAML){
                     newStr.addStrings(Strings::preg)
                 }
@@ -173,13 +173,13 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
     while (index<fixedDurations.size){
         if(typeOfInput==TypesOfInputs.DURATION){
             newStr.add(outputStringHeaderLineDuration(fixedDurations,index)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
-            newStr.add(outputStringBiggerThan10HallDurations(fixedDurations, index))
+                .add(outputStringBiggerThan10HallDurations(fixedDurations, index))
             if(index==fixedDurations.size-1){//if this os the last index
                 newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
             }
         }else{//not durations
             newStr.add(outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
-            newStr.add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
+                .add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
             if(index==fixedDurations.size-1){//if this os the last index
                 newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
             }
@@ -197,10 +197,10 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
     if (typeOfInput==TypesOfInputs.DURATION) { return newStr }
 
     val filHaal = endingOutputValues.filHaalPaki
-    newStr.add(outputStringFilHaalLine(filHaal))
-
     val futureDates = endingOutputValues.futureDateType
-    newStr.add(outputStringAskAgainLine(typeOfInput, futureDates, timeZone))
+
+    newStr.add(outputStringFilHaalLine(filHaal))
+        .add(outputStringAskAgainLine(typeOfInput, futureDates, timeZone))
         .addStrings(Strings::writedown) //plis note down line
         .addStrings(Strings::allahknows) //Allahu Aaalam line
 
@@ -486,8 +486,7 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
                         .add(baseStr(Strings::istihazadetailslinetwo)
                             .replaceDT(PlcHolder.DT1, duration.startTime, typeOfInput, timeZone)
                         )
-                    newStr.addStrings(Strings::istihazadetailslineone)
-
+                        .addStrings(Strings::istihazadetailslineone)
                 }
                 DurationType.LESS_THAN_3_HAIZ -> {
                     newStr.add(haizLine(duration.startTime,duration.endDate,typeOfInput))
@@ -617,7 +616,7 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
 fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, index: Int, isMustabeen:Boolean = true):OutputStringsLanguages{
     val typeOfInput=TypesOfInputs.DURATION
     //in duration, we just give the fixed duration
-    var newStr = OutputStringsLanguages()
+    val newStr = OutputStringsLanguages()
     if (fixedDurations[index].type==DurationType.DAM||
         fixedDurations[index].type==DurationType.DAM_MUBTADIA){
         val sd:Instant = fixedDurations[index].startDate
@@ -704,7 +703,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                            typeOfInput: TypesOfInputs,
                            timeZone: String,
                            mustabeen:Boolean = true):OutputStringsLanguages{
-    var newStr = OutputStringsLanguages()
+    val newStr = OutputStringsLanguages()
     if (fixedDurations[index].type==DurationType.DAM||
         fixedDurations[index].type==DurationType.DAM_MUBTADIA){
         val sd:Instant = fixedDurations[index].startDate
