@@ -376,11 +376,11 @@ fun outputStringAadatLine(
                     baseStr(Strings::habitwithnifas)
                     .replaceDur(PlcHolder.DUR1, aadatHaiz, typeOfInput)
                     .replaceDur(PlcHolder.DUR2, aadatTuhr, typeOfInput)
-                    .replaceDur(PlcHolder.DUR2, aadats.aadatNifas!!, typeOfInput)
+                    .replaceDur(PlcHolder.DUR3, aadats.aadatNifas!!, typeOfInput)
                 )
             }else{//adat nifas doesn't exists
                 newStr.add(
-                    baseStr(Strings::habitwithnifas)
+                    baseStr(Strings::habit)
                     .replaceDur(PlcHolder.DUR1, aadatHaiz, typeOfInput)
                     .replaceDur(PlcHolder.DUR2, aadatTuhr, typeOfInput)
                 )
@@ -754,7 +754,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             baseStr(Strings::tuhrfasidwithaddition)
                 .replaceDur(PlcHolder.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
             .replaceDur(PlcHolder.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput)
-            .replaceDur(PlcHolder.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+            .replaceDur(PlcHolder.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
         )
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
