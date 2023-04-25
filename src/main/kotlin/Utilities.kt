@@ -223,7 +223,7 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
     }
 }
 
- fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String = "UTC"):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
      val localStr = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
@@ -477,10 +477,10 @@ object PlcHolder {
 }
 
 const val MILLISECONDS_IN_A_DAY:Long = 86400000
-const val MILLISECONDS_IN_AN_HOUR = 3600000
-const val MILLISECONDS_IN_A_MINUTE = 60000
+//const val MILLISECONDS_IN_AN_HOUR = 3600000
+//const val MILLISECONDS_IN_A_MINUTE = 60000
 
-val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
+val NO_OUTPUT = OutputTexts(OutputStringsLanguages(),"", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
 val ARBITRARY_DATE = Instant.EPOCH
 val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائ", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر")

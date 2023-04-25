@@ -4,12 +4,47 @@ import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.js.Date
 
 /* TODO: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
     AS SUCH, IF YOU FEEL LIKE IT, YOU CAN MOVE BACK ALL THE MONTH NUMBERS AND
     REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
  */
+
+fun difference(str1: String?, str2: String?): String? {
+    if (str1 == null) {
+        return str2
+    }
+    if (str2 == null) {
+        return str1
+    }
+    val at = indexOfDifference(str1, str2)
+    return if (at == INDEX_NOT_FOUND) {
+        EMPTY
+    } else str1.substring(at - 10, at + 10) + "[ Compared to: ]" + str2.substring(at - 10, at + 10)
+}
+
+fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
+    if (cs1 === cs2) {
+        return INDEX_NOT_FOUND
+    }
+    if (cs1 == null || cs2 == null) {
+        return 0
+    }
+    var i: Int
+    i = 0
+    while (i < cs1.length && i < cs2.length) {
+        if (cs1[i] != cs2[i]) {
+            break
+        }
+        ++i
+    }
+    return if (i < cs2.length || i < cs1.length) {
+        i
+    } else INDEX_NOT_FOUND
+}
+
+var INDEX_NOT_FOUND = -1 //"Index Not Found"
+var EMPTY = "Empty"
 
 // 2023-04-02T00:22:00Z
 // 2020-05-14T00:00:00:00Z
@@ -178,12 +213,19 @@ class LogicTest {
         entries+=//30 Aug - 1 Oct
             Entry(instant(2021,9,6), instant(2021,9,6))
 
-        val output = handleEntries(AllTheInputs(
-            entries,
-            typeOfInput = TypesOfInputs.DATE_ONLY,
-            typeOfMasla = TypesOfMasla.NIFAS,
-            ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
-            pregnancy = Pregnancy(instant(2021,4,21),instant(2021,6,25),25.getMilliDays(),mustabeenUlKhilqat = false)),
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfInput = TypesOfInputs.DATE_ONLY,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
+                pregnancy = Pregnancy(
+                    instant(2021, 4, 21),
+                    instant(2021, 6, 25),
+                    25.getMilliDays(),
+                    mustabeenUlKhilqat = false
+                )
+            ),
         )
         val haizDateList = output.hazDatesList
 
@@ -2001,12 +2043,13 @@ class LogicTest {
     @Test
     fun testBugMaslaIssue138a() {
         //AyyameQabliyya
-        val entries = mutableListOf(//each month has to be one minus the real
+        val entries = mutableListOf(
+//each month has to be one minus the real
             Entry(instant(2022, 0, 13), instant(2022, 0, 19)),
             Entry(instant(2022, 1, 22), instant(2022, 1, 27)),
             Entry(instant(2022, 2, 17), instant(2022, 2, 31)),
 
-        )
+            )
 
         val output = handleEntries(AllTheInputs(entries))
 
@@ -2037,7 +2080,8 @@ class LogicTest {
     @Test
     fun testBugMaslaIssue138b() {
         //AyyameQabliyya turned
-        val entries = mutableListOf(//each month has to be one minus the real
+        val entries = mutableListOf(
+//each month has to be one minus the real
             Entry(instant(2022, 0, 13), instant(2022, 0, 19)),
             Entry(instant(2022, 1, 22), instant(2022, 1, 27)),
             Entry(instant(2022, 2, 17), instant(2022, 2, 31)),
@@ -2075,7 +2119,8 @@ class LogicTest {
     @Test
     fun testBugMaslaIssue147() {
         //missing ihtiyati ghusl
-        val entries = mutableListOf(//each month has to be one minus the real
+        val entries = mutableListOf(
+//each month has to be one minus the real
             Entry(instant(2021, 10, 8), instant(2021, 10, 13)),
             Entry(instant(2021, 10, 30), instant(2021, 11, 8)),
             Entry(instant(2021, 11, 28), instant(2022, 0, 2)),
@@ -4245,7 +4290,7 @@ class LogicTest {
             LocalEntry(LocalDateTime.of(2022,10,12,21,14), LocalDateTime.of(2022,10,17,8,44)),
             LocalEntry(LocalDateTime.of(2022,11,4,23,1),LocalDateTime.of(2022,11,9,9,31)),
             LocalEntry(LocalDateTime.of(2022,11,30,9,57),LocalDateTime.of(2022,12,8,14,30)),
-            LocalEntry(LocalDateTime.of(2022,12,27,4,47),LocalDateTime.of(2023,1, 4, 9,20,)),
+            LocalEntry(LocalDateTime.of(2022,12,27,4,47),LocalDateTime.of(2023, 1, 4, 9, 20)),
             LocalEntry(LocalDateTime.of(2023,1,22,23,37),LocalDateTime.of(2023,1,31,4,10)),
             LocalEntry(LocalDateTime.of(2023,3,8,11,15),LocalDateTime.of(2023,3,16,16,48)),
             LocalEntry(LocalDateTime.of(2023,4,4,7,5),LocalDateTime.of(2023,4,12,11,38)),

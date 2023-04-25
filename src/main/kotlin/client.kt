@@ -257,8 +257,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }
 
         contentContainer.visibility = true
-        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.englishText)
-        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.urduText)
+        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.englishString)
+        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.urduString)
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
         contentContainer.scrollIntoView()

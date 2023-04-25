@@ -230,8 +230,7 @@ class EndingOutputValues(
     val futureDateType: MutableList<FutureDateType>
 )
 class OutputTexts (
-    var englishText:String,
-    var urduText: String,
+    var outputText: OutputStringsLanguages,
     var haizDatesText:String,
     var hazDatesList: MutableList<Entry>,
     var endingOutputValues:EndingOutputValues,
@@ -285,8 +284,8 @@ class DateTypeList (
 enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
 
 class DurationTypes (
-    val startTime: Date,
-    val endTime: Date,
+    val startTime: Instant,
+    val endTime: Instant,
     val type: DateTypes
 )
 

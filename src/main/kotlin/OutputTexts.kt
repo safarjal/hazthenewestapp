@@ -34,7 +34,7 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
     val hazDatesList = getHaizDatesList(fixedDurations)
     val newStr = generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone)
 
-    return OutputTexts(newStr.englishString, newStr.urduString, "", hazDatesList, endingOutputValues, fixedDurations)
+    return OutputTexts(newStr, "", hazDatesList, endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
@@ -46,7 +46,7 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
-    return OutputTexts(newStr.englishString, newStr.urduString, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
+    return OutputTexts(newStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 endingOutputValues: EndingOutputValues,
@@ -59,7 +59,7 @@ fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
-    return OutputTexts(newStr.englishString, newStr.urduString, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
+    return OutputTexts(newStr, hazDatesStr, hazDatesList,endingOutputValues, fixedDurations)
 }
 
 fun generateHazDatesStr(hazDatesList: MutableList<Entry>,typeOfInput: TypesOfInputs, timeZone: String):String{
