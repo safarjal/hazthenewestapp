@@ -108,10 +108,10 @@ fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
 fun Instant.getMillisLong() = toEpochMilli().toLong()
 
 fun Int.leadingZero() = if (this < 10) "0$this" else toString()
-fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, timezone: Boolean = false): Instant =
-    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(timezone)
-fun realInstant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, tz: Boolean = false, tzStr: String = ""): Instant =
-    ("$year-${(month).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tz,tzStr)
+//fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
+//    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
+fun makeInstant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, tz: Boolean = false, tzStr: String? = null): Instant =
+    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tz, tzStr)
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'

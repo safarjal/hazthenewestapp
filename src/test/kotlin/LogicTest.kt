@@ -30,8 +30,7 @@ fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
     if (cs1 == null || cs2 == null) {
         return 0
     }
-    var i: Int
-    i = 0
+    var i = 0
     while (i < cs1.length && i < cs2.length) {
         if (cs1[i] != cs2[i]) {
             break
@@ -3949,7 +3948,7 @@ class LogicTest {
         assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
     }
     @Test
-    fun Issue207() {
+    fun issue207() {
         //making sure that 6 months greater tuhr doesn't cause ayyame qabliyya
         val entries = listOf(
             Entry(makeInstant(2022, 6, 14), makeInstant(2022, 6, 21)),
@@ -4234,8 +4233,8 @@ class LogicTest {
     @Test
     fun test1ForDaylightSaving() {
 //        This is in America
-//        Clocks went back one hour on November 6 2022
-//        And one hour ahead on March 12 2023
+//        Clocks went back one hour on November 6, 2022,
+//        And one hour ahead on March 12, 2023,
 //        Since last message, dates of bleeding have been:
 //        ♦12 Oct 9:14pm - 21 Oct 1:05pm
 //        ♦3 Nov 9am - 13 Nov 8:11pm
@@ -4264,14 +4263,22 @@ class LogicTest {
         val timzn = "America/Los_Angeles"
 
         val entries = listOf<Entry>(
-            Entry(makeInstant(2022, 10, 12, 21, 14,true, timzn), makeInstant(2022, 10, 21, 13, 5,true, timzn)),
-            Entry(makeInstant(2022, 11, 3, 9, 0,true, timzn), makeInstant(2022, 11, 13, 20, 11,true, timzn)),
-            Entry(makeInstant(2022, 11, 30, 9, 57,true, timzn), makeInstant(2022, 12, 8, 14, 30,true, timzn)),
-            Entry(makeInstant(2022, 12, 23, 15, 40,true, timzn), makeInstant(2023, 1, 3, 13, 40,true, timzn)),
-            Entry(makeInstant(2023, 1, 18, 10, 5,true, timzn), makeInstant(2023, 1, 26, 16, 15,true, timzn)),
-            Entry(makeInstant(2023, 2, 9, 14, 3,true, timzn), makeInstant(2023, 2, 19, 11, 31,true, timzn)),
-            Entry(makeInstant(2023, 3, 8, 11, 15,true, timzn), makeInstant(2023, 3, 18, 23, 50,true, timzn)),
-            Entry(makeInstant(2023, 4, 2, 22, 0,true, timzn), makeInstant(2023, 4, 12, 11, 38,true, timzn)),
+            Entry(makeInstant(2022, 10, 12, 21, 14,true, timzn),
+                makeInstant(2022, 10, 21, 13, 5,true, timzn)),
+            Entry(makeInstant(2022, 11, 3, 9, 0,true, timzn),
+                makeInstant(2022, 11, 13, 20, 11,true, timzn)),
+            Entry(makeInstant(2022, 11, 30, 9, 57,true, timzn),
+                makeInstant(2022, 12, 8, 14, 30,true, timzn)),
+            Entry(makeInstant(2022, 12, 23, 15, 40,true, timzn),
+                makeInstant(2023, 1, 3, 13, 40,true, timzn)),
+            Entry(makeInstant(2023, 1, 18, 10, 5,true, timzn),
+                makeInstant(2023, 1, 26, 16, 15,true, timzn)),
+            Entry(makeInstant(2023, 2, 9, 14, 3,true, timzn),
+                makeInstant(2023, 2, 19, 11, 31,true, timzn)),
+            Entry(makeInstant(2023, 3, 8, 11, 15,true, timzn),
+                makeInstant(2023, 3, 18, 23, 50,true, timzn)),
+            Entry(makeInstant(2023, 4, 2, 22, 0,true, timzn),
+                makeInstant(2023, 4, 12, 11, 38,true, timzn)),
         )
         val output = handleEntries(
             AllTheInputs(
@@ -4287,13 +4294,20 @@ class LogicTest {
 //        println(localHazDates)
 
         val expectedlocalHazDates = listOf<LocalEntry>(
-            LocalEntry(LocalDateTime.of(2022, 10, 12, 21, 14), LocalDateTime.of(2022, 10, 17, 8, 44)),
-            LocalEntry(LocalDateTime.of(2022, 11, 4, 23, 1),LocalDateTime.of(2022, 11, 9, 9, 31)),
-            LocalEntry(LocalDateTime.of(2022, 11, 30, 9, 57),LocalDateTime.of(2022, 12, 8, 14, 30)),
-            LocalEntry(LocalDateTime.of(2022, 12, 27, 4, 47),LocalDateTime.of(2023, 1, 4, 9, 20)),
-            LocalEntry(LocalDateTime.of(2023, 1, 22, 23, 37),LocalDateTime.of(2023, 1, 31, 4, 10)),
-            LocalEntry(LocalDateTime.of(2023, 3, 8, 11, 15),LocalDateTime.of(2023, 3, 16, 16, 48)),
-            LocalEntry(LocalDateTime.of(2023, 4, 4, 7, 5),LocalDateTime.of(2023, 4, 12, 11, 38)),
+            LocalEntry(LocalDateTime.of(2022, 10, 12, 21, 14),
+                LocalDateTime.of(2022, 10, 17, 8, 44)),
+            LocalEntry(LocalDateTime.of(2022, 11, 4, 23, 1),
+                LocalDateTime.of(2022, 11, 9, 9, 31)),
+            LocalEntry(LocalDateTime.of(2022, 11, 30, 9, 57),
+                LocalDateTime.of(2022, 12, 8, 14, 30)),
+            LocalEntry(LocalDateTime.of(2022, 12, 27, 4, 47),
+                LocalDateTime.of(2023, 1, 4, 9, 20)),
+            LocalEntry(LocalDateTime.of(2023, 1, 22, 23, 37),
+                LocalDateTime.of(2023, 1, 31, 4, 10)),
+            LocalEntry(LocalDateTime.of(2023, 3, 8, 11, 15),
+                LocalDateTime.of(2023, 3, 16, 16, 48)),
+            LocalEntry(LocalDateTime.of(2023, 4, 4, 7, 5),
+                LocalDateTime.of(2023, 4, 12, 11, 38)),
         )
         for(i in localHazDates.indices){
             assertEquals(localHazDates[i].startTime,expectedlocalHazDates[i].startTime)
@@ -4304,14 +4318,14 @@ class LogicTest {
 
     @Test
     fun testDurationsMawjoodahPaki() {
-        var durations = listOf<Duration>(
+        val durations = listOf<Duration>(
             Duration(DurationType.DAM, 0L),
             Duration(DurationType.TUHR, 15.getMilliDays()),
             Duration(DurationType.DAM, 5.getMilliDays())
         )
-        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        var expectedFixedDurations = listOf<FixedDuration>(
+        val expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 15.getMilliDays()),
             FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
@@ -4336,15 +4350,15 @@ class LogicTest {
     }
     @Test
     fun testDurationsMawjoodahPakiCase2() {
-        var durations = listOf<Duration>(
+        val durations = listOf<Duration>(
             Duration(DurationType.TUHR, 15.getMilliDays()),
             Duration(DurationType.DAM, 0.getMilliDays()),
             Duration(DurationType.TUHR, 15.getMilliDays()),
             Duration(DurationType.DAM, 5.getMilliDays()),
         )
-        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        var expectedFixedDurations = listOf<FixedDuration>(
+        val expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 30.getMilliDays()),
             FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
@@ -4369,15 +4383,15 @@ class LogicTest {
     }
     @Test
     fun testDurationsMawjoodahPakiCase3() {
-        var durations = listOf<Duration>(
+        val durations = listOf<Duration>(
             Duration(DurationType.TUHR, 15.getMilliDays()),
             Duration(DurationType.DAM, 2.getMilliDays()),
             Duration(DurationType.TUHR, 15.getMilliDays()),
             Duration(DurationType.DAM, 5.getMilliDays()),
         )
-        var output = handleEntries(convertDurationsIntoEntries(durations))
+        val output = handleEntries(convertDurationsIntoEntries(durations))
         val fixedDurations=output.fixedDurations
-        var expectedFixedDurations = listOf<FixedDuration>(
+        val expectedFixedDurations = listOf<FixedDuration>(
             FixedDuration(DurationType.TUHREFAASID, 32.getMilliDays()),
             FixedDuration(DurationType.DAM, 5.getMilliDays())
         )
