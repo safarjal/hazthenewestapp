@@ -13,7 +13,6 @@ import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import kotlin.js.Date
 import kotlin.js.Json
 import kotlin.js.json
 
@@ -842,26 +841,30 @@ private fun disableTime() {
 // Copy Answer
 
 // ANSWER
-private fun getNow(): String {
-    var dateStr = ""
-    val now = Date.now()
-    val day = Date(now).getDate()
-    val month = Date(now).getMonth()
-    if (languageSelected == Vls.Langs.URDU){
-        val urduMonth = urduMonthNames[month]
-        val urduDay:String = if (day == 1) "یکم" else day.toString()
-        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
-    }else if(languageSelected == Vls.Langs.ENGLISH){
-        dateStr = Date(now).toDateString().drop(4)
-    }
-    return dateStr
-}
+//private fun getNow(): String {
+//    var dateStr = ""
+//    val now = Date.now()
+//    val now = Instant.now()
+//    val date = languagedDateFormat(now, TypesOfInputs.DATE_ONLY, languageSelected)
+//    val day = now.
+//    val day = Date(now).getDate()
+//    val month = Date(now).getMonth()
+//    if (languageSelected == Vls.Langs.URDU){
+//        val urduMonth = urduMonthNames[month]
+//        val urduDay:String = if (day == 1) "یکم" else day.toString()
+//        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
+//    }else if(languageSelected == Vls.Langs.ENGLISH){
+//        dateStr = Date(now).toDateString().drop(4)
+//    }
+//    return date
+//}
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
     val inputContainer = findInputContainer(event)
 
-    val dateStr = getNow()
+//    val dateStr = getNow()
+    val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText.value
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
@@ -871,7 +874,7 @@ private fun copyText(event: Event) {
             "$answerTxt"
 
     val small = div?.querySelector("small")
-    var smallTxt = ""
+    var smallTxt: String
 
     var response: Json = json(Pair("id", null))
     val job = GlobalScope.launch { response = getData(inputContainer) }

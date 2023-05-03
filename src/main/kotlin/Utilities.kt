@@ -223,7 +223,7 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
     }
 }
 
- fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, languageNames: String, timeZone: String = "UTC"):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, language: String, timeZone: String = "UTC", addYear: Boolean = false):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
      val localStr = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
@@ -231,10 +231,11 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
      val month = localStr.month()
      var hours = localStr.hour().toInt()
      val minutesStr = localStr.minute().toInt().leadingZero()
+     val year = if (addYear) localStr.year().toString() else ""
 
-     if(languageNames==Vls.Langs.ENGLISH){
+     if(language==Vls.Langs.ENGLISH){
 //         2023-04-02T00:22:00Z
-         val dateStr = "$day ${month.toString().lowercase().replaceFirstChar { it.titlecase() }}"
+         val dateStr = "$day ${month.toString().lowercase().replaceFirstChar { it.titlecase() }} $year".trim()
 
          var ampm = "am"
          if (hours >=12) {
@@ -248,12 +249,12 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
          return if (isDateOnly) dateStr //05 Jun 2021
          else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30 pm
      }
-     else if(languageNames==Vls.Langs.URDU){
+     else if(language==Vls.Langs.URDU){
 //         val monthStr = month.displayName(TextStyle.FULL, Locale)
          val urduMonth = urduMonthNames[month.value().toInt()]
          val urduDay:String = if (day == 1) "یکم" else day.toString()
 
-         if (isDateOnly) return ("$urduDay $urduMonth")
+         return if (isDateOnly) "$urduDay $urduMonth $year".trim()
          else { //has time too
              val ampm = when (hours) {
                  in 4..11 -> "صبح" //4am-11am
@@ -264,10 +265,10 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
              if (hours >=12) hours -= 12
              if (hours == 0) hours = 12
 
-             return "$urduDay $urduMonth $ampm $hours:$minutesStr بجے".trim().trimEnd()
+             "$urduDay $urduMonth $ampm $hours:$minutesStr بجے".trim().trimEnd()
          }
      }
-     return ""
+     return "Error"
  }
 
 fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong() - date1.getMillisLong()) }
@@ -491,7 +492,7 @@ object Events {
 
 object UnicodeChars {
     const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
-    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
+//    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
     const val ORANGE_DIAMOND = "&#x1F538;"           // ORANGE_DIAMOND
     const val SNOWFLAKE = "&#10052;&#65039;"     // SNOWFLAKE
     const val BLACK_SQUARE = "&#9642;"
