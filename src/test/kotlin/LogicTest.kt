@@ -10,40 +10,40 @@ import kotlin.test.assertEquals
     REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
  */
 
-fun difference(str1: String?, str2: String?): String? {
-    if (str1 == null) {
-        return str2
-    }
-    if (str2 == null) {
-        return str1
-    }
-    val at = indexOfDifference(str1, str2)
-    return if (at == INDEX_NOT_FOUND) {
-        EMPTY
-    } else str1.substring(at - 10, at + 10) + "[ Compared to: ]" + str2.substring(at - 10, at + 10)
-}
-
-fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
-    if (cs1 === cs2) {
-        return INDEX_NOT_FOUND
-    }
-    if (cs1 == null || cs2 == null) {
-        return 0
-    }
-    var i = 0
-    while (i < cs1.length && i < cs2.length) {
-        if (cs1[i] != cs2[i]) {
-            break
-        }
-        ++i
-    }
-    return if (i < cs2.length || i < cs1.length) {
-        i
-    } else INDEX_NOT_FOUND
-}
-
-var INDEX_NOT_FOUND = -1 //"Index Not Found"
-var EMPTY = "Empty"
+//fun difference(str1: String?, str2: String?): String? {
+//    if (str1 == null) {
+//        return str2
+//    }
+//    if (str2 == null) {
+//        return str1
+//    }
+//    val at = indexOfDifference(str1, str2)
+//    return if (at == INDEX_NOT_FOUND) {
+//        EMPTY
+//    } else str1.substring(at - 10, at + 10) + "[ Compared to: ]" + str2.substring(at - 10, at + 10)
+//}
+//
+//fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
+//    if (cs1 === cs2) {
+//        return INDEX_NOT_FOUND
+//    }
+//    if (cs1 == null || cs2 == null) {
+//        return 0
+//    }
+//    var i = 0
+//    while (i < cs1.length && i < cs2.length) {
+//        if (cs1[i] != cs2[i]) {
+//            break
+//        }
+//        ++i
+//    }
+//    return if (i < cs2.length || i < cs1.length) {
+//        i
+//    } else INDEX_NOT_FOUND
+//}
+//
+//var INDEX_NOT_FOUND = -1 //"Index Not Found"
+//var EMPTY = "Empty"
 
 // 2023-04-02T00:22:00Z
 // 2020-05-14T00:00:00:00Z

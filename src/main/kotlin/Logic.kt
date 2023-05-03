@@ -56,7 +56,10 @@ fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
         return handleMutadah(allTheInputs, fixedDurations,adatsOfHaizList,adatsOfTuhrList)
     }
 }
-fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
+fun handleMubtadia(allTheInputs: AllTheInputs,
+                   fixedDurations: MutableList<FixedDuration>,
+                   adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                   adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>): OutputTexts {
     removeTuhrLessThan15(fixedDurations)
     val newMawjoodaPakiValues = removeDamLessThan3(fixedDurations, allTheInputs.preMaslaValues.inputtedMawjoodahTuhr?:0L, allTheInputs.preMaslaValues.isMawjoodaFasid)
     allTheInputs.preMaslaValues.inputtedMawjoodahTuhr=newMawjoodaPakiValues.inputtedMawjoodahTuhr
@@ -113,7 +116,10 @@ fun handleMubtadia(allTheInputs: AllTheInputs, fixedDurations: MutableList<Fixed
         allTheInputs.timeZone ?: "UTC")
 
 }
-fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
+fun handleNifas(allTheInputs: AllTheInputs,
+                fixedDurations: MutableList<FixedDuration>,
+                adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>): OutputTexts {
     addStartDateToFixedDurations(fixedDurations)
     markAllTuhrsInPregnancyAsHaml(fixedDurations, allTheInputs.pregnancy!!, allTheInputs.ikhtilaafaat.ghairMustabeenIkhtilaaf)
     //the above also added start of pregnancy
@@ -121,14 +127,14 @@ fun handleNifas(allTheInputs: AllTheInputs, fixedDurations: MutableList<FixedDur
     if(allTheInputs.pregnancy.mustabeenUlKhilqat){
         return handleMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
     }else{
-        return handleGhairMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+        handleGhairMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
     }
 
 }
 fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
                                  fixedDurations: MutableList<FixedDuration>,
                                  adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
-                                 adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
+                                 adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>): OutputTexts {
     //if it's not mustabeen ulkhilqat, deal with it like haiz
     removeTuhrLessThan15(fixedDurations)
     removeTuhrLessThan15InPregnancy(fixedDurations)
@@ -173,7 +179,8 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
             mawjoodahIsNotAadat),
         adatsOfHaizList,
         adatsOfTuhrList,
-        -1L, typesOfMasla = TypesOfMasla.NIFAS)
+        -1L,
+        typesOfMasla = TypesOfMasla.NIFAS)
     putMawjoodahPakiInFixedDurations(fixedDurations, allTheInputs)
     return generateOutputStringPregnancy(fixedDurations,
         allTheInputs.pregnancy,
@@ -292,9 +299,12 @@ fun checkIfMawjoodahPakiIsTuhrInHaml(fixedDurations:MutableList<FixedDuration>,
         val pregEndTime = pregnancy.birthTime
         val mawjoodahPakiEndDate = fixedDurations.first().startDate
         val mawjoodahPakiStartDate = addTimeToDate(mawjoodahPakiEndDate, -inputtedMawjoodaTuhr)
-        if((mawjoodahPakiEndDate.getMillisLong()>pregStartTime.getMillisLong()&&mawjoodahPakiEndDate.getMillisLong()<=pregEndTime.getMillisLong())||
-           (mawjoodahPakiStartDate.getMillisLong()>=pregStartTime.getMillisLong()&&mawjoodahPakiStartDate.getMillisLong()<pregEndTime.getMillisLong())||
-           (mawjoodahPakiStartDate.getMillisLong()<=pregStartTime.getMillisLong()&& mawjoodahPakiEndDate.getMillisLong()>=pregEndTime.getMillisLong())){
+        if((mawjoodahPakiEndDate.getMillisLong()>pregStartTime.getMillisLong()&&
+                    mawjoodahPakiEndDate.getMillisLong()<=pregEndTime.getMillisLong())||
+           (mawjoodahPakiStartDate.getMillisLong()>=pregStartTime.getMillisLong()&&
+                   mawjoodahPakiStartDate.getMillisLong()<pregEndTime.getMillisLong())||
+           (mawjoodahPakiStartDate.getMillisLong()<=pregStartTime.getMillisLong()&&
+                   mawjoodahPakiEndDate.getMillisLong()>=pregEndTime.getMillisLong())) {
             //either mawjoodah paki start or end date is during preg, or the 2 dates are on either side of preg
             return true
         }
@@ -583,7 +593,9 @@ fun makeAllDamInFortyAfterWiladatAsMuttasil(fixedDurations:MutableList<FixedDura
 }
 
 
-fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pregnancy:Pregnancy, isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean){
+fun markAllTuhrsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>,
+                                  pregnancy:Pregnancy,
+                                  isTuhrInHamlAadatInGhairMustabeenIkhtilaf:Boolean) {
     for (i in fixedDurations.indices){
         val endDateOfFixedDuration = fixedDurations[i].endDate
         if(fixedDurations[i].type == DurationType.TUHR &&
@@ -622,7 +634,7 @@ fun markAllDamsInPregnancyAsHaml(fixedDurations: MutableList<FixedDuration>, pre
             fixedDurations[i].timeInMilliseconds = newDuration
             //maybe we really should leave an istihaz after here????
             //we gotta figure out what to do with indices here
-            val newFixedDuration = FixedDuration(DurationType.DAM_IN_HAML,timeInHaml, startDate = addTimeToDate(fixedDurations[i].startDate, newDuration))
+            val newFixedDuration = FixedDuration(DurationType.DAM_IN_HAML,timeInHaml, startDate=addTimeToDate(fixedDurations[i].startDate, newDuration))
             fixedDurations.add(i+1, newFixedDuration)
         }
         //this started in the middle, ended in the middle of it
@@ -736,7 +748,9 @@ fun removeTuhrLessThan15 (fixedDurations: MutableList<FixedDuration>){
 //          iterate through array. when we find a dam less than 3, check if
 //          there is a tuhur behind it. and in front of it. if there is then add all the 3 durations
 //          together. set type as a new type tuhr-e-faasid. delete the originals.
-fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>, inputtedMawjoodaTuhr: Long? = null, isMawjoodaFasid: Boolean=false):PreMaslaValues{
+fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>,
+                        inputtedMawjoodaTuhr: Long? = null,
+                        isMawjoodaFasid: Boolean=false): PreMaslaValues {
     var i=0
     var isMawjoodaFasidEditable=isMawjoodaFasid
     var mawjoodahtuhreditable=inputtedMawjoodaTuhr
@@ -965,7 +979,11 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
     return true
 }
 
-fun dealWithIstihazaAfter(istihazaAfter: Long, aadatHaz: Long, aadatTuhr: Long, fixedDurations: MutableList<FixedDuration>, i: Int, daurHaizIkhtilaf: Boolean):Long {
+fun dealWithIstihazaAfter(istihazaAfter: Long,
+                          aadatHaz: Long,
+                          aadatTuhr: Long,
+                          fixedDurations: MutableList<FixedDuration>,
+                          i: Int, daurHaizIkhtilaf: Boolean): Long {
     //this basically does 2 things:
     // it returns the aadat of haiz at the end of istimrar, if it ended at haiz
     // it adds the right amount of istehaza to the next tuhr, and marks it as fasid, if it ended at istehaza.
@@ -1646,19 +1664,34 @@ fun calculateEndingOutputValues(fixedDurations: MutableList<FixedDuration>,
                                 preMaslaValues: PreMaslaValues,
                                 adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
                                 adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
-                                aadatNifas:Long?=-1L, newAadatNifas:Long? = -1L, typesOfMasla: TypesOfMasla):EndingOutputValues{
+                                aadatNifas:Long?=-1L,
+                                newAadatNifas:Long? = -1L,
+                                typesOfMasla: TypesOfMasla): EndingOutputValues {
 //    println("calc ending output")
     val inputtedAadatTuhr = preMaslaValues.inputtedAadatTuhr
     val inputtedMawjoodaTuhr = preMaslaValues.inputtedMawjoodahTuhr
     val isMawjoodaFasid = preMaslaValues.isMawjoodaFasid
 
     val filHaalPaki = calculateFilHaal(fixedDurations,adatsOfHaizList,adatsOfTuhrList,inputtedMawjoodaTuhr)
-    val aadaat = finalAadatsOfHaizAndTuhr(fixedDurations, inputtedAadatTuhr, inputtedMawjoodaTuhr, isMawjoodaFasid, adatsOfHaizList, adatsOfTuhrList)
+    val aadaat = finalAadatsOfHaizAndTuhr(
+        fixedDurations,
+        inputtedAadatTuhr,
+        inputtedMawjoodaTuhr,
+        isMawjoodaFasid,
+        adatsOfHaizList,
+        adatsOfTuhrList)
     if(typesOfMasla==TypesOfMasla.NIFAS){
         aadaat.aadatNifas = newAadatNifas
     }
 
-    val futureDates = futureDatesOfInterest(fixedDurations, aadaat, aadatNifas, adatsOfHaizList, adatsOfTuhrList, inputtedMawjoodaTuhr, typesOfMasla)
+    val futureDates = futureDatesOfInterest(
+        fixedDurations,
+        aadaat,
+        aadatNifas,
+        adatsOfHaizList,
+        adatsOfTuhrList,
+        inputtedMawjoodaTuhr,
+        typesOfMasla)
     return EndingOutputValues(filHaalPaki,aadaat,futureDates)
 }
 
@@ -1968,7 +2001,12 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
     return futureDatesList
 }
 
-fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>, inputtedAadatTuhr: Long?, inputtedMawjoodaTuhr: Long?, isMawjoodaFasid: Boolean, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):AadatsOfHaizAndTuhr{
+fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>,
+                             inputtedAadatTuhr: Long?,
+                             inputtedMawjoodaTuhr: Long?,
+                             isMawjoodaFasid: Boolean,
+                             adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                             adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>): AadatsOfHaizAndTuhr{
     if(fixedDurations.last().type==DurationType.DAM &&
         fixedDurations.last().days>10 &&
         fixedDurations.last().biggerThanTen!!.qism==Soortain.A_3 &&
@@ -2107,7 +2145,10 @@ fun getSecondLastAadatOfHaizAndTuhr(
     return AadatsOfHaizAndTuhr(previousAadatOfHaiz,previousAadatOfTuhr)
 }
 
-fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>, adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, inputtedMawjoodaTuhr: Long?):Boolean?{
+fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>,
+                     adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                     adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
+                     inputtedMawjoodaTuhr: Long?): Boolean?{
     //calculate filHaal status
     var filHaalPaki:Boolean? = false
 
@@ -2238,7 +2279,7 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>, adatsOfHaizList
                     filHaalPaki=true
                 }
             }else if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
-                filHaalPaki=false
+                filHaalPaki = false
             }
         }
     }else if(fixedDurations.last().type == DurationType.ISTEHAZA_AYYAMEQABLIYYA) {
