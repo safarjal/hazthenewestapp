@@ -48,12 +48,16 @@ fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
         allTheInputs.ikhtilaafaat.ayyameQabliyyaIkhtilaf = true //so we will turn off ayyam-e-qabliyya
     }
 
-    if(allTheInputs.typeOfMasla==TypesOfMasla.NIFAS){
-        return handleNifas(allTheInputs, fixedDurations, adatsOfHaizList, adatsOfTuhrList)
-    }else if(allTheInputs.typeOfMasla==TypesOfMasla.MUBTADIA){
-        return handleMubtadia(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
-    }else{//is mutadah
-        return handleMutadah(allTheInputs, fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+    return when (allTheInputs.typeOfMasla) {
+        TypesOfMasla.NIFAS -> {
+            handleNifas(allTheInputs, fixedDurations, adatsOfHaizList, adatsOfTuhrList)
+        }
+        TypesOfMasla.MUBTADIA -> {
+            handleMubtadia(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+        }
+        else -> {//is mutadah
+            handleMutadah(allTheInputs, fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+        }
     }
 }
 fun handleMubtadia(allTheInputs: AllTheInputs,
@@ -124,8 +128,8 @@ fun handleNifas(allTheInputs: AllTheInputs,
     markAllTuhrsInPregnancyAsHaml(fixedDurations, allTheInputs.pregnancy!!, allTheInputs.ikhtilaafaat.ghairMustabeenIkhtilaaf)
     //the above also added start of pregnancy
 
-    if(allTheInputs.pregnancy.mustabeenUlKhilqat){
-        return handleMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+    return if(allTheInputs.pregnancy.mustabeenUlKhilqat){
+        handleMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
     }else{
         handleGhairMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
     }
@@ -2162,22 +2166,25 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>,
             if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
                 filHaalPaki=false
             }else if(lastDurationType==DurationType.HAIZ){//A-2, A-1, daur
-                if(aadatHaz>lastDurationTime){//in A-2, and daur only
-                    filHaalPaki=false
-                }else {//A-1, //daur
-                    filHaalPaki = true
-                }
+//                if(aadatHaz>lastDurationTime){//in A-2, and daur only
+//                    filHaalPaki=false
+//                }else {//A-1, //daur
+//                    filHaalPaki = true
+//                }
+                filHaalPaki = aadatHaz <= lastDurationTime
             }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){//daur, A-3, B-3, B-2
                 if(aadatTuhr>lastDurationTime){
                     val qism = fixedDurations.last().biggerThanTen!!.qism
                     //this isn't actually about ayyame qabliya
                     val ayyameQabliyya = fixedDurations.last().biggerThanTen!!.gp-fixedDurations.last().biggerThanTen!!.mp
-                    if(qism==Soortain.A_3 && //A-3 entered into aadat
-                        ayyameQabliyya<=fixedDurations.last().timeInMilliseconds) {
-                        filHaalPaki=false
-                    }else{
-                        filHaalPaki=true
-                    }
+//                    if(qism==Soortain.A_3 && //A-3 entered into aadat
+//                        ayyameQabliyya<=fixedDurations.last().timeInMilliseconds) {
+//                        filHaalPaki=false
+//                    }else{
+//                        filHaalPaki=true
+//                    }
+                    filHaalPaki = !(qism==Soortain.A_3 && //A-3 entered into aadat
+                            ayyameQabliyya<=fixedDurations.last().timeInMilliseconds)
                 }else{
                     filHaalPaki=false
                 }
@@ -2240,17 +2247,19 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>,
             if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
                 filHaalPaki=false
             }else if(lastDurationType==DurationType.HAIZ){
-                if(aadatHaz>lastDurationTime){
-                    filHaalPaki=false
-                }else{
-                    filHaalPaki=true
-                }
+//                if(aadatHaz>lastDurationTime){
+//                    filHaalPaki=false
+//                }else{
+//                    filHaalPaki=true
+//                }
+                filHaalPaki = aadatHaz <= lastDurationTime
             }else if(lastDurationType==DurationType.ISTIHAZA_AFTER){
-                if(aadatTuhr>lastDurationTime){
-                    filHaalPaki=true
-                }else{
-                    filHaalPaki=false
-                }
+//                if(aadatTuhr>lastDurationTime){
+//                    filHaalPaki=true
+//                }else{
+//                    filHaalPaki=false
+//                }
+                filHaalPaki = aadatTuhr > lastDurationTime
             }
         }else if(fixedDurations.last().timeInMilliseconds==10.getMilliDays()){
             filHaalPaki=null
@@ -2262,22 +2271,24 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>,
             val lastDurationType = fixedDurations.last().biggerThanForty!!.durationsList.last().type
             val lastDurationTime = fixedDurations.last().biggerThanForty!!.durationsList.last().timeInMilliseconds
             if(lastDurationType==DurationType.ISTIHAZA_AFTER){
-                if(aadatTuhr==-1L){
-                    filHaalPaki=true
-                }else if(aadatTuhr>lastDurationTime){
-                    filHaalPaki=true
-                }else{
-                    filHaalPaki=false
-                }
+//                if(aadatTuhr==-1L){
+//                    filHaalPaki=true
+//                }else if(aadatTuhr>lastDurationTime){
+//                    filHaalPaki=true
+//                }else{
+//                    filHaalPaki=false
+//                }
+                filHaalPaki = if(aadatTuhr==-1L) true else aadatTuhr>lastDurationTime
             }else if(lastDurationType==DurationType.HAIZ){
-                if(aadatHaz==-1L){
-                    //this shouldn't happen
-                    filHaalPaki=false
-                }else if(aadatHaz>lastDurationTime){
-                    filHaalPaki=false
-                }else{
-                    filHaalPaki=true
-                }
+//                if(aadatHaz==-1L){
+//                    //this shouldn't happen
+//                    filHaalPaki=false
+//                }else if(aadatHaz>lastDurationTime){
+//                    filHaalPaki=false
+//                }else{
+//                    filHaalPaki=true
+//                }
+                filHaalPaki = if(aadatHaz==-1L) false else aadatHaz <= lastDurationTime
             }else if(lastDurationType==DurationType.LESS_THAN_3_HAIZ){
                 filHaalPaki = false
             }
@@ -2358,8 +2369,8 @@ fun putMawjoodahPakiInFixedDurations(fixedDurations: MutableList<FixedDuration>,
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=null &&
         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!=-1L){
         if(fixedDurations[0].type==DurationType.DAM){
-            var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
-            if(allTheInputs.preMaslaValues.isMawjoodaFasid==true){
+            val startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
+            if(allTheInputs.preMaslaValues.isMawjoodaFasid){
                 fixedDurations.add(0, FixedDuration(DurationType.TUHREFAASID,
                     allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
             }else{
@@ -2373,8 +2384,8 @@ fun putMawjoodahPakiInFixedDurations(fixedDurations: MutableList<FixedDuration>,
                     allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = fixedDurations[0].startDate))
                 //start date is the same as last one, cuz haml has 0 length
             }else{//this is tuhr before haml
-                var startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
-                if(allTheInputs.preMaslaValues.isMawjoodaFasid==true){
+                val startTime = addTimeToDate(fixedDurations[0].startDate, -allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!)
+                if(allTheInputs.preMaslaValues.isMawjoodaFasid){
                     fixedDurations.add(0, FixedDuration(DurationType.TUHREFAASID,
                         allTheInputs.preMaslaValues.inputtedMawjoodahTuhr!!, startDate = startTime))
                 }else{
