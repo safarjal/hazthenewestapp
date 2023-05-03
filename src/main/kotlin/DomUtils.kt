@@ -5,12 +5,17 @@ import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Date
+import kotlin.js.Json
+import kotlin.js.json
 
 // MAKE ELEMENTS
 fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
@@ -860,28 +865,31 @@ private fun copyText(event: Event) {
     val questionTxt = inputContainer.questionText.value
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
-    var copyTxt = "*${dateStr}*\n\n${questionTxt + "\n\n"}${divider}\n\n${answerTxt}"
+    var copyTxt = "*$dateStr*\n\n" +
+            "$questionTxt\n\n" +
+            "$divider\n\n" +
+            "$answerTxt"
 
     val small = div?.querySelector("small")
-    var smallTxt = " Copied "
-//    var response: Json = json(Pair("id", null))
-//    val job = GlobalScope.launch { response = getData(inputContainer) }
-//    job.invokeOnCompletion {
-//        console.log(response["id"])
-//        if (response["id"] != null) {
-//            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
-//            smallTxt = " Saved and Copied "
-//            copyTxt.let { window.navigator.clipboard.writeText(it) }
-//        } else {
-//            smallTxt = " Copied "
-//            copyTxt.let { window.navigator.clipboard.writeText(it) }
-//            window.alert("Masla has not been saved. However, it has copied.")
-//        }
-//    }
-    copyTxt.let { window.navigator.clipboard.writeText(it) }
+    var smallTxt = ""
 
-    small?.innerHTML?.let { small.innerHTML = smallTxt }
-    window.setTimeout({ small?.innerHTML = "" }, 3000)
+    var response: Json = json(Pair("id", null))
+    val job = GlobalScope.launch { response = getData(inputContainer) }
+    job.invokeOnCompletion {
+//        console.log(response["id"])
+//        console.log(response)
+        if (response["id"] != null) {
+            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt // Todo: Figure out if we're actually using uid after all.
+            smallTxt = " Saved and Copied "
+        } else {
+            smallTxt = " Copied "
+            window.alert("Masla has not been saved. However, it has copied.")
+        }
+
+        copyTxt.let { window.navigator.clipboard.writeText(it) }
+        small?.innerHTML?.let { small.innerHTML = smallTxt }
+        window.setTimeout({ small?.innerHTML = "" }, 5000)
+    }
 }
 
 // COMPARE

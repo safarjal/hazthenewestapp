@@ -134,7 +134,7 @@ data class AllTheInputs(
 )
 
 // Todo: make proper uid
-//@Serializable
+@Serializable
 data class SaveData(
     val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
@@ -145,13 +145,13 @@ data class SaveData(
     val others: OtherValues? = null,
 )
 
-//@Serializable
+@Serializable
 data class SaveEntries(
     val startTime: String,
     val endTime: String,
 )
 
-//@Serializable
+@Serializable
 data class OtherValues(
     val question: String? = null,
     var aadatHaiz: String? = null,
@@ -166,6 +166,7 @@ data class OtherValues(
     val daurHaizIkhtilaf: Boolean = false,
     var ayyameQabliyyaIkhtilaf: Boolean = false,
     val mubtadiaIkhitilaf: Boolean = false,
+    val timeZone: String? = null
 )
 
 data class PreMaslaValues(
@@ -277,17 +278,17 @@ enum class DurationType {
     START_OF_AADAT_AYYAMEQABLIYYA
 }
 
-class DateTypeList (
-    val date: Date,
-    val type: DateTypes
-)
-enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
-
-class DurationTypes (
-    val startTime: Instant,
-    val endTime: Instant,
-    val type: DateTypes
-)
+//class DateTypeList (
+//    val date: Date,
+//    val type: DateTypes
+//)
+//enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
+//
+//class DurationTypes (
+//    val startTime: Instant,
+//    val endTime: Instant,
+//    val type: DateTypes
+//)
 
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
