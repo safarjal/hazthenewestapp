@@ -290,20 +290,20 @@ private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aada
 
         //create a description for each combo
         if(aadatCombo.aadatNifas!=null && aadatCombo.aadatNifas!=-1.getMilliDays()){//aadat nifas exists
-            if(aadatCombo.aadatHaiz==-(1.getMilliDays())){
-                listOfDescriptions += "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatTuhr.getDays())}"
+            listOfDescriptions += if(aadatCombo.aadatHaiz==-(1.getMilliDays())){
+                "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatTuhr.getDays())}"
             }else if(aadatCombo.aadatTuhr==-1.getMilliDays()){
-                listOfDescriptions += "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}"
+                "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}"
             }else{
-                listOfDescriptions += "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
+                "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
             }
         }else{//no nifas
-            if(aadatCombo.aadatHaiz==-1.getMilliDays()){
-                listOfDescriptions += "${(aadatCombo.aadatTuhr.getDays())}"
+            listOfDescriptions += if(aadatCombo.aadatHaiz==-1.getMilliDays()){
+                "${(aadatCombo.aadatTuhr.getDays())}"
             }else if(aadatCombo.aadatTuhr==-1.getMilliDays()){
-                listOfDescriptions += "${(aadatCombo.aadatHaiz.getDays())}"
+                "${(aadatCombo.aadatHaiz.getDays())}"
             }else{
-                listOfDescriptions += "${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
+                "${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
             }
         }
     }
