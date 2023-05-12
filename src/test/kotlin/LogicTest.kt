@@ -119,9 +119,9 @@ class LogicTest {
 //    fun testAddStartDateToFixedDurations(){
 //        firstStartTime = makeInstant(2020, 8, 31)
 //        val fixedDurations = mutableListOf(
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.millisFromDays()).toLong()),
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.millisFromDays()).toLong()),
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (3.millisFromDays()).toLong())
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()).toLong()),
+//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays()).toLong()),
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (3.getMilliDays()).toLong())
 //        )
 //        assertEquals(makeInstant(2020, 8, 31),fixedDurations[0].startDate)
 //        assertEquals(makeInstant(2020, 9, 2),fixedDurations[0].startDate)
@@ -2748,6 +2748,7 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+    @Test
     fun testingMubtadiaFinalOutputsCase18() {
         //dam bigger than 10  aadat
         val entries = mutableListOf(
