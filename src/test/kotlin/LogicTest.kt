@@ -1,7 +1,7 @@
 //@file:Suppress("SpellCheckingInspection")
 //
 import kotlinx.datetime.internal.JSJoda.Instant
-//import kotlinx.datetime.internal.JSJoda.LocalDateTime
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -2986,697 +2986,1438 @@ class LogicTest {
         assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
+    @Test
+    fun testingMubtadiaDurationCase1b() {
+        //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
+        val arbitraryTime = Instant.EPOCH
+        val durations = listOf(
+            Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("18")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("11")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("16")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("15")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("11")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("18")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUBTADIA,
+                ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("63")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("15")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("11")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE,parseDays("5")!!,arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("18")!!,
+                istihazaAfter = parseDays("3")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("100")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("5")!!, arbitraryTime),
+                    )
+                )
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("20")!!)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
+    fun testingMubtadiaDurationCase2a() {
+        val arbitraryTime = Instant.EPOCH
+        val durations = listOf(
+            Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUBTADIA,
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM_MUBTADIA,
+                parseDays("14")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA,
+                parseDays("21")!!,
+                istihazaAfter = parseDays("4")!!
+            ),
+            FixedDuration(
+                DurationType.DAM_MUBTADIA,
+                parseDays("100")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                    )
+                )
+            ),
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(-1,-1)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
+    fun testingMubtadiaDurationCase2b() {
+        val arbitraryTime = Instant.EPOCH
+        val durations = listOf(
+            Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
+            Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
+            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUBTADIA,
+                ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("14")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!, arbitraryTime),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("21")!!,
+                istihazaAfter = parseDays("4")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("100")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
+                    )
+                )
+            ),
+        )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("5")!!,parseDays("20")!!)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
+    fun testingMutadahDurationCase1a() {
+        //mashq 11, sawal 10
+        val durations = listOf(
+            Duration(DurationType.TUHR, parseDays("26")!!),
+            Duration(DurationType.DAM, parseDays("13")!!),
+            Duration(DurationType.TUHR, parseDays("16")!!),
+            Duration(DurationType.DAM, parseDays("7")!!),
+            Duration(DurationType.TUHR, parseDays("18")!!),
+            Duration(DurationType.DAM, parseDays("100")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(parseDays("5")!!,
+                parseDays("27")!!)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("26")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("13")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
+                        Duration(DurationType.HAIZ,parseDays("5")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("16")!!,
+                istihazaAfter = parseDays("7")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("7")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("18")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("100")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("16")!!),
+                    )
+                )
+            ),
+        )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("7")!!,parseDays("27")!!)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
+    fun testingMutadahDurationCase1b() {
+        //mashq 11, sawal 10//testing daur ikhtilaf
+        val durations = listOf(
+            Duration(DurationType.TUHR, parseDays("26")!!),
+            Duration(DurationType.DAM, parseDays("13")!!),
+            Duration(DurationType.TUHR, parseDays("16")!!),
+            Duration(DurationType.DAM, parseDays("7")!!),
+            Duration(DurationType.TUHR, parseDays("18")!!),
+            Duration(DurationType.DAM, parseDays("86")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(parseDays("5")!!,
+                    parseDays("27")!!),
+                ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("26")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("13")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
+                        Duration(DurationType.HAIZ,parseDays("5")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("16")!!,
+                istihazaAfter = parseDays("7")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("7")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("18")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("86")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("9")!!),
+                    )
+                )
+            ),
+        )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("7")!!,parseDays("27")!!)
+        //we put aadat as 7 and not 9, because we don't use last aadat of daur
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
+    fun testingMutadahDurationCase1c() {
+        //mashq 11, sawal 10//testing daur ikhtilaf
+        val durations = listOf(
+            Duration(DurationType.TUHR, parseDays("26")!!),
+            Duration(DurationType.DAM, parseDays("13")!!),
+            Duration(DurationType.TUHR, parseDays("16")!!),
+            Duration(DurationType.DAM, parseDays("7")!!),
+            Duration(DurationType.TUHR, parseDays("18")!!),
+            Duration(DurationType.DAM, parseDays("86")!!),
+            Duration(DurationType.TUHR, parseDays("28")!!),
+            Duration(DurationType.DAM, parseDays("11")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(parseDays("5")!!,
+                    parseDays("27")!!),
+                ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("26")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("13")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
+                        Duration(DurationType.HAIZ,parseDays("5")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("16")!!,
+                istihazaAfter = parseDays("7")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("7")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("18")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("86")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("7")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ,parseDays("9")!!),
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("28")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("11")!!,
+                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
+                    durationsList = mutableListOf(
+                        Duration(DurationType.HAIZ,parseDays("8")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!),
+                    )
+                )
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("28")!!)
+        //we put aadat as 7 and not 9, because we don't use last aadat of daur
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
+    fun testingNifasDurationCase1() {
+        //mashq 12, sawal 1//testing daur ikhtilaf
+        val durations = listOf(
+            Duration(DurationType.HAML, parseDays("0")!!),
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("2")!!),
+            Duration(DurationType.TUHR, parseDays("30")!!),
+            Duration(DurationType.DAM, parseDays("2")!!),
+            Duration(DurationType.TUHR, parseDays("2")!!),
+            Duration(DurationType.DAM, parseDays("1")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(aadatNifas= 40.getMilliDays(),
+                    mustabeenUlKhilqat = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM_IN_NIFAS_PERIOD,
+                parseDays("37")!!,
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(-1,-1, parseDays("37")!!)
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+    @Test
+    fun testingNifasDurationCase2() {
+        //mashq 13, sawal 1//testing daur ikhtilaf
+        val durations = listOf(
+            Duration(DurationType.HAML, parseDays("0")!!),
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("10")!!),
+            Duration(DurationType.TUHR, parseDays("20")!!),
+            Duration(DurationType.DAM, parseDays("8")!!),
+            Duration(DurationType.TUHR, parseDays("14")!!),
+            Duration(DurationType.DAM, parseDays("4")!!),
+            Duration(DurationType.DAM, parseDays("100")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("27")!!),
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(aadatNifas =  35.getMilliDays(), mustabeenUlKhilqat = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM_IN_NIFAS_PERIOD,
+                parseDays("156")!!,
+                biggerThanForty = BiggerThanFortyNifas(
+                    35.getMilliDays(),
+                    0, 0, 0, 0,
+                    mutableListOf(
+                        Duration(DurationType.NIFAS, parseDays("35")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ, parseDays("8")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ, parseDays("8")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
+                        Duration(DurationType.HAIZ, parseDays("8")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("16")!!),
+
+                        )
+
+                )
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("27")!!, parseDays("35")!!)
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+    @Test
+    fun testingNifasDurationCase3() {
+        //mashq 15, sawal 1
+        val durations = listOf(
+            Duration(DurationType.HAML, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("60")!!),
+            Duration(DurationType.TUHR, parseDays("10")!!),
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("16")!!),
+            Duration(DurationType.TUHR, parseDays("17")!!),
+            Duration(DurationType.DAM, parseDays("8")!!),
+            Duration(DurationType.TUHR, parseDays("27")!!),
+            Duration(DurationType.DAM, parseDays("16")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(aadatNifas = 38.getMilliDays(),
+                    mustabeenUlKhilqat = true)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM_IN_HAML,
+                parseDays("60")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR_IN_HAML,
+                parseDays("10")!!,
+            ),
+
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM_IN_NIFAS_PERIOD,
+                parseDays("41")!!,
+                biggerThanForty = BiggerThanFortyNifas(
+                    38.getMilliDays(),
+                    0, 0, 0, 0,
+                    mutableListOf(
+                        Duration(DurationType.NIFAS, parseDays("38")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!),
+                        )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHREFAASID_WITH_ISTEHAZA,
+                parseDays("27")!!,
+                istihazaAfter = parseDays("3")!!
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("16")!!,
+                biggerThanTen = BiggerThanTenDm(0, 0, 0, 0,Soortain.A_1, 0, 0, 0, 0, 0,
+                durationsList = mutableListOf(
+                    Duration(DurationType.HAIZ, parseDays("8")!!),
+                    Duration(DurationType.ISTIHAZA_AFTER, parseDays("8")!!),
+                ))
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, parseDays("38")!!)
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+    @Test
+    fun testingIsqatDurationCase1() {
+        //mithal 1 pg 53
+        val durations = listOf(
+            Duration(DurationType.HAML, parseDays("0")!!),
+            Duration(DurationType.TUHR, parseDays("60")!!),
+            Duration(DurationType.DAM, parseDays("10")!!),
+            Duration(DurationType.TUHR, parseDays("15")!!),
+            Duration(DurationType.DAM, parseDays("2")!!),
+            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
+            Duration(DurationType.DAM, parseDays("15")!!),
+            Duration(DurationType.TUHR, parseDays("16")!!),
+            Duration(DurationType.DAM, parseDays("20")!!),
+        )
+
+        val output = handleEntries( convertDurationsIntoEntries(
+            durations,
+            AllTheInputs(
+                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(
+                    mustabeenUlKhilqat = false),
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
+            )
+        ))
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR_IN_HAML,
+                parseDays("60")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("10")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR_IN_HAML,
+                parseDays("15")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("17")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+                    mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
+                        Duration(DurationType.HAIZ, parseDays("8")!!)
+
+                    )
+                )
+            ),
+            FixedDuration(
+                DurationType.TUHR,
+                parseDays("16")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("20")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+                    mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("8")!!),
+                        Duration(DurationType.HAIZ, parseDays("8")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!),
+                    )
+                )
+            ),
+
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, -1)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+    @Test
+    fun bugMaslaIssue168() {
+        //writitng isqat line twice
+        val entries = listOf(
+            Entry(makeInstant(2022, 2, 13), makeInstant(2022, 2, 21)),
+            Entry(makeInstant(2022, 3, 27), makeInstant(2022, 4, 19)),
+
+        )
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                preMaslaValues = PreMaslaValues(inputtedMawjoodahTuhr = parseDays("31")!!),
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(makeInstant(2022, 3, 21), makeInstant(2022, 4, 15),
+                    mustabeenUlKhilqat = false),
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
+            )
+        )
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("8")!!,
+            ),
+            FixedDuration(
+                DurationType.HAML,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.TUHR_IN_HAML,
+                parseDays("34")!!,
+            ),
+            FixedDuration(
+                DurationType.WILADAT_ISQAT,
+                parseDays("0")!!,
+            ),
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("23")!!,
+                biggerThanTen = BiggerThanTenDm(
+                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
+                    mutableListOf(
+                        Duration(DurationType.HAIZ, parseDays("5")!!),
+                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("18")!!)
+
+                    )
+                )
+            ),
+            )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("5")!!,parseDays("31")!!, -1)
+
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
+    }
+    @Test
+    fun issue207() {
+        //making sure that 6 months greater tuhr doesn't cause ayyame qabliyya
+        val entries = listOf(
+            Entry(makeInstant(2022, 6, 14), makeInstant(2022, 6, 21)),
+            Entry(makeInstant(2022, 7, 18), makeInstant(2022, 7, 24)),
+            Entry(makeInstant(2023, 1, 29), makeInstant(2023, 2, 8)),
+            Entry(makeInstant(2023, 3, 27), makeInstant(2023, 4, 6)),
+
+            )
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+
+        val fixedDurations = output.fixedDurations
+
+        val expectedFixedDurations = listOf(
+            FixedDuration(
+                DurationType.DAM,
+                parseDays("10")!!,
+                ayyameqabliyya = null
+            ),
+        )
+        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("47")!!)
+//        println("Actual Tuhr Aadat is ${output.endingOutputValues.aadats!!.aadatTuhr.daysFromMillis()}")
+
+        assertEquals(expectedFixedDurations.last().ayyameqabliyya, fixedDurations.last().ayyameqabliyya)
+        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
+    fun bugMaslaIssue195() {
+        //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2022, 7, 13, 8, 30), makeInstant(2022, 7, 23, 11, 0)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(
+                    parseDays("8:19"),
+                    parseDays("26:6"),
+                    parseDays("18:11")
+                )
+            )
+        )
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.DAM, parseDays("10:2:30")!!,
+                biggerThanTen = BiggerThanTenDm(0, 0, 0, 0,Soortain.A_3, 0, 0, 0, 0,
+                    durationsList= mutableListOf(
+                        Duration(DurationType.ISTIHAZA_BEFORE,parseDays("7:19")!!),
+                        Duration(DurationType.LESS_THAN_3_HAIZ, parseDays("2:7:30")!!)
+                    ),
+                    aadatTuhr = 0
+                )
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("8:19")!!, parseDays("26:6")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2022, 4, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(makeInstant(2022, 4, 30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(makeInstant(2022, 4, 28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedFixedDurations.size, output.fixedDurations.size)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList.size, output.fixedDurations[0].biggerThanTen!!.durationsList.size)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].type, output.fixedDurations[0].biggerThanTen!!.durationsList[0].type)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].type, output.fixedDurations[0].biggerThanTen!!.durationsList[1].type)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds)
+        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds)
+    }
+    @Test
+    fun bugMaslaDurationsNifasIssue166() {
+        //inputs : 8D 24T 8D Pregnancy 60D 10T Birth
+        val durations = listOf<Duration>(
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.TUHR,parseDays("24")!!),
+            Duration(DurationType.DAM,parseDays("8")!!),
+            Duration(DurationType.HAML,parseDays("0")!!),
+            Duration(DurationType.DAM,parseDays("60")!!),
+            Duration(DurationType.TUHR,parseDays("10")!!),
+            Duration(DurationType.WILADAT_ISQAT,parseDays("0")!!),
+
+            )
+        val output = handleEntries(convertDurationsIntoEntries(durations, AllTheInputs(
+            typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(aadatNifas = parseDays("40")!!,
+                mustabeenUlKhilqat = true)
+        )
+        ))
+        assertEquals(parseDays("8"),output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(parseDays("24"),output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
+    fun bugMaslaIssue170() {
+        //NIFAS MASLA insufficient final values
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2021, 5, 21), makeInstant(2021, 5, 27)),
+            Entry(makeInstant(2021, 6, 21), makeInstant(2021, 6, 27)),
+            //preg +Birth
+            Entry(makeInstant(2022, 3, 4), makeInstant(2022, 3, 28)),
+            Entry(makeInstant(2022, 4, 20), makeInstant(2022, 4, 25)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(makeInstant(2021, 6, 27), makeInstant(2022, 3, 4), aadatNifas = parseDays("40")!!,
+                    mustabeenUlKhilqat = true)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("23")!!, parseDays("24")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2022, 4, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(makeInstant(2022, 4, 30), TypesOfFutureDates.AFTER_TEN_DAYS),
+                    FutureDateType(makeInstant(2022, 4, 28), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+
+    }
+    @Test
+    fun bugMaslaIssue203() {
+        //Wrong tuhr habit
+//        15 April - 20 April
+//                7 May - 15 May
+//                June, july, aug clean
+//        2 Sep - 10 Sep
+//                18 Oct - 20 Oct
+//                9 Nov - 22 Nov
+//                3 Dec - 1 day
+//                7 Dec - 30 dec on and off.
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2022, 4, 15), makeInstant(2022, 4, 20)),
+            Entry(makeInstant(2022, 5, 7), makeInstant(2022, 5, 15)),
+            Entry(makeInstant(2022, 9, 2), makeInstant(2022, 9, 10)),
+            Entry(makeInstant(2022, 10, 18), makeInstant(2022, 10, 20)),
+            Entry(makeInstant(2022, 11, 9), makeInstant(2022, 11, 22)),
+            Entry(makeInstant(2022, 12, 3), makeInstant(2022, 12, 3)),
+            Entry(makeInstant(2022, 12, 7), makeInstant(2022, 12, 30)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("8")!!, parseDays("110")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+    }
+    @Test
+    fun bugMaslaIssue201() {
+        //wrong future advice date given
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2022, 10, 23), makeInstant(2022, 11, 26)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                PreMaslaValues(parseDays("9"),parseDays("54"),parseDays("22")),
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("9")!!, parseDays("54")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2022, 11, 27), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
+                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.END_OF_AADAT_HAIZ),
+                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.IC_FORBIDDEN_DATE),
+                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.IHTIYATI_GHUSL),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+
+    }
+
+    @Test
+    fun issue206TestingIsqat() {
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2022, 11, 28), makeInstant(2022, 12, 4)),
+            Entry(makeInstant(2022, 12, 27), makeInstant(2023, 1, 1)),
+            Entry(makeInstant(2023, 1, 20), makeInstant(2023, 1, 25)),
+            Entry(makeInstant(2023, 3, 22), makeInstant(2023, 4, 9)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(makeInstant(2023, 1, 25),makeInstant(2023, 3, 22),mustabeenUlKhilqat = false)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("56")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+
+    }
+    @Test
+    fun testMuftiAhmadMumtazMasla208() {
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 1, 1), makeInstant(2023, 1, 12)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                preMaslaValues = PreMaslaValues(
+                    3.getMilliDays(),
+                    179.getMilliDays(),
+                    15.getMilliDays(),
+                    false
+                )
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("179")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+
+    @Test
+    fun testDaysHoursMinutesDigitalIssue171() {
+        //if value is 0
+        val inputtedMilliseconds = 0L
+        val outputEnglish = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)
+        val expectedOutputEnglish = "0 days"
+        assertEquals(outputEnglish, expectedOutputEnglish)
+        val outputUrdu = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.URDU)
+        val expectedOutputUrdu = "0 دن"
+        assertEquals(outputUrdu, expectedOutputUrdu)
+    }
+    @Test
+    fun test1ForDaylightSaving() {
+//        This is in America
+//        Clocks went back one hour on November 6, 2022,
+//        And one hour ahead on March 12, 2023,
+//        Since last message, dates of bleeding have been:
+//        ♦12 Oct 9:14pm - 21 Oct 1:05pm
+//        ♦3 Nov 9am - 13 Nov 8:11pm
+//        ♦30 Nov 9:57am - 8 Dec 2:30pm
+//        ♦23 Dec 3:40pm - 3 Jan 1:40pm
+//        ♦18 Jan 10:05am - 26 Jan 4:15pm
+//        ♦9 Feb 2:03pm - 19 Feb 11:31am
+//        ♦8 Mar 11:15am - 18 Mar 11:50pm
+//        ♦2 Apr 10pm - current
+//
+//        Previous habit:
+//        - 18T 14H 17M
+//                - 6B 16H 11M
+//                (T= tuhur B= blood H= hours M = minutes)
+//        ♦12 Oct 9:14pm - 17 Oct 8:44am
+//        (New bleeding habit: 4B 11H 30M)
+//        ♦4 Nov 11:01pm - 9 Nov 9:31am (due to dst) clocks went back an hour on November 6
+//        ♦30 Nov 9:57am - 8 Dec 2:30pm
+//        (New bleeding habit: 8B 4H 33M)
+//        ♦27 Dec 4:47am - 4 Jan 9:20am
+//        ♦22 Jan 11:37pm - 31 Jan 4:10am
+//        🔸Feb: no Haidh since less than 3 days bleeding in makan
+//        ♦8 Mar 11:15am - 16 Mar 4:48pm (due to dst) clocks went forward an hour on March 12
+//        ♦4 Apr 7:05am - 12 Apr 11:38am (if still bleeding)
+
+        val timzn = "America/Los_Angeles"
+
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2022, 10, 12, 21, 14,true, timzn),
+                makeInstant(2022, 10, 21, 13, 5,true, timzn)),
+            Entry(makeInstant(2022, 11, 3, 9, 0,true, timzn),
+                makeInstant(2022, 11, 13, 20, 11,true, timzn)),
+            Entry(makeInstant(2022, 11, 30, 9, 57,true, timzn),
+                makeInstant(2022, 12, 8, 14, 30,true, timzn)),
+            Entry(makeInstant(2022, 12, 23, 15, 40,true, timzn),
+                makeInstant(2023, 1, 3, 13, 40,true, timzn)),
+            Entry(makeInstant(2023, 1, 18, 10, 5,true, timzn),
+                makeInstant(2023, 1, 26, 16, 15,true, timzn)),
+            Entry(makeInstant(2023, 2, 9, 14, 3,true, timzn),
+                makeInstant(2023, 2, 19, 11, 31,true, timzn)),
+            Entry(makeInstant(2023, 3, 8, 11, 15,true, timzn),
+                makeInstant(2023, 3, 18, 23, 50,true, timzn)),
+            Entry(makeInstant(2023, 4, 2, 22, 0,true, timzn),
+                makeInstant(2023, 4, 12, 11, 38,true, timzn)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                typeOfInput = TypesOfInputs.DATE_AND_TIME,
+                preMaslaValues = PreMaslaValues(parseDays("4:11:30"),parseDays("18:14:17"), parseDays("18:14:17"),false),
+                timeZone = timzn
+
+            )
+        )
+        val localHazDates = localHazDatesList(output.hazDatesList,timzn)
+//        println(localHazDates)
+
+        val expectedlocalHazDates = listOf<LocalEntry>(
+            LocalEntry(LocalDateTime.of(2022, 10, 12, 21, 14),
+                LocalDateTime.of(2022, 10, 17, 8, 44)),
+            LocalEntry(LocalDateTime.of(2022, 11, 4, 23, 1),
+                LocalDateTime.of(2022, 11, 9, 9, 31)),
+            LocalEntry(LocalDateTime.of(2022, 11, 30, 9, 57),
+                LocalDateTime.of(2022, 12, 8, 14, 30)),
+            LocalEntry(LocalDateTime.of(2022, 12, 27, 4, 47),
+                LocalDateTime.of(2023, 1, 4, 9, 20)),
+            LocalEntry(LocalDateTime.of(2023, 1, 22, 23, 37),
+                LocalDateTime.of(2023, 1, 31, 4, 10)),
+            LocalEntry(LocalDateTime.of(2023, 3, 8, 11, 15),
+                LocalDateTime.of(2023, 3, 16, 16, 48)),
+            LocalEntry(LocalDateTime.of(2023, 4, 4, 7, 5),
+                LocalDateTime.of(2023, 4, 12, 11, 38)),
+        )
+        for(i in localHazDates.indices){
+            assertEquals(localHazDates[i].startTime,expectedlocalHazDates[i].startTime)
+            assertEquals(localHazDates[i].endTime,expectedlocalHazDates[i].endTime)
+        }
+        assertEquals(localHazDates.size,expectedlocalHazDates.size)
+    }
+
+    @Test
+    fun testDurationsMawjoodahPaki() {
+        val durations = listOf<Duration>(
+            Duration(DurationType.DAM, 0L),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays())
+        )
+        val output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 15.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+
+    }
+    @Test
+    fun testDurationsMawjoodahPakiCase2() {
+        val durations = listOf<Duration>(
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 0.getMilliDays()),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays()),
+        )
+        val output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 30.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+    }
+    @Test
+    fun testDurationsMawjoodahPakiCase3() {
+        val durations = listOf<Duration>(
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 2.getMilliDays()),
+            Duration(DurationType.TUHR, 15.getMilliDays()),
+            Duration(DurationType.DAM, 5.getMilliDays()),
+        )
+        val output = handleEntries(convertDurationsIntoEntries(durations))
+        val fixedDurations=output.fixedDurations
+        val expectedFixedDurations = listOf<FixedDuration>(
+            FixedDuration(DurationType.TUHREFAASID, 32.getMilliDays()),
+            FixedDuration(DurationType.DAM, 5.getMilliDays())
+        )
+        assertEquals(expectedFixedDurations.size, fixedDurations.size)
+        for(i in fixedDurations.indices){
+            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
+            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
+            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
+            if(fixedDurations[i].biggerThanTen!=null){
+                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
+                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
+                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
+
+                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
+                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
+                }
+            }
+        }
+    }
+
 //    @Test
-//    fun testingMubtadiaDurationCase1b() {
-//        //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
-//        val arbitraryTime = Instant.EPOCH
+//    fun testingBugMaslaIssue161() {
+//        //durationgs, requesting habit when habit exists
 //        val durations = listOf(
-//            Duration(DurationType.DAM, parseDays("5")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("13")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("18")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("11")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("16")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("15")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("11")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("18")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUBTADIA,
-//                ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("63")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("15")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("11")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE,parseDays("5")!!,arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("18")!!,
-//                istihazaAfter = parseDays("3")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("100")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("3")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("5")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("20")!!)
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//
-//    @Test
-//    fun testingMubtadiaDurationCase2a() {
-//        val arbitraryTime = Instant.EPOCH
-//        val durations = listOf(
-//            Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUBTADIA,
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.DAM_MUBTADIA,
-//                parseDays("14")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA,
-//                parseDays("21")!!,
-//                istihazaAfter = parseDays("4")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM_MUBTADIA,
-//                parseDays("100")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(-1,-1)
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//    @Test
-//    fun testingMubtadiaDurationCase2b() {
-//        val arbitraryTime = Instant.EPOCH
-//        val durations = listOf(
-//            Duration(DurationType.DAM, parseDays("14")!!, arbitraryTime),
-//            Duration(DurationType.TUHR, parseDays("21")!!, arbitraryTime),
-//            Duration(DurationType.DAM, parseDays("100")!!, arbitraryTime),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUBTADIA,
-//                ikhtilaafaat = Ikhtilaafaat(mubtadiaIkhitilaf = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("14")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("10")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("21")!!,
-//                istihazaAfter = parseDays("4")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("100")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!, arbitraryTime),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("20")!!, arbitraryTime),
-//                    )
-//                )
-//            ),
-//        )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("5")!!,parseDays("20")!!)
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//
-//    @Test
-//    fun testingMutadahDurationCase1a() {
-//        //mashq 11, sawal 10
-//        val durations = listOf(
-//            Duration(DurationType.TUHR, parseDays("26")!!),
-//            Duration(DurationType.DAM, parseDays("13")!!),
-//            Duration(DurationType.TUHR, parseDays("16")!!),
-//            Duration(DurationType.DAM, parseDays("7")!!),
-//            Duration(DurationType.TUHR, parseDays("18")!!),
-//            Duration(DurationType.DAM, parseDays("100")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                preMaslaValues = PreMaslaValues(parseDays("5")!!,
-//                parseDays("27")!!)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("26")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("13")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("16")!!,
-//                istihazaAfter = parseDays("7")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("7")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("18")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("100")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("16")!!),
-//                    )
-//                )
-//            ),
-//        )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("7")!!,parseDays("27")!!)
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//
-//    @Test
-//    fun testingMutadahDurationCase1b() {
-//        //mashq 11, sawal 10//testing daur ikhtilaf
-//        val durations = listOf(
-//            Duration(DurationType.TUHR, parseDays("26")!!),
-//            Duration(DurationType.DAM, parseDays("13")!!),
-//            Duration(DurationType.TUHR, parseDays("16")!!),
-//            Duration(DurationType.DAM, parseDays("7")!!),
-//            Duration(DurationType.TUHR, parseDays("18")!!),
-//            Duration(DurationType.DAM, parseDays("86")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                preMaslaValues = PreMaslaValues(parseDays("5")!!,
-//                    parseDays("27")!!),
-//                ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("26")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("13")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("16")!!,
-//                istihazaAfter = parseDays("7")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("7")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("18")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("86")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("9")!!),
-//                    )
-//                )
-//            ),
-//        )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("7")!!,parseDays("27")!!)
-//        //we put aadat as 7 and not 9, because we don't use last aadat of daur
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//    @Test
-//    fun testingMutadahDurationCase1c() {
-//        //mashq 11, sawal 10//testing daur ikhtilaf
-//        val durations = listOf(
-//            Duration(DurationType.TUHR, parseDays("26")!!),
-//            Duration(DurationType.DAM, parseDays("13")!!),
-//            Duration(DurationType.TUHR, parseDays("16")!!),
-//            Duration(DurationType.DAM, parseDays("7")!!),
-//            Duration(DurationType.TUHR, parseDays("18")!!),
-//            Duration(DurationType.DAM, parseDays("86")!!),
-//            Duration(DurationType.TUHR, parseDays("28")!!),
-//            Duration(DurationType.DAM, parseDays("11")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                preMaslaValues = PreMaslaValues(parseDays("5")!!,
-//                    parseDays("27")!!),
-//                ikhtilaafaat = Ikhtilaafaat(daurHaizIkhtilaf = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("26")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("13")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("1")!!),
-//                        Duration(DurationType.HAIZ,parseDays("5")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("7")!!),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("16")!!,
-//                istihazaAfter = parseDays("7")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("7")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("18")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("86")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("7")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ,parseDays("9")!!),
-//                    )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR,
-//                parseDays("28")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("11")!!,
-//                biggerThanTen = BiggerThanTenDm(0L, 0L, 0L, 0L, Soortain.A_1, 0L, 0L, 0L, 0L, 0L,
-//                    durationsList = mutableListOf(
-//                        Duration(DurationType.HAIZ,parseDays("8")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!),
-//                    )
-//                )
-//            ),
-//
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("28")!!)
-//        //we put aadat as 7 and not 9, because we don't use last aadat of daur
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//    @Test
-//    fun testingNifasDurationCase1() {
-//        //mashq 12, sawal 1//testing daur ikhtilaf
-//        val durations = listOf(
-//            Duration(DurationType.HAML, parseDays("0")!!),
-//            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
-//            Duration(DurationType.DAM, parseDays("2")!!),
-//            Duration(DurationType.TUHR, parseDays("30")!!),
-//            Duration(DurationType.DAM, parseDays("2")!!),
-//            Duration(DurationType.TUHR, parseDays("2")!!),
-//            Duration(DurationType.DAM, parseDays("1")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(aadatNifas= 40.getMilliDays(),
-//                    mustabeenUlKhilqat = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.HAML,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.WILADAT_ISQAT,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM_IN_NIFAS_PERIOD,
-//                parseDays("37")!!,
-//            ),
-//
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(-1,-1, parseDays("37")!!)
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
-//    }
-//    @Test
-//    fun testingNifasDurationCase2() {
-//        //mashq 13, sawal 1//testing daur ikhtilaf
-//        val durations = listOf(
-//            Duration(DurationType.HAML, parseDays("0")!!),
-//            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
-//            Duration(DurationType.DAM, parseDays("10")!!),
-//            Duration(DurationType.TUHR, parseDays("20")!!),
 //            Duration(DurationType.DAM, parseDays("8")!!),
-//            Duration(DurationType.TUHR, parseDays("14")!!),
-//            Duration(DurationType.DAM, parseDays("4")!!),
-//            Duration(DurationType.DAM, parseDays("100")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("27")!!),
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(aadatNifas =  35.getMilliDays(), mustabeenUlKhilqat = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.HAML,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.WILADAT_ISQAT,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM_IN_NIFAS_PERIOD,
-//                parseDays("156")!!,
-//                biggerThanForty = BiggerThanFortyNifas(
-//                    35.getMilliDays(),
-//                    0, 0, 0, 0,
-//                    mutableListOf(
-//                        Duration(DurationType.NIFAS, parseDays("35")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ, parseDays("8")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ, parseDays("8")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("27")!!),
-//                        Duration(DurationType.HAIZ, parseDays("8")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("16")!!),
-//
-//                        )
-//
-//                )
-//            ),
-//
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("27")!!, parseDays("35")!!)
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
-//    }
-//    @Test
-//    fun testingNifasDurationCase3() {
-//        //mashq 15, sawal 1
-//        val durations = listOf(
+//            Duration(DurationType.TUHR, parseDays("24")!!),
+//            Duration(DurationType.DAM, parseDays("8")!!),
 //            Duration(DurationType.HAML, parseDays("0")!!),
 //            Duration(DurationType.DAM, parseDays("60")!!),
 //            Duration(DurationType.TUHR, parseDays("10")!!),
@@ -3691,106 +4432,9 @@ class LogicTest {
 //        val output = handleEntries( convertDurationsIntoEntries(
 //            durations,
 //            AllTheInputs(
-//                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
 //                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(aadatNifas = 38.getMilliDays(),
+//                pregnancy = Pregnancy( aadatNifas = parseDays("40")!!,
 //                    mustabeenUlKhilqat = true)
-//            )
-//        ))
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.HAML,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM_IN_HAML,
-//                parseDays("60")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR_IN_HAML,
-//                parseDays("10")!!,
-//            ),
-//
-//            FixedDuration(
-//                DurationType.WILADAT_ISQAT,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM_IN_NIFAS_PERIOD,
-//                parseDays("41")!!,
-//                biggerThanForty = BiggerThanFortyNifas(
-//                    38.getMilliDays(),
-//                    0, 0, 0, 0,
-//                    mutableListOf(
-//                        Duration(DurationType.NIFAS, parseDays("38")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("3")!!),
-//                        )
-//                )
-//            ),
-//            FixedDuration(
-//                DurationType.TUHREFAASID_WITH_ISTEHAZA,
-//                parseDays("27")!!,
-//                istihazaAfter = parseDays("3")!!
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("16")!!,
-//                biggerThanTen = BiggerThanTenDm(0, 0, 0, 0,Soortain.A_1, 0, 0, 0, 0, 0,
-//                durationsList = mutableListOf(
-//                    Duration(DurationType.HAIZ, parseDays("8")!!),
-//                    Duration(DurationType.ISTIHAZA_AFTER, parseDays("8")!!),
-//                ))
-//            ),
-//
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, parseDays("38")!!)
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
-//    }
-//    @Test
-//    fun testingIsqatDurationCase1() {
-//        //mithal 1 pg 53
-//        val durations = listOf(
-//            Duration(DurationType.HAML, parseDays("0")!!),
-//            Duration(DurationType.TUHR, parseDays("60")!!),
-//            Duration(DurationType.DAM, parseDays("10")!!),
-//            Duration(DurationType.TUHR, parseDays("15")!!),
-//            Duration(DurationType.DAM, parseDays("2")!!),
-//            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
-//            Duration(DurationType.DAM, parseDays("15")!!),
-//            Duration(DurationType.TUHR, parseDays("16")!!),
-//            Duration(DurationType.DAM, parseDays("20")!!),
-//        )
-//
-//        val output = handleEntries( convertDurationsIntoEntries(
-//            durations,
-//            AllTheInputs(
-//                preMaslaValues = PreMaslaValues(parseDays("8")!!, parseDays("24")!!),
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(
-//                    mustabeenUlKhilqat = false),
-//                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
 //            )
 //        ))
 //
@@ -3825,7 +4469,6 @@ class LogicTest {
 //                    mutableListOf(
 //                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
 //                        Duration(DurationType.HAIZ, parseDays("8")!!)
-//
 //                    )
 //                )
 //            ),
@@ -3845,7 +4488,6 @@ class LogicTest {
 //                    )
 //                )
 //            ),
-//
 //            )
 //        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, -1)
 //
@@ -3870,653 +4512,4 @@ class LogicTest {
 //        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
 //        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
 //    }
-//    @Test
-//    fun bugMaslaIssue168() {
-//        //writitng isqat line twice
-//        val entries = listOf(
-//            Entry(makeInstant(2022, 2, 13), makeInstant(2022, 2, 21)),
-//            Entry(makeInstant(2022, 3, 27), makeInstant(2022, 4, 19)),
-//
-//        )
-//
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                preMaslaValues = PreMaslaValues(inputtedMawjoodahTuhr = parseDays("31")!!),
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(makeInstant(2022, 3, 21), makeInstant(2022, 4, 15),
-//                    mustabeenUlKhilqat = false),
-//                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false)
-//            )
-//        )
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("8")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.HAML,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.TUHR_IN_HAML,
-//                parseDays("34")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.WILADAT_ISQAT,
-//                parseDays("0")!!,
-//            ),
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("23")!!,
-//                biggerThanTen = BiggerThanTenDm(
-//                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
-//                    mutableListOf(
-//                        Duration(DurationType.HAIZ, parseDays("5")!!),
-//                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("18")!!)
-//
-//                    )
-//                )
-//            ),
-//            )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("5")!!,parseDays("31")!!, -1)
-//
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
-//    }
-//    @Test
-//    fun issue207() {
-//        //making sure that 6 months greater tuhr doesn't cause ayyame qabliyya
-//        val entries = listOf(
-//            Entry(makeInstant(2022, 6, 14), makeInstant(2022, 6, 21)),
-//            Entry(makeInstant(2022, 7, 18), makeInstant(2022, 7, 24)),
-//            Entry(makeInstant(2023, 1, 29), makeInstant(2023, 2, 8)),
-//            Entry(makeInstant(2023, 3, 27), makeInstant(2023, 4, 6)),
-//
-//            )
-//
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//            )
-//        )
-//
-//        val fixedDurations = output.fixedDurations
-//
-//        val expectedFixedDurations = listOf(
-//            FixedDuration(
-//                DurationType.DAM,
-//                parseDays("10")!!,
-//                ayyameqabliyya = null
-//            ),
-//        )
-//        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("10")!!,parseDays("47")!!)
-////        println("Actual Tuhr Aadat is ${output.endingOutputValues.aadats!!.aadatTuhr.daysFromMillis()}")
-//
-//        assertEquals(expectedFixedDurations.last().ayyameqabliyya, fixedDurations.last().ayyameqabliyya)
-//        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//
-//    @Test
-//    fun bugMaslaIssue195() {
-//        //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2022, 7, 13, 8, 30), makeInstant(2022, 7, 23, 11, 0)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                preMaslaValues = PreMaslaValues(
-//                    parseDays("8:19"),
-//                    parseDays("26:6"),
-//                    parseDays("18:11")
-//                )
-//            )
-//        )
-//        val expectedFixedDurations = listOf<FixedDuration>(
-//            FixedDuration(DurationType.DAM, parseDays("10:2:30")!!,
-//                biggerThanTen = BiggerThanTenDm(0, 0, 0, 0,Soortain.A_3, 0, 0, 0, 0,
-//                    durationsList= mutableListOf(
-//                        Duration(DurationType.ISTIHAZA_BEFORE,parseDays("7:19")!!),
-//                        Duration(DurationType.LESS_THAN_3_HAIZ, parseDays("2:7:30")!!)
-//                    ),
-//                    aadatTuhr = 0
-//                )
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("8:19")!!, parseDays("26:6")!!),
-//                mutableListOf(
-//                    FutureDateType(makeInstant(2022, 4, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-//                    FutureDateType(makeInstant(2022, 4, 30), TypesOfFutureDates.AFTER_TEN_DAYS),
-//                    FutureDateType(makeInstant(2022, 4, 28), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                    //it wants the last to be 26, even though this is A-2
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedFixedDurations.size, output.fixedDurations.size)
-//        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList.size, output.fixedDurations[0].biggerThanTen!!.durationsList.size)
-//        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].type, output.fixedDurations[0].biggerThanTen!!.durationsList[0].type)
-//        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].type, output.fixedDurations[0].biggerThanTen!!.durationsList[1].type)
-//        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[0].timeInMilliseconds)
-//        assertEquals(expectedFixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds, output.fixedDurations[0].biggerThanTen!!.durationsList[1].timeInMilliseconds)
-//    }
-//    @Test
-//    fun bugMaslaDurationsNifasIssue166() {
-//        //inputs : 8D 24T 8D Pregnancy 60D 10T Birth
-//        val durations = listOf<Duration>(
-//            Duration(DurationType.DAM,parseDays("8")!!),
-//            Duration(DurationType.TUHR,parseDays("24")!!),
-//            Duration(DurationType.DAM,parseDays("8")!!),
-//            Duration(DurationType.HAML,parseDays("0")!!),
-//            Duration(DurationType.DAM,parseDays("60")!!),
-//            Duration(DurationType.TUHR,parseDays("10")!!),
-//            Duration(DurationType.WILADAT_ISQAT,parseDays("0")!!),
-//
-//            )
-//        val output = handleEntries(convertDurationsIntoEntries(durations, AllTheInputs(
-//            typeOfMasla = TypesOfMasla.NIFAS,
-//            pregnancy = Pregnancy(aadatNifas = parseDays("40")!!,
-//                mustabeenUlKhilqat = true)
-//        )
-//        ))
-//        assertEquals(parseDays("8"),output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(parseDays("24"),output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//    @Test
-//    fun bugMaslaIssue170() {
-//        //NIFAS MASLA insufficient final values
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2021, 5, 21), makeInstant(2021, 5, 27)),
-//            Entry(makeInstant(2021, 6, 21), makeInstant(2021, 6, 27)),
-//            //preg +Birth
-//            Entry(makeInstant(2022, 3, 4), makeInstant(2022, 3, 28)),
-//            Entry(makeInstant(2022, 4, 20), makeInstant(2022, 4, 25)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(makeInstant(2021, 6, 27), makeInstant(2022, 3, 4), aadatNifas = parseDays("40")!!,
-//                    mustabeenUlKhilqat = true)
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("23")!!, parseDays("24")!!),
-//                mutableListOf(
-//                    FutureDateType(makeInstant(2022, 4, 26), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-//                    FutureDateType(makeInstant(2022, 4, 30), TypesOfFutureDates.AFTER_TEN_DAYS),
-//                    FutureDateType(makeInstant(2022, 4, 28), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                    //it wants the last to be 26, even though this is A-2
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//
-//    }
-//    @Test
-//    fun bugMaslaIssue203() {
-//        //Wrong tuhr habit
-////        15 April - 20 April
-////                7 May - 15 May
-////                June, july, aug clean
-////        2 Sep - 10 Sep
-////                18 Oct - 20 Oct
-////                9 Nov - 22 Nov
-////                3 Dec - 1 day
-////                7 Dec - 30 dec on and off.
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2022, 4, 15), makeInstant(2022, 4, 20)),
-//            Entry(makeInstant(2022, 5, 7), makeInstant(2022, 5, 15)),
-//            Entry(makeInstant(2022, 9, 2), makeInstant(2022, 9, 10)),
-//            Entry(makeInstant(2022, 10, 18), makeInstant(2022, 10, 20)),
-//            Entry(makeInstant(2022, 11, 9), makeInstant(2022, 11, 22)),
-//            Entry(makeInstant(2022, 12, 3), makeInstant(2022, 12, 3)),
-//            Entry(makeInstant(2022, 12, 7), makeInstant(2022, 12, 30)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.MUTADAH
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("8")!!, parseDays("110")!!),
-//                mutableListOf(
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//    }
-//    @Test
-//    fun bugMaslaIssue201() {
-//        //wrong future advice date given
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2022, 10, 23), makeInstant(2022, 11, 26)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                PreMaslaValues(parseDays("9"),parseDays("54"),parseDays("22")),
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("9")!!, parseDays("54")!!),
-//                mutableListOf(
-//                    FutureDateType(makeInstant(2022, 11, 27), TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE),
-//                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.END_OF_AADAT_HAIZ),
-//                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.IC_FORBIDDEN_DATE),
-//                    FutureDateType(makeInstant(2022, 12, 3), TypesOfFutureDates.IHTIYATI_GHUSL),
-//                    //it wants the last to be 26, even though this is A-2
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
-//        for(i in output.endingOutputValues.futureDateType.indices){
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
-//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
-//        }
-//
-//    }
-//
-//    @Test
-//    fun issue206TestingIsqat() {
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2022, 11, 28), makeInstant(2022, 12, 4)),
-//            Entry(makeInstant(2022, 12, 27), makeInstant(2023, 1, 1)),
-//            Entry(makeInstant(2023, 1, 20), makeInstant(2023, 1, 25)),
-//            Entry(makeInstant(2023, 3, 22), makeInstant(2023, 4, 9)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                pregnancy = Pregnancy(makeInstant(2023, 1, 25),makeInstant(2023, 3, 22),mustabeenUlKhilqat = false)
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("5")!!, parseDays("56")!!),
-//                mutableListOf(
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//
-//    }
-//    @Test
-//    fun testMuftiAhmadMumtazMasla208() {
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2023, 1, 1), makeInstant(2023, 1, 12)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                preMaslaValues = PreMaslaValues(
-//                    3.getMilliDays(),
-//                    179.getMilliDays(),
-//                    15.getMilliDays(),
-//                    false
-//                )
-//            )
-//        )
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(
-//                false,
-//                AadatsOfHaizAndTuhr(parseDays("3")!!, parseDays("179")!!),
-//                mutableListOf(
-//                )
-//            )
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-//    }
-//
-//    @Test
-//    fun testDaysHoursMinutesDigitalIssue171() {
-//        //if value is 0
-//        val inputtedMilliseconds = 0L
-//        val outputEnglish = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.ENGLISH)
-//        val expectedOutputEnglish = "0 days"
-//        assertEquals(outputEnglish, expectedOutputEnglish)
-//        val outputUrdu = daysHoursMinutesDigital(inputtedMilliseconds, TypesOfInputs.DATE_ONLY, Vls.Langs.URDU)
-//        val expectedOutputUrdu = "0 دن"
-//        assertEquals(outputUrdu, expectedOutputUrdu)
-//    }
-//    @Test
-//    fun test1ForDaylightSaving() {
-////        This is in America
-////        Clocks went back one hour on November 6, 2022,
-////        And one hour ahead on March 12, 2023,
-////        Since last message, dates of bleeding have been:
-////        ♦12 Oct 9:14pm - 21 Oct 1:05pm
-////        ♦3 Nov 9am - 13 Nov 8:11pm
-////        ♦30 Nov 9:57am - 8 Dec 2:30pm
-////        ♦23 Dec 3:40pm - 3 Jan 1:40pm
-////        ♦18 Jan 10:05am - 26 Jan 4:15pm
-////        ♦9 Feb 2:03pm - 19 Feb 11:31am
-////        ♦8 Mar 11:15am - 18 Mar 11:50pm
-////        ♦2 Apr 10pm - current
-////
-////        Previous habit:
-////        - 18T 14H 17M
-////                - 6B 16H 11M
-////                (T= tuhur B= blood H= hours M = minutes)
-////        ♦12 Oct 9:14pm - 17 Oct 8:44am
-////        (New bleeding habit: 4B 11H 30M)
-////        ♦4 Nov 11:01pm - 9 Nov 9:31am (due to dst) clocks went back an hour on November 6
-////        ♦30 Nov 9:57am - 8 Dec 2:30pm
-////        (New bleeding habit: 8B 4H 33M)
-////        ♦27 Dec 4:47am - 4 Jan 9:20am
-////        ♦22 Jan 11:37pm - 31 Jan 4:10am
-////        🔸Feb: no Haidh since less than 3 days bleeding in makan
-////        ♦8 Mar 11:15am - 16 Mar 4:48pm (due to dst) clocks went forward an hour on March 12
-////        ♦4 Apr 7:05am - 12 Apr 11:38am (if still bleeding)
-//
-//        val timzn = "America/Los_Angeles"
-//
-//        val entries = listOf<Entry>(
-//            Entry(makeInstant(2022, 10, 12, 21, 14,true, timzn),
-//                makeInstant(2022, 10, 21, 13, 5,true, timzn)),
-//            Entry(makeInstant(2022, 11, 3, 9, 0,true, timzn),
-//                makeInstant(2022, 11, 13, 20, 11,true, timzn)),
-//            Entry(makeInstant(2022, 11, 30, 9, 57,true, timzn),
-//                makeInstant(2022, 12, 8, 14, 30,true, timzn)),
-//            Entry(makeInstant(2022, 12, 23, 15, 40,true, timzn),
-//                makeInstant(2023, 1, 3, 13, 40,true, timzn)),
-//            Entry(makeInstant(2023, 1, 18, 10, 5,true, timzn),
-//                makeInstant(2023, 1, 26, 16, 15,true, timzn)),
-//            Entry(makeInstant(2023, 2, 9, 14, 3,true, timzn),
-//                makeInstant(2023, 2, 19, 11, 31,true, timzn)),
-//            Entry(makeInstant(2023, 3, 8, 11, 15,true, timzn),
-//                makeInstant(2023, 3, 18, 23, 50,true, timzn)),
-//            Entry(makeInstant(2023, 4, 2, 22, 0,true, timzn),
-//                makeInstant(2023, 4, 12, 11, 38,true, timzn)),
-//        )
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfMasla = TypesOfMasla.MUTADAH,
-//                typeOfInput = TypesOfInputs.DATE_AND_TIME,
-//                preMaslaValues = PreMaslaValues(parseDays("4:11:30"),parseDays("18:14:17"), parseDays("18:14:17"),false),
-//                timeZone = timzn
-//
-//            )
-//        )
-//        val localHazDates = localHazDatesList(output.hazDatesList,timzn)
-////        println(localHazDates)
-//
-//        val expectedlocalHazDates = listOf<LocalEntry>(
-//            LocalEntry(LocalDateTime.of(2022, 10, 12, 21, 14),
-//                LocalDateTime.of(2022, 10, 17, 8, 44)),
-//            LocalEntry(LocalDateTime.of(2022, 11, 4, 23, 1),
-//                LocalDateTime.of(2022, 11, 9, 9, 31)),
-//            LocalEntry(LocalDateTime.of(2022, 11, 30, 9, 57),
-//                LocalDateTime.of(2022, 12, 8, 14, 30)),
-//            LocalEntry(LocalDateTime.of(2022, 12, 27, 4, 47),
-//                LocalDateTime.of(2023, 1, 4, 9, 20)),
-//            LocalEntry(LocalDateTime.of(2023, 1, 22, 23, 37),
-//                LocalDateTime.of(2023, 1, 31, 4, 10)),
-//            LocalEntry(LocalDateTime.of(2023, 3, 8, 11, 15),
-//                LocalDateTime.of(2023, 3, 16, 16, 48)),
-//            LocalEntry(LocalDateTime.of(2023, 4, 4, 7, 5),
-//                LocalDateTime.of(2023, 4, 12, 11, 38)),
-//        )
-//        for(i in localHazDates.indices){
-//            assertEquals(localHazDates[i].startTime,expectedlocalHazDates[i].startTime)
-//            assertEquals(localHazDates[i].endTime,expectedlocalHazDates[i].endTime)
-//        }
-//        assertEquals(localHazDates.size,expectedlocalHazDates.size)
-//    }
-//
-//    @Test
-//    fun testDurationsMawjoodahPaki() {
-//        val durations = listOf<Duration>(
-//            Duration(DurationType.DAM, 0L),
-//            Duration(DurationType.TUHR, 15.getMilliDays()),
-//            Duration(DurationType.DAM, 5.getMilliDays())
-//        )
-//        val output = handleEntries(convertDurationsIntoEntries(durations))
-//        val fixedDurations=output.fixedDurations
-//        val expectedFixedDurations = listOf<FixedDuration>(
-//            FixedDuration(DurationType.TUHREFAASID, 15.getMilliDays()),
-//            FixedDuration(DurationType.DAM, 5.getMilliDays())
-//        )
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//    }
-//    @Test
-//    fun testDurationsMawjoodahPakiCase2() {
-//        val durations = listOf<Duration>(
-//            Duration(DurationType.TUHR, 15.getMilliDays()),
-//            Duration(DurationType.DAM, 0.getMilliDays()),
-//            Duration(DurationType.TUHR, 15.getMilliDays()),
-//            Duration(DurationType.DAM, 5.getMilliDays()),
-//        )
-//        val output = handleEntries(convertDurationsIntoEntries(durations))
-//        val fixedDurations=output.fixedDurations
-//        val expectedFixedDurations = listOf<FixedDuration>(
-//            FixedDuration(DurationType.TUHREFAASID, 30.getMilliDays()),
-//            FixedDuration(DurationType.DAM, 5.getMilliDays())
-//        )
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//    }
-//    @Test
-//    fun testDurationsMawjoodahPakiCase3() {
-//        val durations = listOf<Duration>(
-//            Duration(DurationType.TUHR, 15.getMilliDays()),
-//            Duration(DurationType.DAM, 2.getMilliDays()),
-//            Duration(DurationType.TUHR, 15.getMilliDays()),
-//            Duration(DurationType.DAM, 5.getMilliDays()),
-//        )
-//        val output = handleEntries(convertDurationsIntoEntries(durations))
-//        val fixedDurations=output.fixedDurations
-//        val expectedFixedDurations = listOf<FixedDuration>(
-//            FixedDuration(DurationType.TUHREFAASID, 32.getMilliDays()),
-//            FixedDuration(DurationType.DAM, 5.getMilliDays())
-//        )
-//        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-//        for(i in fixedDurations.indices){
-//            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-//            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-//            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-//            if(fixedDurations[i].biggerThanTen!=null){
-//                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-//                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-//                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-//
-//                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-//                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-//                }
-//            }
-//        }
-//
-//    }
-//
-//
-////    @Test
-////    fun testingBugMaslaIssue161() {
-////        //durationgs, requesting habit when habit exists
-////        val durations = listOf(
-////            Duration(DurationType.DAM, parseDays("8")!!),
-////            Duration(DurationType.TUHR, parseDays("24")!!),
-////            Duration(DurationType.DAM, parseDays("8")!!),
-////            Duration(DurationType.HAML, parseDays("0")!!),
-////            Duration(DurationType.DAM, parseDays("60")!!),
-////            Duration(DurationType.TUHR, parseDays("10")!!),
-////            Duration(DurationType.WILADAT_ISQAT, parseDays("0")!!),
-////            Duration(DurationType.DAM, parseDays("16")!!),
-////            Duration(DurationType.TUHR, parseDays("17")!!),
-////            Duration(DurationType.DAM, parseDays("8")!!),
-////            Duration(DurationType.TUHR, parseDays("27")!!),
-////            Duration(DurationType.DAM, parseDays("16")!!),
-////        )
-////
-////        val output = handleEntries( convertDurationsIntoEntries(
-////            durations,
-////            AllTheInputs(
-////                typeOfMasla = TypesOfMasla.NIFAS,
-////                pregnancy = Pregnancy( aadatNifas = parseDays("40")!!,
-////                    mustabeenUlKhilqat = true)
-////            )
-////        ))
-////
-////        val fixedDurations = output.fixedDurations
-////        println(fixedDurations)
-////
-////        val expectedFixedDurations = listOf(
-////            FixedDuration(
-////                DurationType.HAML,
-////                parseDays("0")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.TUHR_IN_HAML,
-////                parseDays("60")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.DAM,
-////                parseDays("10")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.TUHR_IN_HAML,
-////                parseDays("15")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.WILADAT_ISQAT,
-////                parseDays("0")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.DAM,
-////                parseDays("17")!!,
-////                biggerThanTen = BiggerThanTenDm(
-////                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
-////                    mutableListOf(
-////                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("9")!!),
-////                        Duration(DurationType.HAIZ, parseDays("8")!!)
-////
-////                    )
-////                )
-////            ),
-////            FixedDuration(
-////                DurationType.TUHR,
-////                parseDays("16")!!,
-////            ),
-////            FixedDuration(
-////                DurationType.DAM,
-////                parseDays("20")!!,
-////                biggerThanTen = BiggerThanTenDm(
-////                    -1,-1,-1,-1,Soortain.A_1,-1,-1,-1,-1,-1,
-////                    mutableListOf(
-////                        Duration(DurationType.ISTIHAZA_BEFORE, parseDays("8")!!),
-////                        Duration(DurationType.HAIZ, parseDays("8")!!),
-////                        Duration(DurationType.ISTIHAZA_AFTER, parseDays("4")!!),
-////                    )
-////                )
-////            ),
-////
-////            )
-////        val expectedAadats = AadatsOfHaizAndTuhr(parseDays("8")!!,parseDays("24")!!, -1)
-////
-////        assertEquals(expectedFixedDurations.size, fixedDurations.size)
-////        for(i in fixedDurations.indices){
-////            assertEquals(fixedDurations[i].type, expectedFixedDurations[i].type)
-////            assertEquals(fixedDurations[i].timeInMilliseconds, expectedFixedDurations[i].timeInMilliseconds)
-////            assertEquals(fixedDurations[i].istihazaAfter, expectedFixedDurations[i].istihazaAfter)
-////            if(fixedDurations[i].biggerThanTen!=null){
-////                assertEquals(fixedDurations[i].biggerThanTen!!.durationsList.size,
-////                    expectedFixedDurations[i].biggerThanTen!!.durationsList.size)
-////                for(j in fixedDurations[i].biggerThanTen!!.durationsList.indices){
-////                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds,
-////                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].timeInMilliseconds)
-////
-////                    assertEquals(fixedDurations[i].biggerThanTen!!.durationsList[j].type,
-////                        expectedFixedDurations[i].biggerThanTen!!.durationsList[j].type)
-////                }
-////            }
-////        }
-////        assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
-////        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
-////        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
-////    }
-
 }
