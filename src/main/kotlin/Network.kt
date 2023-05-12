@@ -14,8 +14,8 @@ import kotlin.random.Random
 
 //val hazappBackend = "http://localhost:3000/maslas/"
 const val hazappBackend = "http://170.64.144.136/maslas/"
-suspend fun getData(inputElement: HTMLElement): Json {
-    with(inputElement) {
+suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
+    with(inputsContainer) {
         val entries = haizInputDatesRows.map { row ->
             SaveEntries(
                 startTime = row.startTimeInput.value,
@@ -31,7 +31,8 @@ suspend fun getData(inputElement: HTMLElement): Json {
             answerEnglish = contentEnglish.textContent,
             answerUrdu = contentUrdu.textContent,
             others = OtherValues(
-                question = questionText.value,
+                title = titleText,
+                question = questionText,
                 aadatHaiz = aadatHaz.value,
                 aadatTuhr = aadatTuhr.value,
                 mawjoodahTuhr = mawjoodaTuhr.value,

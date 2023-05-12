@@ -108,9 +108,10 @@ val urduStrings = Strings(
     "اسقاط",
     "${Rplc.DUR1} حیض اور ${Rplc.DUR2} پاکی کی عادت تھی۔ ",
     "${Rplc.DUR1} کے طہر فاسد کے بعد:\n\n",
-    "Zaalla",
+    "ضالة",
     "Cycle Length",
     "Daylight Savings",
+    "آئی ڈی سے مسلہ لوڈ کریں۔",
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -252,6 +253,7 @@ val englishStrings = Strings(
     "Zaalla",
     "Cycle Length",
     "Daylight Savings",
+    "Load Masla From ID",
     )
 
 object StringsOfLanguages{

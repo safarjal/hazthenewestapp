@@ -1,9 +1,13 @@
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.dom.append
 import kotlinx.html.*
 import kotlinx.html.form
 import kotlinx.html.js.*
 import kotlinx.html.tr
 import org.w3c.dom.*
+import kotlin.js.Json
+import kotlin.js.json
 
 fun Node.addInputLayout() {
     append {
@@ -46,7 +50,7 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
             mutadaInputs(inputContainerToCopyFrom)
         }
         hr()
-        questionInput()
+        questionInput(inputContainerToCopyFrom)
         hr()
         haizDatesInputTable(inputContainerToCopyFrom)
         haizDurationInputTable(inputContainerToCopyFrom)
@@ -211,10 +215,10 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeNumberInput(Ids.Inputs.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
         // Fasid?
         div {
-            makeLabel(Ids.Inputs.MAWJOODA_FASID_CHECKBOX, Strings::faasid)
+            makeLabel(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX, Strings::faasid)
             checkBoxInput {
-                id = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
-                name = Ids.Inputs.MAWJOODA_FASID_CHECKBOX
+                id = Ids.Inputs.MAWJOODA_FAASID_CHECKBOX
+                name = Ids.Inputs.MAWJOODA_FAASID_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMawjoodaFasid?.or(false) == true
             }
         }

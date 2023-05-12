@@ -416,14 +416,14 @@ private fun addTheRemoveInputsContainerButton(inputContainer: HTMLElement) {
     }
 }
 
-private fun TagConsumer<HTMLElement>.calcAllBtn() {
+private fun TagConsumer<HTMLElement>.calcAllBtn(text: String) {
     button {
         classes = setOf(
             CssC.CALC_BTN,
             CssC.ENGLISH,
             if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.INVIS
         )
-        +"Calculate All"
+        +text
         onClickFunction = { calcAll() }
     }
     button {
@@ -432,7 +432,7 @@ private fun TagConsumer<HTMLElement>.calcAllBtn() {
             CssC.URDU,
             if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
         )
-        +"Calculate All"
+        +text
         onClickFunction = { calcAll() }
     }
 }
@@ -505,10 +505,10 @@ fun disableTree(inputContainer: HTMLElement) {
     disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
     disableByClass(CssC.DATETIME_ONLY, inputContainer, !inputContainer.isDateTime)
 
-    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+    val mawjoodaFaasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
-        mawjoodaFasidCheck.checked = true
-        mawjoodaFasidCheck.disabled = true
+        mawjoodaFaasidCheck.checked = true
+        mawjoodaFaasidCheck.disabled = true
     }
 
     disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
@@ -814,7 +814,7 @@ private fun shrinkAnswer(shrink: Boolean = true) {
     inputsContainers.forEach { it.contentContainer.classList.toggle(CssC.SHRUNK, shrink) }
 }
 
-private fun addCalcAllButtonIfNeeded() { calculateAllDiv.replaceChildren { calcAllBtn() } }
+private fun addCalcAllButtonIfNeeded() { calculateAllDiv.replaceChildren { calcAllBtn("Calculate All") } }
 
 // Disable Date-Time Option
 private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal: String, disable: Boolean) {
@@ -865,7 +865,7 @@ private fun copyText(event: Event) {
 
 //    val dateStr = getNow()
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
-    val questionTxt = inputContainer.questionText.value
+    val questionTxt = inputContainer.questionText
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
@@ -877,7 +877,7 @@ private fun copyText(event: Event) {
     var smallTxt: String
 
     var response: Json = json(Pair("id", null))
-    val job = GlobalScope.launch { response = getData(inputContainer) }
+    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
     job.invokeOnCompletion {
 //        console.log(response["id"])
 //        console.log(response)
@@ -906,7 +906,9 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
-val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement)
+val HTMLElement.titleID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLTextAreaElement).value
+val HTMLElement.titleText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLTextAreaElement).value
+val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement).value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement

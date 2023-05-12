@@ -383,11 +383,13 @@ object Ids {
         const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
         const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
         const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
-        const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
+        const val MAWJOODA_FAASID_CHECKBOX = "mawjooda_faasid_checkbox"
         const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
         const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
+        const val INPUT_ID = "input_id"
+        const val SUBMIT = "submit"
+        const val INPUT_TITLE = "input_title"
         const val INPUT_QUESTION = "input_question"
-        const val INPUT_DESCRIPTION = "input_description"
     }
 }
 

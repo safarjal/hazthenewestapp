@@ -4,7 +4,6 @@ import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
-import kotlin.js.Date
 import kotlin.random.Random
 
 data class Strings(
@@ -117,6 +116,7 @@ data class Strings(
     val zaalla: String,
     val zaallaCycleLength: String,
     val isDaylightSavings: String,
+    val loadMaslaFromID:String,
     )
 
 data class AllTheInputs(
@@ -153,6 +153,7 @@ data class SaveEntries(
 
 @Serializable
 data class OtherValues(
+    val title: String? = null,
     val question: String? = null,
     var aadatHaiz: String? = null,
     var aadatTuhr: String? = null,
