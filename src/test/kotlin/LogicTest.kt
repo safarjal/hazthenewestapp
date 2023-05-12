@@ -2,78 +2,78 @@
 //
 //import kotlinx.datetime.internal.JSJoda.Instant
 //import kotlinx.datetime.internal.JSJoda.LocalDateTime
-//import kotlin.test.Test
-//import kotlin.test.assertEquals
-//
-///* TODO: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
-//    AS SUCH, IF YOU FEEL LIKE IT, YOU CAN MOVE BACK ALL THE MONTH NUMBERS AND
-//    REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
-// */
-//
-////fun difference(str1: String?, str2: String?): String? {
-////    if (str1 == null) {
-////        return str2
-////    }
-////    if (str2 == null) {
-////        return str1
-////    }
-////    val at = indexOfDifference(str1, str2)
-////    return if (at == INDEX_NOT_FOUND) {
-////        EMPTY
-////    } else str1.substring(at - 10, at + 10) + "[ Compared to: ]" + str2.substring(at - 10, at + 10)
-////}
-////
-////fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
-////    if (cs1 === cs2) {
-////        return INDEX_NOT_FOUND
-////    }
-////    if (cs1 == null || cs2 == null) {
-////        return 0
-////    }
-////    var i = 0
-////    while (i < cs1.length && i < cs2.length) {
-////        if (cs1[i] != cs2[i]) {
-////            break
-////        }
-////        ++i
-////    }
-////    return if (i < cs2.length || i < cs1.length) {
-////        i
-////    } else INDEX_NOT_FOUND
-////}
-////
-////var INDEX_NOT_FOUND = -1 //"Index Not Found"
-////var EMPTY = "Empty"
-//
-//// 2023-04-02T00:22:00Z
-//// 2020-05-14T00:00:00:00Z
-//
-//class LogicTest {
-////    @Test
-////    fun testHandleEntries() {
-////        val istimrar = false
-////        val entries = listOf(
-////            Entry(instant(), instant()),
-////            Entry(instant(), instant())
-////        )
-////        val result = handleEntries(entries, istimrar)
-////        assertNotNull(result) // TODO: Replace this with actual test
-////    }
-//    @Test
-//    fun testRemoveDamLessThan3(){
-//        val durations = mutableListOf(
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays())),
-//            FixedDuration(DurationType.DAM, timeInMilliseconds= (2.getMilliDays())),
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays()))
-//        )
-//        removeDamLessThan3(durations)
-//        //expected that the size will be 1
-//        assertEquals(1,durations.size)
-//        //expected that the duration will be 32 days.
-//        assertEquals(DurationType.TUHREFAASID,durations[0].type)
-//        assertEquals(32.getMilliDays(), durations[0].timeInMilliseconds)
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+/* TODO: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
+    AS SUCH, IF YOU FEEL LIKE IT, YOU CAN MOVE BACK ALL THE MONTH NUMBERS AND
+    REMOVE THE SMALL MONTH+1 IN THE FUNCTION THAT I PUT IN. UP TO YOU.
+ */
+
+//fun difference(str1: String?, str2: String?): String? {
+//    if (str1 == null) {
+//        return str2
 //    }
+//    if (str2 == null) {
+//        return str1
+//    }
+//    val at = indexOfDifference(str1, str2)
+//    return if (at == INDEX_NOT_FOUND) {
+//        EMPTY
+//    } else str1.substring(at - 10, at + 10) + "[ Compared to: ]" + str2.substring(at - 10, at + 10)
+//}
 //
+//fun indexOfDifference(cs1: CharSequence?, cs2: CharSequence?): Int {
+//    if (cs1 === cs2) {
+//        return INDEX_NOT_FOUND
+//    }
+//    if (cs1 == null || cs2 == null) {
+//        return 0
+//    }
+//    var i = 0
+//    while (i < cs1.length && i < cs2.length) {
+//        if (cs1[i] != cs2[i]) {
+//            break
+//        }
+//        ++i
+//    }
+//    return if (i < cs2.length || i < cs1.length) {
+//        i
+//    } else INDEX_NOT_FOUND
+//}
+//
+//var INDEX_NOT_FOUND = -1 //"Index Not Found"
+//var EMPTY = "Empty"
+
+// 2023-04-02T00:22:00Z
+// 2020-05-14T00:00:00:00Z
+
+class LogicTest {
+//    @Test
+//    fun testHandleEntries() {
+//        val istimrar = false
+//        val entries = listOf(
+//            Entry(instant(), instant()),
+//            Entry(instant(), instant())
+//        )
+//        val result = handleEntries(entries, istimrar)
+//        assertNotNull(result) // TODO: Replace this with actual test
+//    }
+    @Test
+    fun testRemoveDamLessThan3(){
+        val durations = mutableListOf(
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds= (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds= (15.getMilliDays()))
+        )
+        removeDamLessThan3(durations)
+        //expected that the size will be 1
+        assertEquals(1,durations.size)
+        //expected that the duration will be 32 days.
+        assertEquals(DurationType.TUHREFAASID,durations[0].type)
+        assertEquals(32.getMilliDays(), durations[0].timeInMilliseconds)
+    }
+
 //    @Test
 //    fun testRemoveTuhrLessThan15(){
 //        val fixedDurations = mutableListOf(
@@ -4520,5 +4520,5 @@
 ////        assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
 ////        assertEquals(expectedAadats.aadatNifas, output.endingOutputValues.aadats!!.aadatNifas)
 ////    }
-//
-//}
+
+}
