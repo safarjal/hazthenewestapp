@@ -2986,7 +2986,6 @@ class LogicTest {
         assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
-    @Test
 //    @Test
 //    fun testingMubtadiaDurationCase1b() {
 //        //5 د 13ط 18د 11ط 16د 15ط 11د 18ط استمرار
