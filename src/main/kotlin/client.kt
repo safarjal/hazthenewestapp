@@ -199,7 +199,7 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         val timezone = timezoneSelect.value
 
-        var allTheInputs=AllTheInputs()
+        var allTheInputs: AllTheInputs
 
         if(typesOfInputs==TypesOfInputs.DURATION){
             val durations = haizDurationInputDatesRows.map { row ->

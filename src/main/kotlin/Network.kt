@@ -65,3 +65,43 @@ suspend fun sendData(toSend: SaveData): Json {
 
     return JSON.parse(response.body())
 }
+
+suspend fun loadData(id: String): Json {
+    val client = HttpClient(Js) {
+        install(ContentNegotiation) { json(Json) }
+    }
+    val response: HttpResponse = client.get(hazappBackend) {
+        headers {
+            append(HttpHeaders.AccessControlAllowOrigin, "*")
+        }
+        contentType(ContentType.Application.Json)
+        setBody(id)
+    }
+
+    return JSON.parse(response.body())
+}
+
+fun reInputData(data: Json, inputsContainer: HTMLElement) {
+    with(inputsContainer) {
+        maslaSelect.value = data["typeOfMasla"].toString()
+        typeSelect.value = data["typeOfInput"].toString()
+//        entries = entries,
+//        answerEnglish = contentEnglish.textContent,
+//        answerUrdu = contentUrdu.textContent,
+    }
+//            title = titleText,
+//            question = questionText,
+//            aadatHaiz = aadatHaz.value,
+//            aadatTuhr = aadatTuhr.value,
+//            mawjoodahTuhr = mawjoodaTuhr.value,
+//            isMawjoodaFasid = isMawjoodaFasid,
+//            pregStartTime = if (isNifas) pregStartTime.value else null,
+//            birthTime = if (isNifas) pregEndTime.value else null,
+//            aadatNifas = if (isNifas) aadatNifas.value else null,
+//            mustabeenUlKhilqat = if (isNifas) isMustabeen else null,
+//            ghairMustabeenIkhtilaaf = ikhtilaf1,
+//            daurHaizIkhtilaf = ikhtilaf2,
+//            ayyameQabliyyaIkhtilaf = ikhtilaf3,
+//            mubtadiaIkhitilaf = ikhtilaf4,
+//            timeZone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else null,
+}
