@@ -673,14 +673,14 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
             )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-        println(Rplc.Msg.PLACEHOLDER)
+        "PLACEHOLDER"
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         newStr.add(
             baseStr(Strings::twomonthstuhr)
                 .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput)
         )
     }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
-        println(Rplc.Msg.PLACEHOLDER)
+        "PLACEHOLDER"
     }
     return newStr
 }
@@ -778,7 +778,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
-        println(Rplc.Msg.PLACEHOLDER)
+        "PLACEHOLDER"
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         newStr.add(
             baseStr(Strings::twomonthstuhr)
