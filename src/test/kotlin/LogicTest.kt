@@ -74,60 +74,60 @@ class LogicTest {
         assertEquals(32.getMilliDays(), durations[0].timeInMilliseconds)
     }
 
+    @Test
+    fun testRemoveTuhrLessThan15(){
+        val fixedDurations = mutableListOf(
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
+        )
+        removeTuhrLessThan15(fixedDurations)
+        assertEquals(1, fixedDurations.size)
+        assertEquals(DurationType.DAM, fixedDurations[0].type)
+        assertEquals(6.0,fixedDurations[0].days)
+    }
+    @Test
+    fun testFiveSoortain(){
+        val mp = 21.getMilliDays()
+        val gp = 16.getMilliDays()
+        val dm = 11.getMilliDays()
+        val hz = 7.getMilliDays()
+        val output:FiveSoortainOutput = fiveSoortain(mp,gp,dm,hz)
+        assertEquals(Soortain.B_3, output.soorat)
+        assertEquals(0L, output.istihazaBefore)
+        assertEquals(7.getMilliDays(), output.haiz)
+        assertEquals(4.getMilliDays(), output.istihazaAfter)
+        assertEquals(true, output.aadatTuhrChanges)
+    }
+    @Test
+    fun testAddIndicesToFixedDurations(){
+        val fixedDurations = mutableListOf(
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
+            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
+        )
+        addIndicesToFixedDurations(fixedDurations)
+        assertEquals(0,fixedDurations[0].indices[0])
+        assertEquals(1,fixedDurations[1].indices[0])
+        assertEquals(2,fixedDurations[2].indices[0])
+        assertEquals(1,fixedDurations[0].indices.size)
+        assertEquals(1,fixedDurations[1].indices.size)
+        assertEquals(1,fixedDurations[2].indices.size)
+
+    }
 //    @Test
-//    fun testRemoveTuhrLessThan15(){
+//    fun testAddStartDateToFixedDurations(){
+//        firstStartTime = makeInstant(2020, 8, 31)
 //        val fixedDurations = mutableListOf(
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.millisFromDays()).toLong()),
+//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.millisFromDays()).toLong()),
+//            FixedDuration(DurationType.DAM, timeInMilliseconds = (3.millisFromDays()).toLong())
 //        )
-//        removeTuhrLessThan15(fixedDurations)
-//        assertEquals(1, fixedDurations.size)
-//        assertEquals(DurationType.DAM, fixedDurations[0].type)
-//        assertEquals(6.0,fixedDurations[0].days)
-//    }
-//    @Test
-//    fun testFiveSoortain(){
-//        val mp = 21.getMilliDays()
-//        val gp = 16.getMilliDays()
-//        val dm = 11.getMilliDays()
-//        val hz = 7.getMilliDays()
-//        val output:FiveSoortainOutput = fiveSoortain(mp,gp,dm,hz)
-//        assertEquals(Soortain.B_3, output.soorat)
-//        assertEquals(0L, output.istihazaBefore)
-//        assertEquals(7.getMilliDays(), output.haiz)
-//        assertEquals(4.getMilliDays(), output.istihazaAfter)
-//        assertEquals(true, output.aadatTuhrChanges)
-//    }
-//    @Test
-//    fun testAddIndicesToFixedDurations(){
-//        val fixedDurations = mutableListOf(
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays())),
-//            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.getMilliDays())),
-//            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.getMilliDays()))
-//        )
-//        addIndicesToFixedDurations(fixedDurations)
-//        assertEquals(0,fixedDurations[0].indices[0])
-//        assertEquals(1,fixedDurations[1].indices[0])
-//        assertEquals(2,fixedDurations[2].indices[0])
-//        assertEquals(1,fixedDurations[0].indices.size)
-//        assertEquals(1,fixedDurations[1].indices.size)
-//        assertEquals(1,fixedDurations[2].indices.size)
+//        assertEquals(makeInstant(2020, 8, 31),fixedDurations[0].startDate)
+//        assertEquals(makeInstant(2020, 9, 2),fixedDurations[0].startDate)
+//        assertEquals(makeInstant(2020, 9, 5),fixedDurations[0].startDate)
 //
 //    }
-////    @Test
-////    fun testAddStartDateToFixedDurations(){
-////        firstStartTime = makeInstant(2020, 8, 31)
-////        val fixedDurations = mutableListOf(
-////            FixedDuration(DurationType.DAM, timeInMilliseconds = (2.millisFromDays()).toLong()),
-////            FixedDuration(DurationType.TUHR, timeInMilliseconds = (2.millisFromDays()).toLong()),
-////            FixedDuration(DurationType.DAM, timeInMilliseconds = (3.millisFromDays()).toLong())
-////        )
-////        assertEquals(makeInstant(2020, 8, 31),fixedDurations[0].startDate)
-////        assertEquals(makeInstant(2020, 9, 2),fixedDurations[0].startDate)
-////        assertEquals(makeInstant(2020, 9, 5),fixedDurations[0].startDate)
-////
-////    }
 //
 //    @Test
 //    fun realWorldLogicTest(){
