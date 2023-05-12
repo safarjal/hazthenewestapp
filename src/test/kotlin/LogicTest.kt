@@ -128,233 +128,232 @@ class LogicTest {
 //        assertEquals(makeInstant(2020, 9, 5),fixedDurations[0].startDate)
 //
 //    }
-//
-//    @Test
-//    fun realWorldLogicTest(){
-//        val entries = mutableListOf<Entry>()
-//        entries+=//14 jun - 20 Jun
-//            Entry(makeInstant(2020, 6, 14), makeInstant(2020, 6, 20))
-//        entries+=//20 Jul - 27 Jul
-//            Entry(makeInstant(2020, 7, 20), makeInstant(2020, 7, 27))
-//        entries+=//30 Aug - 1 Oct
-//            Entry(makeInstant(2020, 8, 30), makeInstant(2020, 10, 1))
-//
-//        val output = handleEntries(AllTheInputs(entries))
-//        val haizDateList = output.hazDatesList
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList += Entry(makeInstant(2020, 6, 14), makeInstant(2020, 6, 20))
-//        expectedHaizDatesList += Entry(makeInstant(2020, 7, 20), makeInstant(2020, 7, 27))
-//        expectedHaizDatesList += Entry(makeInstant(2020, 8, 30), makeInstant(2020, 9, 2))
-//
-//        for(i in haizDateList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//
-//    }
-//
-//    @Test
-//    fun realWorldLogicTest1(){
-//        val entries = listOf(
-//            Entry(makeInstant(2020, 4, 15), makeInstant(2020, 4, 21)),
-//            Entry(makeInstant(2020, 5, 7), makeInstant(2020, 5, 14)),
-//            Entry(makeInstant(2021, 6, 14), makeInstant(2021, 10, 6)))
-//
-//        val output = handleEntries(AllTheInputs(
-//            entries, typeOfInput = TypesOfInputs.DATE_ONLY, typeOfMasla = TypesOfMasla.NIFAS,
-//            pregnancy = Pregnancy(
-//                makeInstant(2020, 10, 6),
-//                makeInstant(2021, 6, 15),
-//                25.getMilliDays(),
-//                true))
-//        )
-//        val haizDateList = output.hazDatesList
-//
-////        From 15 4 2020 to 21 4 2020
-////        From 07 5 2020 to 14 5 2020
-////        From 15 6 2021 to 10 7 2021
-////        From 26 7 2021 to 02 8 2021
-////        From 18 8 2021 to 25 8 2021
-////        From 10 9 2021 to 17 9 2021
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList += Entry(makeInstant(2020, 4, 15), makeInstant(2020, 4, 21))
-//        expectedHaizDatesList += Entry(makeInstant(2020, 5, 7), makeInstant(2020, 5, 14))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 6, 15), makeInstant(2021, 7, 10))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 7, 26), makeInstant(2021, 8, 2))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 8, 18), makeInstant(2021, 8, 25))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 9, 10), makeInstant(2021, 9, 17))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 10, 3), makeInstant(2021, 10, 6))
-//
-//        for(i in expectedHaizDatesList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//
-//    }
-//    @Test
-//    fun realWorldLogicTest2(){
-//        //23 Apr - 28 APr
-//        //15 may - 21 May
-//        //pregnancy
-//        //isqat ghair mustabeen
-//        //25 Jul - 14 Sept
-//        //14 sept - 21 sept
-//        //6 oct - 6 Oct
-//        val entries = mutableListOf<Entry>()
-//        entries+=//each month has to be one minus the real
-//            Entry(makeInstant(2021, 4, 23), makeInstant(2021, 4, 28))
-//        entries+=
-//            Entry(makeInstant(2021, 5, 15), makeInstant(2021, 5, 21))
-//        entries+=//30 Aug - 1 Oct
-//            Entry(makeInstant(2021, 7, 25), makeInstant(2021, 9, 14))
-//        entries+=//30 Aug - 1 Oct
-//            Entry(makeInstant(2021, 9, 14), makeInstant(2021, 9, 21))
-//        entries+=//30 Aug - 1 Oct
-//            Entry(makeInstant(2021, 10, 6), makeInstant(2021, 10, 6))
-//
-//        val output = handleEntries(
-//            AllTheInputs(
-//                entries,
-//                typeOfInput = TypesOfInputs.DATE_ONLY,
-//                typeOfMasla = TypesOfMasla.NIFAS,
-//                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
-//                pregnancy = Pregnancy(
-//                    makeInstant(2021, 5, 21),
-//                    makeInstant(2021, 7, 25),
-//                    25.getMilliDays(),
-//                    mustabeenUlKhilqat = false
-//                )
-//            ),
-//        )
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList += Entry(makeInstant(2021, 4, 23), makeInstant(2021, 4, 28))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 5, 15), makeInstant(2021, 5, 21))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 7, 25), makeInstant(2021, 7, 31))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 8, 17), makeInstant(2021, 8, 23))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 9, 9), makeInstant(2021, 9, 15))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 10, 6), makeInstant(2021, 10, 6))
-//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-//
-//        for(i in expectedHaizDatesList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//
-//    }
-//    @Test
-//    fun mashqiSawal1(){
-//        val entries = mutableListOf<Entry>()
-//        entries+=//each month has to be one minus the real
-//            Entry(makeInstant(2020, 12, 25), makeInstant(2020, 12, 30))
-//        entries+=
-//            Entry(makeInstant(2021, 1, 20), makeInstant(2021, 1, 22))
-//        entries+=
-//            Entry(makeInstant(2021, 1, 25), makeInstant(2021, 1, 26))
-//        entries+=
-//            Entry(makeInstant(2021, 2, 13), makeInstant(2021, 2, 20))
-//        entries+=
-//            Entry(makeInstant(2021, 3, 3), makeInstant(2021, 3, 3))
-//        entries+=
-//            Entry(makeInstant(2021, 3, 6), makeInstant(2021, 3, 9))
-//
-//        val output = handleEntries(AllTheInputs(
-//            entries,typeOfInput = TypesOfInputs.DATE_ONLY))
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList += Entry(makeInstant(2020, 12, 25), makeInstant(2020, 12, 30))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 1, 20), makeInstant(2021, 1, 26))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 2, 16), makeInstant(2021, 2, 22))
-//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-//
-//        for(i in expectedHaizDatesList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//        val expectedEndingOutputValues = EndingOutputValues(
-//            true,
-//            AadatsOfHaizAndTuhr(6.getMilliDays(), 21.getMilliDays()),
-//            mutableListOf())
-//        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
-//
-//    }
-//    @Test
-//    fun mashqiSawal2(){
-//        val entries = mutableListOf<Entry>()
-//        entries+=//each month has to be one minus the real
-//            Entry(makeInstant(2020, 12, 5), makeInstant(2020, 12, 14))
-//        entries+=
-//            Entry(makeInstant(2021, 1, 5), makeInstant(2021, 1, 14))
-//        entries+=
-//            Entry(makeInstant(2021, 2, 7), makeInstant(2021, 2, 13))
-//        entries+=
-//            Entry(makeInstant(2021, 2, 21), makeInstant(2021, 3, 11))
-//
-//
-//        val output = handleEntries(AllTheInputs(
-//            entries))
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList += Entry(makeInstant(2020, 12, 5), makeInstant(2020, 12, 14))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 1, 5), makeInstant(2021, 1, 14))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 2, 7), makeInstant(2021, 2, 14))
-//        expectedHaizDatesList += Entry(makeInstant(2021, 3, 10), makeInstant(2021, 3, 11))
-//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-//
-//        for(i in expectedHaizDatesList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//
-//        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7.getMilliDays(), 24.getMilliDays()), mutableListOf())
-//        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
-//    }
-//    @Test
-//    fun mashqiSawal3(){
-//        val entries = mutableListOf<Entry>()
-//        entries+=//each month has to be one minus the real
-//            Entry(makeInstant(2020, 4, 29), makeInstant(2020, 5, 6))
-//        entries+=
-//            Entry(makeInstant(2020, 5, 26), makeInstant(2020, 5, 30))
-//        entries+=
-//            Entry(makeInstant(2020, 8, 2), makeInstant(2020, 8, 16))
-//
-//
-//        val output = handleEntries(AllTheInputs(entries))
-//        val haizDateList = output.hazDatesList
-//
-//        val expectedHaizDatesList = mutableListOf<Entry>()
-//        expectedHaizDatesList +=
-//            Entry(makeInstant(2020, 4, 29), makeInstant(2020, 5, 6))
-//        expectedHaizDatesList +=
-//            Entry(makeInstant(2020, 5, 26), makeInstant(2020, 5, 30))
-//        expectedHaizDatesList +=
-//            Entry(makeInstant(2020, 8, 2), makeInstant(2020, 8, 6))
-//
-//        assertEquals(haizDateList.size, expectedHaizDatesList.size)
-//
-//        for(i in expectedHaizDatesList.indices){
-//            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
-//            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
-//        }
-//
-//        val expectedEndingOutputValues =
-//            EndingOutputValues(true, AadatsOfHaizAndTuhr(4.getMilliDays(), 64.getMilliDays()), mutableListOf())
-//        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
-//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
-//        //since no future date was provided, it won't be part of the test
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
-////        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
-//    }
+
+    @Test
+    fun realWorldLogicTest(){
+        val entries = mutableListOf<Entry>()
+        entries+=//14 jun - 20 Jun
+            Entry(makeInstant(2020, 6, 14), makeInstant(2020, 6, 20))
+        entries+=//20 Jul - 27 Jul
+            Entry(makeInstant(2020, 7, 20), makeInstant(2020, 7, 27))
+        entries+=//30 Aug - 1 Oct
+            Entry(makeInstant(2020, 8, 30), makeInstant(2020, 10, 1))
+
+        val output = handleEntries(AllTheInputs(entries))
+        val haizDateList = output.hazDatesList
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList += Entry(makeInstant(2020, 6, 14), makeInstant(2020, 6, 20))
+        expectedHaizDatesList += Entry(makeInstant(2020, 7, 20), makeInstant(2020, 7, 27))
+        expectedHaizDatesList += Entry(makeInstant(2020, 8, 30), makeInstant(2020, 9, 2))
+
+        for(i in haizDateList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+
+    }
+
+    @Test
+    fun realWorldLogicTest1(){
+        val entries = listOf(
+            Entry(makeInstant(2020, 4, 15), makeInstant(2020, 4, 21)),
+            Entry(makeInstant(2020, 5, 7), makeInstant(2020, 5, 14)),
+            Entry(makeInstant(2021, 6, 14), makeInstant(2021, 10, 6)))
+
+        val output = handleEntries(AllTheInputs(
+            entries, typeOfInput = TypesOfInputs.DATE_ONLY, typeOfMasla = TypesOfMasla.NIFAS,
+            pregnancy = Pregnancy(
+                makeInstant(2020, 10, 6),
+                makeInstant(2021, 6, 15),
+                25.getMilliDays(),
+                true))
+        )
+        val haizDateList = output.hazDatesList
+
+//        From 15 4 2020 to 21 4 2020
+//        From 07 5 2020 to 14 5 2020
+//        From 15 6 2021 to 10 7 2021
+//        From 26 7 2021 to 02 8 2021
+//        From 18 8 2021 to 25 8 2021
+//        From 10 9 2021 to 17 9 2021
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList += Entry(makeInstant(2020, 4, 15), makeInstant(2020, 4, 21))
+        expectedHaizDatesList += Entry(makeInstant(2020, 5, 7), makeInstant(2020, 5, 14))
+        expectedHaizDatesList += Entry(makeInstant(2021, 6, 15), makeInstant(2021, 7, 10))
+        expectedHaizDatesList += Entry(makeInstant(2021, 7, 26), makeInstant(2021, 8, 2))
+        expectedHaizDatesList += Entry(makeInstant(2021, 8, 18), makeInstant(2021, 8, 25))
+        expectedHaizDatesList += Entry(makeInstant(2021, 9, 10), makeInstant(2021, 9, 17))
+        expectedHaizDatesList += Entry(makeInstant(2021, 10, 3), makeInstant(2021, 10, 6))
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+    }
+    @Test
+    fun realWorldLogicTest2(){
+        //23 Apr - 28 APr
+        //15 may - 21 May
+        //pregnancy
+        //isqat ghair mustabeen
+        //25 Jul - 14 Sept
+        //14 sept - 21 sept
+        //6 oct - 6 Oct
+        val entries = mutableListOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(makeInstant(2021, 4, 23), makeInstant(2021, 4, 28))
+        entries+=
+            Entry(makeInstant(2021, 5, 15), makeInstant(2021, 5, 21))
+        entries+=//30 Aug - 1 Oct
+            Entry(makeInstant(2021, 7, 25), makeInstant(2021, 9, 14))
+        entries+=//30 Aug - 1 Oct
+            Entry(makeInstant(2021, 9, 14), makeInstant(2021, 9, 21))
+        entries+=//30 Aug - 1 Oct
+            Entry(makeInstant(2021, 10, 6), makeInstant(2021, 10, 6))
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfInput = TypesOfInputs.DATE_ONLY,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                ikhtilaafaat = Ikhtilaafaat(ghairMustabeenIkhtilaaf = false),
+                pregnancy = Pregnancy(
+                    makeInstant(2021, 5, 21),
+                    makeInstant(2021, 7, 25),
+                    25.getMilliDays(),
+                    mustabeenUlKhilqat = false
+                )
+            ),
+        )
+        val haizDateList = output.hazDatesList
+
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList += Entry(makeInstant(2021, 4, 23), makeInstant(2021, 4, 28))
+        expectedHaizDatesList += Entry(makeInstant(2021, 5, 15), makeInstant(2021, 5, 21))
+        expectedHaizDatesList += Entry(makeInstant(2021, 7, 25), makeInstant(2021, 7, 31))
+        expectedHaizDatesList += Entry(makeInstant(2021, 8, 17), makeInstant(2021, 8, 23))
+        expectedHaizDatesList += Entry(makeInstant(2021, 9, 9), makeInstant(2021, 9, 15))
+        expectedHaizDatesList += Entry(makeInstant(2021, 10, 6), makeInstant(2021, 10, 6))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+
+    }
+    @Test
+    fun mashqiSawal1(){
+        val entries = mutableListOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(makeInstant(2020, 12, 25), makeInstant(2020, 12, 30))
+        entries+=
+            Entry(makeInstant(2021, 1, 20), makeInstant(2021, 1, 22))
+        entries+=
+            Entry(makeInstant(2021, 1, 25), makeInstant(2021, 1, 26))
+        entries+=
+            Entry(makeInstant(2021, 2, 13), makeInstant(2021, 2, 20))
+        entries+=
+            Entry(makeInstant(2021, 3, 3), makeInstant(2021, 3, 3))
+        entries+=
+            Entry(makeInstant(2021, 3, 6), makeInstant(2021, 3, 9))
+
+        val output = handleEntries(AllTheInputs(
+            entries,typeOfInput = TypesOfInputs.DATE_ONLY))
+        val haizDateList = output.hazDatesList
+
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList += Entry(makeInstant(2020, 12, 25), makeInstant(2020, 12, 30))
+        expectedHaizDatesList += Entry(makeInstant(2021, 1, 20), makeInstant(2021, 1, 26))
+        expectedHaizDatesList += Entry(makeInstant(2021, 2, 16), makeInstant(2021, 2, 22))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+        val expectedEndingOutputValues = EndingOutputValues(
+            true,
+            AadatsOfHaizAndTuhr(6.getMilliDays(), 21.getMilliDays()),
+            mutableListOf())
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+
+    }
+    @Test
+    fun mashqiSawal2(){
+        val entries = mutableListOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(makeInstant(2020, 12, 5), makeInstant(2020, 12, 14))
+        entries+=
+            Entry(makeInstant(2021, 1, 5), makeInstant(2021, 1, 14))
+        entries+=
+            Entry(makeInstant(2021, 2, 7), makeInstant(2021, 2, 13))
+        entries+=
+            Entry(makeInstant(2021, 2, 21), makeInstant(2021, 3, 11))
+
+
+        val output = handleEntries(AllTheInputs(
+            entries))
+        val haizDateList = output.hazDatesList
+
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList += Entry(makeInstant(2020, 12, 5), makeInstant(2020, 12, 14))
+        expectedHaizDatesList += Entry(makeInstant(2021, 1, 5), makeInstant(2021, 1, 14))
+        expectedHaizDatesList += Entry(makeInstant(2021, 2, 7), makeInstant(2021, 2, 14))
+        expectedHaizDatesList += Entry(makeInstant(2021, 3, 10), makeInstant(2021, 3, 11))
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+
+        val expectedEndingOutputValues = EndingOutputValues(false, AadatsOfHaizAndTuhr(7.getMilliDays(), 24.getMilliDays()), mutableListOf())
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+    }
+    @Test
+    fun mashqiSawal3(){
+        val entries = mutableListOf<Entry>()
+        entries+=//each month has to be one minus the real
+            Entry(makeInstant(2020, 4, 29), makeInstant(2020, 5, 6))
+        entries+=
+            Entry(makeInstant(2020, 5, 26), makeInstant(2020, 5, 30))
+        entries+=
+            Entry(makeInstant(2020, 8, 2), makeInstant(2020, 8, 16))
+
+
+        val output = handleEntries(AllTheInputs(entries))
+        val haizDateList = output.hazDatesList
+
+        val expectedHaizDatesList = mutableListOf<Entry>()
+        expectedHaizDatesList +=
+            Entry(makeInstant(2020, 4, 29), makeInstant(2020, 5, 6))
+        expectedHaizDatesList +=
+            Entry(makeInstant(2020, 5, 26), makeInstant(2020, 5, 30))
+        expectedHaizDatesList +=
+            Entry(makeInstant(2020, 8, 2), makeInstant(2020, 8, 6))
+
+        assertEquals(haizDateList.size, expectedHaizDatesList.size)
+
+        for(i in expectedHaizDatesList.indices){
+            assertEquals(haizDateList[i].startTime.getMillisLong(), expectedHaizDatesList[i].startTime.getMillisLong())
+            assertEquals(haizDateList[i].endTime.getMillisLong(), expectedHaizDatesList[i].endTime.getMillisLong())
+        }
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(true, AadatsOfHaizAndTuhr(4.getMilliDays(), 64.getMilliDays()), mutableListOf())
+        assertEquals(expectedEndingOutputValues.aadats, output.endingOutputValues.aadats)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        //since no future date was provided, it won't be part of the test
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.date.getTime(),output.endingOutputValues.futureDateType!!.date.getTime())
+//        assertEquals(expectedEndingOutputValues.futureDateType!!.futureDates,output.endingOutputValues.futureDateType!!.futureDates)
+    }
 //    @Test
 //    fun mashqiSawal4(){
 //        val entries = mutableListOf<Entry>()
