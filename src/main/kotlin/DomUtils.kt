@@ -878,21 +878,21 @@ private fun copyText(event: Event) {
 
     var response: Json = json(Pair("id", null))
     val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
-    job.invokeOnCompletion {
-//        console.log(response["id"])
-//        console.log(response)
-        if (response["id"] != null) {
-            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt // Todo: Figure out if we're actually using uid after all.
-            smallTxt = " Saved and Copied "
-        } else {
+//     job.invokeOnCompletion {
+// //        console.log(response["id"])
+// //        console.log(response)
+//         if (response["id"] != null) {
+//             copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt // Todo: Figure out if we're actually using uid after all.
+//             smallTxt = " Saved and Copied "
+//         } else {
             smallTxt = " Copied "
-            window.alert("Masla has not been saved. However, it has copied.")
-        }
+//             window.alert("Masla has not been saved. However, it has copied.")
+//         }
 
         copyTxt.let { window.navigator.clipboard.writeText(it) }
         small?.innerHTML?.let { small.innerHTML = smallTxt }
         window.setTimeout({ small?.innerHTML = "" }, 5000)
-    }
+//     }
 }
 
 // COMPARE
