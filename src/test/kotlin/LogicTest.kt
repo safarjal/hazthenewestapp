@@ -4191,6 +4191,75 @@ class LogicTest {
 
     }
     @Test
+    fun issue212BugTest() {
+        //this seems to pass
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 1, 22), makeInstant(2023, 1, 28)),
+            Entry(makeInstant(2023, 2, 20), makeInstant(2023, 2, 27)),
+            Entry(makeInstant(2023, 4, 30), makeInstant(2023, 5, 11)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(
+                    makeInstant(2023, 2, 27),
+                    makeInstant(2023, 4, 30),
+                    mustabeenUlKhilqat = false)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(
+                    parseDays("7")!!,
+                    parseDays("62")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
+    fun issue213BugTest() {
+        //this seems to pass
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 3, 3), makeInstant(2023, 3, 11)),
+            Entry(makeInstant(2023, 4, 1), makeInstant(2023, 4, 8)),
+            Entry(makeInstant(2023, 4, 28), makeInstant(2023, 5, 6)),
+            Entry(makeInstant(2023, 5, 13), makeInstant(2023, 5, 13)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(
+                    parseDays("7")!!,
+                    parseDays("21")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        val expectedHazDatesList =
+            listOf<Entry>(
+                Entry(makeInstant(2023, 3, 3), makeInstant(2023, 3, 11)),
+                Entry(makeInstant(2023, 4, 1), makeInstant(2023, 4, 8)),
+                Entry(makeInstant(2023, 4, 29), makeInstant(2023, 5, 6)),
+                )
+        println(output.hazDatesList)
+        assertEquals(expectedHazDatesList.size, output.hazDatesList.size)
+        for (i in output.hazDatesList.indices){
+            assertEquals(output.hazDatesList[i].startTime, expectedHazDatesList[i].startTime)
+            assertEquals(output.hazDatesList[i].endTime, expectedHazDatesList[i].endTime)
+        }
+    }
+    @Test
     fun testMuftiAhmadMumtazMasla208() {
         val entries = listOf<Entry>(
             Entry(makeInstant(2023, 1, 1), makeInstant(2023, 1, 12)),
