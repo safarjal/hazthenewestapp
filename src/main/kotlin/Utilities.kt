@@ -251,7 +251,7 @@ fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntr
      }
      else if(language==Vls.Langs.URDU){
 //         val monthStr = month.displayName(TextStyle.FULL, Locale)
-         val urduMonth = urduMonthNames[month.value().toInt()]
+         val urduMonth = urduMonthNames[month.value().toInt() - 1]
          val urduDay:String = if (day == 1) "یکم" else day.toString()
 
          return if (isDateOnly) "$urduDay $urduMonth $year".trim()
