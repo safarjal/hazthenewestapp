@@ -17,7 +17,7 @@ import org.w3c.dom.*
 external object JsJodaTimeZoneModule
 
 private val jsJodaTz = JsJodaTimeZoneModule
-
+//val version = 2
 // START PROGRAM
 fun main() {
     window.onload = {
@@ -239,7 +239,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 typesOfInputs,
                 languageSelected,
                 ikhtilaafaat,
-                timezone
+                if (isDateTime && !timezoneSelect.disabled) timezone else "UTC"
                 )
         }
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){

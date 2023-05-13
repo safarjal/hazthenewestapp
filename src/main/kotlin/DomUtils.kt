@@ -876,8 +876,8 @@ private fun copyText(event: Event) {
     val small = div?.querySelector("small")
     var smallTxt: String
 
-    var response: Json = json(Pair("id", null))
-    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
+//    var response: Json = json(Pair("id", null))
+//    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
 //     job.invokeOnCompletion {
 // //        console.log(response["id"])
 // //        console.log(response)
