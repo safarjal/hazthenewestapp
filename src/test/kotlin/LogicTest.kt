@@ -4221,6 +4221,45 @@ class LogicTest {
         assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
     @Test
+    fun issue213BugTest() {
+        //this seems to pass
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 3, 3), makeInstant(2023, 3, 11)),
+            Entry(makeInstant(2023, 4, 1), makeInstant(2023, 4, 8)),
+            Entry(makeInstant(2023, 4, 28), makeInstant(2023, 5, 6)),
+            Entry(makeInstant(2023, 5, 13), makeInstant(2023, 5, 13)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(
+                    parseDays("7")!!,
+                    parseDays("21")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        val expectedHazDatesList =
+            listOf<Entry>(
+                Entry(makeInstant(2023, 3, 3), makeInstant(2023, 3, 11)),
+                Entry(makeInstant(2023, 4, 1), makeInstant(2023, 4, 8)),
+                Entry(makeInstant(2023, 4, 29), makeInstant(2023, 5, 6)),
+                )
+        println(output.hazDatesList)
+        assertEquals(expectedHazDatesList.size, output.hazDatesList.size)
+        for (i in output.hazDatesList.indices){
+            assertEquals(output.hazDatesList[i].startTime, expectedHazDatesList[i].startTime)
+            assertEquals(output.hazDatesList[i].endTime, expectedHazDatesList[i].endTime)
+        }
+    }
+    @Test
     fun testMuftiAhmadMumtazMasla208() {
         val entries = listOf<Entry>(
             Entry(makeInstant(2023, 1, 1), makeInstant(2023, 1, 12)),
