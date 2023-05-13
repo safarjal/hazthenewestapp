@@ -197,8 +197,7 @@ fun parseEntries(inputContainer: HTMLElement) {
             isMustabeen
         )
 
-        val timezone = timezoneSelect.value
-
+        val timezone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else "UTC"
         var allTheInputs: AllTheInputs
 
         if(typesOfInputs==TypesOfInputs.DURATION){
@@ -239,7 +238,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 typesOfInputs,
                 languageSelected,
                 ikhtilaafaat,
-                if (isDateTime && !timezoneSelect.disabled) timezone else "UTC"
+                timezone
                 )
         }
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
