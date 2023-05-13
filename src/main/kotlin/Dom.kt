@@ -226,26 +226,26 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
 }
 
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
-    details {
-        summary { makeSpans( Strings::loadMaslaFromID) }
-        div(classes = CssC.ROW) {
-            input {
-                id = Ids.Inputs.INPUT_ID
-                name = Ids.Inputs.INPUT_ID
-                value = inputContainerToCopyFrom?.titleID.orEmpty()
-            }
-            button {
-                id = Ids.Inputs.SUBMIT
-                name = Ids.Inputs.SUBMIT
-                value = "Submit"
-                onClickFunction = { event ->
-                    val id = findInputContainer(event).titleID
-                    var response: Json = json(Pair("id", null))
-                    val job = GlobalScope.launch { response = loadData(id) }
-                }
-            }
-        }
-    }
+//    details {
+//        summary { makeSpans( Strings::loadMaslaFromID) }
+//        div(classes = CssC.ROW) {
+//            input {
+//                id = Ids.Inputs.INPUT_ID
+//                name = Ids.Inputs.INPUT_ID
+//                value = inputContainerToCopyFrom?.titleID.orEmpty()
+//            }
+//            button {
+//                id = Ids.Inputs.SUBMIT
+//                name = Ids.Inputs.SUBMIT
+//                value = "Submit"
+//                onClickFunction = { event ->
+//                    val id = findInputContainer(event).titleID
+//                    var response: Json = json(Pair("id", null))
+//                    val job = GlobalScope.launch { response = loadData(id) }
+//                }
+//            }
+//        }
+//    }
     details(classes = CssC.DEV) {
         summary { makeSpans( Strings::titleTextFieldLabel) }
         div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_TITLE, "36px") }
