@@ -4191,6 +4191,36 @@ class LogicTest {
 
     }
     @Test
+    fun issue212BugTest() {
+        //this seems to pass
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 1, 22), makeInstant(2023, 1, 28)),
+            Entry(makeInstant(2023, 2, 20), makeInstant(2023, 2, 27)),
+            Entry(makeInstant(2023, 4, 30), makeInstant(2023, 5, 11)),
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(
+                    makeInstant(2023, 2, 27),
+                    makeInstant(2023, 4, 30),
+                    mustabeenUlKhilqat = false)
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                false,
+                AadatsOfHaizAndTuhr(
+                    parseDays("7")!!,
+                    parseDays("62")!!),
+                mutableListOf(
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+    }
+    @Test
     fun testMuftiAhmadMumtazMasla208() {
         val entries = listOf<Entry>(
             Entry(makeInstant(2023, 1, 1), makeInstant(2023, 1, 12)),
