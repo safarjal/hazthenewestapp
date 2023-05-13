@@ -137,6 +137,12 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
             classes = setOf(CssC.DATETIME_ONLY, CssC.INVIS)
             disabled = true
             makeTzOptions()
+            option {
+                value = "UTC"
+                id = "UTC"
+                selected = true
+                +"(GMT-00:00) UTC"
+            }
         }
     }
 }

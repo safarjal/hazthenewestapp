@@ -1,3 +1,4 @@
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.internal.JSJoda.*
 import kotlinx.datetime.internal.JSJoda.Duration
 import kotlinx.html.*
@@ -92,17 +93,17 @@ fun LocalDateTime.addTimeZone(tz: String?) =
 fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
 //fun Instant.getLocal(tz: String = "UTC") = LocalDateTime.ofInstant(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
-fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
-    return if (isEmpty())
-        Instant.EPOCH
-    else if(!contains("T"))
-        Instant.parse("${this}T00:00:00Z")
-    else if (timezone)
-        getUTC(tz)
-    else if(contains("T"))
-        Instant.parse("$this:00Z")
-    else
-        Instant.EPOCH
+fun String.instant(timezone: String? = null, overRideTimeZone: Boolean = false): Instant {
+    var tz = false
+    if (!timezone.isNullOrEmpty() && timezone != "UTC" && overRideTimeZone) tz = true
+    val result =  when {
+        isEmpty() -> Instant.EPOCH
+        !contains("T") -> Instant.parse("${this}T00:00:00Z")
+        tz -> getUTC(timezone)
+        contains("T") -> Instant.parse("$this:00Z")
+        else -> Instant.EPOCH
+    }
+    return result
 }
 
 fun Instant.getMillisLong() = toEpochMilli().toLong()
@@ -111,7 +112,7 @@ fun Int.leadingZero() = if (this < 10) "0$this" else toString()
 //fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
 //    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
 fun makeInstant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, tz: Boolean = false, tzStr: String? = null): Instant =
-    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tz, tzStr)
+    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tzStr, tz)
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
@@ -120,9 +121,9 @@ fun Instant.toDateInputString(isDateOnly: Boolean): String {
     else string.take(16) // Drop any precision below minutes (seconds, milliseconds, etc.)
 }
 
-fun convertInputValue(value: String, isDateOnly: Boolean): String {
+fun convertInputValue(value: String, isDateOnly: Boolean, timeZone: String? = null): String {
     if (value.isEmpty()) return ""
-    return value.instant(!isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
+    return value.instant(timeZone) // Inverting the isDateOnly since we need to pass the existing state
         .toDateInputString(isDateOnly)
 }
 

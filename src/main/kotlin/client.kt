@@ -161,8 +161,10 @@ fun parseEntries(inputContainer: HTMLElement) {
 
     with(inputContainer) {
 //        NOTE: BECAUSE PREG ISALWAYS DATE NOT TIME, I AM NOT APPLYING TO LOCAL BUT TO INSTANT
-        val pregnancyStrt = pregStartTime.value.instant()
-        val pregnancyEnd = pregEndTime.value.instant()
+        val timezone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else "UTC"
+
+        val pregnancyStrt = pregStartTime.value.instant(timezone, isDateTime)
+        val pregnancyEnd = pregEndTime.value.instant(timezone, isDateTime)
 
         val typeOfMasla:TypesOfMasla = if(isMubtadia){
             TypesOfMasla.MUBTADIA
@@ -197,7 +199,6 @@ fun parseEntries(inputContainer: HTMLElement) {
             isMustabeen
         )
 
-        val timezone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else "UTC"
         var allTheInputs: AllTheInputs
 
         if(typesOfInputs==TypesOfInputs.DURATION){
@@ -226,8 +227,8 @@ fun parseEntries(inputContainer: HTMLElement) {
         }else{
             entries = haizInputDatesRows.map { row ->
                 Entry(
-                    startTime = row.startTimeInput.value.instant(isDateTime, timezoneSelect.value),
-                    endTime = row.endTimeInput.value.instant(isDateTime, timezoneSelect.value)
+                    startTime = row.startTimeInput.value.instant(timezone, isDateTime),
+                    endTime = row.endTimeInput.value.instant(timezone, isDateTime)
                 )
             }
             allTheInputs = AllTheInputs(

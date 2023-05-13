@@ -602,13 +602,18 @@ private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boole
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
-private fun typeChanging(inputContainer: HTMLElement, selectedOption: String, isDateOnly: Boolean, isDateTime: Boolean) {
+private fun typeChanging(
+    inputContainer: HTMLElement,
+    selectedOption: String,
+    isDateOnly: Boolean,
+    isDateTime: Boolean,
+    timeZone: String? = null) {
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
 
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
-        val newValue = convertInputValue(timeInput.value, isDateOnly)
-        val newMin = convertInputValue(timeInput.min, isDateOnly)
-        val newMax = convertInputValue(timeInput.max, isDateOnly)
+        val newValue = convertInputValue(timeInput.value, isDateOnly, timeZone)
+        val newMin = convertInputValue(timeInput.min, isDateOnly, timeZone)
+        val newMax = convertInputValue(timeInput.max, isDateOnly, timeZone)
 
         val dateInputType = if (isDateOnly) InputType.date else InputType.dateTimeLocal
         timeInput.type = dateInputType.realValue
@@ -627,8 +632,9 @@ fun onClickTypeConfigurationSelectDropdown(event: Event) {
     val inputContainer = findInputContainer(event)
     val isDateOnly = inputContainer.isDateOnly
     val isDateTime = inputContainer.isDateTime
+    val timeZone =  if (inputContainer.timezoneSelect.disabled) null else inputContainer.timezoneSelect.value
     // Ensure all input containers are same type
-    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime) }
+    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime, timeZone) }
 }
 
 // Add new rows at the start

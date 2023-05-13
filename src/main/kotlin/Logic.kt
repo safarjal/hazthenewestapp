@@ -18,6 +18,7 @@ lateinit var firstStartTime:Instant
 
 fun handleEntries(allTheInputs: AllTheInputs): OutputTexts {
     firstStartTime = allTheInputs.entries!![0].startTime
+
     val times = allTheInputs.entries
         .flatMap { entry -> listOf(entry.startTime, entry.endTime) }
         .map { it.getMillisLong() }
