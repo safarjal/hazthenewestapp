@@ -13,7 +13,7 @@ import kotlin.js.Json
 import kotlin.random.Random
 
 //val hazappBackend = "http://localhost:3000/maslas/"
-const val hazappBackend = "http://170.64.144.136/maslas/"
+const val hazappBackend = "http://170.64.146.104/maslas/"
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
     with(inputsContainer) {
         val entries = haizInputDatesRows.map { row ->
