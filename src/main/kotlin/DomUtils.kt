@@ -1,13 +1,20 @@
 @file:Suppress("SpellCheckingInspection")
+@file:OptIn(DelicateCoroutinesApi::class)
 
+import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
+import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
-import kotlin.js.Date
+import kotlin.js.Json
+import kotlin.js.json
 
 // MAKE ELEMENTS
 fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
@@ -20,11 +27,14 @@ fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Un
 
 fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
     div(classes = divClass) {
-        small(classes = btnClass)
         button(classes = btnClass) {
-            onClickFunction = { event -> copyText(event) }
-            +"Copy ⎙"
+            onClickFunction = { event ->
+                copyText(event)
+            }
+            +"Save and Copy ⎙"
         }
+        br()
+        small(classes = btnClass)
     }
 }
 
@@ -102,18 +112,18 @@ fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, input
     }
 }
 
-fun FlowContent.makeLabel(inputId: String, englishText: String, urduText: String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
+fun FlowContent.makeLabel(inputId: String, text: Strings.() -> String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
     label {
         htmlFor = inputId
         classes = setOf(CssC.ENGLISH, extraClasses)
         block()
-        +englishText
+        +StringsOfLanguages.ENGLISH.text()
     }
     label {
         htmlFor = inputId
         classes = setOf(CssC.URDU, extraClasses)
         block()
-        +urduText
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -127,10 +137,10 @@ fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
     }
 }
 
-fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduText: String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
+fun FlowContent.makeIkhtilafiMasla(inputId: String, text: Strings.() -> String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
-            makeLabel(inputId, englishText, urduText)
+            makeLabel(inputId, text)
             makeSwitch(inputId)
         }
         block()
@@ -140,8 +150,7 @@ fun FlowContent.makeIkhtilafiMasla(inputId: String, englishText: String, urduTex
 fun TagConsumer<HTMLElement>.makeDropdownOptions(
     isSelected: Boolean,
     optionVal: String,
-    englishText: String,
-    urduText: String,
+    text: Strings.() -> String,
     extraClasses: String = "",
     block: OPTION.() -> Unit = {}
 ) {
@@ -149,25 +158,25 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
         classes = setOfNotNull(
             CssC.ENGLISH,
             extraClasses,
-            if (languageSelector.value != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
+            if (languageSelected != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
         )
-        selected = isSelected && languageSelector.value == Vls.Langs.ENGLISH
+        selected = isSelected && languageSelected == Vls.Langs.ENGLISH
         value = optionVal
         id = optionVal
         block()
-        +englishText
+        +StringsOfLanguages.ENGLISH.text()
     }
     option {
         classes = setOfNotNull(
             CssC.URDU,
             extraClasses,
-            if (languageSelector.value != Vls.Langs.URDU) CssC.LANG_INVIS else null
+            if (languageSelected != Vls.Langs.URDU) CssC.LANG_INVIS else null
         )
-        selected = isSelected && languageSelector.value == Vls.Langs.URDU
+        selected = isSelected && languageSelected == Vls.Langs.URDU
         value = optionVal
         id = optionVal
         block()
-        +urduText
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -183,13 +192,24 @@ fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: 
 }
 
 fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
-    span(classes = "${CssC.ENGLISH} ${if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +englishText
     }
-    span(classes = "${CssC.URDU} ${if (languageSelector.value == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
+    span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
         +urduText
+    }
+}
+
+fun TagConsumer<HTMLElement>.makeSpans(text: Strings.() -> String, block: SPAN.() -> Unit = {}) {
+    span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+        block()
+        +StringsOfLanguages.ENGLISH.text()
+    }
+    span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
+        block()
+        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -203,6 +223,16 @@ fun FlowContent.makeTextAreaInput(inputId: String, height: String = "auto", bloc
             txtarea.dir = "auto"
             txtarea.style.height = height
             txtarea.style.height = "${txtarea.scrollHeight + 6}px"
+        }
+    }
+}
+
+fun TagConsumer<HTMLElement>.makeTzOptions() {
+    dtStrings.forEach {
+        option {
+            value = it.tz
+            id = it.tz
+            +it.info
         }
     }
 }
@@ -316,29 +346,21 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(
         name = Ids.Row.INPUT_TYPE_OF_DURATION
         disabled = disable
         onChangeFunction = { event -> onChangeDurationOption(event) }
-        makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, StringsOfLanguages.ENGLISH.dam, StringsOfLanguages.URDU.dam)
-        makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, StringsOfLanguages.ENGLISH.tuhr, StringsOfLanguages.URDU.tuhr)
-        makeDropdownOptions(
-            selectedOption == Vls.Opts.HAML,
-            Vls.Opts.HAML,
-            StringsOfLanguages.ENGLISH.pregduration,
-            StringsOfLanguages.URDU.pregduration,
+        makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, Strings::dam)
+        makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, Strings::tuhr)
+        makeDropdownOptions(selectedOption == Vls.Opts.HAML, Vls.Opts.HAML, Strings::pregduration,
             CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
         )
         // Wiladat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && mustabeen,
-            Vls.Opts.WILADAT,
-            StringsOfLanguages.ENGLISH.birthduration,
-            StringsOfLanguages.URDU.birthduration,
+            Vls.Opts.WILADAT, Strings::birthduration,
             CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!preg || !mustabeen) CssC.INVIS else null
         )
         // Isqaat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && !mustabeen,
-            Vls.Opts.WILADAT,
-            StringsOfLanguages.ENGLISH.isqat,
-            StringsOfLanguages.URDU.isqat,
+            Vls.Opts.WILADAT, Strings::isqat,
             CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!preg || mustabeen) CssC.INVIS else null
         )
     }
@@ -394,23 +416,23 @@ private fun addTheRemoveInputsContainerButton(inputContainer: HTMLElement) {
     }
 }
 
-private fun TagConsumer<HTMLElement>.calcAllBtn() {
+private fun TagConsumer<HTMLElement>.calcAllBtn(text: String) {
     button {
         classes = setOf(
             CssC.CALC_BTN,
             CssC.ENGLISH,
-            if (languageSelector.value == Vls.Langs.ENGLISH) "" else CssC.INVIS
+            if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.INVIS
         )
-        +"Calculate All"
+        +text
         onClickFunction = { calcAll() }
     }
     button {
         classes = setOf(
             CssC.CALC_BTN,
             CssC.URDU,
-            if (languageSelector.value == Vls.Langs.URDU) "" else CssC.INVIS
+            if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
         )
-        +"Calculate All"
+        +text
         onClickFunction = { calcAll() }
     }
 }
@@ -439,7 +461,7 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
         .asList()
         .map { it as HTMLOptionElement }
         .firstOrNull { option ->
-            option.value == selectedOption && option.classList.contains(languageSelector.value) }
+            option.value == selectedOption && option.classList.contains(languageSelected) }
         ?.selected = true
 }
 fun maslaChanging(event: Event) {
@@ -472,20 +494,21 @@ private fun disableByMasla(inputContainer: HTMLElement) {
 fun disableTree(inputContainer: HTMLElement) {
     val isNifas = inputContainer.isNifas
     val isMubtadia = inputContainer.isMubtadia
-    val isDateTime = !inputContainer.isDuration
+    val isDateOrTime = !inputContainer.isDuration
     val isMustabeen  = inputContainer.isMustabeen
 
-    disableByClass(CssC.DATETIME_AADAT, inputContainer, !isDateTime)
+    disableByClass(CssC.DATE_OR_TIME_AADAT, inputContainer, !isDateOrTime)
     disableByMasla(inputContainer)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateTime)
-    disableByClass("${CssC.DATETIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateTime)
+    disableByClass("${CssC.DATE_OR_TIME_AADAT} ${CssC.NIFAS}", inputContainer, !isNifas || !isDateOrTime)
+    disableByClass("${CssC.DATE_OR_TIME_AADAT} ${CssC.MUTADA}", inputContainer, isMubtadia || !isDateOrTime)
     disableByClass("${CssC.NIFAS} ${CssC.MUSTABEEN}", inputContainer, !isNifas || !isMustabeen)
     disableByClass("${CssC.NIFAS} ${CssC.NOT_MUSTABEEN}", inputContainer, !isNifas || isMustabeen)
+    disableByClass(CssC.DATETIME_ONLY, inputContainer, !inputContainer.isDateTime)
 
-    val mawjoodaFasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FASID_CHECKBOX) as HTMLInputElement
+    val mawjoodaFaasidCheck = inputContainer.getChildById(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX) as HTMLInputElement
     if (inputContainer.isMubtadia) {
-        mawjoodaFasidCheck.checked = true
-        mawjoodaFasidCheck.disabled = true
+        mawjoodaFaasidCheck.checked = true
+        mawjoodaFaasidCheck.disabled = true
     }
 
     disableByClass(CssC.ZAALLA, inputContainer, !inputContainer.isZaalla)
@@ -493,7 +516,7 @@ fun disableTree(inputContainer: HTMLElement) {
 
 // Ensure Aadaat in Range
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelector.value == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
+    val errormessage = if(languageSelected == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
     else {StringsOfLanguages.URDU.incorrectAadat}
     if (value.contains("-") && devmode) {
 //        println("DASH!")
@@ -510,7 +533,7 @@ private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
         value = value.replace("[^0-9:]".toRegex(), "")
         val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
         setCustomValidity(try {
-            val days = (parseDays(value)?.div(MILLISECONDS_IN_A_DAY))?.toDouble()
+            val days = (parseDays(value)?.getDays())?.toDouble()
             require(days == null || days in doubleValidityRange) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {
@@ -648,7 +671,7 @@ private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     setupRows(inputContainer)
 }
 
-// Setup the changing rows
+// Set up the changing rows
 fun setupRows(inputContainer: HTMLElement) {
     setMaxToCurrentTimeForTimeInputs(inputContainer)
     setupFirstRow(inputContainer, false)
@@ -791,7 +814,7 @@ private fun shrinkAnswer(shrink: Boolean = true) {
     inputsContainers.forEach { it.contentContainer.classList.toggle(CssC.SHRUNK, shrink) }
 }
 
-private fun addCalcAllButtonIfNeeded() { calculateAllDiv.replaceChildren { calcAllBtn() } }
+private fun addCalcAllButtonIfNeeded() { calculateAllDiv.replaceChildren { calcAllBtn("Calculate All") } }
 
 // Disable Date-Time Option
 private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal: String, disable: Boolean) {
@@ -818,36 +841,58 @@ private fun disableTime() {
 // Copy Answer
 
 // ANSWER
-private fun getNow(): String {
-    var dateStr = ""
-    val now = Date.now()
-    val day = Date(now).getDate()
-    val month = Date(now).getMonth()
-    if (languageSelector.value == Vls.Langs.URDU){
-        val urduMonth = urduMonthNames[month]
-        val urduDay:String = if (day == 1) "یکم" else day.toString()
-        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
-    }else if(languageSelector.value == Vls.Langs.ENGLISH){
-        dateStr = Date(now).toDateString().drop(4)
-    }
-    return dateStr
-}
+//private fun getNow(): String {
+//    var dateStr = ""
+//    val now = Date.now()
+//    val now = Instant.now()
+//    val date = languagedDateFormat(now, TypesOfInputs.DATE_ONLY, languageSelected)
+//    val day = now.
+//    val day = Date(now).getDate()
+//    val month = Date(now).getMonth()
+//    if (languageSelected == Vls.Langs.URDU){
+//        val urduMonth = urduMonthNames[month]
+//        val urduDay:String = if (day == 1) "یکم" else day.toString()
+//        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
+//    }else if(languageSelected == Vls.Langs.ENGLISH){
+//        dateStr = Date(now).toDateString().drop(4)
+//    }
+//    return date
+//}
 
 private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
+    val inputContainer = findInputContainer(event)
 
-    val dateStr = getNow()
-    val questionTxt = findInputContainer(event).questionText.value
+//    val dateStr = getNow()
+    val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
+    val questionTxt = inputContainer.questionText
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
     val answerTxt = div?.querySelector("p")?.textContent
-
-    val copyTxt = "*${dateStr}*\n\n${questionTxt}\n\n${divider}\n\n${answerTxt}"
-    copyTxt.let { window.navigator.clipboard.writeText(it) }
+    var copyTxt = "*$dateStr*\n\n" +
+            "$questionTxt\n\n" +
+            "$divider\n\n" +
+            "$answerTxt"
 
     val small = div?.querySelector("small")
-    small?.innerHTML?.let { small.innerHTML = " Copied " }
+    var smallTxt: String
 
-    window.setTimeout({ if (small != null) small.innerHTML = "" }, 1000)
+    var response: Json = json(Pair("id", null))
+    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
+    job.invokeOnCompletion {
+//        console.log(response["id"])
+//        console.log(response)
+        if (response["id"] != null) {
+            copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt // Todo: Figure out if we're actually using uid after all.
+            smallTxt = " Saved and Copied "
+        } else {
+            smallTxt = " Copied "
+            window.alert("Masla has not been saved. However, it has copied.")
+        }
+
+        copyTxt.let { window.navigator.clipboard.writeText(it) }
+        small?.innerHTML?.let { small.innerHTML = smallTxt }
+        window.setTimeout({ small?.innerHTML = "" }, 5000)
+    }
 }
 
 // COMPARE
@@ -861,7 +906,9 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
-private val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement)
+val HTMLElement.titleID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLTextAreaElement).value
+val HTMLElement.titleText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLTextAreaElement).value
+val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement).value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement

@@ -1,6 +1,10 @@
 @file:Suppress("SpellCheckingInspection")
 
-import kotlin.js.Date
+import io.ktor.util.date.*
+import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.LocalDateTime
+import kotlinx.serialization.*
+import kotlin.random.Random
 
 data class Strings(
     val answer: String,
@@ -109,11 +113,11 @@ data class Strings(
     val isqat: String,
     val preMaslaHabitOfHaizAndTuhr: String,
     val preMaslaValueOfMawjoodaPaki: String,
+    val zaalla: String,
+    val zaallaCycleLength: String,
+    val isDaylightSavings: String,
+    val loadMaslaFromID:String,
     )
-
-
-
-
 
 data class AllTheInputs(
     val entries: List<Entry>?= null,
@@ -121,31 +125,64 @@ data class AllTheInputs(
     val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
-    val language:String = Vls.Langs.URDU,
+    val language: String = Vls.Langs.URDU,
     val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(true,
         false,
         false,
         false),
-
-
+    val timeZone: String? = "UTC",
 )
 
+// Todo: make proper uid
+@Serializable
+data class SaveData(
+    val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
+    val typeOfMasla: String = Vls.Maslas.MUTADA,
+    val typeOfInput: String = Vls.Types.DATE_ONLY,
+    val entries: List<SaveEntries>? = null,
+    val answerEnglish: String? = "",
+    val answerUrdu: String? = "",
+    val others: OtherValues? = null,
+)
+
+@Serializable
+data class SaveEntries(
+    val startTime: String,
+    val endTime: String,
+)
+
+@Serializable
+data class OtherValues(
+    val title: String? = null,
+    val question: String? = null,
+    var aadatHaiz: String? = null,
+    var aadatTuhr: String? = null,
+    var mawjoodahTuhr: String? = null,
+    var isMawjoodaFasid: Boolean? = false,
+    val pregStartTime: String? = null,
+    val birthTime: String? = null,
+    val aadatNifas: String? = null,
+    val mustabeenUlKhilqat: Boolean? = false,
+    val ghairMustabeenIkhtilaaf: Boolean = false,
+    val daurHaizIkhtilaf: Boolean = false,
+    var ayyameQabliyyaIkhtilaf: Boolean = false,
+    val mubtadiaIkhitilaf: Boolean = false,
+    val timeZone: String? = null
+)
 
 data class PreMaslaValues(
-    var inputtedAadatHaiz:Long? = null,
-    var inputtedAadatTuhr:Long? = null,
-    var inputtedMawjoodahTuhr:Long? = null,
-    var isMawjoodaFasid:Boolean = false,
-
-    )
+    var inputtedAadatHaiz: Long? = null,
+    var inputtedAadatTuhr: Long? = null,
+    var inputtedMawjoodahTuhr: Long? = null,
+    var isMawjoodaFasid: Boolean = false,
+)
 
 data class Ikhtilaafaat(
-    val ghairMustabeenIkhtilaaf:Boolean = false,
-    val daurHaizIkhtilaf:Boolean = false,
+    val ghairMustabeenIkhtilaaf: Boolean = false,
+    val daurHaizIkhtilaf: Boolean = false,
     var ayyameQabliyyaIkhtilaf: Boolean = false,
     val mubtadiaIkhitilaf: Boolean = false
 )
-
 
 
 enum class TypesOfInputs {
@@ -161,8 +198,12 @@ enum class TypesOfMasla {
 }
 
 data class Entry(
-    val startTime: Date,
-    val endTime: Date
+    val startTime: Instant,
+    val endTime: Instant
+)
+data class LocalEntry(
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime
 )
 enum class TypesOfFutureDates {
     A3_CHANGING_TO_A2,
@@ -181,9 +222,9 @@ enum class TypesOfFutureDates {
 }
 
 class FutureDateType(
-    val date:Date,
+    val date:Instant,
     val futureDates:TypesOfFutureDates,
-    val date2:Date? = null,
+    val date2:Instant? = null,
 )
 class EndingOutputValues(
     val filHaalPaki:Boolean?,
@@ -191,8 +232,7 @@ class EndingOutputValues(
     val futureDateType: MutableList<FutureDateType>
 )
 class OutputTexts (
-    var englishText:String,
-    var urduText: String,
+    var outputText: OutputStringsLanguages,
     var haizDatesText:String,
     var hazDatesList: MutableList<Entry>,
     var endingOutputValues:EndingOutputValues,
@@ -201,17 +241,16 @@ class OutputTexts (
 
 
 class InfoForCompareTable(
-    val headerList: List<Date>,
+    val headerList: List<Instant>,
     val listOfColorsOfDaysList: List<List<Int>>,
-    val resultColors:List<Int>
+    val resultColors: List<Int>
 )
 
-
 data class Pregnancy(
-    val pregStartTime:Date = ARBITRARY_DATE,
-    val birthTime:Date = ARBITRARY_DATE,
-    var aadatNifas:Long? = 40*MILLISECONDS_IN_A_DAY,
-    val mustabeenUlKhilqat:Boolean,
+    val pregStartTime: Instant = ARBITRARY_DATE,
+    val birthTime: Instant = ARBITRARY_DATE,
+    var aadatNifas: Long? = 40.getMilliDays(),
+    val mustabeenUlKhilqat: Boolean,
 )
 
 enum class DurationType {
@@ -240,17 +279,17 @@ enum class DurationType {
     START_OF_AADAT_AYYAMEQABLIYYA
 }
 
-class DateTypeList (
-    val date:Date,
-    val type: DateTypes
-)
-enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
-
-class DurationTypes (
-    val startTime: Date,
-    val endTime: Date,
-    val type: DateTypes
-)
+//class DateTypeList (
+//    val date: Date,
+//    val type: DateTypes
+//)
+//enum class DateTypes {START,END, YAQEENI_PAKI,YAQEENI_NA_PAKI,AYYAAM_E_SHAKK_DUKHOOL, AYYAAM_E_SHAKK_KHUROOJ}
+//
+//class DurationTypes (
+//    val startTime: Instant,
+//    val endTime: Instant,
+//    val type: DateTypes
+//)
 
 enum class Soortain {
     A_1, A_2, A_3, B_2, B_3
@@ -259,10 +298,10 @@ enum class Soortain {
 data class Duration(
     val type: DurationType,
     val timeInMilliseconds: Long,
-    var startTime: Date = ARBITRARY_DATE
+    var startTime: Instant = ARBITRARY_DATE
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date get() = Date(startTime.getTime().toLong() + (timeInMilliseconds))
+    val endDate: Instant get() = startTime.plusMillis(timeInMilliseconds)
 
 }
 
@@ -274,10 +313,10 @@ data class FixedDuration(
     var ayyameqabliyya:AyyameQabliyya? = null,
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
-    var startDate: Date = Date(1,1,1),
+    var startDate: Instant = Instant.EPOCH,
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
-    val endDate: Date get() = addTimeToDate(this.startDate, this.timeInMilliseconds)
+    val endDate: Instant get() = this.startDate.plusMillis(this.timeInMilliseconds)
 }
 
 data class AyyameQabliyya(
@@ -326,6 +365,11 @@ data class AadatAfterIndexOfFixedDuration(
 )
 
 data class OutputStringsLanguages(
-    var urduString:String,
-    var englishString: String
+    var urduString: String = "",
+    var englishString: String = ""
+)
+
+data class TzInfo (
+    val info: String,
+    val tz: String
 )

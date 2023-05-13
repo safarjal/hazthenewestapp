@@ -1,12 +1,10 @@
+import kotlinx.datetime.internal.JSJoda.*
+import kotlinx.datetime.internal.JSJoda.Duration
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
+import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
-import kotlin.js.Date
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
@@ -36,7 +34,6 @@ private fun ChildNode.insertRelative(block: TagConsumer<HTMLElement>.() -> Unit,
     insertRelative((this as Node).ownerDocument!!, block, insert)
 
 fun Node.appendChild(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> appendChild(node) }
-@Suppress("MoveLambdaOutsideParentheses", "RedundantLambdaArrow")
 fun Element.replaceChildren(block: TagConsumer<HTMLElement>.() -> Unit) =
     replaceChildren(*insertRelative(block).toTypedArray())
 fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> before(node) }
@@ -89,41 +86,51 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
+fun LocalDateTime.addTimeZone(tz: String?) =
+    ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
 
-/* Looks like the compiler argument for opting in to experimental features
- * ('-Xopt-in=kotlin.RequiresOptIn') is not actually enforced, so suppressing the warning about it's
- * requirement here for now..
- */
-@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-@OptIn(ExperimentalTime::class)
-fun Date.offsetLocalTimeToUtc() =
-    Date(getTime() - getTimezoneOffset().toDuration(DurationUnit.MINUTES).inWholeMilliseconds)
+fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
+//fun Instant.getLocal(tz: String = "UTC") = LocalDateTime.ofInstant(this, ZoneId.of(tz.ifEmpty { "UTC" }))
 
-fun parseToLocalDate(dateString: String, isDateOnly: Boolean): Date {
-    val date = Date(dateString)
-    return if (isDateOnly) date else date.offsetLocalTimeToUtc()
+fun String.instant(timezone: Boolean = false, tz: String? = null): Instant {
+    return if (isEmpty())
+        Instant.EPOCH
+    else if(!contains("T"))
+        Instant.parse("${this}T00:00:00Z")
+    else if (timezone)
+        getUTC(tz)
+    else if(contains("T"))
+        Instant.parse("$this:00Z")
+    else
+        Instant.EPOCH
 }
 
-fun Date.toDateInputString(isDateOnly: Boolean): String {
+fun Instant.getMillisLong() = toEpochMilli().toLong()
+
+fun Int.leadingZero() = if (this < 10) "0$this" else toString()
+//fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
+//    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
+fun makeInstant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0, tz: Boolean = false, tzStr: String? = null): Instant =
+    ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(tz, tzStr)
+
+fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'
-    val string = toISOString().takeWhile { it != letterToTrimFrom }
+    val string = toString().takeWhile { it != letterToTrimFrom }
     return if (isDateOnly) string
     else string.take(16) // Drop any precision below minutes (seconds, milliseconds, etc.)
 }
 
 fun convertInputValue(value: String, isDateOnly: Boolean): String {
     if (value.isEmpty()) return ""
-    return parseToLocalDate(value, !isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
+    return value.instant(!isDateOnly) // Inverting the isDateOnly since we need to pass the existing state
         .toDateInputString(isDateOnly)
 }
 
-//fun currentTimeString(isDateOnly: Boolean) = Date().offsetLocalTimeToUtc().toDateInputString(isDateOnly)
-
-fun addTimeToDate(date: Date,timeInMilliseconds:Long):Date { return Date(date.getTime() + timeInMilliseconds) }
+fun addTimeToDate(date: Instant,timeInMilliseconds:Long): Instant = date.plusMillis(timeInMilliseconds)
 
 fun parseRange(input: String):Array<Int?>{
     val sections = input.split('-')
-    var array:Array<Int?> = arrayOf()
+    val array:Array<Int?> = arrayOf()
     for (i in sections.indices){
         array[i]= (parseDays(sections[i])?.div(MILLISECONDS_IN_A_DAY))?.toInt()
     }
@@ -131,32 +138,25 @@ fun parseRange(input: String):Array<Int?>{
 }
 
 fun parseDays(input: String): Long? {
-    if(input.contains('-')) return null
+    if (input.contains('-')) return null
     if (input.isEmpty()) return null
 
     val sections = input.split(':')
 
-    val days = sections[0].toLong()
-    var millisecs:Long = days * MILLISECONDS_IN_A_DAY
-
-    val hours = sections.getOrNull(1)?.toInt() ?: return millisecs
-    require(hours in 0 until 24) { "Invalid hours value" }
-    millisecs += hours * MILLISECONDS_IN_AN_HOUR
-
-    val minutes = sections.getOrNull(2)?.toInt() ?: return millisecs
-    require(minutes in 0 until 60) { "Invalid minutes value" }
-    millisecs += minutes * MILLISECONDS_IN_A_MINUTE
-
-    return millisecs
+    val dur = Duration.ofDays(sections[0].toInt())
+        .plusHours(sections.getOrNull(1)?.toInt() ?: 0)
+        .plusMinutes(sections.getOrNull(2)?.toInt() ?: 0)
+    return dur.toMillis().toLong()
 }
 
 fun milliToDayHrMin(numberOfMilliseconds:Long): Array<Double> {
-    val days:Double = kotlin.math.floor((numberOfMilliseconds / MILLISECONDS_IN_A_DAY).toDouble())
-    var milisecsleft = numberOfMilliseconds - days * MILLISECONDS_IN_A_DAY
-    val hours:Double = kotlin.math.floor((milisecsleft / MILLISECONDS_IN_AN_HOUR))
-    milisecsleft -= hours * MILLISECONDS_IN_AN_HOUR
-    val minutes = kotlin.math.floor(milisecsleft / MILLISECONDS_IN_A_MINUTE)
-    return arrayOf(days, hours, minutes)
+    var inst = Duration.ofMillis (numberOfMilliseconds)
+    val days = inst.toDays()
+    inst = inst.minusDays(days)
+    val hours = inst.toHours()
+    inst = inst.minusHours(hours)
+    val minutes = inst.toMinutes()
+    return arrayOf(days.toDouble(), hours.toDouble(), minutes.toDouble())
 }
 
 fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInputs = TypesOfInputs.DURATION, languageNames: String = Vls.Langs.ENGLISH):String {
@@ -164,26 +164,24 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         var isDateOnly = false
         if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
 
-
         val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
-
         var strHours = hours.toString()
         var strMinutes = minutes.toString()
         var strDays = days.toString()
 
         when (days) {
-            1.0 -> strDays += " day"
             0.0 -> strDays = ""
+            1.0 -> strDays += " day"
             else -> strDays += " days"
         }
         when (hours) {
-            1.0 -> strHours += " hour"
             0.0 -> strHours = ""
+            1.0 -> strHours += " hour"
             else -> strHours += " hours"
         }
         when (minutes) {
-            1.0 -> strMinutes += " minute"
             0.0 -> strMinutes = ""
+            1.0 -> strMinutes += " minute"
             else -> strMinutes += " minutes"
         }
 
@@ -203,8 +201,8 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
         val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
 
         val strHours = when (hours) {
-            1.0 -> "$hours گھنٹہ"
             0.0 -> ""
+            1.0 -> "$hours گھنٹہ"
             else -> "$hours گھنٹے"
         }
         val strMinutes = if (minutes == 0.0) "" else "$minutes منٹ"
@@ -216,16 +214,29 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
     }
     return ""
 }
+fun localHazDatesList(hazDatesList:MutableList<Entry>, tz:String):List<LocalEntry>{
+    return hazDatesList.map { entry ->
+        LocalEntry(
+            LocalDateTime.ofInstant(entry.startTime, ZoneId.of(tz)),
+            LocalDateTime.ofInstant(entry.endTime, ZoneId.of(tz))
+        )
+    }
+}
 
- fun languagedDateFormat(date: Date, typeOfInput: TypesOfInputs, languageNames: String):String{
+ fun languagedDateFormat(date: Instant, typeOfInput: TypesOfInputs, language: String, timeZone: String = "UTC", addYear: Boolean = false):String{
      var isDateOnly = false
      if(typeOfInput==TypesOfInputs.DATE_ONLY){isDateOnly=true}
-     if(languageNames==Vls.Langs.ENGLISH){
-         //   Sat, 05 Jun 2021 06:21:59 GMT
-         var dateStr = (date.toUTCString()).dropLast(18).drop(5)
-         if(dateStr.startsWith("0")) dateStr = dateStr.drop(1)
-         var hours = (date.toUTCString()).dropLast(10).drop(17).toInt()
-         val minutesStr = (date.toUTCString()).dropLast(7).drop(20)
+     val localStr = LocalDateTime.ofInstant(date, ZoneId.of(timeZone))
+     val day = localStr.dayOfMonth()
+     val month = localStr.month()
+     var hours = localStr.hour().toInt()
+     val minutesStr = localStr.minute().toInt().leadingZero()
+     val year = if (addYear) localStr.year().toString() else ""
+
+     if(language==Vls.Langs.ENGLISH){
+//         2023-04-02T00:22:00Z
+         val dateStr = "$day ${month.toString().lowercase().replaceFirstChar { it.titlecase() }} $year".trim()
+
          var ampm = "am"
          if (hours >=12) {
              hours -= 12
@@ -236,38 +247,76 @@ fun daysHoursMinutesDigital(numberOfMilliseconds:Long, typeOfInput: TypesOfInput
          val hoursStr:String = hours.toString()
 
          return if (isDateOnly) dateStr //05 Jun 2021
-         else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30pm
+         else "$dateStr at $hoursStr:$minutesStr $ampm" //13 Dec at 7:30 pm
      }
-     else if(languageNames==Vls.Langs.URDU){
-         val day = date.getUTCDate().toString()
-         val month = date.getUTCMonth()
-         val urduMonth = urduMonthNames[month]
-         val urduDay:String = if (day == "1") "یکم" else day
+     else if(language==Vls.Langs.URDU){
+//         val monthStr = month.displayName(TextStyle.FULL, Locale)
+         val urduMonth = urduMonthNames[month.value().toInt()]
+         val urduDay:String = if (day == 1) "یکم" else day.toString()
 
-         if (isDateOnly) return ("$urduDay $urduMonth")
+         return if (isDateOnly) "$urduDay $urduMonth $year".trim()
          else { //has time too
-             var hours = date.getUTCHours()
-             val minutes = date.getUTCMinutes()
-             val strMinutes:String = if(minutes < 10) "0${minutes}" else minutes.toString()
-
              val ampm = when (hours) {
                  in 4..11 -> "صبح" //4am-11am
                  in 12..14 -> "دوپہر" //12pm-2pm
                  in 15..18 -> "شام" //3pm-6pm
                  else -> "رات" //7pm-3am
              }
-
              if (hours >=12) hours -= 12
              if (hours == 0) hours = 12
 
-             return ("$urduDay $urduMonth $ampm $hours:$strMinutes بجے").trim().trimEnd()
+             "$urduDay $urduMonth $ampm $hours:$minutesStr بجے".trim().trimEnd()
          }
-
      }
-     return ""
+     return "Error"
  }
 
-fun difference(date1:Date,date2:Date):Long { return (date2.getTime()-date1.getTime()).toLong() }
+fun difference(date1:Instant, date2:Instant):Long { return (date2.getMillisLong() - date1.getMillisLong()) }
+
+fun Int.getMilliDays() = Duration.ofDays(this).toMillis().toLong()
+fun Long.getDays() = Duration.ofMillis(this).toDays().toInt()
+
+fun baseStr(baseString: Strings.() -> String): OutputStringsLanguages {
+    val ur = StringsOfLanguages.URDU.baseString()
+    val en = StringsOfLanguages.ENGLISH.baseString()
+    return OutputStringsLanguages(ur, en)
+}
+fun OutputStringsLanguages.add(out: OutputStringsLanguages): OutputStringsLanguages {
+    urduString += out.urduString
+    englishString += out.englishString
+    return this
+}
+fun OutputStringsLanguages.addStr(string: String): OutputStringsLanguages {
+    urduString += string
+    englishString += string
+    return this
+}
+fun OutputStringsLanguages.addStrings(baseString: Strings.() -> String): OutputStringsLanguages {
+    urduString += StringsOfLanguages.URDU.baseString()
+    englishString += StringsOfLanguages.ENGLISH.baseString()
+    return this
+}
+
+fun OutputStringsLanguages.replace(oldUr: String, newUr:String, oldEn: String, newEn: String): OutputStringsLanguages {
+    urduString = urduString.replace(oldUr, newUr)
+    englishString = englishString.replace(oldEn, newEn)
+    return this
+}
+fun OutputStringsLanguages.replaceDT(placeholder: String,
+                                     date: Instant,
+                                     typeOfInput: TypesOfInputs,
+                                     timeZone: String): OutputStringsLanguages {
+    urduString = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
+    englishString = englishString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.ENGLISH, timeZone))
+    return this
+}
+fun OutputStringsLanguages.replaceDur(placeholder: String,
+                                      millis: Long,
+                                      typeOfInput: TypesOfInputs): OutputStringsLanguages {
+    urduString = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
+    englishString = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
+    return this
+}
 
 // VALS TO USE
 object Ids {
@@ -326,17 +375,21 @@ object Ids {
         const val MASLA_TYPE_SELECT = "masla_type_select"
         const val ZAALLA_CHECKBOX = "zaalla_checkbox"
         const val INPUT_TYPE_SELECT = "input_type_select"
+        const val IS_DAYLIGHT_SAVINGS = "is_daylight_savings"
+        const val SELECT_LOCALE = "select_locale"
         const val PREG_END_TIME_INPUT = "preg_end_time_input"
         const val PREG_START_TIME_INPUT = "preg_start_time_input"
         const val MUSTABEEN_CHECKBOX = "mustabeen_checkbox"
         const val AADAT_HAIZ_INPUT = "aadat_haiz_input"
         const val AADAT_TUHR_INPUT = "aadat_tuhr_input"
         const val MAWJOODA_TUHR_INPUT = "mawjooda_tuhr_input"
-        const val MAWJOODA_FASID_CHECKBOX = "mawjooda_fasid_checkbox"
+        const val MAWJOODA_FAASID_CHECKBOX = "mawjooda_faasid_checkbox"
         const val AADAT_NIFAS_INPUT = "aadat_nifas_input"
         const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
+        const val INPUT_ID = "input_id"
+        const val SUBMIT = "submit"
+        const val INPUT_TITLE = "input_title"
         const val INPUT_QUESTION = "input_question"
-        const val INPUT_DESCRIPTION = "input_description"
     }
 }
 
@@ -353,7 +406,8 @@ object CssC {
     const val NIFAS = "nifas"                       // Switch. Put on any input that only shows when Nifas
     const val ZAALLA = "zaalla"                     // Switch. Put on any input that only shows when Zaalla
     const val MUTADA = "mutada"                     // Switch. Put on any input that only shows when NOT Mubtadia
-    const val DATETIME_AADAT = "datetime_aadat"     // Switch. Put on any input that only shows when NOT Duration
+    const val DATE_OR_TIME_AADAT = "datetime_aadat" // Switch. Put on any input that only shows when NOT Duration
+    const val DATETIME_ONLY = "datetime_only"       // Switch. Put on any input that only shows when Datetime
     const val MUSTABEEN = "mustabeen"               // Switch. Between Isqat/Wiladat
     const val NOT_MUSTABEEN = "not-mustabeen"       // Switch. Between Isqat/Wiladat
     const val TITLE_CELL = "title_cell"
@@ -391,6 +445,7 @@ object Vls {                                        // Values
         const val ENGLISH = "english"
         const val URDU = "urdu"
     }
+//    Mutada is spelled Mutadah in data class typesOfMasla
     object Maslas {
         const val MUTADA = "mutada"
         const val NIFAS = "nifas"
@@ -409,12 +464,27 @@ object Vls {                                        // Values
     }
 }
 
-const val MILLISECONDS_IN_A_DAY:Long = 86400000
-const val MILLISECONDS_IN_AN_HOUR = 3600000
-const val MILLISECONDS_IN_A_MINUTE = 60000
+object Rplc {
+    const val DT1 = "date1"
+    const val DT2 = "date2"
+    const val DUR1 = "duration1"
+    const val DUR2 = "duration2"
+    const val DUR3 = "duration3"
+    const val FASID = "فاسد "
+    const val INVALID = "invalid "
 
-val NO_OUTPUT = OutputTexts("","","", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
-val ARBITRARY_DATE = Date(0,0,0)
+    object Msg {
+        const val NOT_BLOOD = "Not Blood"
+        const val PLACEHOLDER = "Placeholder"
+    }
+}
+
+const val MILLISECONDS_IN_A_DAY:Long = 86400000
+//const val MILLISECONDS_IN_AN_HOUR = 3600000
+//const val MILLISECONDS_IN_A_MINUTE = 60000
+
+val NO_OUTPUT = OutputTexts(OutputStringsLanguages(),"", mutableListOf(), EndingOutputValues(null, null, mutableListOf()), mutableListOf())
+val ARBITRARY_DATE = Instant.EPOCH
 val englishMonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 val urduMonthNames = arrayOf("جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائ", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر")
 
@@ -424,7 +494,7 @@ object Events {
 
 object UnicodeChars {
     const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
-    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
+//    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
     const val ORANGE_DIAMOND = "&#x1F538;"           // ORANGE_DIAMOND
     const val SNOWFLAKE = "&#10052;&#65039;"     // SNOWFLAKE
     const val BLACK_SQUARE = "&#9642;"
