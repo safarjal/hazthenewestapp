@@ -4399,10 +4399,9 @@ class LogicTest {
             return durAnswers
         }
         fun getAnswerListFromMyHaydAppString(string: String):List<Duration>{
-//   "H(31, 4, 38) 10B 15T: 10H 15T"
-//    10H 15T
+//            "H(31, 4, 38) 10B 15T: 10H 15T"
+//            10H 15T
             val answerStr = string.substringAfter(": ")
-
             val listOfAnswerStrings = answerStr.split(" ")
             val durationsList = mutableListOf<Duration>()
             for(dur in listOfAnswerStrings){
@@ -4417,11 +4416,10 @@ class LogicTest {
                 durationsList.removeAt(durationsList.lastIndex)
             }
             return durationsList
-
         }
         fun getHabitsListFromMyHaydAppString(string: String):PreMaslaValues{
-//   "H(31, 4, 38) 10B 15T: 10H 15T"
-//    habit of tuhr/haidh/nifas
+//            "H(31, 4, 38) 10B 15T: 10H 15T"
+//            habit of tuhr/haidh/nifas
             val habitsStr = string.substringBefore(")").removePrefix("H(")
             val habitOfTuhr = habitsStr.split(", ")[0].toInt()
             val habitOfHaz = habitsStr.split(", ")[1].toInt()
@@ -4429,10 +4427,9 @@ class LogicTest {
             return PreMaslaValues(habitOfHaz.getMilliDays(), habitOfTuhr.getMilliDays())
         }
         fun getDurationsListFromMyHaydAppString(string: String):List<Duration>{
-//   "H(31, 4, 38) 10B 15T: 10H 15T"
-//   "10B 15T"
+//            "H(31, 4, 38) 10B 15T: 10H 15T"
+//            "10B 15T"
             val durationSequenceStr = string.substringAfter(") ").substringBefore(":")
-
             val listOfDurationStrings = durationSequenceStr.split(" ")
             val durationsList = mutableListOf<Duration>()
             for(dur in listOfDurationStrings){
@@ -4443,9 +4440,61 @@ class LogicTest {
             return durationsList
         }
 
-
-
         val stringOfStrings =
+                "H(25, 3, 4) 6B 15T: 6H 15T\n" +
+                "H(26, 5, 2) 5B 21T 11B 15T 8B 15T: 5H 26T 5H 16T 8H 15T\n" +
+                "H(34, 8, 31) 10B 19T 6B 15T: 10H 19T 6H 15T\n" +
+                "H(26, 3, 37) 3B 22T 10B 6T 3B 15T: 3H 26T 3H 12T 15T\n" +
+//                "H(28, 4, 35) 6B 5T 20B 17T 12B 16T 3B 15T 15B 15T: 4H 44T 4H 24T 3H 15T 3H 12T 15T\n" +
+                "H(20, 8, 7) 5B 17T 9B 23T 13B 8T 10B 11T 4B 15T: 5H 17T 9H 23T 3H 23T 3H 17T 15T\n" +
+                "H(25, 4, 37) 4B 20T 8B 15T 9B 22T 6B 17T 16B 15T: 4H 20T 8H 15T 9H 22T 6H 22T 6H 5T 15T\n" +
+//                "H(28, 7, 29) 7B 14T 4B 15T 8B 15T: 7H 33T 8H 15T\n" +
+//                "H(35, 7, 31) 19B 16T 9B 1T 7B 15T: 7H 35T 7H 3T 15T\n" +
+                "H(16, 8, 36) 8B 16T 3B 15T: 8H 16T 3H 15T\n" +
+                "H(30, 9, 10) 4B 15T: 4H 15T\n" +
+                "H(24, 5, 6) 4B 15T: 4H 15T\n" +
+                "H(15, 5, 4) 4B 24T 3B 18T 3B 15T: 4H 24T 3H 18T 3H 15T\n" +
+                "H(21, 10, 21) 9B 18T 18B 17T 10B 15T 16B 15T 6B 15T: 9H 21T 9H 23T 10H 21T 10H 15T 6H 15T\n" +
+                "H(22, 3, 10) 3B 15T: 3H 15T\n" +
+                "H(25, 5, 7) 3B 16T 9B 23T 5B 25T 18B 15T: 3H 16T 9H 23T 5H 25T 3H 15T 15T\n" +
+//                "H(24, 6, 24) 9B 12T 8B 34T 4B 25T 12B 15T: 6H 57T 4H 25T 3H 9T 15T\n" +
+//                "H(30, 9, 12) 2B 15T: 2B 15T\n" +
+                "H(21, 3, 28) 5B 15T: 5H 15T\n" +
+                "H(35, 10, 11) 2B 17T 5B 1T 4B 21T 18B 24T 17B 15T: 19T 10H 35T 4H 35T 4H 2T 15T\n" +
+//                "H(32, 4, 27) 14B 15T: 4H 10T 15T\n" +
+//                "H(16, 5, 6) 5B 8T 10B 15T: 5H 18T 15T\n" +
+                "H(26, 7, 28) 10B 29T 8B 19T 2B 24T 10B 15T: 10H 29T 8H 45T 10H 15T\n" +
+                "H(28, 3, 36) 8B 25T 5B 24T 6B 22T 5B 25T 8B 15T: 8H 25T 5H 24T 6H 22T 5H 25T 8H 15T\n" +
+                "H(20, 6, 21) 6B 18T 20B 27T 8B 18T 11B 35T 9B 15T: 6H 20T 6H 39T 8H 20T 8H 36T 9H 15T\n" +
+//                "H(20, 6, 26) 2B 12T 5B 22T 17B 23T 8B 15T: 6H 35T 6H 34T 8H 15T\n" +
+                "H(23, 3, 4) 8B 15T: 8H 15T\n" +
+                "H(29, 10, 16) 9B 15T: 9H 15T\n" +
+                "H(16, 3, 7) 6B 15T: 6H 15T\n" +
+                "H(16, 6, 19) 4B 3T 3B 19T 15B 15T: 10H 19T 7H 8T 15T\n" +
+//                "H(17, 5, 9) 13B 15T: 5H 8T 15T\n" +
+                "H(34, 3, 15) 5B 22T 4B 20T 3B 19T 3B 15T: 5H 22T 4H 20T 3H 19T 3H 15T\n" +
+//                "H(31, 7, 14) 3B 12T 5B 23T 4B 15T: 7H 36T 4H 15T\n" +
+                "H(17, 3, 39) 1B 21T 8B 23T 10B 15T: 22T 8H 23T 10H 15T\n" +
+//                "H(35, 8, 16) 3B 7T 10B 23T 9B 15T: 8H 35T 9H 15T\n" +
+//                "H(33, 4, 28) 11B 28T 14B 23T 6B 22T 4B 7T 6B 15T: 4H 35T 4H 33T 6H 33T 6H 15T\n" +
+                "H(33, 3, 22) 10B 35T 7B 15T: 10H 35T 7H 15T\n" +
+                "H(27, 3, 9) 4B 16T 9B 10T 5B 23T 5B 15T: 4H 27T 4H 32T 5H 15T\n" +
+                "H(35, 9, 36) 10B 15T: 10H 15T\n" +
+//                "H(15, 10, 11) 4B 4T 16B 18T 5B 4T 4B 15T: 10H 32T 10H 3T 15T\n" +
+                "H(27, 8, 35) 6B 15T: 6H 15T\n" +
+                "H(34, 6, 26) 10B 19T 9B 7T 9B 15T: 10H 34T 10H 15T\n" +
+//                "H(34, 5, 0) 10B 7T 8B 16T 20B 24T 7B 15T: 5H 36T 3H 41T 7H 15T\n" +
+//                "H(28, 5, 11) 12B 21T 5B 4T 6B 15T: 5H 28T 5H 10T 15T\n" +
+//                "H(27, 5, 40) 7B 10T 14B 23T 5B 15T 1B 15T: 5H 49T 5H 16T 15T\n" +
+                "H(17, 3, 15) 10B 19T 4B 18T 6B 11T 4B 15T: 10H 19T 4H 19T 4H 16T 15T\n" +
+                "H(25, 4, 2) 3B 15T 5B 16T 6B 21T 6B 17T 3B 15T: 3H 15T 5H 16T 6H 21T 6H 17T 3H 15T\n" +
+                "H(27, 5, 34) 9B 23T 8B 13T 9B 32T 3B 15T: 9H 27T 9H 49T 3H 15T\n" +
+                "H(31, 3, 33) 6B 23T 9B 2T 5B 15T 9B 8T 8B 15T: 6H 31T 6H 31T 6H 5T 15T\n" +
+                "H(30, 3, 18) 8B 15T: 8H 15T\n" +
+//                "H(31, 10, 37) 11B 23T 11B 29T 8B 24T 6B 2T 3B 15T: 10H 31T 4H 29T 8H 29T 6H 15T\n" +
+//                "H(23, 7, 4) 11B 7T 8B 22T 3B 15T: 7H 41T 3H 15T\n" +
+//                "H(32, 10, 21) 19B 15T: 10H 9T 15T\n" +
+//                "H(29, 8, 15) 19B 18T 7B 16T 3B 15T: 8H 29T 7H 16T 3H 15T\n" +
                 "H(31, 4, 38) 10B 15T: 10H 15T\n" +
                 "H(17, 6, 3) 7B 15T: 7H 15T\n" +
                 "H(25, 3, 5) 6B 15T: 6H 15T\n" +
@@ -4486,7 +4535,7 @@ class LogicTest {
             assertEquals(theirAnswer.size, ourAnswer.size)
             for(i in theirAnswer.indices){
                 assertEquals(theirAnswer[i].type, ourAnswer[i].type)
-                assertEquals(theirAnswer[i].timeInMilliseconds, ourAnswer[i].timeInMilliseconds)
+                assertEquals(theirAnswer[i].days, ourAnswer[i].days)
             }
         }
     }
