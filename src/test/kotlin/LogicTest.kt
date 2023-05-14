@@ -2,7 +2,6 @@
 //
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
-import kotlin.js.Date
 import kotlin.test.Test
 import kotlin.test.assertEquals
 /* TODO: INSTANT TAKES MONTH PROPERLY, JAN = 1, NONE OF THIS JSDATE PROBLEM.
