@@ -71,7 +71,7 @@ fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadat
     //this returns an array conating all the possibilities we want to plug in and try
     val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
     val aadatHaizList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
-    if(aadatHaz != ""){
+    if(aadatHaz.isNotEmpty()){
         val (haizStart, haizEnd) = parseRange(aadatHaz)
         if(haizStart!=null && haizEnd!=null){
             for (i in haizStart .. haizEnd){
@@ -82,7 +82,7 @@ fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadat
         aadatHaizList += -1
     }
     val aadatTuhrList = mutableListOf<Int>()
-    if(aadatTuhr!=""){
+    if(aadatTuhr.isNotEmpty()){
         val tuhrStart = parseRange(aadatTuhr)[0]
         val tuhrEnd = parseRange(aadatTuhr)[1]
         if(tuhrStart!=null && tuhrEnd!=null){
@@ -95,7 +95,7 @@ fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadat
     }
 
     val aadatNifasList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
-    if(aadatNifas!=""){//nifas aadat isn't blank
+    if(aadatNifas.isNotEmpty()){//nifas aadat isn't blank
         val nifasStart = parseRange(aadatNifas)[0] //parse range function splits it and returns the 2 values on either end of the dash
         val nifasEnd = parseRange(aadatNifas)[1]
         if(nifasStart!=null && nifasEnd!=null){
@@ -475,11 +475,11 @@ fun drawCompareTable(
         // Month Row
         oneRow(true, "", false) {
             for (header in headerList) {
-                val headerDate = LocalDateTime.from(header)
+                val headerDate = LocalDateTime.ofInstant(header)
                 val date = headerDate.dayOfMonth()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {
-                        makeSpans(englishMonthNames[headerDate.monthValue().toInt()], urduMonthNames[headerDate.monthValue().toInt()])
+                        makeSpans(englishMonthNames[headerDate.monthValue().toInt()-1], urduMonthNames[headerDate.monthValue().toInt()-1])
                     }
                 }
             }
@@ -489,7 +489,7 @@ fun drawCompareTable(
         oneRow(true, "", false) {
             for (i in headerList.indices) {
                 val header = headerList[i]
-                val date = LocalDateTime.from(header).dayOfMonth().toString()
+                val date = LocalDateTime.ofInstant(header).dayOfMonth().toString()
 
                 div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     +date
