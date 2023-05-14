@@ -3,7 +3,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 fun convertHazDatesListToDurations(hazDatesList: List<Entry>):List<Duration>{
-    var durAnswers = listOf<Duration>()
+    val durAnswers = mutableListOf<Duration>()
     var time = Instant.EPOCH.getMillisLong()
     for(hazDates in hazDatesList){
         val tuhrTime = hazDates.startTime.getMillisLong()-time
@@ -29,10 +29,10 @@ fun getAnswerListFromMyHaydAppString(string: String):List<Duration>{
         durationsList += Duration(durType, durLength.getMilliDays())
     }
     if(durationsList.last().type==DurationType.TUHR){
-        durationsList.removeAt(durationsList.lastIndex)
+        durationsList.removeLast()  //.removeAt(durationsList.lastIndex)
     }
     if(durationsList.last().type==DurationType.TUHR){
-        durationsList.removeAt(durationsList.lastIndex)
+        durationsList.removeLast() //.removeAt(durationsList.lastIndex)
     }
     return durationsList
 
