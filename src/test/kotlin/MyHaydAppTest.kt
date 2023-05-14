@@ -40,10 +40,10 @@ fun getAnswerListFromMyHaydAppString(string: String):List<Duration>{
 fun getHabitsListFromMyHaydAppString(string: String):PreMaslaValues{
 //   "H(31, 4, 38) 10B 15T: 10H 15T"
 //    habit of tuhr/haidh/nifas
-    val habitsStr = string.substringBefore(")").removePrefix("H(")
-    val habitOfTuhr = habitsStr.split(", ")[0].toInt()
-    val habitOfHaz = habitsStr.split(", ")[1].toInt()
-    val habitOfNifas = habitsStr.split(", ")[2].toInt()
+    val habitsStr = string.substringBefore(")").removePrefix("H(").split(", ")
+    val habitOfTuhr = habitsStr[0].toInt()
+    val habitOfHaz = habitsStr[1].toInt()
+    val habitOfNifas = habitsStr[2].toInt() // Todo: Using this?
     return PreMaslaValues(habitOfHaz.getMilliDays(), habitOfTuhr.getMilliDays())
 }
 fun getDurationsListFromMyHaydAppString(string: String):List<Duration>{
@@ -60,66 +60,6 @@ fun getDurationsListFromMyHaydAppString(string: String):List<Duration>{
     }
     return durationsList
 }
-
-//fun convertHazDatesListToDurations(hazDatesList: List<Entry>):List<Duration>{
-//    val durAnswers = mutableListOf<Duration>()
-//    var time = Instant.EPOCH.getMillisLong()
-//
-//    for(hazDates in hazDatesList){
-//        val tuhrTime = hazDates.startTime.getMillisLong() - time
-//        if(tuhrTime!=0L){
-//            durAnswers+=Duration(DurationType.TUHR, tuhrTime)
-//        }
-//        val hazTime = hazDates.endTime.getMillisLong()-hazDates.startTime.getMillisLong()
-//        durAnswers += Duration(DurationType.HAIZ, hazTime)
-//        time = hazDates.endTime.getMillisLong()
-//    }
-//    return durAnswers
-//}
-//fun getAnswerListFromMyHaydAppString(string: String):List<Duration>{
-////   "H(31, 4, 38) 10B 15T: 10H 15T"
-////    10H 15T
-//    val answerStr = string.substringAfter(": ")
-//
-//    val listOfAnswerStrings = answerStr.split(" ")
-//    val durationsList = mutableListOf<Duration>()
-//    for(dur in listOfAnswerStrings){
-//        val durLength = dur.removeSuffix("H").removeSuffix("T").toInt()
-//        val durType = if(dur.endsWith("H")) {DurationType.HAIZ} else { DurationType.TUHR}
-//        durationsList += Duration(durType, durLength.getMilliDays())
-//    }
-//    if(durationsList.last().type==DurationType.TUHR){
-//        durationsList.removeLast()  //.removeAt(durationsList.lastIndex)
-//    }
-//    if(durationsList.last().type==DurationType.TUHR){
-//        durationsList.removeLast() //.removeAt(durationsList.lastIndex)
-//    }
-//    return durationsList
-//
-//}
-//fun getHabitsListFromMyHaydAppString(string: String):PreMaslaValues{
-////   "H(31, 4, 38) 10B 15T: 10H 15T"
-////    habit of tuhr/haidh/nifas
-//    val habitsStr = string.substringBefore(")").removePrefix("H(").split(", ")
-//    val habitOfTuhr = habitsStr[0].toInt()
-//    val habitOfHaz = habitsStr[1].toInt()
-//    val habitOfNifas = habitsStr[2].toInt()
-//    return PreMaslaValues(habitOfHaz.getMilliDays(), habitOfTuhr.getMilliDays())
-//}
-//fun getDurationsListFromMyHaydAppString(string: String):List<Duration>{
-////   "H(31, 4, 38) 10B 15T: 10H 15T"
-////   "10B 15T"
-//    val durationSequenceStr = string.substringAfter(") ").substringBefore(":")
-//
-//    val listOfDurationStrings = durationSequenceStr.split(" ")
-//    val durationsList = mutableListOf<Duration>()
-//    for(dur in listOfDurationStrings){
-//        val durLength = dur.removeSuffix("B").removeSuffix("T").toInt()
-//        val durType = if(dur.endsWith("B")) {DurationType.DAM} else { DurationType.TUHR}
-//        durationsList += Duration(durType, durLength.getMilliDays())
-//    }
-//    return durationsList
-//}
 
 fun compareStrings(string: String): Array<List<Duration>> {
     val durations = getDurationsListFromMyHaydAppString(string)
