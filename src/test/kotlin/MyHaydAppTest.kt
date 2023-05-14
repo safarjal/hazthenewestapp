@@ -164,12 +164,11 @@ class MyHadhAppTest {
         var i = 0
         for(string in stringsArray){
             i++
-            println("Line number $i \n")
             val (theirAnswer, ourAnswer) = compareStrings(string)
-            assertEquals(theirAnswer.size, ourAnswer.size)
+            assertEquals(theirAnswer.size, ourAnswer.size, message = "Size Different: $i: $string")
             for(i in theirAnswer.indices){
-                assertEquals(theirAnswer[i].type, ourAnswer[i].type)
-                assertEquals(theirAnswer[i].timeInMilliseconds, ourAnswer[i].timeInMilliseconds)
+                assertEquals(theirAnswer[i].type, ourAnswer[i].type, message = "Type Different: $i: $string")
+                assertEquals(theirAnswer[i].timeInMilliseconds, ourAnswer[i].timeInMilliseconds, message = "Time Different: $i: $string")
             }
         }
     }
