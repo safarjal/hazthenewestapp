@@ -639,7 +639,8 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         newStr.add(
             baseStr(Strings::durationTuhreFasidWithAddition)
             .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput)
-            .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
+            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput)
+            .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput)
         )
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
