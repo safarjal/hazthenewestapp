@@ -7,7 +7,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.internal.JSJoda.Instant
-import kotlinx.datetime.internal.JSJoda.LocalDateTime
+import kotlinx.datetime.internal.JSJoda.LocalDate
 import kotlinx.html.*
 import kotlinx.html.js.*
 import org.w3c.dom.*
@@ -137,8 +137,6 @@ fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadat
                 }
             }
         }
-
-
     }
     if(!aadatNifas.contains(('-')) && aadatNifas != ""){//if nifas aadat doen't have -, then just enter that one habit
         aadatNifasList+= aadatNifas.toInt()
@@ -242,6 +240,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 timezone
                 )
         }
+
         if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value, aadatNifas.value)
@@ -475,7 +474,7 @@ fun drawCompareTable(
         // Month Row
         oneRow(true, "", false) {
             for (header in headerList) {
-                val headerDate = LocalDateTime.ofInstant(header)
+                val headerDate = LocalDate.ofInstant(header)
                 val date = headerDate.dayOfMonth()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {
@@ -489,7 +488,7 @@ fun drawCompareTable(
         oneRow(true, "", false) {
             for (i in headerList.indices) {
                 val header = headerList[i]
-                val date = LocalDateTime.ofInstant(header).dayOfMonth().toString()
+                val date = LocalDate.ofInstant(header).dayOfMonth().toString()
 
                 div(classes = "${CssC.DATES_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     +date
