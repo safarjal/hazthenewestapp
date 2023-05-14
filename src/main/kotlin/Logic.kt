@@ -1047,7 +1047,7 @@ fun dealWithIstihazaAfter(istihazaAfter: Long,
         }
 
     }else if(istihazaAfter==0L){
-        println("Shouldn't happen")
+        "Placeholder"
     }else{
 
         //else add istihazaAfter to next Tuhr, mark it as fasid
