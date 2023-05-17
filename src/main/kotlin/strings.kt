@@ -263,7 +263,7 @@ object StringsOfLanguages{
 
 var dtStrings = arrayOf (
     TzInfo("(GMT-08:00) US & Canada","America/Los_Angeles"),
-    TzInfo("(GMT+00:00) Europe","Etc/Greenwich"),
+    TzInfo("(GMT+00:00) Europe","Europe/London"),
     TzInfo("(GMT+10:00) Australia","Australia/Canberra"),
 )
 
