@@ -37,8 +37,13 @@ fun main() {
     }
 }
 
+private fun askUsername():Boolean {
+    val userName = window.prompt("Please write your username")
+    for savedUserName in userpassstrings.
+}
+
 private fun askPassword(): Boolean {
-    val pass1 = "786"
+    val pass1 = "24434"
     val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
             "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
