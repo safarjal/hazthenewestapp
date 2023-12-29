@@ -3,17 +3,26 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.js.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.date.*
-import kotlinx.serialization.json.*
+import kotlinx.coroutines.await
+import kotlinx.serialization.decodeFromString
 import org.w3c.dom.HTMLElement
+import org.w3c.fetch.INCLUDE
+import org.w3c.fetch.RequestCredentials
 import kotlin.js.Json
 import kotlin.random.Random
 
-//val hazappBackend = "http://localhost:3000/maslas/"
-const val hazappBackend = "http://170.64.146.104/maslas/"
+//val HAZAPP_BACKEND = Url("http://localhost:3000/maslas/")
+val HAZAPP_BACKEND = Url("http://170.64.146.104/maslas/")
+
+val client by lazy {
+    HttpClient(Js) {
+        install(ContentNegotiation) { json() }
+    }
+}
+
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
     with(inputsContainer) {
         val entries = haizInputDatesRows.map { row ->
@@ -51,14 +60,11 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
         return sendData(toSend)
     }
 }
+
 suspend fun sendData(toSend: SaveData): Json {
-    val client = HttpClient(Js) {
-        install(ContentNegotiation) { json(Json) }
-    }
-    val response: HttpResponse = client.post(hazappBackend) {
-        headers {
-            append(HttpHeaders.AccessControlAllowOrigin, "*")
-        }
+    val response = client.post(HAZAPP_BACKEND) {
+        // I don't think this header makes sense as a request header
+        //headers { append(HttpHeaders.AccessControlAllowOrigin, "*") }
         contentType(ContentType.Application.Json)
         setBody(toSend)
     }
@@ -66,14 +72,23 @@ suspend fun sendData(toSend: SaveData): Json {
     return JSON.parse(response.body())
 }
 
+// TODO: Replace return type by response body JSON representing class
+suspend inline fun sendDataWithFetch(toSend: SaveData): Unit {
+    val response = fetch(
+        HAZAPP_BACKEND,
+        HttpMethod.Post,
+        toSend,
+        // I don't think this header makes sense as a request header
+        //Headers.build { append(HttpHeaders.AccessControlAllowOrigin, "*") },
+        credentials = RequestCredentials.INCLUDE,
+    )
+    return kotlinx.serialization.json.Json.decodeFromString(response.text().await())
+}
+
 suspend fun loadData(id: String): Json {
-    val client = HttpClient(Js) {
-        install(ContentNegotiation) { json(Json) }
-    }
-    val response: HttpResponse = client.get(hazappBackend) {
-        headers {
-            append(HttpHeaders.AccessControlAllowOrigin, "*")
-        }
+    val response = client.get(HAZAPP_BACKEND) {
+        // I don't think this header makes sense as a request header
+        //headers { append(HttpHeaders.AccessControlAllowOrigin, "*") }
         contentType(ContentType.Application.Json)
         setBody(id)
     }

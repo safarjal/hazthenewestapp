@@ -7,6 +7,8 @@ import kotlinx.html.dom.createTree
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 
+fun <T> buildJsObject(block: T.() -> Unit): T = (js("{}") as T).apply(block)
+
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
 
