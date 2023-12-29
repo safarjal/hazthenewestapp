@@ -41,7 +41,7 @@ fun Node.loginPage() {
                                 val username = findInputContainer(it).username
                                 val password = findInputContainer(it).password
                                 console.log(username, password)
-                                var response: Pair<HttpStatusCode, Json> =
+                                var response: Pair<HttpStatusCode, Unit> =
                                     Pair(HttpStatusCode.NoContent, JSON.parse("null"))
 //                                var response: Headers
                                 GlobalScope.launch { response = login(username, password) }.invokeOnCompletion {
