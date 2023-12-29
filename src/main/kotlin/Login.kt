@@ -41,12 +41,12 @@ fun Node.loginPage() {
                                 val username = findInputContainer(it).username
                                 val password = findInputContainer(it).password
                                 console.log(username, password)
-                                var response: Pair<HttpStatusCode, Unit> =
-                                    Pair(HttpStatusCode.NoContent, JSON.parse("null"))
+                                var response: Pair<Short, String> =
+                                    Pair(0, JSON.parse("null"))
 //                                var response: Headers
                                 GlobalScope.launch { response = login(username, password) }.invokeOnCompletion {
-                                    console.log("yes", response.first.value == HttpStatusCode.OK.value)
-                                    if (response.first.value == 200) {
+                                    console.log("yes", response.first == HttpStatusCode.OK.value.toShort())
+                                    if (response.first == 200.toShort()) {
                                         kotlinx.browser.sessionStorage.setItem("loggedIn", true.toString())
                                         rootHazapp.first().innerHTML = ""
                                         hazappPage()

@@ -1,16 +1,11 @@
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.js.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.cookies.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.date.*
 import kotlinx.coroutines.await
 import kotlinx.serialization.decodeFromString
 import org.w3c.dom.HTMLElement
@@ -18,34 +13,52 @@ import org.w3c.fetch.INCLUDE
 import org.w3c.fetch.RequestCredentials
 import kotlin.js.Json
 
-//const val hazappBackend = "http://localhost:3000"
-//const val hazappBackend = "http://170.64.146.104/maslas"
-
 val HAZAPP_BACKEND = Url("http://localhost:3000/")
-//val HAZAPP_BACKEND = Url("http://170.64.146.104/maslas/")
+//val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk/")
 
-val BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNzAzODgzNDg2LCJleHAiOjE3MDUxNzk0ODYsImp0aSI6IjZkMTM5MGQxLWMwZGItNDQ3MC05Y2JiLWI4ZDY2ZDdhM2JjMyJ9.85ZI2sCQz70v6M28uCQ9q4GZWEhtZvuQgX3It0NHY4c"
+const val BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNzAzODgzNDg2LCJleHAiOjE3MDUxNzk0ODYsImp0aSI6IjZkMTM5MGQxLWMwZGItNDQ3MC05Y2JiLWI4ZDY2ZDdhM2JjMyJ9.85ZI2sCQz70v6M28uCQ9q4GZWEhtZvuQgX3It0NHY4c"
 
 val client by lazy {
     HttpClient(Js) {
         install(ContentNegotiation) { json() }
     }
 }
-
-val bearerTokenStorage = mutableListOf<BearerTokens>()
-suspend fun login(username: String, password: String): Pair<HttpStatusCode, Unit> {
-    val userData = User(user = UserData(username = username, password = password))
-
-    val response: HttpResponse = client.post("$HAZAPP_BACKEND/users/sign_in") {
-        contentType(ContentType.Application.Json)
-        setBody(userData)
+private fun org.w3c.fetch.Headers.mapToKtor(): Headers = buildHeaders {
+    this@mapToKtor.asDynamic().forEach { value: String, key: String ->
+        append(key, value)
     }
 
-    console.log(response.headers["Authorization"])
-    console.log(response.headers.authorization)
-    console.log(response.headers.toString())
+    Unit
+}
+suspend fun login(username: String, password: String): Pair<Short, String> {
+    val userData = User(user = UserData(username = username, password = password))
 
-    return Pair(response.status, response.body())
+    val response = fetch(
+        Url("$HAZAPP_BACKEND/users/sign_in"),
+        HttpMethod.Post,
+        userData,
+        // I don't think this header makes sense as a request header
+        //Headers.build { append(HttpHeaders.AccessControlAllowOrigin, "*") },
+//        credentials = RequestCredentials.INCLUDE,
+    )
+//    return kotlinx.serialization.json.Json.decodeFromString(response.text().await())
+//
+//    val response: HttpResponse = client.post("$HAZAPP_BACKEND/users/sign_in") {
+//        contentType(ContentType.Application.Json)
+//        setBody(userData)
+//    }
+
+//    console.log(response.headers["Authorization"])
+//    console.log(response.headers.authorization)
+    val headers = response.headers.mapToKtor()
+    console.log(headers)
+    console.log(headers.toString())
+    console.log(headers.get("authorization"))
+//    console.log(headers.authorization)
+    console.log(headers.get("Authorization"))
+//    console.log(response.headers.authorization)
+
+    return Pair(response.status, response.text().await())
 }
 
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
