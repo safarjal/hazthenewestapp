@@ -1,3 +1,4 @@
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.dom.append
@@ -69,7 +70,11 @@ private fun FlowContent.ikhtilafiMasle() {
                 span(classes = CssC.URDU) { StringsOfLanguages.URDU.ikhtilafimasail }
             }
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF2, Strings::aadatIncreasingAtEndOfDaurIkhtilaf, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(
+                Ids.Ikhtilafat.IKHTILAF2,
+                Strings::aadatIncreasingAtEndOfDaurIkhtilaf,
+                extraClasses = CssC.DEV
+            )
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3, Strings::ayyameqabliyyaikhtilaf, extraClasses = CssC.DEV)
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4, Strings::mubtadiaikhitilaf, extraClasses = CssC.DEV)
         }
@@ -170,7 +175,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 
     // Pregnancy Mustabeen ul Khilqa?
-    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}"){
+    div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS}") {
         div {
             makeLabel(Ids.Inputs.MUSTABEEN_CHECKBOX, Strings::mustabeenUlKhilqa)
             checkBoxInput {
@@ -204,21 +209,33 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     // Aadat of Tuhr
     div(classes = "${CssC.ROW} ${CssC.MUTADA}") {
         makeLabel(Ids.Inputs.AADAT_TUHR_INPUT, Strings::tuhrAadat)
-        makeNumberInput(Ids.Inputs.AADAT_TUHR_INPUT, inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(), (15..6 * 30)) {
+        makeNumberInput(
+            Ids.Inputs.AADAT_TUHR_INPUT,
+            inputContainerToCopyFrom?.aadatTuhr?.value.orEmpty(),
+            (15..6 * 30)
+        ) {
             onChangeFunction = { event -> onlyTwo(event) }
         }
     }
     // Zaalla Cycle Length
     div(classes = "${CssC.ROW} ${CssC.ZAALLA} ${CssC.INVIS}") {
         makeLabel(Ids.Inputs.ZAALLA_CYCLE_LENGTH, Strings::zaallaCycleLength, "Cycle Length")
-        makeNumberInput(Ids.Inputs.ZAALLA_CYCLE_LENGTH, inputContainerToCopyFrom?.cycleLength?.value.orEmpty(), (18..6 * 30 + 10)) {
+        makeNumberInput(
+            Ids.Inputs.ZAALLA_CYCLE_LENGTH,
+            inputContainerToCopyFrom?.cycleLength?.value.orEmpty(),
+            (18..6 * 30 + 10)
+        ) {
             onChangeFunction = { event -> onlyTwo(event) }
         }
     }
     // Mawjooda Tuhr
     div(classes = "${CssC.ROW} ${CssC.DATE_OR_TIME_AADAT}") {
         makeLabel(Ids.Inputs.MAWJOODA_TUHR_INPUT, Strings::mawjoodahTuhr)
-        makeNumberInput(Ids.Inputs.MAWJOODA_TUHR_INPUT, inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(), (15..10000))
+        makeNumberInput(
+            Ids.Inputs.MAWJOODA_TUHR_INPUT,
+            inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(),
+            (15..10000)
+        )
         // Fasid?
         div {
             makeLabel(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX, Strings::faasid)
@@ -231,33 +248,47 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTMLElement?) {
-//    details {
-//        summary { makeSpans( Strings::loadMaslaFromID) }
-//        div(classes = CssC.ROW) {
-//            input {
-//                id = Ids.Inputs.INPUT_ID
-//                name = Ids.Inputs.INPUT_ID
-//                value = inputContainerToCopyFrom?.titleID.orEmpty()
-//            }
-//            button {
-//                id = Ids.Inputs.SUBMIT
-//                name = Ids.Inputs.SUBMIT
-//                value = "Submit"
-//                onClickFunction = { event ->
-//                    val id = findInputContainer(event).titleID
-//                    var response: Json = json(Pair("id", null))
-//                    val job = GlobalScope.launch { response = loadData(id) }
-//                }
-//            }
-//        }
-//    }
-    details(classes = CssC.DEV) {
-        summary { makeSpans( Strings::titleTextFieldLabel) }
-        div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_TITLE, "36px") }
+    details {
+        summary { makeSpans(Strings::loadMaslaFromID) }
+        div(classes = CssC.ROW) {
+            input {
+                id = Ids.Inputs.INPUT_ID
+                name = Ids.Inputs.INPUT_ID
+                value = inputContainerToCopyFrom?.inputID.orEmpty()
+            }
+            button {
+                id = Ids.Inputs.SUBMIT
+                name = Ids.Inputs.SUBMIT
+                +"Submit"
+                onClickFunction = { event ->
+                    println("--------------------------------")
+                    val id = findInputContainer(event).inputID
+                    console.log(id)
+                    var response: Json = json(Pair("id", id))
+                    GlobalScope.launch { response = loadData(id) }.invokeOnCompletion {
+                        console.log({ response })
+                    }
+                }
+            }
+        }
+    }
+
+    details {
+        summary {
+            makeSpans(Strings::titleTextFieldLabel)
+        }
+        div(classes = CssC.ROW) {
+            input {
+                id = Ids.Inputs.INPUT_TITLE
+                name = Ids.Inputs.INPUT_TITLE
+                value = inputContainerToCopyFrom?.titleText.orEmpty()
+            }
+        }
     }
     details {
-        summary { makeSpans( Strings::questionTextFieldLabel) }
+        summary { makeSpans(Strings::questionTextFieldLabel) }
         div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_QUESTION) }
     }
 }
@@ -266,11 +297,11 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
     val isDuration = inputContainerToCopyFrom?.isDuration ?: false
     table {
         id = Ids.InputTables.HAIZ_INPUT_TABLE
-        classes = setOf( if (isDuration) CssC.INVIS else "" )
+        classes = setOf(if (isDuration) CssC.INVIS else "")
         thead {
             tr {
-                th { makeSpans( Strings::startTime) }
-                th { makeSpans( Strings::endTime) }
+                th { makeSpans(Strings::startTime) }
+                th { makeSpans(Strings::endTime) }
                 th { addBeforeButton() }
             }
         }
@@ -282,11 +313,11 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
     val isDuration = inputContainerToCopyFrom?.isDuration ?: false
     table {
         id = Ids.InputTables.HAIZ_DURATION_INPUT_TABLE
-        classes = setOf( if (!isDuration) CssC.INVIS else "" )
+        classes = setOf(if (!isDuration) CssC.INVIS else "")
         thead {
             tr {
-                th { makeSpans( Strings::duration) }
-                th { makeSpans( Strings::damOrTuhr) }
+                th { makeSpans(Strings::duration) }
+                th { makeSpans(Strings::damOrTuhr) }
                 th { addBeforeButton(true) }
             }
         }

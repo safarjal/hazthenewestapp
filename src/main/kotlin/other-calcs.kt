@@ -30,11 +30,9 @@ fun addCalcsGetDuration(){
     val endDate = addCalcsEndDate.value.instant()
     var strUrdu = ""
     var strEnglish = ""
-    val typesOfInputs:TypesOfInputs
-    if(isDateOnly){typesOfInputs=TypesOfInputs.DATE_ONLY}
-    else{typesOfInputs=TypesOfInputs.DATE_AND_TIME}
+    val typesOfInputs:TypesOfInputs = if(isDateOnly) TypesOfInputs.DATE_ONLY else TypesOfInputs.DATE_AND_TIME
 
-    if(startDate != null && endDate != null && startDate.isBefore(endDate)){
+    if(startDate.isBefore(endDate)){
         val result = (endDate.getMillisLong()-startDate.getMillisLong())
         strUrdu = daysHoursMinutesDigital(result, typesOfInputs, Vls.Langs.URDU)
         strEnglish = daysHoursMinutesDigital(result, typesOfInputs, Vls.Langs.ENGLISH)
@@ -77,7 +75,7 @@ fun addCalcsAddTimeToDate() {
         val duration = parseDays(addCalcsDurationToAdd.value)
         var strResultUrdu = ""
         var strResultEnglish = ""
-        if (duration != null && date != null) {
+        if (duration != null) {
             val result = addTimeToDate(date, duration)
             strResultEnglish = languagedDateFormat(result, typesOfInputs, Vls.Langs.ENGLISH, "UTC")
             strResultUrdu = languagedDateFormat(result, typesOfInputs, Vls.Langs.URDU, "UTC")
@@ -115,10 +113,8 @@ fun getDurationButtonClick(){
 }
 
 fun addTimeToDateButtonClick(){
-    if(addCalcsDurationToAdd != null && addCalcsDateToAddTo.valueAsNumber != null){
-        val result = addTimeToDate(addCalcsDateToAddTo.value.instant(), parseDays(addCalcsDurationToAdd.value)!!)
-        addCalcsDateToAddTo.value=result.toDateInputString(addCalcsIsDateOnlyAddTimeToDate.checked)
-        addCalcsDurationToAdd.value=""
-        addCalcsAddTimeToDate()
-    }
+    val result = addTimeToDate(addCalcsDateToAddTo.value.instant(), parseDays(addCalcsDurationToAdd.value)!!)
+    addCalcsDateToAddTo.value=result.toDateInputString(addCalcsIsDateOnlyAddTimeToDate.checked)
+    addCalcsDurationToAdd.value=""
+    addCalcsAddTimeToDate()
 }

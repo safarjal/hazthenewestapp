@@ -1798,9 +1798,9 @@ fun futureDatesOfInterest(fixedDurations: MutableList<FixedDuration>,
                 }
                 val endofHaiz = addTimeToDate(startOfAadat, fixedDurations.last().biggerThanTen!!.haiz)
                 futureDatesList+= FutureDateType(endofHaiz, TypesOfFutureDates.END_OF_AADAT_HAIZ)
-                val icForbiddenDate = endofHaiz
+                val isForbiddenDate = endofHaiz
                 if(typesOfMasla!=TypesOfMasla.MUBTADIA) {
-                    futureDatesList += FutureDateType(icForbiddenDate, TypesOfFutureDates.IC_FORBIDDEN_DATE)
+                    futureDatesList += FutureDateType(isForbiddenDate, TypesOfFutureDates.IC_FORBIDDEN_DATE)
                 }
                 val ihtiyatiGhuslDate = endofHaiz
                 futureDatesList+=FutureDateType(ihtiyatiGhuslDate, TypesOfFutureDates.IHTIYATI_GHUSL)

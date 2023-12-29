@@ -126,10 +126,12 @@ data class AllTheInputs(
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language: String = Vls.Langs.URDU,
-    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(true,
-        false,
-        false,
-        false),
+    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(
+        ghairMustabeenIkhtilaaf = true,
+        daurHaizIkhtilaf = false,
+        ayyameQabliyyaIkhtilaf = false,
+        mubtadiaIkhitilaf = false
+    ),
     val timeZone: String? = "UTC",
 )
 
@@ -143,6 +145,17 @@ data class SaveData(
     val answerEnglish: String? = "",
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
+)
+
+@Serializable
+data class User(
+    val user: UserData
+)
+
+@Serializable
+data class UserData(
+    val username: String,
+    val password: String,
 )
 
 @Serializable
