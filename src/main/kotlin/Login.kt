@@ -1,4 +1,3 @@
-import io.ktor.http.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.*
@@ -8,50 +7,40 @@ import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
-import kotlin.js.Json
 
 fun Node.loginPage() {
-    append {
+    logoutDiv.innerHTML = ""
+    appendChild {
         div {
             id = Ids.InputContainers.INPUT_CONTAINERS_CONTAINER
             div(classes = Ids.InputContainers.INPUT_CONTAINER) {
                 id = Ids.InputContainers.INPUT_CONTAINER
                 form(action = "javascript:void(0);") {
                     div(classes = CssC.ROW) {
-                        makeSpans("Username", "Username")
+                        makeSpans(Strings::username)
                         input {
-                            name = Ids.Login.USERNAME
-                            id = Ids.Login.USERNAME
-                            placeholder = Ids.Login.USERNAME
+                            name = Ids.LoginLogout.USERNAME
+                            id = Ids.LoginLogout.USERNAME
+                            placeholder = Ids.LoginLogout.USERNAME
                         }
                     }
                     div(classes = CssC.ROW) {
-                        makeSpans("Password", "Password")
+                        makeSpans(Strings::password)
                         passwordInput {
-                            name = Ids.Login.PASSWORD
-                            id = Ids.Login.PASSWORD
+                            name = Ids.LoginLogout.PASSWORD
+                            id = Ids.LoginLogout.PASSWORD
                         }
                     }
                     div(classes = CssC.ROW) {
                         submitInput {
-                            name = "submit"
-                            id = "submit"
-                            value = "submit"
+                            name = Ids.LoginLogout.SUBMIT
+                            id = Ids.LoginLogout.SUBMIT
+//                            TODO:
+                            value = englishStrings.submit
                             onClickFunction = {
                                 val username = findInputContainer(it).username
                                 val password = findInputContainer(it).password
-                                console.log(username, password)
-                                var response: Pair<Short, String> =
-                                    Pair(0, JSON.parse("null"))
-//                                var response: Headers
-                                GlobalScope.launch { response = login(username, password) }.invokeOnCompletion {
-                                    console.log("yes", response.first == HttpStatusCode.OK.value.toShort())
-                                    if (response.first == 200.toShort()) {
-                                        kotlinx.browser.sessionStorage.setItem("loggedIn", true.toString())
-                                        rootHazapp.first().innerHTML = ""
-                                        hazappPage()
-                                    }
-                                }
+                                GlobalScope.launch { login(username, password) }
                             }
                         }
                     }
@@ -61,5 +50,17 @@ fun Node.loginPage() {
     }
 }
 
-private val HTMLElement.username get() = (getChildById(Ids.Login.USERNAME) as HTMLInputElement).value
-private val HTMLElement.password get() = (getChildById(Ids.Login.PASSWORD) as HTMLInputElement).value
+private val HTMLElement.username get() = (getChildById(Ids.LoginLogout.USERNAME) as HTMLInputElement).value
+private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD) as HTMLInputElement).value
+
+fun Node.addLogoutButton() {
+    appendChild {
+        button {
+            name = Ids.LoginLogout.LOGOUT_BUTTON
+            id = Ids.LoginLogout.LOGOUT_BUTTON
+//            TODO:
+            onClickFunction = { logout() }
+            makeSpans(Strings::logout)
+        }
+    }
+}
