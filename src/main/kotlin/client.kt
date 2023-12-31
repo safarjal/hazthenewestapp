@@ -611,7 +611,7 @@ private val inputsContainersContainer get() = document.getElementById(Ids.InputC
 @Suppress("UNCHECKED_CAST")
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
-val rootHazapp = document.getElementsByClassName("root").asList()
+val rootHazapp = document.getElementById("root")
 val devmode = window.location.href.contains("dev")
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 val languageSelected get() = languageSelector.value
