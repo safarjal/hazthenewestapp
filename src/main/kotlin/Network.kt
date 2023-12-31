@@ -5,21 +5,44 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.date.*
+import kotlinx.browser.localStorage
 import kotlinx.coroutines.await
 import kotlinx.serialization.decodeFromString
 import org.w3c.dom.HTMLElement
 import org.w3c.fetch.INCLUDE
 import org.w3c.fetch.RequestCredentials
 import kotlin.js.Json
-import kotlin.random.Random
 
-//val HAZAPP_BACKEND = Url("http://localhost:3000/maslas/")
-val HAZAPP_BACKEND = Url("http://170.64.146.104/maslas/")
+val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk/")
+//val HAZAPP_BACKEND = Url("http://localhost:3000/")
+const val AUTHORIZATION = "Authorization"
+val bearerToken get() = localStorage.getItem(AUTHORIZATION)
 
 val client by lazy {
     HttpClient(Js) {
         install(ContentNegotiation) { json() }
+    }
+}
+
+suspend fun login(username: String, password: String) {
+    val userData = User(user = UserData(username = username, password = password))
+
+    val response = client.post("$HAZAPP_BACKEND/users/sign_in"){
+        contentType(ContentType.Application.Json)
+        setBody(userData)
+    }
+
+    val token = response.headers[AUTHORIZATION]
+    if (response.status == HttpStatusCode.OK && token != null) {
+        localStorage.setItem(AUTHORIZATION, token)
+        hazappPage()
+    }
+}
+fun logout() {
+    localStorage.removeItem(AUTHORIZATION)
+    if (bearerToken.isNullOrEmpty()) {
+        rootHazapp!!.innerHTML = ""
+        rootHazapp.loginPage()
     }
 }
 
@@ -33,7 +56,6 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
         }
 
         val toSend = SaveData(
-            uid = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
             typeOfMasla = maslaSelect.value,
             typeOfInput = typeSelect.value,
             entries = entries,
@@ -57,14 +79,14 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
                 timeZone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else null,
             )
         )
+        println(toSend)
         return sendData(toSend)
     }
 }
 
 suspend fun sendData(toSend: SaveData): Json {
-    val response = client.post(HAZAPP_BACKEND) {
-        // I don't think this header makes sense as a request header
-        //headers { append(HttpHeaders.AccessControlAllowOrigin, "*") }
+    val response = client.post("$HAZAPP_BACKEND/maslas/") {
+        headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
         contentType(ContentType.Application.Json)
         setBody(toSend)
     }

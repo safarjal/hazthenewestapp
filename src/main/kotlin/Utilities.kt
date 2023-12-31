@@ -1,4 +1,3 @@
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.internal.JSJoda.*
 import kotlinx.datetime.internal.JSJoda.Duration
 import kotlinx.html.*
@@ -393,6 +392,14 @@ object Ids {
         const val SUBMIT = "submit"
         const val INPUT_TITLE = "input_title"
         const val INPUT_QUESTION = "input_question"
+    }
+
+    object LoginLogout {
+        const val USERNAME = "username"
+        const val PASSWORD = "password"
+        const val SUBMIT = "submit"
+        const val LOGOUT_DIV = "logout_div"
+        const val LOGOUT_BUTTON = "logout_button"
     }
 }
 

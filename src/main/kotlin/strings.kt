@@ -112,6 +112,11 @@ val urduStrings = Strings(
     "Cycle Length",
     "Daylight Savings",
     "آئی ڈی سے مسلہ لوڈ کریں۔",
+//    TODO:
+    "Username",
+    "Password",
+    "Submit",
+    "Log Out",
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -254,6 +259,10 @@ val englishStrings = Strings(
     "Cycle Length",
     "Daylight Savings",
     "Load Masla From ID",
+    "Username",
+    "Password",
+    "Submit",
+    "Log Out",
     )
 
 object StringsOfLanguages{

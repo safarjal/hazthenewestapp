@@ -17,32 +17,41 @@ import org.w3c.dom.*
 external object JsJodaTimeZoneModule
 
 private val jsJodaTz = JsJodaTimeZoneModule
+
 //val version = 2
 // START PROGRAM
 fun main() {
     window.onload = {
-        if (rootHazapp.isNotEmpty() && askPassword()) {
-//            console.log(randomUUID())
-            // Hazapp Page
-            document.body!!.addInputLayout()
-            setupRows(inputsContainers.first())
-            document.addEventListener(Events.VISIBILITY_CHANGE, {
-                if (!document.isHidden) {
-                    setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
-                }
-            })
+        if (rootHazapp != null) {
+            if (bearerToken?.isNotEmpty() == true) {
+                hazappPage()
+            } else {rootHazapp.loginPage()}
         } else mainOtherCalcs()                             // Other Calcs Page
 
         parseHREF()
     }
 }
 
-private fun askPassword(): Boolean {
-    val pass1 = "24434"
-    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
-            "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
-            "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
-    return pass1 == password || askPassword()
+//private fun askPassword(): Boolean {
+//    val pass1 = "24434"
+//    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
+//            "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
+//            "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
+//    return pass1 == password || askPassword()
+//    return false
+//}
+
+fun hazappPage() = run {
+    rootHazapp!!.innerHTML = ""
+    logoutDiv.addLogoutButton()
+    rootHazapp.addInputLayout()
+    setupRows(inputsContainers.first())
+    document.addEventListener(Events.VISIBILITY_CHANGE, {
+        if (!document.isHidden) {
+            setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
+        }
+    })
+    parseHREF()
 }
 
 private fun parseHREF() {
@@ -67,89 +76,95 @@ fun languageChange() {
         .forEach { select -> setOptionInSelect(select) }
 }
 
-fun makeRangeArray(aadatHaz:String, aadatTuhr:String, cycleLength: String, aadatNifas: String):MutableList<AadatsOfHaizAndTuhr>{
+fun makeRangeArray(
+    aadatHaz: String,
+    aadatTuhr: String,
+    cycleLength: String,
+    aadatNifas: String
+): MutableList<AadatsOfHaizAndTuhr> {
     //this returns an array conating all the possibilities we want to plug in and try
     val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
     val aadatHaizList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
-    if(aadatHaz.isNotEmpty()){
+    if (aadatHaz.isNotEmpty()) {
         val (haizStart, haizEnd) = parseRange(aadatHaz)
-        if(haizStart!=null && haizEnd!=null){
-            for (i in haizStart .. haizEnd){
+        if (haizStart != null && haizEnd != null) {
+            for (i in haizStart..haizEnd) {
                 aadatHaizList += i
             }
         }
-    }else{
+    } else {
         aadatHaizList += -1
     }
     val aadatTuhrList = mutableListOf<Int>()
-    if(aadatTuhr.isNotEmpty()){
+    if (aadatTuhr.isNotEmpty()) {
         val tuhrStart = parseRange(aadatTuhr)[0]
         val tuhrEnd = parseRange(aadatTuhr)[1]
-        if(tuhrStart!=null && tuhrEnd!=null){
-            for (i in tuhrStart .. tuhrEnd){
+        if (tuhrStart != null && tuhrEnd != null) {
+            for (i in tuhrStart..tuhrEnd) {
                 aadatTuhrList += i
             }
         }
-    }else{
+    } else {
         aadatTuhrList += -1
     }
 
     val aadatNifasList = mutableListOf<Int>() //this is all the haiz aadat possibilities. if none, then this contains -1
-    if(aadatNifas.isNotEmpty()){//nifas aadat isn't blank
-        val nifasStart = parseRange(aadatNifas)[0] //parse range function splits it and returns the 2 values on either end of the dash
+    if (aadatNifas.isNotEmpty()) {//nifas aadat isn't blank
+        val nifasStart =
+            parseRange(aadatNifas)[0] //parse range function splits it and returns the 2 values on either end of the dash
         val nifasEnd = parseRange(aadatNifas)[1]
-        if(nifasStart!=null && nifasEnd!=null){
-            for (i in nifasStart .. nifasEnd){
+        if (nifasStart != null && nifasEnd != null) {
+            for (i in nifasStart..nifasEnd) {
                 aadatNifasList += i
             }
         }
-    }else{
+    } else {
         aadatNifasList += -1
     }
-    if(cycleLength==""){//there is no cycle length
-        if(!aadatTuhr.contains('-') && aadatTuhr !=""){//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
-            aadatTuhrList+= aadatTuhr.toInt()
+    if (cycleLength == "") {//there is no cycle length
+        if (!aadatTuhr.contains('-') && aadatTuhr != "") {//if tuhr aadat doesn't contain a -, then just put the on tuhr aadat in array
+            aadatTuhrList += aadatTuhr.toInt()
         }
-        if(!aadatHaz.contains(('-')) && aadatHaz != ""){//if haiz aadat doen't have -, then just enter that one habit
-            aadatHaizList+= aadatHaz.toInt()
+        if (!aadatHaz.contains(('-')) && aadatHaz != "") {//if haiz aadat doen't have -, then just enter that one habit
+            aadatHaizList += aadatHaz.toInt()
         }
-        for(tuhrAadat in aadatTuhrList){
-            for (aadatHaiz in aadatHaizList){
-                combosToTry+=AadatsOfHaizAndTuhr(aadatHaiz.getMilliDays(),tuhrAadat.getMilliDays())
+        for (tuhrAadat in aadatTuhrList) {
+            for (aadatHaiz in aadatHaizList) {
+                combosToTry += AadatsOfHaizAndTuhr(aadatHaiz.getMilliDays(), tuhrAadat.getMilliDays())
             }
         }
 
 
-    }else{//there is cycle length, and only one of haiz or tuhr, which is ranged
-        if(aadatTuhrList[0]==-1){//there is no tuhr aadat  - haiz aadat is a range
-            for(haizAadat in aadatHaizList){
+    } else {//there is cycle length, and only one of haiz or tuhr, which is ranged
+        if (aadatTuhrList[0] == -1) {//there is no tuhr aadat  - haiz aadat is a range
+            for (haizAadat in aadatHaizList) {
                 val tuhrAadat = parseDays(cycleLength)?.minus(haizAadat.getMilliDays())
-                if(tuhrAadat!=null && tuhrAadat>=15.getMilliDays()){
-                    combosToTry+=AadatsOfHaizAndTuhr(haizAadat.getMilliDays(), tuhrAadat)
+                if (tuhrAadat != null && tuhrAadat >= 15.getMilliDays()) {
+                    combosToTry += AadatsOfHaizAndTuhr(haizAadat.getMilliDays(), tuhrAadat)
                 }
             }
 
-        }else if(aadatHaizList[0]==-1){//there is no haiz aadat - tuhr aadat is a range
-            for(tuhrAadat in aadatTuhrList){//got through each tuhr aadat, figure out if it's composite haiz is a viablr haiz, if so, add it to the combos
+        } else if (aadatHaizList[0] == -1) {//there is no haiz aadat - tuhr aadat is a range
+            for (tuhrAadat in aadatTuhrList) {//got through each tuhr aadat, figure out if it's composite haiz is a viablr haiz, if so, add it to the combos
                 val haizAadat = parseDays(cycleLength)?.minus(tuhrAadat.getMilliDays())
-                if(haizAadat!=null && haizAadat>=3.getMilliDays() && haizAadat<=10.getMilliDays()){
-                    combosToTry+=AadatsOfHaizAndTuhr(haizAadat, tuhrAadat.getMilliDays())
+                if (haizAadat != null && haizAadat >= 3.getMilliDays() && haizAadat <= 10.getMilliDays()) {
+                    combosToTry += AadatsOfHaizAndTuhr(haizAadat, tuhrAadat.getMilliDays())
                 }
             }
         }
     }
-    if(!aadatNifas.contains(('-')) && aadatNifas != ""){//if nifas aadat doen't have -, then just enter that one habit
-        aadatNifasList+= aadatNifas.toInt()
+    if (!aadatNifas.contains(('-')) && aadatNifas != "") {//if nifas aadat doen't have -, then just enter that one habit
+        aadatNifasList += aadatNifas.toInt()
     }
-    if(aadatNifasList[0]!=-1){//we do have a nifas aadat
+    if (aadatNifasList[0] != -1) {//we do have a nifas aadat
         val combosToTryWithNifas = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
-        for (combo in combosToTry){
-            for (nifasAadat in aadatNifasList){
-                combosToTryWithNifas+=AadatsOfHaizAndTuhr(combo.aadatHaiz, combo.aadatTuhr, nifasAadat.getMilliDays())
+        for (combo in combosToTry) {
+            for (nifasAadat in aadatNifasList) {
+                combosToTryWithNifas += AadatsOfHaizAndTuhr(combo.aadatHaiz, combo.aadatTuhr, nifasAadat.getMilliDays())
             }
         }
         return combosToTryWithNifas
-    }else{//we don't have a nifas aadat
+    } else {//we don't have a nifas aadat
         return combosToTry
     }
 }
@@ -164,18 +179,20 @@ fun parseEntries(inputContainer: HTMLElement) {
         val pregnancyStrt = pregStartTime.value.instant(timezone, isDateTime)
         val pregnancyEnd = pregEndTime.value.instant(timezone, isDateTime)
 
-        val typeOfMasla:TypesOfMasla = if(isMubtadia){
+        val typeOfMasla: TypesOfMasla = if (isMubtadia) {
             TypesOfMasla.MUBTADIA
-        } else if(isNifas){
+        } else if (isNifas) {
             TypesOfMasla.NIFAS
-        } else{
+        } else {
             TypesOfMasla.MUTADAH
         }
-        val typesOfInputs:TypesOfInputs = if(isDateOnly){
+        val typesOfInputs: TypesOfInputs = if (isDateOnly) {
             TypesOfInputs.DATE_ONLY
-        } else if(isDuration){
+        } else if (isDuration) {
             TypesOfInputs.DURATION
-        }else{TypesOfInputs.DATE_AND_TIME}
+        } else {
+            TypesOfInputs.DATE_AND_TIME
+        }
 
         val preMaslaValues = PreMaslaValues(
             parseDays(aadatHaz.value),
@@ -188,7 +205,8 @@ fun parseEntries(inputContainer: HTMLElement) {
             ikhtilaf1,
             ikhtilaf2,
             ikhtilaf3,
-            ikhtilaf4)
+            ikhtilaf4
+        )
 
         val pregnancy = Pregnancy(
             pregnancyStrt,
@@ -199,18 +217,33 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         var allTheInputs: AllTheInputs
 
-        if(typesOfInputs==TypesOfInputs.DURATION){
+        if (typesOfInputs == TypesOfInputs.DURATION) {
             val durations = haizDurationInputDatesRows.map { row ->
                 Duration(
                     type = when (row.damOrTuhr) {
-                        Vls.Opts.DAM -> {DurationType.DAM}
-                        Vls.Opts.TUHR -> {DurationType.TUHR}
-                        Vls.Opts.HAML -> {DurationType.HAML}
-                        Vls.Opts.WILADAT -> {DurationType.WILADAT_ISQAT}
-                        else -> {DurationType.NIFAS}
+                        Vls.Opts.DAM -> {
+                            DurationType.DAM
+                        }
+
+                        Vls.Opts.TUHR -> {
+                            DurationType.TUHR
+                        }
+
+                        Vls.Opts.HAML -> {
+                            DurationType.HAML
+                        }
+
+                        Vls.Opts.WILADAT -> {
+                            DurationType.WILADAT_ISQAT
+                        }
+
+                        else -> {
+                            DurationType.NIFAS
+                        }
                     },
                     timeInMilliseconds = parseDays(row.durationInput.value)!!
-                ) }
+                )
+            }
             allTheInputs = AllTheInputs(
                 entries,
                 preMaslaValues,
@@ -220,9 +253,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                 languageSelected,
                 ikhtilaafaat,
                 timezone
-                )
+            )
             allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
-        }else{
+        } else {
             entries = haizInputDatesRows.map { row ->
                 Entry(
                     startTime = row.startTimeInput.value.instant(timezone, isDateTime),
@@ -238,21 +271,20 @@ fun parseEntries(inputContainer: HTMLElement) {
                 languageSelected,
                 ikhtilaafaat,
                 timezone
-                )
+            )
         }
 
-        if((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode){
+        if ((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode) {
             contentContainer.visibility = false
             handleRangedInput(allTheInputs, aadatHaz.value, aadatTuhr.value, cycleLength.value, aadatNifas.value)
             return
         }
 
 //        @Suppress("UnsafeCastFromDynamic")
-        val output:OutputTexts
-        if(allTheInputs.entries!=null){
-            output = handleEntries(allTheInputs)
-        }else{
-            output = NO_OUTPUT
+        val output: OutputTexts = if (allTheInputs.entries != null) {
+            handleEntries(allTheInputs)
+        } else {
+            NO_OUTPUT
         }
 
         contentContainer.visibility = true
@@ -263,114 +295,133 @@ fun parseEntries(inputContainer: HTMLElement) {
         contentContainer.scrollIntoView()
     }
 }
-private fun handleRangedInput(allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength:String, aadatNifas:String) {
+
+private fun handleRangedInput(
+    allTheInputs: AllTheInputs,
+    aadatHaz: String,
+    aadatTuhr: String,
+    cycleLength: String,
+    aadatNifas: String
+) {
     val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength, aadatNifas)
     val listOfLists = mutableListOf<MutableList<Entry>>()
     val listOfDescriptions = mutableListOf<String>()
-    for (aadatCombo in combosToTry){ //go through combos and input them into logic and get their output
-        if(aadatCombo.aadatTuhr==-(1.getMilliDays())){
-            allTheInputs.preMaslaValues.inputtedAadatTuhr=null
-        }else{
-            allTheInputs.preMaslaValues.inputtedAadatTuhr=aadatCombo.aadatTuhr
+    for (aadatCombo in combosToTry) { //go through combos and input them into logic and get their output
+        if (aadatCombo.aadatTuhr == -(1.getMilliDays())) {
+            allTheInputs.preMaslaValues.inputtedAadatTuhr = null
+        } else {
+            allTheInputs.preMaslaValues.inputtedAadatTuhr = aadatCombo.aadatTuhr
         }
-        if(aadatCombo.aadatHaiz==-(1.getMilliDays())){
-            allTheInputs.preMaslaValues.inputtedAadatHaiz=null
-        }else{
-            allTheInputs.preMaslaValues.inputtedAadatHaiz=aadatCombo.aadatHaiz
+        if (aadatCombo.aadatHaiz == -(1.getMilliDays())) {
+            allTheInputs.preMaslaValues.inputtedAadatHaiz = null
+        } else {
+            allTheInputs.preMaslaValues.inputtedAadatHaiz = aadatCombo.aadatHaiz
         }
-        if(aadatCombo.aadatNifas==-(1.getMilliDays())){
-            allTheInputs.pregnancy!!.aadatNifas=null
-        }else{
-            allTheInputs.pregnancy!!.aadatNifas=aadatCombo.aadatNifas
+        if (aadatCombo.aadatNifas == -(1.getMilliDays())) {
+            allTheInputs.pregnancy!!.aadatNifas = null
+        } else {
+            allTheInputs.pregnancy!!.aadatNifas = aadatCombo.aadatNifas
         }
         val output = handleEntries(allTheInputs)
-        if (output == NO_OUTPUT) return //we gotta put this line so we don't keep on getting error messages every time it puts in a new value. gotta break at first error
-        listOfLists+=output.hazDatesList
+
+        // We gotta put this next line, so we don't keep on getting error messages every time it puts in a new value.
+        // Break at first error
+        if (output == NO_OUTPUT) return
+        listOfLists += output.hazDatesList
 
         //create a description for each combo
-        if(aadatCombo.aadatNifas!=null && aadatCombo.aadatNifas!=-1.getMilliDays()){//aadat nifas exists
-            listOfDescriptions += if(aadatCombo.aadatHaiz==-(1.getMilliDays())){
+        if (aadatCombo.aadatNifas != null && aadatCombo.aadatNifas != (-1).getMilliDays()) {//aadat nifas exists
+            listOfDescriptions += if (aadatCombo.aadatHaiz == (-1).getMilliDays()) {
                 "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatTuhr.getDays())}"
-            }else if(aadatCombo.aadatTuhr==-1.getMilliDays()){
+            } else if (aadatCombo.aadatTuhr == (-1).getMilliDays()) {
                 "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}"
-            }else{
+            } else {
                 "(${(aadatCombo.aadatNifas!!.getDays())})/${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
             }
-        }else{//no nifas
-            listOfDescriptions += if(aadatCombo.aadatHaiz==-1.getMilliDays()){
+        } else {//no nifas
+            listOfDescriptions += if (aadatCombo.aadatHaiz == (-1).getMilliDays()) {
                 "${(aadatCombo.aadatTuhr.getDays())}"
-            }else if(aadatCombo.aadatTuhr==-1.getMilliDays()){
+            } else if (aadatCombo.aadatTuhr == (-1).getMilliDays()) {
                 "${(aadatCombo.aadatHaiz.getDays())}"
-            }else{
+            } else {
                 "${(aadatCombo.aadatHaiz.getDays())}/${(aadatCombo.aadatTuhr.getDays())}"
             }
         }
     }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
 
-fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz:String, aadatTuhr:String, mawjoodaTuhr:String) {
+fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz: String, aadatTuhr: String, mawjoodaTuhr: String) {
     with(inputContainer) {
-        if(descriptionText.value==""){
+        if (descriptionText.value == "") {
             var text = "$aadatHaz/$aadatTuhr/$mawjoodaTuhr".trim()
-            if(text.contains("//")){text=text.replace("//","/")}
-            if(text.startsWith("/")){text=text.drop(1)}
-            if(text.endsWith("/")){ text=text.dropLast(1) }
+            if (text.contains("//")) {
+                text = text.replace("//", "/")
+            }
+            if (text.startsWith("/")) {
+                text = text.drop(1)
+            }
+            if (text.endsWith("/")) {
+                text = text.dropLast(1)
+            }
             descriptionText.value = text
         }
     }
 }
 
-fun validateNifasDurations(durations:List<Duration>):Boolean{
+fun validateNifasDurations(durations: List<Duration>): Boolean {
     //this is ensuring that we have both pregnancy and birth, and only one of each.
 
     //I am wondering if, when preg, or birth, or both are missing, we can just arbitrarily add them to the start of the masla.
     //it seems possible, but IDK if that is what we want.
 
-    var pregnancy=false
-    var wiladatIsqat=false
-    for(duration in durations){
-        if(duration.type==DurationType.HAML){
-            if(pregnancy){
+    var pregnancy = false
+    var wiladatIsqat = false
+    for (duration in durations) {
+        if (duration.type == DurationType.HAML) {
+            if (pregnancy) {
                 window.alert("You can only solve one pregnancy per masla")
                 return false
-            }else{//is false
-                pregnancy=true
+            } else {//is false
+                pregnancy = true
             }
-        }else if(duration.type==DurationType.WILADAT_ISQAT){
-            if(wiladatIsqat){
+        } else if (duration.type == DurationType.WILADAT_ISQAT) {
+            if (wiladatIsqat) {
                 window.alert("You can only solve one birth at a time")
                 return false
-            }else if(!pregnancy){
+            } else if (!pregnancy) {
                 window.alert("Please add pregnancy before birth")
                 return false
-            }else{//is false
-                wiladatIsqat=true
+            } else {//is false
+                wiladatIsqat = true
             }
         }
     }
-    if(!pregnancy||!wiladatIsqat){
+    if (!pregnancy || !wiladatIsqat) {
         window.alert("You need to add pregnancy and birth/miscarriage to solve a nifas question.")
         return false
     }
     return true
 }
 
-fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: AllTheInputs = AllTheInputs(null)):AllTheInputs{
-    if(allTheOriginalInputs.typeOfMasla==TypesOfMasla.NIFAS){
-        if(!validateNifasDurations(durations)){
+fun convertDurationsIntoEntries(
+    durations: List<Duration>,
+    allTheOriginalInputs: AllTheInputs = AllTheInputs(null)
+): AllTheInputs {
+    if (allTheOriginalInputs.typeOfMasla == TypesOfMasla.NIFAS) {
+        if (!validateNifasDurations(durations)) {
             return AllTheInputs(null)
         }
     }
-    for (index in durations.indices){
-        if(index > 0){
-            durations[index].startTime = durations[index-1].endDate
+    for (index in durations.indices) {
+        if (index > 0) {
+            durations[index].startTime = durations[index - 1].endDate
         }
     }
-    var mawjodahtuhreditable:Long?= allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
+    var mawjodahtuhreditable: Long? = allTheOriginalInputs.preMaslaValues.inputtedMawjoodahTuhr
     var isMawjoodaFasid = allTheOriginalInputs.preMaslaValues.isMawjoodaFasid
-    val entries= mutableListOf<Entry>()
+    val entries = mutableListOf<Entry>()
     var pregnancyEnd = ARBITRARY_DATE
     var pregnancyStrt: Instant = ARBITRARY_DATE
 
@@ -389,36 +440,39 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
 //    }
 
 
-
-    for(dur in durations){
+    for (dur in durations) {
         when (dur.type) {
             DurationType.DAM -> {
                 entries += Entry(dur.startTime, dur.endDate)
             }
+
             DurationType.HAML -> {
-                pregnancyStrt=dur.startTime
-                if(entries.size==0){
-                    isMawjoodaFasid=true
+                pregnancyStrt = dur.startTime
+                if (entries.size == 0) {
+                    isMawjoodaFasid = true
                 }
 
             }
+
             DurationType.WILADAT_ISQAT -> {
-                pregnancyEnd=dur.startTime
+                pregnancyEnd = dur.startTime
             }
+
             DurationType.TUHR -> {
-                if(entries.size==0){
-                    if(mawjodahtuhreditable==null){
+                if (entries.size == 0) {
+                    if (mawjodahtuhreditable == null) {
                         mawjodahtuhreditable = dur.timeInMilliseconds
-                    }else{
+                    } else {
                         mawjodahtuhreditable += dur.timeInMilliseconds
                     }
                 }
             }
+
             else -> error("Not Blood")
         }
     }
     if (mawjodahtuhreditable != null) {
-        if(mawjodahtuhreditable<15.getMilliDays() && mawjodahtuhreditable!=-1L){
+        if (mawjodahtuhreditable < 15.getMilliDays() && mawjodahtuhreditable != -1L) {
             //give an error
             window.alert("Tuhr before first dam is less than 15 days, so we will need previous information to solve this masla")
             return AllTheInputs(null)
@@ -430,16 +484,17 @@ fun convertDurationsIntoEntries(durations:List<Duration>, allTheOriginalInputs: 
         mawjodahtuhreditable,
         isMawjoodaFasid
     )
-    var newPregnancy:Pregnancy? = null
-    if(allTheOriginalInputs.pregnancy!=null){
-        newPregnancy= Pregnancy(
+    var newPregnancy: Pregnancy? = null
+    if (allTheOriginalInputs.pregnancy != null) {
+        newPregnancy = Pregnancy(
             pregnancyStrt,
             pregnancyEnd,
             allTheOriginalInputs.pregnancy.aadatNifas,
             allTheOriginalInputs.pregnancy.mustabeenUlKhilqat
         )
     }
-    return AllTheInputs(entries,
+    return AllTheInputs(
+        entries,
         newPreMaslaValues,
         allTheOriginalInputs.typeOfMasla,
         newPregnancy,
@@ -453,19 +508,19 @@ fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
     val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
-    drawCompareTable(output.headerList,output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
+    drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
 
 fun drawCompareTable(
-    headerList:List<Instant>,
+    headerList: List<Instant>,
     listOfColorsOfDaysList: List<List<Int>>,
     resultColors: List<Int>,
     listOfDescriptions: List<String>
-){
+) {
     val comparisonGrid = comparisonGridElement!!
     comparisonGrid.classList.replace(CssC.COLUMN, CssC.GRID)
-    comparisonGrid.style.setProperty("--columns",  "${headerList.size}")
-    comparisonGrid.style.setProperty("--rows",  "${listOfDescriptions.size - 1}")
+    comparisonGrid.style.setProperty("--columns", "${headerList.size}")
+    comparisonGrid.style.setProperty("--rows", "${listOfDescriptions.size - 1}")
     comparisonGrid.replaceChildren {
         val lang = languageSelected
         val dur = inputsContainers.first().isDuration
@@ -478,7 +533,10 @@ fun drawCompareTable(
                 val date = headerDate.dayOfMonth()
                 div(classes = "${CssC.MONTHS_ROW} ${CssC.TABLE_CELL} $titleClasses") {
                     if (date == 1) {
-                        makeSpans(englishMonthNames[headerDate.monthValue().toInt()-1], urduMonthNames[headerDate.monthValue().toInt()-1])
+                        makeSpans(
+                            englishMonthNames[headerDate.monthValue().toInt() - 1],
+                            urduMonthNames[headerDate.monthValue().toInt() - 1]
+                        )
                     }
                 }
             }
@@ -549,13 +607,15 @@ const val IS_DEFAULT_INPUT_MODE_DATE_ONLY = true
 const val IS_DEFAULT_INPUT_MODE_MUTADA = true
 
 private val inputsContainersContainer get() = document.getElementById(Ids.InputContainers.INPUT_CONTAINERS_CONTAINER) as HTMLElement
+
 @Suppress("UNCHECKED_CAST")
 val inputsContainers get() = inputsContainersContainer.children.asList() as List<HTMLElement>
 
-private val rootHazapp = document.getElementsByClassName("root").asList()
+val rootHazapp = document.getElementById("root")
 val devmode = window.location.href.contains("dev")
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 val languageSelected get() = languageSelector.value
+val logoutDiv get() = document.getElementById(Ids.LoginLogout.LOGOUT_DIV) as HTMLDivElement
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement
@@ -597,30 +657,36 @@ val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTM
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
-    set(value) { contentDatesElement.asDynamic().haizDatesList = value }
+    set(value) {
+        contentDatesElement.asDynamic().haizDatesList = value
+    }
 
 private val englishElements get() = document.getElementsByClassName(CssC.ENGLISH).asList()
 private val urduElements get() = document.getElementsByClassName(CssC.URDU).asList()
 private val languageElements get() = listOf(englishElements, urduElements).flatten()
 private val devElements get() = document.getElementsByClassName(CssC.DEV).asList()
 
-val HTMLElement.hazInputTableBody: HTMLTableSectionElement get() {
-    val inputDatesTable = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
-    return inputDatesTable.tBodies[0] as HTMLTableSectionElement
-}
-val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement get() {
-    val inputDatesTable = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
-    return inputDatesTable.tBodies[0] as HTMLTableSectionElement
-}
+val HTMLElement.hazInputTableBody: HTMLTableSectionElement
+    get() {
+        val inputDatesTable = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
+val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement
+    get() {
+        val inputDatesTable = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
+    }
 
-val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement> get() {
-    @Suppress("UNCHECKED_CAST")
-    return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
-}
-val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement> get() {
-    @Suppress("UNCHECKED_CAST")
-    return hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
-}
+val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
+    }
+val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement>
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
+    }
 
 val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
@@ -628,12 +694,14 @@ val HTMLTableRowElement.durationInput get() = getChildById(Ids.Row.INPUT_DURATIO
 private val HTMLTableRowElement.durationTypeInput get() = getChildById(Ids.Row.INPUT_TYPE_OF_DURATION) as HTMLSelectElement
 val HTMLTableRowElement.damOrTuhr get() = durationTypeInput.value
 
-val HTMLElement.haizTimeInputs get() = haizInputDatesRows.flatMap { row ->
-    listOf(row.startTimeInput, row.endTimeInput)
-}
-private val HTMLElement.haizDurationInputs get() = haizDurationInputDatesRows.flatMap { row ->
-    listOf(row.durationInput, row.durationTypeInput)
-}
+val HTMLElement.haizTimeInputs
+    get() = haizInputDatesRows.flatMap { row ->
+        listOf(row.startTimeInput, row.endTimeInput)
+    }
+private val HTMLElement.haizDurationInputs
+    get() = haizDurationInputDatesRows.flatMap { row ->
+        listOf(row.durationInput, row.durationTypeInput)
+    }
 
 val HTMLElement.timeInputsGroups get() = listOf(listOf(pregStartTime, pregEndTime), haizTimeInputs)
 val HTMLElement.durationInputsGroups get() = listOf(haizDurationInputs)

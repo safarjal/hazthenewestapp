@@ -1,7 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 @file:OptIn(DelicateCoroutinesApi::class)
 
-import io.ktor.client.statement.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -882,23 +881,23 @@ private fun copyText(event: Event) {
     val small = div?.querySelector("small")
     var smallTxt: String
 
-//    var response: Json = json(Pair("id", null))
-//    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
-//     job.invokeOnCompletion {
-// //        console.log(response["id"])
-// //        console.log(response)
-//         if (response["id"] != null) {
-//             copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt // Todo: Figure out if we're actually using uid after all.
-//             smallTxt = " Saved and Copied "
-//         } else {
+    var response: Json = json(Pair("id", null))
+    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
+     job.invokeOnCompletion {
+ //        console.log(response["id"])
+         console.log(response)
+         if (response["id"] != null) {
+             copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
+             smallTxt = " Saved and Copied "
+         } else {
             smallTxt = " Copied "
-//             window.alert("Masla has not been saved. However, it has copied.")
-//         }
+             window.alert("Masla has not been saved. However, it has copied.")
+         }
 
         copyTxt.let { window.navigator.clipboard.writeText(it) }
         small?.innerHTML?.let { small.innerHTML = smallTxt }
         window.setTimeout({ small?.innerHTML = "" }, 5000)
-//     }
+     }
 }
 
 // COMPARE
@@ -912,8 +911,8 @@ private val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ
 private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
-val HTMLElement.titleID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLTextAreaElement).value
-val HTMLElement.titleText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLTextAreaElement).value
+val HTMLElement.inputID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLInputElement).value
+val HTMLElement.titleText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLInputElement).value
 val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement).value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
