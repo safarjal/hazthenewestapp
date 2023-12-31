@@ -868,10 +868,9 @@ private fun copyText(event: Event) {
     val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
     val inputContainer = findInputContainer(event)
 
-//    val dateStr = getNow()
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText
-    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${ UnicodeChars.BLUE_SWIRL }"
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
             "$questionTxt\n\n" +
@@ -879,25 +878,32 @@ private fun copyText(event: Event) {
             "$answerTxt"
 
     val small = div?.querySelector("small")
-    var smallTxt: String
+    var smallTxt: String = "Not Copied :("
 
-    var response: Json = json(Pair("id", null))
-    val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }
-     job.invokeOnCompletion {
- //        console.log(response["id"])
-         console.log(response)
-         if (response["id"] != null) {
-             copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
-             smallTxt = " Saved and Copied "
-         } else {
-            smallTxt = " Copied "
-             window.alert("Masla has not been saved. However, it has copied.")
-         }
+    if (inputContainer.contentContainer.dataset["saved"] == "false") {
+        GlobalScope.launch {
+            var response = getDataFromInputsAndSend(inputContainer)
+            console.log("Promise?", response)
+            if (response["id"] != null) {
+                copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
+                smallTxt = " Saved and Copied "
+                inputContainer.contentContainer.setAttribute("data-saved", "true")
+            } else {
+                smallTxt = " Copied "
+                window.alert("Masla has not been saved. However, it has copied.")
+            }
+
+            copyTxt.let { window.navigator.clipboard.writeText(it) }
+            small?.innerHTML?.let { small.innerHTML = smallTxt }
+            window.setTimeout({ small?.innerHTML = "" }, 5000)
+        }
+    } else {
+        smallTxt = "Copied!"
 
         copyTxt.let { window.navigator.clipboard.writeText(it) }
         small?.innerHTML?.let { small.innerHTML = smallTxt }
         window.setTimeout({ small?.innerHTML = "" }, 5000)
-     }
+    }
 }
 
 // COMPARE

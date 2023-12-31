@@ -23,9 +23,9 @@ private val jsJodaTz = JsJodaTimeZoneModule
 fun main() {
     window.onload = {
         if (rootHazapp != null) {
-            if (bearerToken?.isNotEmpty() == true) {
+//            if (bearerToken?.isNotEmpty() == true) {
                 hazappPage()
-            } else {rootHazapp.loginPage()}
+//            } else {rootHazapp.loginPage()}
         } else mainOtherCalcs()                             // Other Calcs Page
 
         parseHREF()
@@ -43,7 +43,8 @@ fun main() {
 
 fun hazappPage() = run {
     rootHazapp!!.innerHTML = ""
-    logoutDiv.addLogoutButton()
+    if (bearerToken != null) logoutDiv.addLogoutButton()
+    else logoutDiv.addLoginButton()
     rootHazapp.addInputLayout()
     setupRows(inputsContainers.first())
     document.addEventListener(Events.VISIBILITY_CHANGE, {
@@ -288,6 +289,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         }
 
         contentContainer.visibility = true
+        contentContainer.setAttribute("data-saved", "false")
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.englishString)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.urduString)
         haizDatesList = output.hazDatesList
@@ -648,7 +650,7 @@ val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH)
 val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
 
-private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLTextAreaElement)
+private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLInputElement)
 
 val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
 val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
