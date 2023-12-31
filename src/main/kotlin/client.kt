@@ -613,6 +613,7 @@ val rootHazapp = document.getElementsByClassName("root").asList()
 val devmode = window.location.href.contains("dev")
 val languageSelector get() = document.getElementById(Ids.LANGUAGE) as HTMLSelectElement
 val languageSelected get() = languageSelector.value
+val logoutDiv get() = document.getElementById(Ids.LoginLogout.LOGOUT_DIV) as HTMLDivElement
 private val comparisonGridElement get() = document.getElementById(Ids.Results.DATES_DIFFERENCE_TABLE) as HTMLElement?
 
 val HTMLElement.typeSelect get() = getChildById(Ids.Inputs.INPUT_TYPE_SELECT) as HTMLSelectElement

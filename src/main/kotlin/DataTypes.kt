@@ -116,7 +116,11 @@ data class Strings(
     val zaalla: String,
     val zaallaCycleLength: String,
     val isDaylightSavings: String,
-    val loadMaslaFromID:String,
+    val loadMaslaFromID: String,
+    val username: String,
+    val password: String,
+    val submit: String,
+    val logout: String
     )
 
 data class AllTheInputs(
