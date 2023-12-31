@@ -22,10 +22,10 @@ private val jsJodaTz = JsJodaTimeZoneModule
 // START PROGRAM
 fun main() {
     window.onload = {
-        if (rootHazapp.isNotEmpty()) {
-            if (kotlinx.browser.sessionStorage.getItem("loggedIn")?.equals("true") == false) {
+        if (rootHazapp != null) {
+            if (bearerToken?.isNotEmpty() == true) {
                 hazappPage()
-            } else {rootHazapp.first().loginPage()}
+            } else {rootHazapp.loginPage()}
         } else mainOtherCalcs()                             // Other Calcs Page
 
         parseHREF()
