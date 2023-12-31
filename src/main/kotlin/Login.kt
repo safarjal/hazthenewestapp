@@ -1,13 +1,14 @@
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.*
-import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
 
+@OptIn(DelicateCoroutinesApi::class)
 fun Node.loginPage() {
     logoutDiv.innerHTML = ""
     appendChild {
@@ -61,6 +62,21 @@ fun Node.addLogoutButton() {
 //            TODO:
             onClickFunction = { logout() }
             makeSpans(Strings::logout)
+        }
+    }
+}
+
+fun Node.addLoginButton() {
+    appendChild {
+        button {
+            name = "login_button"
+            id = "login_button"
+//            TODO:
+            onClickFunction = {
+                rootHazapp!!.innerHTML = ""
+                rootHazapp.loginPage()
+            }
+            makeSpans("Login", "Login")
         }
     }
 }
