@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.hazthenewestapp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.hazthenewestapp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.hazthenewestapp.test.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.hazthenewestapp.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/hazthenewestapp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hazthenewestapp.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/hazthenewestapp.test.iml" filepath="$PROJECT_DIR$/.idea/modules/hazthenewestapp.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.safar.hazthenewestapp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.safar.hazthenewestapp.main.iml" />
