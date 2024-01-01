@@ -32,15 +32,6 @@ fun main() {
     }
 }
 
-//private fun askPassword(): Boolean {
-//    val pass1 = "24434"
-//    val password = window.prompt("${StringsOfLanguages.ENGLISH.warningOnlyAuthorizedPersonnel}\n\n" +
-//            "${StringsOfLanguages.URDU.warningOnlyAuthorizedPersonnel}\n\n" +
-//            "${StringsOfLanguages.URDU.passwordRequired}\n\n", "")
-//    return pass1 == password || askPassword()
-//    return false
-//}
-
 fun hazappPage() = run {
     rootHazapp!!.innerHTML = ""
     if (bearerToken != null) logoutDiv.addLogoutButton()

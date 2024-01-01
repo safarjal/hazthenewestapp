@@ -881,11 +881,13 @@ private fun copyText(event: Event) {
     var smallTxt: String = "Not Copied :("
 
     if (inputContainer.contentContainer.dataset["saved"] == "false") {
-        GlobalScope.launch {
-            var response = getDataFromInputsAndSend(inputContainer)
-            console.log("Promise?", response)
-            if (response["id"] != null) {
-                copyTxt = "_Masla Id: ${response["id"]}_\n" + copyTxt
+        var response:Json? = null;
+        val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer)
+        console.log(response)}
+        job.invokeOnCompletion {
+            console.log("Promise?")
+            if (response != null && response!!["id"] != null) {
+                copyTxt = "_Masla Id: ${response!!["id"]}_\n" + copyTxt
                 smallTxt = " Saved and Copied "
                 inputContainer.contentContainer.setAttribute("data-saved", "true")
             } else {

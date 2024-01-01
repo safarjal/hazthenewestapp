@@ -42,7 +42,7 @@ fun logout() {
     }
 }
 
-suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
+suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
     with(inputsContainer) {
         val entries = haizInputDatesRows.map { row ->
             SaveEntries(
@@ -75,19 +75,20 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json {
                 timeZone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else null,
             )
         )
-        println(toSend)
         return sendData(toSend)
     }
 }
 
-suspend fun sendData(toSend: SaveData): Json {
+suspend fun sendData(toSend: SaveData): Json? {
     val response = client.post("$HAZAPP_BACKEND/maslas/") {
         headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
         contentType(ContentType.Application.Json)
         setBody(toSend)
     }
 
-    return JSON.parse(response.body())
+    if (response.status == HttpStatusCode.Created) {
+        return JSON.parse(response.body())
+    } else return null
 }
 
 //suspend inline fun sendDataWithFetch(toSend: SaveData): Unit {
