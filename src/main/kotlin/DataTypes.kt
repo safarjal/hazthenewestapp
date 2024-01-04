@@ -152,10 +152,10 @@ data class SaveData(
 )
 
 @Serializable
-data class User(
-    val user: UserData
-)
+data class ErrorResponse(val error: String)
 
+@Serializable
+data class User( val user: UserData)
 @Serializable
 data class UserData(
     val username: String,

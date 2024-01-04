@@ -4,9 +4,7 @@ import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.Node
+import org.w3c.dom.*
 
 @OptIn(DelicateCoroutinesApi::class)
 fun Node.loginPage() {
@@ -45,12 +43,14 @@ fun Node.loginPage() {
                             }
                         }
                     }
+                    p {id = "errorMessage"}
                 }
             }
         }
     }
 }
 
+public val HTMLElement.errorMessage get() = getChildById("errorMessage") as HTMLParagraphElement
 private val HTMLElement.username get() = (getChildById(Ids.LoginLogout.USERNAME) as HTMLInputElement).value
 private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD) as HTMLInputElement).value
 
