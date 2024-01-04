@@ -5,6 +5,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+  import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
@@ -32,8 +33,12 @@ suspend fun login(username: String, password: String) {
     if (response.status == HttpStatusCode.OK && token != null) {
         localStorage.setItem(AUTHORIZATION, token)
         hazappPage()
+    } else {
+        val message = response.body<ErrorResponse>();
+        document.body!!.errorMessage.innerText = message.error;
     }
 }
+
 fun logout() {
     localStorage.removeItem(AUTHORIZATION)
     if (bearerToken.isNullOrEmpty()) {
