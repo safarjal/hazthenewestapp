@@ -56,7 +56,7 @@ private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD)
 
 fun Node.addLogoutButton() {
     appendChild {
-        button {
+        button(classes = CssC.CALC_BTN) {
             name = Ids.LoginLogout.LOGOUT_BUTTON
             id = Ids.LoginLogout.LOGOUT_BUTTON
 //            TODO:
@@ -68,7 +68,7 @@ fun Node.addLogoutButton() {
 
 fun Node.addLoginButton() {
     appendChild {
-        button {
+        button(classes = CssC.CALC_BTN) {
             name = "login_button"
             id = "login_button"
 //            TODO:
