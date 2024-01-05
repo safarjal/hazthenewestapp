@@ -2058,6 +2058,13 @@ fun finalAadatsOfHaizAndTuhr(fixedDurations: MutableList<FixedDuration>,
 
         }
     }
+    if(fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD &&
+        fixedDurations.last().days>40){
+        //there is either daur here, or it isn't but in either case,
+        // since we are still on the nifas damm extended, the previous habit of haidh is correct
+        return AadatsOfHaizAndTuhr(fixedDurations.last().biggerThanForty!!.haiz, adatsOfTuhrList[adatsOfTuhrList.lastIndex].aadat)
+    }
+
     if(fixedDurations.last().type==DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         return AadatsOfHaizAndTuhr(fixedDurations.last().ayyameqabliyya!!.aadatHaiz, fixedDurations.last().ayyameqabliyya!!.aadatTuhr)
     }
@@ -2289,7 +2296,7 @@ fun calculateFilHaal(fixedDurations: MutableList<FixedDuration>,
     }else if(fixedDurations.last().type==DurationType.DAM_IN_NIFAS_PERIOD){
         if(fixedDurations.last().days>40){
             val aadatTuhr=fixedDurations.last().biggerThanForty!!.aadatTuhr
-            val aadatHaz = fixedDurations.last().biggerThanForty!!.aadatHaiz
+            val aadatHaz = fixedDurations.last().biggerThanForty!!.haiz //adat haiz before solving this
             val lastDurationType = fixedDurations.last().biggerThanForty!!.durationsList.last().type
             val lastDurationTime = fixedDurations.last().biggerThanForty!!.durationsList.last().timeInMilliseconds
             if(lastDurationType==DurationType.ISTIHAZA_AFTER){
