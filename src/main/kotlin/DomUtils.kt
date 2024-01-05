@@ -870,9 +870,11 @@ private fun copyText(event: Event) {
 
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText
+    val maslaTitle = inputContainer.titleText
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
+            "$maslaTitle*\n\n" +
             "$questionTxt\n\n" +
             "$divider\n\n" +
             "$answerTxt"
