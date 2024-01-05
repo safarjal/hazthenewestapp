@@ -874,7 +874,7 @@ private fun copyText(event: Event) {
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
-            "$maslaTitle*\n\n" +
+            "$maslaTitle\n\n" +
             "$questionTxt\n\n" +
             "$divider\n\n" +
             "$answerTxt"
