@@ -261,6 +261,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
             button {
                 id = Ids.Inputs.SUBMIT
                 name = Ids.Inputs.SUBMIT
+                type = ButtonType.button
                 +"Submit"
                 onClickFunction = { event ->
                     println("--------------------------------")
