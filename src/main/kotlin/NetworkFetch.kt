@@ -105,7 +105,7 @@ inline fun <reified T> buildRequestInit(
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     this.headers = finalHeaders.entries()
         .fold(js("new Headers()") as FetchHeaders) { jsHeaders, (key, values) ->
-            jsHeaders.apply { append(key, values.joinToString(",")) }
+            jsHeaders.apply { append(key, values.joinToString()) }
         }
 
     this.mode = mode
@@ -158,6 +158,14 @@ suspend fun suspendFetch(
 
     fetch(url, init).then(
         onFulfilled = { response -> continuation.resumeWith(Result.success(response)) },
-        onRejected =  { error    -> continuation.resumeWith(Result.failure(error))    }
+        onRejected  = { error    -> continuation.resumeWith(Result.failure(error))    }
     )
+}
+
+fun org.w3c.fetch.Headers.mapToKtor(): Headers = Headers.build {
+    this@mapToKtor.asDynamic().forEach { value: String, key: String ->
+        append(key, value)
+    }
+
+    Unit
 }

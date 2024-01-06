@@ -1,15 +1,16 @@
 @file:Suppress("SpellCheckingInspection")
 
+import SaveEntries.Surrogate.Companion.toSaveEntries
+import SaveEntries.Surrogate.Companion.toSurrogate
 import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
 import org.w3c.dom.url.URL
 import kotlin.random.Random
 
@@ -169,11 +170,42 @@ data class LoadData(
     val created_at: String,
     val url: String,
 )
-@Serializable
+
+@Serializable(with = SaveEntries.Serializer::class)
 data class SaveEntries(
     val startTime: String,
     val endTime: String,
-)
+) {
+    @Serializable
+    data class Surrogate(
+        val startTime: String,
+        val endTime: String,
+    ) {
+        companion object {
+            fun SaveEntries.toSurrogate() = Surrogate(startTime, endTime)
+            fun Surrogate.toSaveEntries() = SaveEntries(startTime, endTime)
+        }
+    }
+
+    object Serializer : KSerializer<SaveEntries> {
+        override val descriptor: SerialDescriptor =
+            PrimitiveSerialDescriptor("SaveEntries", PrimitiveKind.STRING)
+
+        @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+        override fun serialize(encoder: Encoder, entries: SaveEntries) {
+            encoder.encodeString(
+                (encoder as JsonEncoder).json
+                    .encodeToString(entries.toSurrogate())
+                    .replace(":", "=>")
+            )
+        }
+
+        override fun deserialize(decoder: Decoder) = decoder.decodeString()
+            .replace("=>", ":")
+            .let<String, Surrogate>((decoder as JsonDecoder).json::decodeFromString)
+            .toSaveEntries()
+    }
+}
 
 @Serializable
 data class OtherValues(
