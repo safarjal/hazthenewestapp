@@ -6,11 +6,9 @@ import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonEncoder
 import org.w3c.dom.url.URL
 import kotlin.random.Random
 
@@ -188,16 +186,11 @@ data class SaveEntries(
     }
 
     object Serializer : KSerializer<SaveEntries> {
-        override val descriptor: SerialDescriptor =
-            PrimitiveSerialDescriptor("SaveEntries", PrimitiveKind.STRING)
+        override val descriptor = Surrogate.serializer().descriptor
 
         @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
         override fun serialize(encoder: Encoder, entries: SaveEntries) {
-            encoder.encodeString(
-                (encoder as JsonEncoder).json
-                    .encodeToString(entries.toSurrogate())
-                    .replace(":", "=>")
-            )
+            Surrogate.serializer().serialize(encoder, entries.toSurrogate())
         }
 
         override fun deserialize(decoder: Decoder) = decoder.decodeString()
