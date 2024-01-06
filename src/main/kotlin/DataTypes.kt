@@ -108,7 +108,7 @@ data class Strings(
     val nifasAndHaizHabit:String,
     val nifasAndTuhrHabit:String,
     val onlyTuhrHabit:String,
-    val titleTextFieldLabel:String,
+    val saailaDetailsFieldLabel:String,
     val questionTextFieldLabel:String,
     val isqat: String,
     val preMaslaHabitOfHaizAndTuhr: String,
@@ -170,7 +170,7 @@ data class SaveEntries(
 
 @Serializable
 data class OtherValues(
-    val title: String? = null,
+    val saaila: String? = null,
     val question: String? = null,
     var aadatHaiz: String? = null,
     var aadatTuhr: String? = null,

@@ -278,13 +278,13 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
 
     details {
         summary {
-            makeSpans(Strings::titleTextFieldLabel)
+            makeSpans(Strings::saailaDetailsFieldLabel)
         }
         div(classes = CssC.ROW) {
             input {
-                id = Ids.Inputs.INPUT_TITLE
-                name = Ids.Inputs.INPUT_TITLE
-                value = inputContainerToCopyFrom?.titleText.orEmpty()
+                id = Ids.Inputs.INPUT_SAAILA
+                name = Ids.Inputs.INPUT_SAAILA
+                value = inputContainerToCopyFrom?.saailaDetails.orEmpty()
             }
         }
     }

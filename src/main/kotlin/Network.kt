@@ -63,7 +63,7 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
             answerEnglish = contentEnglish.textContent,
             answerUrdu = contentUrdu.textContent,
             others = OtherValues(
-                title = titleText,
+                saaila = saailaDetails,
                 question = questionText,
                 aadatHaiz = aadatHaz.value,
                 aadatTuhr = aadatTuhr.value,

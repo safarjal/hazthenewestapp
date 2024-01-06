@@ -870,11 +870,11 @@ private fun copyText(event: Event) {
 
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText
-    val maslaTitle = inputContainer.titleText
+    val saailaDetails = inputContainer.saailaDetails
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
-            "$maslaTitle\n\n" +
+            "$saailaDetails\n\n" +
             "$questionTxt\n\n" +
             "$divider\n\n" +
             "$answerTxt"
@@ -922,7 +922,7 @@ private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTab
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
 val HTMLElement.inputID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLInputElement).value
-val HTMLElement.titleText get() = (getChildById(Ids.Inputs.INPUT_TITLE) as HTMLInputElement).value
+val HTMLElement.saailaDetails get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement).value
 val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement).value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
