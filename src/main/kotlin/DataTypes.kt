@@ -4,6 +4,13 @@ import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.decodeStructure
+import org.w3c.dom.url.URL
 import kotlin.random.Random
 
 data class Strings(
@@ -142,7 +149,6 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
@@ -150,18 +156,19 @@ data class SaveData(
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
 )
-
 @Serializable
-data class ErrorResponse(val error: String)
-
-@Serializable
-data class User( val user: UserData)
-@Serializable
-data class UserData(
-    val username: String,
-    val password: String,
+data class LoadData(
+    val id: Int,
+    val typeOfMasla: String,
+    val typeOfInput: String,
+    val entries: List<String>,
+    val answerEnglish: String,
+    val answerUrdu: String,
+    val more_infos: OtherValues,
+    val user_id: Int,
+    val created_at: String,
+    val url: String,
 )
-
 @Serializable
 data class SaveEntries(
     val startTime: String,
@@ -180,12 +187,24 @@ data class OtherValues(
     val birthTime: String? = null,
     val aadatNifas: String? = null,
     val mustabeenUlKhilqat: Boolean? = false,
-    val ghairMustabeenIkhtilaaf: Boolean = false,
-    val daurHaizIkhtilaf: Boolean = false,
-    var ayyameQabliyyaIkhtilaf: Boolean = false,
-    val mubtadiaIkhitilaf: Boolean = false,
+    val ghairMustabeenIkhtilaaf: Boolean? = false,
+    val daurHaizIkhtilaf: Boolean? = false,
+    var ayyameQabliyyaIkhtilaf: Boolean? = false,
+    val mubtadiaIkhitilaf: Boolean? = false,
     val timeZone: String? = null
 )
+
+@Serializable
+data class ErrorResponse(val error: String)
+
+@Serializable
+data class User( val user: UserData)
+@Serializable
+data class UserData(
+    val username: String,
+    val password: String,
+)
+
 
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,
