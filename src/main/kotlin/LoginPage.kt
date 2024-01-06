@@ -66,17 +66,17 @@ fun Node.addLogoutButton() {
     }
 }
 
-fun Node.addLoginButton() {
-    appendChild {
-        button(classes = CssC.CALC_BTN) {
-            name = "login_button"
-            id = "login_button"
-//            TODO:
-            onClickFunction = {
-                rootHazapp!!.innerHTML = ""
-                rootHazapp.loginPage()
-            }
-            makeSpans("Login", "Login")
-        }
-    }
-}
+//fun Node.addLoginButton() {
+//    appendChild {
+//        button(classes = CssC.CALC_BTN) {
+//            name = "login_button"
+//            id = "login_button"
+////            TODO:
+//            onClickFunction = {
+//                rootHazapp!!.innerHTML = ""
+//                rootHazapp.loginPage()
+//            }
+//            makeSpans("Login", "Login")
+//        }
+//    }
+//}

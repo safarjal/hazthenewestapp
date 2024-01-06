@@ -23,9 +23,9 @@ private val jsJodaTz = JsJodaTimeZoneModule
 fun main() {
     window.onload = {
         if (rootHazapp != null) {
-//            if (bearerToken?.isNotEmpty() == true) {
+            if (bearerToken?.isNotEmpty() == true) {
                 hazappPage()
-//            } else {rootHazapp.loginPage()}
+            } else {rootHazapp.loginPage()}
         } else mainOtherCalcs()                             // Other Calcs Page
 
         parseHREF()
@@ -34,8 +34,8 @@ fun main() {
 
 fun hazappPage() = run {
     rootHazapp!!.innerHTML = ""
-    if (bearerToken != null) logoutDiv.addLogoutButton()
-    else logoutDiv.addLoginButton()
+    logoutDiv.innerHTML = ""
+    logoutDiv.addLogoutButton()
     rootHazapp.addInputLayout()
     setupRows(inputsContainers.first())
     document.addEventListener(Events.VISIBILITY_CHANGE, {
