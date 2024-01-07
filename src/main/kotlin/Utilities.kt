@@ -15,6 +15,12 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
     return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
         .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
 }
+fun replaceStarWithStarAndBoldTag(string: String): String {
+    return string.replace(Regex("\\*(.*?)\\*")) {
+        console.log("regex", it.groupValues, it)
+        "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
+    }
+}
 
 private fun insertRelative(
     ownerDocument: Document,
@@ -84,7 +90,7 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     classes: String? = null,
     block: INPUT.() -> Unit = {}
 ) {
-    if (isDateOnly)  dateInput(classes = classes, block = block)
+    if (isDateOnly) dateInput(classes = classes, block = block)
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
@@ -323,6 +329,7 @@ fun OutputStringsLanguages.replaceDur(placeholder: String,
 // VALS TO USE
 object Ids {
     const val LANGUAGE = "language"
+    const val ERROR_MESSAGE = "error_message"
 
     object InputContainers {
         const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
@@ -332,8 +339,9 @@ object Ids {
     }
     object InputTables {
         const val HAIZ_INPUT_TABLE = "haiz_input_table"
+        const val HAIZ_INPUT_TABLE_BODY = "haiz_input_table_body"
         const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
-
+        const val HAIZ_DURATION_INPUT_TABLE_BODY = "haiz_duration_input_table_BODY"
     }
     object AddTimeToDate {
         //        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"
@@ -365,6 +373,7 @@ object Ids {
     object Results {
         const val CONTENT_CONTAINER = "content_container"
         const val CONTENT_WRAPPER = "content_wrapper"
+        const val CONTENT_ANSWER = "content_answer"
         const val CONTENT_URDU = "content_urdu"
         const val CONTENT_ENGLISH = "content_english"
         const val CONTENT_DATES = "content_dates"
@@ -390,7 +399,7 @@ object Ids {
         const val ZAALLA_CYCLE_LENGTH = "zaalla_cycle_length"
         const val INPUT_ID = "input_id"
         const val SUBMIT = "submit"
-        const val INPUT_TITLE = "input_title"
+        const val INPUT_SAAILA = "input_saaila"
         const val INPUT_QUESTION = "input_question"
     }
 

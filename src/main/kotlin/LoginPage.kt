@@ -43,14 +43,14 @@ fun Node.loginPage() {
                             }
                         }
                     }
-                    p {id = "errorMessage"}
+                    content(Ids.ERROR_MESSAGE)
                 }
             }
         }
     }
 }
 
-public val HTMLElement.errorMessage get() = getChildById("errorMessage") as HTMLParagraphElement
+public val HTMLElement.errorMessage get() = getChildById(Ids.ERROR_MESSAGE) as HTMLParagraphElement
 private val HTMLElement.username get() = (getChildById(Ids.LoginLogout.USERNAME) as HTMLInputElement).value
 private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD) as HTMLInputElement).value
 

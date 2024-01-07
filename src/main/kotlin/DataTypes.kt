@@ -4,6 +4,13 @@ import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.decodeStructure
+import org.w3c.dom.url.URL
 import kotlin.random.Random
 
 data class Strings(
@@ -108,7 +115,7 @@ data class Strings(
     val nifasAndHaizHabit:String,
     val nifasAndTuhrHabit:String,
     val onlyTuhrHabit:String,
-    val titleTextFieldLabel:String,
+    val saailaDetailsFieldLabel:String,
     val questionTextFieldLabel:String,
     val isqat: String,
     val preMaslaHabitOfHaizAndTuhr: String,
@@ -142,13 +149,51 @@ data class AllTheInputs(
 // Todo: make proper uid
 @Serializable
 data class SaveData(
-    val uid: String = getTimeMillis().toString() + Random.nextInt(100, 1000).toString(),
     val typeOfMasla: String = Vls.Maslas.MUTADA,
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
     val answerEnglish: String? = "",
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
+)
+@Serializable
+data class LoadData(
+    val id: Int,
+    val typeOfMasla: String,
+    val typeOfInput: String,
+    val entries: List<SaveEntries>,
+    val answerEnglish: String,
+    val answerUrdu: String,
+    val more_infos: OtherValues? = null,
+    val user_id: Int,
+    val created_at: String,
+    val url: String,
+)
+@Serializable
+data class SaveEntries(
+    val startTime: String? = null,
+    val endTime: String? = null,
+    val value: String? = null,
+    val type: String? = null,
+)
+
+@Serializable
+data class OtherValues(
+    val saaila: String? = null,
+    val question: String? = null,
+    var aadatHaiz: String? = null,
+    var aadatTuhr: String? = null,
+    var mawjoodahTuhr: String? = null,
+    var isMawjoodaFasid: Boolean? = false,
+    val pregStartTime: String? = null,
+    val birthTime: String? = null,
+    val aadatNifas: String? = null,
+    val mustabeenUlKhilqat: Boolean? = false,
+    val ghairMustabeenIkhtilaaf: Boolean? = false,
+    val daurHaizIkhtilaf: Boolean? = false,
+    var ayyameQabliyyaIkhtilaf: Boolean? = false,
+    val mubtadiaIkhitilaf: Boolean? = false,
+    val timeZone: String? = null
 )
 
 @Serializable
@@ -162,30 +207,6 @@ data class UserData(
     val password: String,
 )
 
-@Serializable
-data class SaveEntries(
-    val startTime: String,
-    val endTime: String,
-)
-
-@Serializable
-data class OtherValues(
-    val title: String? = null,
-    val question: String? = null,
-    var aadatHaiz: String? = null,
-    var aadatTuhr: String? = null,
-    var mawjoodahTuhr: String? = null,
-    var isMawjoodaFasid: Boolean? = false,
-    val pregStartTime: String? = null,
-    val birthTime: String? = null,
-    val aadatNifas: String? = null,
-    val mustabeenUlKhilqat: Boolean? = false,
-    val ghairMustabeenIkhtilaaf: Boolean = false,
-    val daurHaizIkhtilaf: Boolean = false,
-    var ayyameQabliyyaIkhtilaf: Boolean = false,
-    val mubtadiaIkhitilaf: Boolean = false,
-    val timeZone: String? = null
-)
 
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,

@@ -90,7 +90,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         makeLabel(Ids.Inputs.MASLA_TYPE_SELECT, Strings::typeOfMasla)
         select {
             id = Ids.Inputs.MASLA_TYPE_SELECT
-            onChangeFunction = { event -> maslaChanging(event) }
+            onChangeFunction = { event -> maslaChanging((event.currentTarget as HTMLSelectElement).value) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, Strings::mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, Strings::nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, Strings::mubtadia, "dev") {
@@ -258,33 +258,32 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 name = Ids.Inputs.INPUT_ID
                 value = inputContainerToCopyFrom?.inputID.orEmpty()
             }
-            button {
+            button(classes = CssC.CALC_BTN) {
                 id = Ids.Inputs.SUBMIT
                 name = Ids.Inputs.SUBMIT
                 type = ButtonType.button
                 +"Submit"
                 onClickFunction = { event ->
-                    println("--------------------------------")
-                    val id = findInputContainer(event).inputID
+                    val inputsContiner = findInputContainer(event)
+                    val id = inputsContiner.inputID
                     console.log(id)
                     var response: Json = json(Pair("id", id))
-                    GlobalScope.launch { response = loadData(id) }.invokeOnCompletion {
-                        console.log({ response })
-                    }
+                    GlobalScope.launch { response = loadData(id, inputsContiner) }
                 }
             }
+            content(Ids.ERROR_MESSAGE, CssC.INVIS)
         }
     }
 
     details {
         summary {
-            makeSpans(Strings::titleTextFieldLabel)
+            makeSpans(Strings::saailaDetailsFieldLabel)
         }
         div(classes = CssC.ROW) {
             input {
-                id = Ids.Inputs.INPUT_TITLE
-                name = Ids.Inputs.INPUT_TITLE
-                value = inputContainerToCopyFrom?.titleText.orEmpty()
+                id = Ids.Inputs.INPUT_SAAILA
+                name = Ids.Inputs.INPUT_SAAILA
+                value = inputContainerToCopyFrom?.saailaDetails.orEmpty()
             }
         }
     }
@@ -306,7 +305,10 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 th { addBeforeButton() }
             }
         }
-        tbody { startInputRow(inputContainerToCopyFrom, isDuration) }
+        tbody() {
+            id = Ids.InputTables.HAIZ_INPUT_TABLE_BODY
+            startInputRow(inputContainerToCopyFrom, isDuration)
+        }
     }
 }
 
@@ -322,7 +324,10 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
                 th { addBeforeButton(true) }
             }
         }
-        tbody { startDurationInputRow(inputContainerToCopyFrom, isDuration) }
+        tbody {
+            id = Ids.InputTables.HAIZ_DURATION_INPUT_TABLE_BODY
+            startDurationInputRow(inputContainerToCopyFrom, isDuration)
+        }
     }
 }
 
@@ -347,14 +352,14 @@ private fun TagConsumer<HTMLElement>.content() {
         div(classes = CssC.URDU) {
             id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.LEFT, CssC.RTL)
-            content { id = Ids.Results.CONTENT_URDU }
+            content(Ids.Results.CONTENT_URDU, Ids.Results.CONTENT_ANSWER)
         }
         div(classes = CssC.ENGLISH) {
             id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.RIGHT)
-            content { id = Ids.Results.CONTENT_ENGLISH }
+            content(Ids.Results.CONTENT_ENGLISH, Ids.Results.CONTENT_ANSWER)
         }
-        content { id = Ids.Results.CONTENT_DATES }
+        content(Ids.Results.CONTENT_DATES)
         hr()
     }
 }
