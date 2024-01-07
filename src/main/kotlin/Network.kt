@@ -118,38 +118,88 @@ suspend fun sendData(toSend: SaveData): Json? {
 //    return kotlinx.serialization.json.Json.decodeFromString(response.text().await())
 //}
 
-suspend fun loadData(id: String): Json {
-    val response = client.get(HAZAPP_BACKEND) {
-        // I don't think this header makes sense as a request header
-        //headers { append(HttpHeaders.AccessControlAllowOrigin, "*") }
+suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
+    val response = client.get("$HAZAPP_BACKEND/maslas/$id") {
         contentType(ContentType.Application.Json)
         setBody(id)
+    }
+
+    if (response.status == HttpStatusCode.OK) {
+        val loadedMasla = response.body<LoadData>()
+        reInputData(loadedMasla, inputsContainer)
+    } else {
+        val message = response.body<ErrorResponse>()
+        inputsContainer.errorMessage.visibility = true
+        inputsContainer.errorMessage.innerText = message.error
     }
 
     return JSON.parse(response.body())
 }
 
-//fun reInputData(data: Json, inputsContainer: HTMLElement) {
-//    with(inputsContainer) {
-//        maslaSelect.value = data["typeOfMasla"].toString()
-//        typeSelect.value = data["typeOfInput"].toString()
-////        entries = entries,
-////        answerEnglish = contentEnglish.textContent,
-////        answerUrdu = contentUrdu.textContent,
-//    }
-////            title = titleText,
-////            question = questionText,
-////            aadatHaiz = aadatHaz.value,
-////            aadatTuhr = aadatTuhr.value,
-////            mawjoodahTuhr = mawjoodaTuhr.value,
-////            isMawjoodaFasid = isMawjoodaFasid,
-////            pregStartTime = if (isNifas) pregStartTime.value else null,
-////            birthTime = if (isNifas) pregEndTime.value else null,
-////            aadatNifas = if (isNifas) aadatNifas.value else null,
-////            mustabeenUlKhilqat = if (isNifas) isMustabeen else null,
-////            ghairMustabeenIkhtilaaf = ikhtilaf1,
-////            daurHaizIkhtilaf = ikhtilaf2,
-////            ayyameQabliyyaIkhtilaf = ikhtilaf3,
-////            mubtadiaIkhitilaf = ikhtilaf4,
-////            timeZone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else null,
-//}
+fun reInputData(data:  LoadData, inputsContainer: HTMLElement) {
+    with(inputsContainer) {
+        maslaSelect.value = data.typeOfMasla
+        maslaChanging(data.typeOfMasla)
+        typeSelect.value = data.typeOfInput
+        typeChanging(inputsContainer, data.typeOfInput, data.more_infos?.timeZone)
+        if (data.typeOfInput == Vls.Types.DATE_TIME && data.more_infos?.timeZone != null) {
+            disableTimeZone.checked = true
+            timezoneSelect.disabled = false
+            timezoneSelect.value = data.more_infos.timeZone
+        }
+
+        aadatHaz.value = data.more_infos?.aadatHaiz.orEmpty()
+        aadatTuhr.value = data.more_infos?.aadatTuhr.orEmpty()
+        mawjoodaTuhr.value = data.more_infos?.mawjoodahTuhr.orEmpty()
+        isMawjoodaFasidInput.checked = data.more_infos?.isMawjoodaFasid == true
+        pregStartTime.value = data.more_infos?.pregStartTime.orEmpty()
+        pregEndTime.value = data.more_infos?.birthTime.orEmpty()
+        aadatNifas.value = data.more_infos?.aadatNifas.orEmpty()
+        isMustabeenInput.checked = data.more_infos?.mustabeenUlKhilqat == true
+        ikhtilaf1Input.checked = data.more_infos?.ghairMustabeenIkhtilaaf == true
+        ikhtilaf2Input.checked = data.more_infos?.daurHaizIkhtilaf == true
+        ikhtilaf3Input.checked = data.more_infos?.ayyameQabliyyaIkhtilaf == true
+        ikhtilaf4Input.checked = data.more_infos?.mubtadiaIkhitilaf == true
+
+        val entries = data.entries
+        if (data.typeOfInput == Vls.Types.DURATION) {
+            haizDurationInputTable.innerHTML = ""
+            haizDurationInputTable.append {
+                entries.forEachIndexed { index, entry ->
+                    val isPregnancy = data.typeOfMasla == Vls.Maslas.NIFAS
+                    val isMustabeen = data.more_infos?.mustabeenUlKhilqat == true
+                    durationInputRow(
+                        entries.getOrNull(index - 1)?.type == Vls.Opts.DAM,
+                        false,
+                        isPregnancy,
+                        isMustabeen,
+                        entry
+                    )
+                }
+            }
+        }
+        else {
+            hazInputTableBody.innerHTML = ""
+            hazInputTableBody.append {
+                val isDateOnly = data.typeOfInput == Vls.Types.DATE_ONLY
+                entries.forEachIndexed { index, entry ->
+                    inputRow(
+                        isDateOnly,
+                        entries.getOrNull(index - 1)?.endTime.orEmpty(),
+                        entries.getOrNull(index + 1)?.startTime.orEmpty(),
+                        false,
+                        entry
+                    )
+                }
+            }
+        }
+
+        saailaDetailsInput.value = data.more_infos?.saaila.orEmpty()
+        questionTextInput.value = data.more_infos?.question.orEmpty()
+        contentContainer.setAttribute("data-saved", "true")
+        contentContainer.visibility = true
+        contentEnglish.innerHTML = replaceStarWithStarAndBoldTag(data.answerEnglish)
+        contentUrdu.innerHTML = replaceStarWithStarAndBoldTag(data.answerUrdu)
+        contentContainer.scrollIntoView()
+    }
+}

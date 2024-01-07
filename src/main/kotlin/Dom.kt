@@ -264,13 +264,11 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 type = ButtonType.button
                 +"Submit"
                 onClickFunction = { event ->
-                    println("--------------------------------")
-                    val id = findInputContainer(event).inputID
+                    val inputsContiner = findInputContainer(event)
+                    val id = inputsContiner.inputID
                     console.log(id)
                     var response: Json = json(Pair("id", id))
-                    GlobalScope.launch { response = loadData(id) }.invokeOnCompletion {
-                        console.log({ response })
-                    }
+                    GlobalScope.launch { response = loadData(id, inputsContiner) }
                 }
             }
             content(Ids.ERROR_MESSAGE, CssC.INVIS)
