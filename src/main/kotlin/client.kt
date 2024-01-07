@@ -616,6 +616,7 @@ val HTMLElement.isDateTime get() = typeSelect.value == Vls.Types.DATE_TIME
 val HTMLElement.isDateOnly get() = typeSelect.value == Vls.Types.DATE_ONLY
 val HTMLElement.isDuration get() = typeSelect.value == Vls.Types.DURATION
 
+val HTMLElement.disableTimeZone get() = getChildById(Ids.Inputs.IS_DAYLIGHT_SAVINGS) as HTMLInputElement
 val HTMLElement.timezoneSelect get() = getChildById(Ids.Inputs.SELECT_LOCALE) as HTMLSelectElement
 
 val HTMLElement.maslaSelect get() = getChildById(Ids.Inputs.MASLA_TYPE_SELECT) as HTMLSelectElement
@@ -633,8 +634,10 @@ val HTMLElement.aadatNifas get() = getChildById(Ids.Inputs.AADAT_NIFAS_INPUT) as
 val HTMLElement.cycleLength get() = getChildById(Ids.Inputs.ZAALLA_CYCLE_LENGTH) as HTMLInputElement
 
 val HTMLElement.isZaalla get() = (getChildById(Ids.Inputs.ZAALLA_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMustabeen get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement).checked
-val HTMLElement.isMawjoodaFasid get() = (getChildById(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX) as HTMLInputElement).checked
+val HTMLElement.isMustabeenInput get() = (getChildById(Ids.Inputs.MUSTABEEN_CHECKBOX) as HTMLInputElement)
+val HTMLElement.isMustabeen get() = isMustabeenInput.checked
+val HTMLElement.isMawjoodaFasidInput get() = (getChildById(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX) as HTMLInputElement)
+val HTMLElement.isMawjoodaFasid get() = isMawjoodaFasidInput.checked
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
@@ -643,10 +646,14 @@ private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CON
 
 private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement)
 
-val HTMLElement.ikhtilaf1 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement).checked
-val HTMLElement.ikhtilaf2 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement).checked
-val HTMLElement.ikhtilaf3 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement).checked
-val HTMLElement.ikhtilaf4 get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement).checked
+val HTMLElement.ikhtilaf1Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement)
+val HTMLElement.ikhtilaf1 get() = ikhtilaf1Input.checked
+val HTMLElement.ikhtilaf2Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF2) as HTMLInputElement)
+val HTMLElement.ikhtilaf2 get() = ikhtilaf2Input.checked
+val HTMLElement.ikhtilaf3Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) as HTMLInputElement)
+val HTMLElement.ikhtilaf3 get() = ikhtilaf3Input.checked
+val HTMLElement.ikhtilaf4Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement)
+val HTMLElement.ikhtilaf4 get() = ikhtilaf4Input.checked
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }
@@ -659,27 +666,13 @@ private val urduElements get() = document.getElementsByClassName(CssC.URDU).asLi
 private val languageElements get() = listOf(englishElements, urduElements).flatten()
 private val devElements get() = document.getElementsByClassName(CssC.DEV).asList()
 
-val HTMLElement.hazInputTableBody: HTMLTableSectionElement
-    get() {
-        val inputDatesTable = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
-        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
-    }
-val HTMLElement.hazDurationInputTableBody: HTMLTableSectionElement
-    get() {
-        val inputDatesTable = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
-        return inputDatesTable.tBodies[0] as HTMLTableSectionElement
-    }
+val HTMLElement.hazInputTableBody get() = haizInputTable.tBodies[0] as HTMLTableSectionElement
+val HTMLElement.hazDurationInputTableBody get() = haizDurationInputTable.tBodies[0] as HTMLTableSectionElement
 
-val HTMLElement.haizInputDatesRows: List<HTMLTableRowElement>
-    get() {
-        @Suppress("UNCHECKED_CAST")
-        return hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
-    }
-val HTMLElement.haizDurationInputDatesRows: List<HTMLTableRowElement>
-    get() {
-        @Suppress("UNCHECKED_CAST")
-        return hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
-    }
+@Suppress("UNCHECKED_CAST")
+val HTMLElement.haizInputDatesRows get() = hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
+@Suppress("UNCHECKED_CAST")
+val HTMLElement.haizDurationInputDatesRows get() = hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
 
 val HTMLTableRowElement.startTimeInput get() = getChildById(Ids.Row.INPUT_START_TIME) as HTMLInputElement
 val HTMLTableRowElement.endTimeInput get() = getChildById(Ids.Row.INPUT_END_TIME) as HTMLInputElement
