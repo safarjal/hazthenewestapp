@@ -165,7 +165,7 @@ data class LoadData(
     val answerEnglish: String,
     val answerUrdu: String,
     val more_infos: OtherValues? = null,
-    val user_id: Int,
+    val user_id: Int? = null,
     val created_at: String,
     val url: String,
 )
