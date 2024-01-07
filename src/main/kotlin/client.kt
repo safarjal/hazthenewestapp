@@ -1,5 +1,4 @@
-@file:Suppress("SpellCheckingInspection")
-@file:OptIn(DelicateCoroutinesApi::class)
+@file:Suppress("SpellCheckingInspection") @file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -8,8 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDate
-import kotlinx.html.*
-import kotlinx.html.js.*
+import kotlinx.html.classes
+import kotlinx.html.js.a
+import kotlinx.html.js.div
 import org.w3c.dom.*
 
 @JsModule("@js-joda/timezone")
@@ -23,16 +23,18 @@ private val jsJodaTz = JsJodaTimeZoneModule
 fun main() {
     window.onload = {
         if (rootHazapp != null) {
-            if (bearerToken?.isNotEmpty() == true) {
+            if (loggedIn()) {
                 hazappPage()
-            } else {rootHazapp.loginPage()}
+            } else {
+                loginPage()
+            }
         } else mainOtherCalcs()                             // Other Calcs Page
 
         parseHREF()
     }
 }
 
-fun hazappPage() = run {
+fun hazappPage() {
     rootHazapp!!.innerHTML = ""
     logoutDiv.innerHTML = ""
     logoutDiv.addLogoutButton()
@@ -63,16 +65,11 @@ fun languageChange() {
 
     document.body!!.classList.toggle(CssC.RTL, lang == Vls.Langs.URDU) // RTL on body if Urdu
     document.querySelectorAll("select") // Selected options don't invis so switch them.
-        .asList()
-        .map { it as HTMLSelectElement }
-        .forEach { select -> setOptionInSelect(select) }
+        .asList().map { it as HTMLSelectElement }.forEach { select -> setOptionInSelect(select) }
 }
 
 fun makeRangeArray(
-    aadatHaz: String,
-    aadatTuhr: String,
-    cycleLength: String,
-    aadatNifas: String
+    aadatHaz: String, aadatTuhr: String, cycleLength: String, aadatNifas: String
 ): MutableList<AadatsOfHaizAndTuhr> {
     //this returns an array conating all the possibilities we want to plug in and try
     val combosToTry = mutableListOf<AadatsOfHaizAndTuhr>() //this is what we will output
@@ -187,24 +184,15 @@ fun parseEntries(inputContainer: HTMLElement) {
         }
 
         val preMaslaValues = PreMaslaValues(
-            parseDays(aadatHaz.value),
-            parseDays(aadatTuhr.value),
-            parseDays(mawjoodaTuhr.value),
-            isMawjoodaFasid
+            parseDays(aadatHaz.value), parseDays(aadatTuhr.value), parseDays(mawjoodaTuhr.value), isMawjoodaFasid
         )
 
         val ikhtilaafaat = Ikhtilaafaat(
-            ikhtilaf1,
-            ikhtilaf2,
-            ikhtilaf3,
-            ikhtilaf4
+            ikhtilaf1, ikhtilaf2, ikhtilaf3, ikhtilaf4
         )
 
         val pregnancy = Pregnancy(
-            pregnancyStrt,
-            pregnancyEnd,
-            parseDays(aadatNifas.value),
-            isMustabeen
+            pregnancyStrt, pregnancyEnd, parseDays(aadatNifas.value), isMustabeen
         )
 
         var allTheInputs: AllTheInputs
@@ -232,19 +220,11 @@ fun parseEntries(inputContainer: HTMLElement) {
                         else -> {
                             DurationType.NIFAS
                         }
-                    },
-                    timeInMilliseconds = parseDays(row.durationInput.value)!!
+                    }, timeInMilliseconds = parseDays(row.durationInput.value)!!
                 )
             }
             allTheInputs = AllTheInputs(
-                entries,
-                preMaslaValues,
-                typeOfMasla,
-                pregnancy,
-                typesOfInputs,
-                languageSelected,
-                ikhtilaafaat,
-                timezone
+                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
             )
             allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
         } else {
@@ -255,14 +235,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 )
             }
             allTheInputs = AllTheInputs(
-                entries,
-                preMaslaValues,
-                typeOfMasla,
-                pregnancy,
-                typesOfInputs,
-                languageSelected,
-                ikhtilaafaat,
-                timezone
+                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
             )
         }
 
@@ -290,11 +263,7 @@ fun parseEntries(inputContainer: HTMLElement) {
 }
 
 private fun handleRangedInput(
-    allTheInputs: AllTheInputs,
-    aadatHaz: String,
-    aadatTuhr: String,
-    cycleLength: String,
-    aadatNifas: String
+    allTheInputs: AllTheInputs, aadatHaz: String, aadatTuhr: String, cycleLength: String, aadatNifas: String
 ) {
     val combosToTry = makeRangeArray(aadatHaz, aadatTuhr, cycleLength, aadatNifas)
     val listOfLists = mutableListOf<MutableList<Entry>>()
@@ -399,8 +368,7 @@ fun validateNifasDurations(durations: List<Duration>): Boolean {
 }
 
 fun convertDurationsIntoEntries(
-    durations: List<Duration>,
-    allTheOriginalInputs: AllTheInputs = AllTheInputs(null)
+    durations: List<Duration>, allTheOriginalInputs: AllTheInputs = AllTheInputs(null)
 ): AllTheInputs {
     if (allTheOriginalInputs.typeOfMasla == TypesOfMasla.NIFAS) {
         if (!validateNifasDurations(durations)) {
@@ -552,8 +520,7 @@ fun drawCompareTable(
             for (day in resultColors) {
                 div {
                     classes = setOf(
-                        CssC.HALF_TABLE_CELL,
-                        when (day) {
+                        CssC.HALF_TABLE_CELL, when (day) {
                             1 -> CssC.AYYAM_E_SHAKK
                             2 -> CssC.NA_PAAKI
                             else -> CssC.EMPTY_TABLE_CELL
@@ -573,9 +540,7 @@ fun drawCompareTable(
                     val cellValue = colorsOfDaysList[k]
                     div {
                         classes = setOf(
-                            CssC.TABLE_CELL,
-                            CssC.BORDERED,
-                            if (cellValue == 1) CssC.NA_PAAKI else CssC.EMPTY_TABLE_CELL
+                            CssC.TABLE_CELL, CssC.BORDERED, if (cellValue == 1) CssC.NA_PAAKI else CssC.EMPTY_TABLE_CELL
                         )
                         +"${k + 1}"
                     }
@@ -589,8 +554,7 @@ fun drawCompareTable(
         comparisonGrid.replaceChildren(canvas)
         comparisonGrid.classList.replace(CssC.GRID, CssC.COLUMN)
         comparisonGrid.appendChild {
-            a(href = canvas.toDataURL()) { +"Download Table" }
-                .asDynamic().download = "hazapp_comparison_table.png"
+            a(href = canvas.toDataURL()) { +"Download Table" }.asDynamic().download = "hazapp_comparison_table.png"
         }
     }
 }
@@ -671,6 +635,7 @@ val HTMLElement.hazDurationInputTableBody get() = haizDurationInputTable.tBodies
 
 @Suppress("UNCHECKED_CAST")
 val HTMLElement.haizInputDatesRows get() = hazInputTableBody.rows.asList() as List<HTMLTableRowElement>
+
 @Suppress("UNCHECKED_CAST")
 val HTMLElement.haizDurationInputDatesRows get() = hazDurationInputTableBody.rows.asList() as List<HTMLTableRowElement>
 
