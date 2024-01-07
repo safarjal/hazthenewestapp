@@ -904,10 +904,10 @@ private fun copyText(event: Event) {
             if (response != null && response!!["id"] != null) {
                 copyTxt = "_Masla Id: ${response!!["id"]}_\n" + copyTxt
                 smallTxt = "Saved and Copied "
-                inputContainer.contentContainer.setAttribute("data-saved", "true")
+                inputContainer.contentContainer.setAttribute("data-saved", response!!["id"].toString())
             } else {
                 smallTxt = "Copied"
-                window.alert("Masla has not been saved. However, it has copied.")
+                window.alert("Masla has not been saved. However, it has been copied.")
             }
 
             copyTxt.let { window.navigator.clipboard.writeText(it) }
@@ -916,7 +916,7 @@ private fun copyText(event: Event) {
         }
     } else {
         smallTxt = "Copied!"
-
+        copyTxt = "_Masla Id: ${inputContainer.contentContainer.dataset["saved"]}_\n" + copyTxt
         copyTxt.let { window.navigator.clipboard.writeText(it) }
         small?.innerHTML?.let { small.innerHTML = smallTxt }
         window.setTimeout({ small?.innerHTML = "" }, 5000)
