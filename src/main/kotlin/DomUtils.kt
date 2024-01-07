@@ -1,5 +1,4 @@
-@file:Suppress("SpellCheckingInspection")
-@file:OptIn(DelicateCoroutinesApi::class)
+@file:Suppress("SpellCheckingInspection") @file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -13,10 +12,9 @@ import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 import kotlin.js.Json
-import kotlin.js.json
 
 // MAKE ELEMENTS
-fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block : P.() -> Unit = {}) {
+fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block: P.() -> Unit = {}) {
     p(classes = classes) {
         id = idName ?: "content"
         style = "white-space: pre-wrap;"
@@ -24,7 +22,7 @@ fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = 
     }
 }
 
-fun FlowContent.copyBtn(divClass:String, btnClass: String? = null) {
+fun FlowContent.copyBtn(divClass: String, btnClass: String? = null) {
     div(classes = divClass) {
         button(classes = btnClass) {
             onClickFunction = { event ->
@@ -50,6 +48,7 @@ fun FlowContent.timeInput(
         block()
     }
 }
+
 fun FlowContent.timeInput(
     inputContainerToCopyFrom: HTMLElement,
     timeInputToCopyFrom: HTMLInputElement,
@@ -61,11 +60,9 @@ fun FlowContent.timeInput(
         block()
     }
 }
+
 fun FlowContent.timeInput(
-    isDateOnlyLayout: Boolean,
-    minTimeInput: String,
-    maxTimeInput: String,
-    block: INPUT.() -> Unit = {}
+    isDateOnlyLayout: Boolean, minTimeInput: String, maxTimeInput: String, block: INPUT.() -> Unit = {}
 ) {
     timeInput(isDateOnlyLayout) {
         min = minTimeInput
@@ -73,10 +70,9 @@ fun FlowContent.timeInput(
         block()
     }
 }
+
 fun FlowContent.timeInput(
-    inputContainerToCopyFrom: HTMLElement,
-    timeInputToCopyFrom: HTMLInputElement? = null,
-    block: INPUT.() -> Unit = {}
+    inputContainerToCopyFrom: HTMLElement, timeInputToCopyFrom: HTMLInputElement? = null, block: INPUT.() -> Unit = {}
 ) {
     timeInput(inputContainerToCopyFrom.isDateOnly) {
         block()
@@ -87,9 +83,9 @@ fun FlowContent.timeInput(
         max = timeInputToCopyFrom.max
     }
 }
+
 fun FlowContent.timeInput(
-    isDateOnlyLayout: Boolean,
-    block: INPUT.() -> Unit = {}
+    isDateOnlyLayout: Boolean, block: INPUT.() -> Unit = {}
 ) {
     customDateTimeInput(isDateOnlyLayout) {
         required = true
@@ -100,9 +96,13 @@ fun FlowContent.timeInput(
     }
 }
 
-fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}) {
+fun FlowContent.pregnancyTimeInput(
+    inputContainerToCopyFrom: HTMLElement?, inputId: String = "", block: INPUT.() -> Unit = {}
+) {
     var disable = true
-    if (inputContainerToCopyFrom != null) { disable = !inputContainerToCopyFrom.isNifas }
+    if (inputContainerToCopyFrom != null) {
+        disable = !inputContainerToCopyFrom.isNifas
+    }
     timeInput(IS_DEFAULT_INPUT_MODE_DATE_ONLY) {
         disabled = disable
         id = inputId
@@ -111,7 +111,9 @@ fun FlowContent.pregnancyTimeInput(inputContainerToCopyFrom: HTMLElement?, input
     }
 }
 
-fun FlowContent.makeLabel(inputId: String, text: Strings.() -> String, extraClasses: String = "", block: LABEL.() -> Unit = {}) {
+fun FlowContent.makeLabel(
+    inputId: String, text: Strings.() -> String, extraClasses: String = "", block: LABEL.() -> Unit = {}
+) {
     label {
         htmlFor = inputId
         classes = setOf(CssC.ENGLISH, extraClasses)
@@ -136,7 +138,9 @@ fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
     }
 }
 
-fun FlowContent.makeIkhtilafiMasla(inputId: String, text: Strings.() -> String, extraClasses: String? = null, block: DIV.() -> Unit = {}) {
+fun FlowContent.makeIkhtilafiMasla(
+    inputId: String, text: Strings.() -> String, extraClasses: String? = null, block: DIV.() -> Unit = {}
+) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
             makeLabel(inputId, text)
@@ -155,9 +159,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
 ) {
     option {
         classes = setOfNotNull(
-            CssC.ENGLISH,
-            extraClasses,
-            if (languageSelected != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
+            CssC.ENGLISH, extraClasses, if (languageSelected != Vls.Langs.ENGLISH) CssC.LANG_INVIS else null
         )
         selected = isSelected && languageSelected == Vls.Langs.ENGLISH
         value = optionVal
@@ -167,9 +169,7 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
     }
     option {
         classes = setOfNotNull(
-            CssC.URDU,
-            extraClasses,
-            if (languageSelected != Vls.Langs.URDU) CssC.LANG_INVIS else null
+            CssC.URDU, extraClasses, if (languageSelected != Vls.Langs.URDU) CssC.LANG_INVIS else null
         )
         selected = isSelected && languageSelected == Vls.Langs.URDU
         value = optionVal
@@ -179,7 +179,9 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
     }
 }
 
-fun FlowContent.makeNumberInput(inputId: String, inputVal: String?, inputRange: IntRange, block: INPUT.() -> Unit = {}) {
+fun FlowContent.makeNumberInput(
+    inputId: String, inputVal: String?, inputRange: IntRange, block: INPUT.() -> Unit = {}
+) {
     input {
         id = inputId
         name = inputId
@@ -257,6 +259,7 @@ private fun TR.addRemoveButtonsTableData(duration: Boolean = false) {
         removeButton(duration)
     }
 }
+
 private fun FlowContent.addButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = CssC.PLUS) {
         +"\u2795"
@@ -272,6 +275,7 @@ private fun FlowContent.addButton(duration: Boolean = false) {
         }
     }
 }
+
 private fun FlowContent.removeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = CssC.MINUS) {
         +"\u274C"
@@ -300,14 +304,14 @@ fun TagConsumer<HTMLElement>.inputRow(
     tr {
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
-                if (values != null)  value = values.startTime.orEmpty()
+                if (values != null) value = values.startTime.orEmpty()
                 id = Ids.Row.INPUT_START_TIME
                 disabled = disable
             }
         }
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
-                if (values!=null) value = values.endTime.orEmpty()
+                if (values != null) value = values.endTime.orEmpty()
                 id = Ids.Row.INPUT_END_TIME
                 disabled = disable
             }
@@ -353,65 +357,59 @@ private fun TagConsumer<HTMLElement>.makeDurationTableSelect(
         onChangeFunction = { event -> onChangeDurationOption(event) }
         makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, Strings::dam)
         makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, Strings::tuhr)
-        makeDropdownOptions(selectedOption == Vls.Opts.HAML, Vls.Opts.HAML, Strings::pregduration,
+        makeDropdownOptions(
+            selectedOption == Vls.Opts.HAML,
+            Vls.Opts.HAML,
+            Strings::pregduration,
             CssC.NIFAS + " " + if (!isNifaas) CssC.INVIS else null
         )
         // Wiladat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && isMustabeen,
-            Vls.Opts.WILADAT, Strings::birthduration,
+            Vls.Opts.WILADAT,
+            Strings::birthduration,
             CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!isNifaas || !isMustabeen) CssC.INVIS else null
         )
         // Isqaat
         makeDropdownOptions(
             selectedOption == Vls.Opts.WILADAT && !isMustabeen,
-            Vls.Opts.WILADAT, Strings::isqat,
+            Vls.Opts.WILADAT,
+            Strings::isqat,
             CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!isNifaas || isMustabeen) CssC.INVIS else null
         )
     }
 }
 
-private fun TagConsumer<HTMLElement>.copyDurationInputRow(
-    aadat: String,
-    selectedOption: String,
-    disable: Boolean,
-    preg: Boolean,
-    mustabeen: Boolean) {
+fun TagConsumer<HTMLElement>.copyDurationInputRow(
+    durationValue: String, selectedOption: String, disable: Boolean, isNifaas: Boolean, mustabeen: Boolean
+) {
     tr {
         td {
-            makeNumberInput(Ids.Row.INPUT_DURATION, aadat, (0..10000)) {
+            makeNumberInput(Ids.Row.INPUT_DURATION, durationValue, (0..10000)) {
                 required = true
                 disabled = disable
             }
         }
         td {
-            makeDurationTableSelect(disable, selectedOption, preg, mustabeen)
+            makeDurationTableSelect(disable, selectedOption, isNifaas, mustabeen)
         }
         addRemoveButtonsTableData(true)
     }
 }
 
 fun TagConsumer<HTMLElement>.durationInputRow(
-    lastWasDam: Boolean,
-    disable: Boolean,
-    isNifaas: Boolean = false,
-    isMustabeen: Boolean = true,
-    values: SaveEntries? = null
+    lastWasDam: Boolean, disable: Boolean, isNifaas: Boolean = false, isMustabeen: Boolean = true
 ) {
     tr {
         td {
             makeNumberInput(Ids.Row.INPUT_DURATION, "", (0..10000)) {
-                if (values != null) value = values.value.orEmpty()
                 disabled = disable
                 required = true
             }
         }
         td {
             makeDurationTableSelect(
-                disable,
-                values?.type ?: if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM,
-                isNifaas,
-                isMustabeen
+                disable, if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM, isNifaas, isMustabeen
             )
         }
         addRemoveButtonsTableData(true)
@@ -435,18 +433,14 @@ private fun addTheRemoveInputsContainerButton(inputContainer: HTMLElement) {
 private fun TagConsumer<HTMLElement>.calcAllBtn(text: String) {
     button {
         classes = setOf(
-            CssC.CALC_BTN,
-            CssC.ENGLISH,
-            if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.INVIS
+            CssC.CALC_BTN, CssC.ENGLISH, if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.INVIS
         )
         +text
         onClickFunction = { calcAll() }
     }
     button {
         classes = setOf(
-            CssC.CALC_BTN,
-            CssC.URDU,
-            if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
+            CssC.CALC_BTN, CssC.URDU, if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
         )
         +text
         onClickFunction = { calcAll() }
@@ -454,14 +448,14 @@ private fun TagConsumer<HTMLElement>.calcAllBtn(text: String) {
 }
 
 // Compare Table
-fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}) {
+fun TagConsumer<HTMLElement>.oneRow(
+    starter: Boolean = true, desc: String = "", ender: Boolean = false, block: () -> Unit = {}
+) {
     if (starter) div { id = "margin-cell" }                     // Empty buffer margin
     div {                                                       // Description of Inputs
         id = if (desc.isEmpty()) "empty_desc" else "desc"
         classes = if (desc.isEmpty()) emptySet() else setOf(
-            CssC.TABLE_CELL,
-            CssC.BORDERED,
-            CssC.DESCRIPTION
+            CssC.TABLE_CELL, CssC.BORDERED, CssC.DESCRIPTION
         )
         +desc
     }
@@ -473,13 +467,11 @@ fun TagConsumer<HTMLElement>.oneRow(starter: Boolean = true, desc: String = "", 
 // All maslas are the same
 fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String = selectElement.value) {
     // Selects the language appropriate option
-    selectElement.children
-        .asList()
-        .map { it as HTMLOptionElement }
-        .firstOrNull { option ->
-            option.value == selectedOption && option.classList.contains(languageSelected) }
-        ?.selected = true
+    selectElement.children.asList().map { it as HTMLOptionElement }.firstOrNull { option ->
+        option.value == selectedOption && option.classList.contains(languageSelected)
+    }?.selected = true
 }
+
 fun maslaChanging(selectedMasla: String) {
     inputsContainers.forEach {
         setOptionInSelect(it.maslaSelect, selectedMasla)
@@ -488,29 +480,29 @@ fun maslaChanging(selectedMasla: String) {
 }
 
 // Invising Tree
-private fun disableByClass(classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS) {
-    inputContainer.getElementsByClassName(classSelector)
-        .asList()
-        .forEach { row ->
-            row.classList.toggle(classInvis, disable)
-            row.querySelectorAll("input")
-                .asList()
-                .map { input ->
-                    input as HTMLInputElement
-                    input.disabled = disable
-                    if (disable) input.value = ""
-                }
+private fun disableByClass(
+    classSelector: String, inputContainer: HTMLElement, disable: Boolean, classInvis: String = CssC.INVIS
+) {
+    inputContainer.getElementsByClassName(classSelector).asList().forEach { row ->
+        row.classList.toggle(classInvis, disable)
+        row.querySelectorAll("input").asList().map { input ->
+            input as HTMLInputElement
+            input.disabled = disable
+            if (disable) input.value = ""
         }
+    }
 }
+
 private fun disableByMasla(inputContainer: HTMLElement) {
     disableByClass(CssC.NIFAS, inputContainer, !inputContainer.isNifas)
     disableByClass(CssC.MUTADA, inputContainer, inputContainer.isMubtadia)
 }
+
 fun disableTree(inputContainer: HTMLElement) {
     val isNifas = inputContainer.isNifas
     val isMubtadia = inputContainer.isMubtadia
     val isDateOrTime = !inputContainer.isDuration
-    val isMustabeen  = inputContainer.isMustabeen
+    val isMustabeen = inputContainer.isMustabeen
 
     disableByClass(CssC.DATE_OR_TIME_AADAT, inputContainer, !isDateOrTime)
     disableByMasla(inputContainer)
@@ -531,20 +523,22 @@ fun disableTree(inputContainer: HTMLElement) {
 
 // Ensure Aadaat in Range
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
-    val errormessage = if(languageSelected == Vls.Langs.ENGLISH) { StringsOfLanguages.ENGLISH.incorrectAadat }
-    else {StringsOfLanguages.URDU.incorrectAadat}
+    val errormessage = if (languageSelected == Vls.Langs.ENGLISH) {
+        StringsOfLanguages.ENGLISH.incorrectAadat
+    } else {
+        StringsOfLanguages.URDU.incorrectAadat
+    }
     if (value.contains("-") && devmode) {
 //        println("DASH!")
         setCustomValidity(try {
             val arr = value.split("-")
 //            console.log("IN THERE?", !arr.any { it.toInt() in validityRange }, !(arr.any { it.toInt() in validityRange }) )
-            require( arr.all { it.toInt() in validityRange } ) { errormessage }
+            require(arr.all { it.toInt() in validityRange }) { errormessage }
             ""
         } catch (e: IllegalArgumentException) {
             e.message ?: errormessage
         })
-    }
-    else {
+    } else {
         value = value.replace("[^0-9:]".toRegex(), "")
         val doubleValidityRange = validityRange.start.toDouble()..validityRange.endInclusive.toDouble()
         setCustomValidity(try {
@@ -563,22 +557,19 @@ fun switchWiladatIsqat(inputContainer: HTMLElement) {
     disableByClass(CssC.NOT_MUSTABEEN, inputContainer, inputContainer.isMustabeen)
 
     // Get All Wiladat/Isqat Selected. Should be one, but maybe someone has messed up so allow for more.
-    val wiladatSelect = inputContainer.haizDurationInputTable.querySelectorAll("select")
-        .asList()
-        .map { it as HTMLSelectElement }
-        .filter { select -> select.value == Vls.Opts.WILADAT }
+    val wiladatSelect =
+        inputContainer.haizDurationInputTable.querySelectorAll("select").asList().map { it as HTMLSelectElement }
+            .filter { select -> select.value == Vls.Opts.WILADAT }
 
     // If mustabeen, select wiladat
     if (inputContainer.isMustabeen) wiladatSelect.forEach { select ->
         select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.MUSTABEEN) }
-            .selected = true
+            .first { option -> option.classList.contains(CssC.MUSTABEEN) }.selected = true
     }
     // If !mustabeen, select isqaat
     else wiladatSelect.forEach { select ->
         select.children.asList().map { it as HTMLOptionElement }
-            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }
-            .selected = true
+            .first { option -> option.classList.contains(CssC.NOT_MUSTABEEN) }.selected = true
     }
 }
 
@@ -612,15 +603,16 @@ private fun disableDateTable(inputContainer: HTMLElement, disable: Boolean = inp
 //    disableByClass(CssC.DATETIME_AADAT, CssC.DUR_INVIS, inputContainer, disable)
     disableTree(inputContainer)
 }
+
 private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boolean = inputContainer.isDuration) {
     disableDateTable(inputContainer, isDuration)
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
+
 fun typeChanging(
-    inputContainer: HTMLElement,
-    selectedOption: String,
-    timeZone: String? = null) {
+    inputContainer: HTMLElement, selectedOption: String, timeZone: String? = null
+) {
 
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
     val isDateOnly = selectedOption == Vls.Types.DATE_ONLY
@@ -643,6 +635,7 @@ fun typeChanging(
     }
     switchToDurationTable(inputContainer)
 }
+
 fun onClickTypeConfigurationSelectDropdown(event: Event) {
     val selected = (event.currentTarget as HTMLSelectElement).value
     val inputsContainer = findInputContainer(event)
@@ -654,21 +647,21 @@ fun onClickTypeConfigurationSelectDropdown(event: Event) {
 
 // Add new rows at the start
 private fun addBeforeDurationRow(inputContainer: HTMLElement) {
-    val firstIsDam = inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.WILADAT)
+    val firstIsDam =
+        inputContainer.haizDurationInputDatesRows.first().damOrTuhr in setOf(Vls.Opts.DAM, Vls.Opts.WILADAT)
     inputContainer.hazDurationInputTableBody.prepend {
         durationInputRow(firstIsDam, false, inputContainer.isNifas, inputContainer.isMustabeen)
     }
     setupFirstRow(inputContainer, true)
 }
+
 private fun addBeforeInputRow(inputContainer: HTMLElement) {
     val row = inputContainer.hazInputTableBody.firstChild as HTMLTableRowElement
 
     inputContainer.hazInputTableBody.prepend {
-        inputRow(
-            inputContainer.isDateOnly,
+        inputRow(inputContainer.isDateOnly,
             minTimeInput = "",
-            maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max }
-        )
+            maxTimeInput = row.startTimeInput.run { value.takeUnless(String::isEmpty) ?: max })
     }
     setupRows(inputContainer)
 }
@@ -681,6 +674,7 @@ private fun addDurationRow(inputContainer: HTMLElement, row: HTMLTableRowElement
     }
     setupFirstRow(inputContainer, true)
 }
+
 private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     row.after {
         inputRow(
@@ -698,6 +692,7 @@ fun setupRows(inputContainer: HTMLElement) {
     setupFirstRow(inputContainer, false)
     setupFirstRow(inputContainer, true)
 }
+
 private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
     val inputDatesRows = if (duration) inputContainer.haizDurationInputDatesRows else inputContainer.haizInputDatesRows
     inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
@@ -719,18 +714,23 @@ fun TagConsumer<HTMLElement>.startInputRow(inputContainerToCopyFrom: HTMLElement
         )
     }
 }
-fun TagConsumer<HTMLElement>.startDurationInputRow(inputContainerToCopyFrom: HTMLElement? = null, isDuration: Boolean = false) {
+
+fun TagConsumer<HTMLElement>.startDurationInputRow(
+    inputContainerToCopyFrom: HTMLElement? = null, isDuration: Boolean = false
+) {
     if (inputContainerToCopyFrom != null) {
         for (inputDateRow in inputContainerToCopyFrom.haizDurationInputDatesRows) {
             copyDurationInputRow(
-                aadat = inputDateRow.durationInput.value,
+                durationValue = inputDateRow.durationInput.value,
                 selectedOption = inputDateRow.damOrTuhr,
                 disable = !isDuration,
-                preg = inputContainerToCopyFrom.isNifas,
+                isNifaas = inputContainerToCopyFrom.isNifas,
                 mustabeen = inputContainerToCopyFrom.isMustabeen
             )
         }
-    } else { durationInputRow(false, !isDuration) }
+    } else {
+        durationInputRow(false, !isDuration)
+    }
 }
 
 // Change Duration Option
@@ -751,12 +751,13 @@ fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
         }
     }
 }
+
 private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
     setMinMaxForTimeInputsOnInput(
-        findInputContainer(event),
-        (findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow
+        findInputContainer(event), (findRow(event).rowIndexWithinTableBody * 2) + indexWithinRow
     )
 }
+
 private fun setMinMaxForTimeInputsOnInput(inputContainer: HTMLElement, index: Int) {
     val timeInputs = inputContainer.haizTimeInputs
     val timeInput = timeInputs[index]
@@ -785,6 +786,7 @@ private fun setMinMaxForTimeInputsOnInput(inputContainer: HTMLElement, index: In
         if (nextTimeInput.value.isNotEmpty()) break
     }
 }
+
 private fun updateMinMaxForTimeInputsBeforeRemovingRow(inputContainer: HTMLElement, rowIndex: Int) {
     val timeInputs = inputContainer.haizTimeInputs
     val startDateIndex = rowIndex * 2
@@ -826,7 +828,7 @@ fun cloneInputsContainer(inputsContainerToCopyFrom: HTMLElement) {
 fun removeInputsContainer(inputsContainer: HTMLElement) {
     inputsContainer.remove()
     inputsContainers.singleOrNull()?.inputsContainerRemoveButton?.remove()
-    if (inputsContainers.size == 1) calculateAllDiv.replaceChildren {  }
+    if (inputsContainers.size == 1) calculateAllDiv.replaceChildren { }
     shrinkAnswer(false)
     disableTime()
 }
@@ -835,23 +837,20 @@ private fun shrinkAnswer(shrink: Boolean = true) {
     inputsContainers.forEach { it.contentContainer.classList.toggle(CssC.SHRUNK, shrink) }
 }
 
-private fun addCalcAllButtonIfNeeded() { calculateAllDiv.replaceChildren { calcAllBtn("Calculate All") } }
+private fun addCalcAllButtonIfNeeded() {
+    calculateAllDiv.replaceChildren { calcAllBtn("Calculate All") }
+}
 
 // Disable Date-Time Option
 private fun disableOpt(inputsContainer: HTMLElement, selectId: String, optionVal: String, disable: Boolean) {
-    inputsContainer
-        .getChildById(selectId)!!
-        .children
-        .asList()
-        .map { it as HTMLOptionElement }
-        .filter { it.value == optionVal }
-        .forEach { it.disabled = disable }
+    inputsContainer.getChildById(selectId)!!.children.asList().map { it as HTMLOptionElement }
+        .filter { it.value == optionVal }.forEach { it.disabled = disable }
 }
+
 private fun disableTime() {
     if (inputsContainers.size == 1) {
         disableOpt(inputsContainers.first(), Ids.Inputs.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, false)
-    }
-    else {
+    } else {
         inputsContainers.forEach { inputsContainer ->
             disableOpt(inputsContainer, Ids.Inputs.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
             if (inputsContainer.isDateTime) inputsContainer.typeSelect.value = Vls.Types.DATE_ONLY
@@ -889,17 +888,13 @@ private fun copyText(event: Event) {
     val saailaDetails = inputContainer.saailaDetails
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p.${Ids.Results.CONTENT_ANSWER}")?.textContent
-    var copyTxt = "*$dateStr*\n\n" +
-            "$saailaDetails\n\n" +
-            "$questionTxt\n\n" +
-            "$divider\n\n" +
-            "$answerTxt"
+    var copyTxt = "*$dateStr*\n\n" + "$saailaDetails\n\n" + "$questionTxt\n\n" + "$divider\n\n" + "$answerTxt"
 
     val small = div?.querySelector("small")
     var smallTxt: String
 
     if (inputContainer.contentContainer.dataset["saved"] == "false") {
-        var response:Json? = null;
+        var response: Json? = null
         GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
             if (response != null && response!!["id"] != null) {
                 copyTxt = "_Masla Id: ${response!!["id"]}_\n" + copyTxt

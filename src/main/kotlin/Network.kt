@@ -5,8 +5,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-  import kotlinx.browser.document
+import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.html.dom.append
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
@@ -14,7 +15,13 @@ import kotlin.js.Json
 val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk")
 //val HAZAPP_BACKEND = Url("http://localhost:3000/")
 const val AUTHORIZATION = "Authorization"
-val bearerToken get() = localStorage.getItem(AUTHORIZATION)
+const val AUTHORIZATION_DATE = "Authorization-Date"
+var bearerToken
+    get() = localStorage.getItem(AUTHORIZATION)
+    set(token) = localStorage.setItem(AUTHORIZATION, token.toString())
+var tokenDate
+    get() = localStorage.getItem(AUTHORIZATION_DATE)?.let { Instant.parse(it) }
+    set(date) = localStorage.setItem(AUTHORIZATION_DATE, date.toString())
 
 val client by lazy {
     HttpClient(Js) {
@@ -25,14 +32,15 @@ val client by lazy {
 suspend fun login(username: String, password: String) {
     val userData = User(user = UserData(username = username, password = password))
 
-    val response = client.post("$HAZAPP_BACKEND/users/sign_in"){
+    val response = client.post("$HAZAPP_BACKEND/users/sign_in") {
         contentType(ContentType.Application.Json)
         setBody(userData)
     }
 
     val token = response.headers[AUTHORIZATION]
     if (response.status == HttpStatusCode.OK && token != null) {
-        localStorage.setItem(AUTHORIZATION, token)
+        bearerToken = token
+        tokenDate = Instant.now()
         hazappPage()
     } else {
         val message = response.body<ErrorResponse>()
@@ -42,27 +50,30 @@ suspend fun login(username: String, password: String) {
 
 fun logout() {
     localStorage.removeItem(AUTHORIZATION)
+    localStorage.removeItem(AUTHORIZATION_DATE)
     if (bearerToken.isNullOrEmpty()) {
         rootHazapp!!.innerHTML = ""
-        rootHazapp.loginPage()
+        loginPage()
     }
+}
+
+fun loggedIn(): Boolean {
+    val dateDiff =
+        if (tokenDate != null) Instant.now().minusMillis(tokenDate!!.toEpochMilli()).getMillisLong().getDays()
+        else 0
+
+    return !bearerToken.isNullOrEmpty() && dateDiff < 29
 }
 
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
     with(inputsContainer) {
         val entries = if (isDuration) haizDurationInputDatesRows.map { row ->
             SaveEntries(
-                value = row.durationInput.value,
-                type = row.damOrTuhr,
-                startTime = null,
-                endTime = null
+                value = row.durationInput.value, type = row.damOrTuhr, startTime = null, endTime = null
             )
         } else haizInputDatesRows.map { row ->
             SaveEntries(
-                startTime = row.startTimeInput.value,
-                endTime = row.endTimeInput.value,
-                value = null,
-                type = null
+                startTime = row.startTimeInput.value, endTime = row.endTimeInput.value, value = null, type = null
             )
         }
 
@@ -106,18 +117,6 @@ suspend fun sendData(toSend: SaveData): Json? {
     } else null
 }
 
-//suspend inline fun sendDataWithFetch(toSend: SaveData): Unit {
-//    val response = fetch(
-//        HAZAPP_BACKEND,
-//        HttpMethod.Post,
-//        toSend,
-//        // I don't think this header makes sense as a request header
-//        //Headers.build { append(HttpHeaders.AccessControlAllowOrigin, "*") },
-//        credentials = RequestCredentials.INCLUDE,
-//    )
-//    return kotlinx.serialization.json.Json.decodeFromString(response.text().await())
-//}
-
 suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
     val response = client.get("$HAZAPP_BACKEND/maslas/$id") {
         contentType(ContentType.Application.Json)
@@ -136,7 +135,7 @@ suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
     return JSON.parse(response.body())
 }
 
-fun reInputData(data:  LoadData, inputsContainer: HTMLElement) {
+fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
     with(inputsContainer) {
         maslaSelect.value = data.typeOfMasla
         maslaChanging(data.typeOfMasla)
@@ -147,7 +146,6 @@ fun reInputData(data:  LoadData, inputsContainer: HTMLElement) {
             timezoneSelect.disabled = false
             timezoneSelect.value = data.more_infos.timeZone
         }
-
         aadatHaz.value = data.more_infos?.aadatHaiz.orEmpty()
         aadatTuhr.value = data.more_infos?.aadatTuhr.orEmpty()
         mawjoodaTuhr.value = data.more_infos?.mawjoodahTuhr.orEmpty()
@@ -160,40 +158,7 @@ fun reInputData(data:  LoadData, inputsContainer: HTMLElement) {
         ikhtilaf2Input.checked = data.more_infos?.daurHaizIkhtilaf == true
         ikhtilaf3Input.checked = data.more_infos?.ayyameQabliyyaIkhtilaf == true
         ikhtilaf4Input.checked = data.more_infos?.mubtadiaIkhitilaf == true
-
-        val entries = data.entries
-        if (data.typeOfInput == Vls.Types.DURATION) {
-            haizDurationInputTable.innerHTML = ""
-            haizDurationInputTable.append {
-                entries.forEachIndexed { index, entry ->
-                    val isPregnancy = data.typeOfMasla == Vls.Maslas.NIFAS
-                    val isMustabeen = data.more_infos?.mustabeenUlKhilqat == true
-                    durationInputRow(
-                        entries.getOrNull(index - 1)?.type == Vls.Opts.DAM,
-                        false,
-                        isPregnancy,
-                        isMustabeen,
-                        entry
-                    )
-                }
-            }
-        }
-        else {
-            hazInputTableBody.innerHTML = ""
-            hazInputTableBody.append {
-                val isDateOnly = data.typeOfInput == Vls.Types.DATE_ONLY
-                entries.forEachIndexed { index, entry ->
-                    inputRow(
-                        isDateOnly,
-                        entries.getOrNull(index - 1)?.endTime.orEmpty(),
-                        entries.getOrNull(index + 1)?.startTime.orEmpty(),
-                        false,
-                        entry
-                    )
-                }
-            }
-        }
-
+        handleLoadedEntries(data)
         saailaDetailsInput.value = data.more_infos?.saaila.orEmpty()
         questionTextInput.value = data.more_infos?.question.orEmpty()
         contentContainer.setAttribute("data-saved", "true")
@@ -201,5 +166,45 @@ fun reInputData(data:  LoadData, inputsContainer: HTMLElement) {
         contentEnglish.innerHTML = replaceStarWithStarAndBoldTag(data.answerEnglish)
         contentUrdu.innerHTML = replaceStarWithStarAndBoldTag(data.answerUrdu)
         contentContainer.scrollIntoView()
+    }
+}
+
+fun HTMLElement.handleLoadedEntries(data: LoadData) {
+    val entries = data.entries
+    if (data.typeOfInput == Vls.Types.DURATION) {
+        hazDurationInputTableBody.innerHTML = ""
+        entriesToDurationTable(entries, data.typeOfMasla, data.more_infos?.mustabeenUlKhilqat)
+    } else {
+        hazInputTableBody.innerHTML = ""
+        entriesToTable(entries, data.typeOfInput)
+    }
+}
+
+fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String) {
+    val isDateOnly = typeOfInput == Vls.Types.DATE_ONLY
+    hazInputTableBody.append {
+        entries.forEachIndexed { index, entry ->
+            inputRow(
+                isDateOnly,
+                entries.getOrNull(index - 1)?.endTime.orEmpty(),
+                entries.getOrNull(index + 1)?.startTime.orEmpty(),
+                false,
+                entry
+            )
+        }
+    }
+}
+
+fun HTMLElement.entriesToDurationTable(entries: List<SaveEntries>, typeOfMasla: String, mustabeenUlKhilqat: Boolean?) {
+    hazDurationInputTableBody.append {
+        entries.map { entry ->
+            val isNifaas = typeOfMasla == Vls.Maslas.NIFAS
+            val isMustabeen = mustabeenUlKhilqat == true
+            if (entry.value != null && entry.type != null) {
+                copyDurationInputRow(
+                    entry.value, entry.type, false, isNifaas, isMustabeen
+                )
+            }
+        }
     }
 }

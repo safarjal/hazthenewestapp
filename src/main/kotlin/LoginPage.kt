@@ -4,12 +4,16 @@ import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
-import org.w3c.dom.*
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLParagraphElement
+import org.w3c.dom.Node
 
 @OptIn(DelicateCoroutinesApi::class)
-fun Node.loginPage() {
+fun loginPage() {
     logoutDiv.innerHTML = ""
-    appendChild {
+    rootHazapp!!.innerHTML = ""
+    rootHazapp.appendChild {
         div {
             id = Ids.InputContainers.INPUT_CONTAINERS_CONTAINER
             div(classes = Ids.InputContainers.INPUT_CONTAINER) {
@@ -50,7 +54,7 @@ fun Node.loginPage() {
     }
 }
 
-public val HTMLElement.errorMessage get() = getChildById(Ids.ERROR_MESSAGE) as HTMLParagraphElement
+val HTMLElement.errorMessage get() = getChildById(Ids.ERROR_MESSAGE) as HTMLParagraphElement
 private val HTMLElement.username get() = (getChildById(Ids.LoginLogout.USERNAME) as HTMLInputElement).value
 private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD) as HTMLInputElement).value
 
@@ -73,8 +77,7 @@ fun Node.addLogoutButton() {
 //            id = "login_button"
 ////            TODO:
 //            onClickFunction = {
-//                rootHazapp!!.innerHTML = ""
-//                rootHazapp.loginPage()
+//                loginPage()
 //            }
 //            makeSpans("Login", "Login")
 //        }
