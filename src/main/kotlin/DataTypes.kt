@@ -171,8 +171,10 @@ data class LoadData(
 )
 @Serializable
 data class SaveEntries(
-    val startTime: String,
-    val endTime: String,
+    val startTime: String? = null,
+    val endTime: String? = null,
+    val value: String? = null,
+    val type: String? = null,
 )
 
 @Serializable

@@ -7,6 +7,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
   import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import kotlinx.html.dom.append
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
 
@@ -34,8 +35,8 @@ suspend fun login(username: String, password: String) {
         localStorage.setItem(AUTHORIZATION, token)
         hazappPage()
     } else {
-        val message = response.body<ErrorResponse>();
-        document.body!!.errorMessage.innerText = message.error;
+        val message = response.body<ErrorResponse>()
+        document.body!!.errorMessage.innerText = message.error
     }
 }
 
@@ -49,10 +50,19 @@ fun logout() {
 
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
     with(inputsContainer) {
-        val entries = haizInputDatesRows.map { row ->
+        val entries = if (isDuration) haizDurationInputDatesRows.map { row ->
+            SaveEntries(
+                value = row.durationInput.value,
+                type = row.damOrTuhr,
+                startTime = null,
+                endTime = null
+            )
+        } else haizInputDatesRows.map { row ->
             SaveEntries(
                 startTime = row.startTimeInput.value,
-                endTime = row.endTimeInput.value
+                endTime = row.endTimeInput.value,
+                value = null,
+                type = null
             )
         }
 
@@ -91,9 +101,9 @@ suspend fun sendData(toSend: SaveData): Json? {
         setBody(toSend)
     }
 
-    if (response.status == HttpStatusCode.Created) {
-        return JSON.parse(response.body())
-    } else return null
+    return if (response.status == HttpStatusCode.Created) {
+        JSON.parse(response.body())
+    } else null
 }
 
 //suspend inline fun sendDataWithFetch(toSend: SaveData): Unit {

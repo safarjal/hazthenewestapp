@@ -84,7 +84,7 @@ fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
     classes: String? = null,
     block: INPUT.() -> Unit = {}
 ) {
-    if (isDateOnly)  dateInput(classes = classes, block = block)
+    if (isDateOnly) dateInput(classes = classes, block = block)
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
