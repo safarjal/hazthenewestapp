@@ -333,8 +333,9 @@ object Ids {
     }
     object InputTables {
         const val HAIZ_INPUT_TABLE = "haiz_input_table"
+        const val HAIZ_INPUT_TABLE_BODY = "haiz_input_table_body"
         const val HAIZ_DURATION_INPUT_TABLE = "haiz_duration_input_table"
-
+        const val HAIZ_DURATION_INPUT_TABLE_BODY = "haiz_duration_input_table_BODY"
     }
     object AddTimeToDate {
         //        const val IS_DATE_ONLY = "is_date_only_add_time_to_date"

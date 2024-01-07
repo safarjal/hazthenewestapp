@@ -306,7 +306,10 @@ private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFro
                 th { addBeforeButton() }
             }
         }
-        tbody { startInputRow(inputContainerToCopyFrom, isDuration) }
+        tbody() {
+            id = Ids.InputTables.HAIZ_INPUT_TABLE_BODY
+            startInputRow(inputContainerToCopyFrom, isDuration)
+        }
     }
 }
 
@@ -322,7 +325,10 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
                 th { addBeforeButton(true) }
             }
         }
-        tbody { startDurationInputRow(inputContainerToCopyFrom, isDuration) }
+        tbody {
+            id = Ids.InputTables.HAIZ_DURATION_INPUT_TABLE_BODY
+            startDurationInputRow(inputContainerToCopyFrom, isDuration)
+        }
     }
 }
 

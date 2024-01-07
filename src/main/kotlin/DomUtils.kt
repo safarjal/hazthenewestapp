@@ -917,13 +917,15 @@ private fun calcAll() {
 }
 
 // VALS
-private val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
-private val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
+val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
+val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
 private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
 
 val HTMLElement.inputID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLInputElement).value
-val HTMLElement.saailaDetails get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement).value
-val HTMLElement.questionText get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement).value
+val HTMLElement.saailaDetailsInput get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement)
+val HTMLElement.saailaDetails get() = saailaDetailsInput.value
+val HTMLElement.questionTextInput get() = (getChildById(Ids.Inputs.INPUT_QUESTION) as HTMLTextAreaElement)
+val HTMLElement.questionText get() = questionTextInput.value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
