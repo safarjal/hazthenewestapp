@@ -888,7 +888,7 @@ private fun copyText(event: Event) {
     val questionTxt = inputContainer.questionText
     val saailaDetails = inputContainer.saailaDetails
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
-    val answerTxt = div?.querySelector("p")?.textContent
+    val answerTxt = div?.querySelector("p.${Ids.Results.CONTENT_ANSWER}")?.textContent
     var copyTxt = "*$dateStr*\n\n" +
             "$saailaDetails\n\n" +
             "$questionTxt\n\n" +
@@ -896,7 +896,7 @@ private fun copyText(event: Event) {
             "$answerTxt"
 
     val small = div?.querySelector("small")
-    var smallTxt: String = "Not Copied :("
+    var smallTxt: String
 
     if (inputContainer.contentContainer.dataset["saved"] == "false") {
         var response:Json? = null;

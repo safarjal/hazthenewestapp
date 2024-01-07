@@ -15,6 +15,12 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
     return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
         .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
 }
+fun replaceStarWithStarAndBoldTag(string: String): String {
+    return string.replace(Regex("\\*(.*?)\\*")) {
+        console.log("regex", it.groupValues, it)
+        "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
+    }
+}
 
 private fun insertRelative(
     ownerDocument: Document,
@@ -367,6 +373,7 @@ object Ids {
     object Results {
         const val CONTENT_CONTAINER = "content_container"
         const val CONTENT_WRAPPER = "content_wrapper"
+        const val CONTENT_ANSWER = "content_answer"
         const val CONTENT_URDU = "content_urdu"
         const val CONTENT_ENGLISH = "content_english"
         const val CONTENT_DATES = "content_dates"
