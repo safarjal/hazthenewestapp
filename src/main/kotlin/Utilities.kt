@@ -17,7 +17,6 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
 }
 fun replaceStarWithStarAndBoldTag(string: String): String {
     return string.replace(Regex("\\*(.*?)\\*")) {
-        console.log("regex", it.groupValues, it)
         "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
     }
 }

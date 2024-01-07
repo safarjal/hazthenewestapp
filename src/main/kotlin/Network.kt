@@ -125,6 +125,7 @@ suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
 
     if (response.status == HttpStatusCode.OK) {
         val loadedMasla = response.body<LoadData>()
+        inputsContainer.errorMessage.visibility = false
         reInputData(loadedMasla, inputsContainer)
     } else {
         val message = response.body<ErrorResponse>()
