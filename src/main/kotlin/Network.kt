@@ -146,7 +146,6 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
             timezoneSelect.disabled = false
             timezoneSelect.value = data.more_infos.timeZone
         }
-
         aadatHaz.value = data.more_infos?.aadatHaiz.orEmpty()
         aadatTuhr.value = data.more_infos?.aadatTuhr.orEmpty()
         mawjoodaTuhr.value = data.more_infos?.mawjoodahTuhr.orEmpty()
@@ -159,35 +158,7 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         ikhtilaf2Input.checked = data.more_infos?.daurHaizIkhtilaf == true
         ikhtilaf3Input.checked = data.more_infos?.ayyameQabliyyaIkhtilaf == true
         ikhtilaf4Input.checked = data.more_infos?.mubtadiaIkhitilaf == true
-
-        val entries = data.entries
-        if (data.typeOfInput == Vls.Types.DURATION) {
-            haizDurationInputTable.innerHTML = ""
-            haizDurationInputTable.append {
-                entries.forEachIndexed { index, entry ->
-                    val isPregnancy = data.typeOfMasla == Vls.Maslas.NIFAS
-                    val isMustabeen = data.more_infos?.mustabeenUlKhilqat == true
-                    durationInputRow(
-                        entries.getOrNull(index - 1)?.type == Vls.Opts.DAM, false, isPregnancy, isMustabeen, entry
-                    )
-                }
-            }
-        } else {
-            hazInputTableBody.innerHTML = ""
-            hazInputTableBody.append {
-                val isDateOnly = data.typeOfInput == Vls.Types.DATE_ONLY
-                entries.forEachIndexed { index, entry ->
-                    inputRow(
-                        isDateOnly,
-                        entries.getOrNull(index - 1)?.endTime.orEmpty(),
-                        entries.getOrNull(index + 1)?.startTime.orEmpty(),
-                        false,
-                        entry
-                    )
-                }
-            }
-        }
-
+        handleLoadedEntries(data)
         saailaDetailsInput.value = data.more_infos?.saaila.orEmpty()
         questionTextInput.value = data.more_infos?.question.orEmpty()
         contentContainer.setAttribute("data-saved", "true")
@@ -195,5 +166,45 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         contentEnglish.innerHTML = replaceStarWithStarAndBoldTag(data.answerEnglish)
         contentUrdu.innerHTML = replaceStarWithStarAndBoldTag(data.answerUrdu)
         contentContainer.scrollIntoView()
+    }
+}
+
+fun HTMLElement.handleLoadedEntries(data: LoadData) {
+    val entries = data.entries
+    if (data.typeOfInput == Vls.Types.DURATION) {
+        hazDurationInputTableBody.innerHTML = ""
+        entriesToDurationTable(entries, data.typeOfMasla, data.more_infos?.mustabeenUlKhilqat)
+    } else {
+        hazInputTableBody.innerHTML = ""
+        entriesToTable(entries, data.typeOfInput)
+    }
+}
+
+fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String) {
+    val isDateOnly = typeOfInput == Vls.Types.DATE_ONLY
+    hazInputTableBody.append {
+        entries.forEachIndexed { index, entry ->
+            inputRow(
+                isDateOnly,
+                entries.getOrNull(index - 1)?.endTime.orEmpty(),
+                entries.getOrNull(index + 1)?.startTime.orEmpty(),
+                false,
+                entry
+            )
+        }
+    }
+}
+
+fun HTMLElement.entriesToDurationTable(entries: List<SaveEntries>, typeOfMasla: String, mustabeenUlKhilqat: Boolean?) {
+    hazDurationInputTableBody.append {
+        entries.map { entry ->
+            val isNifaas = typeOfMasla == Vls.Maslas.NIFAS
+            val isMustabeen = mustabeenUlKhilqat == true
+            if (entry.value != null && entry.type != null) {
+                copyDurationInputRow(
+                    entry.value, entry.type, false, isNifaas, isMustabeen
+                )
+            }
+        }
     }
 }
