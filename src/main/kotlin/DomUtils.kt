@@ -290,20 +290,24 @@ private fun FlowContent.removeButton(duration: Boolean = false) {
 }
 
 // DateTime
-private fun TagConsumer<HTMLElement>.inputRow(
+fun TagConsumer<HTMLElement>.inputRow(
     isDateOnlyLayout: Boolean,
     minTimeInput: String,
     maxTimeInput: String,
-    disable: Boolean = false) {
+    disable: Boolean = false,
+    values: SaveEntries? = null,
+) {
     tr {
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
+                if (values != null)  value = values.startTime.orEmpty()
                 id = Ids.Row.INPUT_START_TIME
                 disabled = disable
             }
         }
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
+                if (values!=null) value = values.endTime.orEmpty()
                 id = Ids.Row.INPUT_END_TIME
                 disabled = disable
             }
@@ -311,6 +315,7 @@ private fun TagConsumer<HTMLElement>.inputRow(
         addRemoveButtonsTableData()
     }
 }
+
 private fun TagConsumer<HTMLElement>.copyInputRow(
     inputContainerToCopyFrom: HTMLElement,
     startTimeInputToCopyFrom: HTMLInputElement,
@@ -335,11 +340,12 @@ private fun TagConsumer<HTMLElement>.copyInputRow(
 }
 
 // Duration
-private fun TagConsumer<HTMLElement>.makeDurationSelect(
+private fun TagConsumer<HTMLElement>.makeDurationTableSelect(
     disable: Boolean,
     selectedOption: String,
-    preg: Boolean,
-    mustabeen: Boolean = true) {
+    isNifaas: Boolean,
+    isMustabeen: Boolean = true,
+) {
     select {
         id = Ids.Row.INPUT_TYPE_OF_DURATION
         name = Ids.Row.INPUT_TYPE_OF_DURATION
@@ -348,19 +354,19 @@ private fun TagConsumer<HTMLElement>.makeDurationSelect(
         makeDropdownOptions(selectedOption == Vls.Opts.DAM, Vls.Opts.DAM, Strings::dam)
         makeDropdownOptions(selectedOption == Vls.Opts.TUHR, Vls.Opts.TUHR, Strings::tuhr)
         makeDropdownOptions(selectedOption == Vls.Opts.HAML, Vls.Opts.HAML, Strings::pregduration,
-            CssC.NIFAS + " " + if (!preg) CssC.INVIS else null
+            CssC.NIFAS + " " + if (!isNifaas) CssC.INVIS else null
         )
         // Wiladat
         makeDropdownOptions(
-            selectedOption == Vls.Opts.WILADAT && mustabeen,
+            selectedOption == Vls.Opts.WILADAT && isMustabeen,
             Vls.Opts.WILADAT, Strings::birthduration,
-            CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!preg || !mustabeen) CssC.INVIS else null
+            CssC.NIFAS + " " + CssC.MUSTABEEN + " " + if (!isNifaas || !isMustabeen) CssC.INVIS else null
         )
         // Isqaat
         makeDropdownOptions(
-            selectedOption == Vls.Opts.WILADAT && !mustabeen,
+            selectedOption == Vls.Opts.WILADAT && !isMustabeen,
             Vls.Opts.WILADAT, Strings::isqat,
-            CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!preg || mustabeen) CssC.INVIS else null
+            CssC.NIFAS + " " + CssC.NOT_MUSTABEEN + " " + if (!isNifaas || isMustabeen) CssC.INVIS else null
         )
     }
 }
@@ -379,24 +385,35 @@ private fun TagConsumer<HTMLElement>.copyDurationInputRow(
             }
         }
         td {
-            makeDurationSelect(disable, selectedOption, preg, mustabeen)
+            makeDurationTableSelect(disable, selectedOption, preg, mustabeen)
         }
         addRemoveButtonsTableData(true)
     }
 }
-private fun TagConsumer<HTMLElement>.durationInputRow(
+
+fun TagConsumer<HTMLElement>.durationInputRow(
     lastWasDam: Boolean,
     disable: Boolean,
-    preg: Boolean = false,
-    mustabeen: Boolean = true) {
+    isNifaas: Boolean = false,
+    isMustabeen: Boolean = true,
+    values: SaveEntries? = null
+) {
     tr {
         td {
             makeNumberInput(Ids.Row.INPUT_DURATION, "", (0..10000)) {
+                if (values != null) value = values.value.orEmpty()
                 disabled = disable
                 required = true
             }
         }
-        td { makeDurationSelect(disable, if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM, preg, mustabeen) }
+        td {
+            makeDurationTableSelect(
+                disable,
+                values?.type ?: if (lastWasDam) Vls.Opts.TUHR else Vls.Opts.DAM,
+                isNifaas,
+                isMustabeen
+            )
+        }
         addRemoveButtonsTableData(true)
     }
 }
@@ -628,12 +645,11 @@ fun typeChanging(
 }
 fun onClickTypeConfigurationSelectDropdown(event: Event) {
     val selected = (event.currentTarget as HTMLSelectElement).value
-    val inputContainer = findInputContainer(event)
-    val isDateOnly = inputContainer.isDateOnly
-    val isDateTime = inputContainer.isDateTime
-    val timeZone =  if (inputContainer.timezoneSelect.disabled) null else inputContainer.timezoneSelect.value
+    val inputsContainer = findInputContainer(event)
+    val timeZoneSelector = inputsContainer.timezoneSelect
+    val timeZone = if (timeZoneSelector.disabled) null else timeZoneSelector.value
     // Ensure all input containers are same type
-    inputsContainers.forEach { typeChanging(it, selected, isDateOnly, isDateTime, timeZone) }
+    inputsContainers.forEach { typeChanging(it, selected, timeZone) }
 }
 
 // Add new rows at the start
@@ -884,16 +900,13 @@ private fun copyText(event: Event) {
 
     if (inputContainer.contentContainer.dataset["saved"] == "false") {
         var response:Json? = null;
-        val job = GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer)
-        console.log(response)}
-        job.invokeOnCompletion {
-            console.log("Promise?")
+        GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
             if (response != null && response!!["id"] != null) {
                 copyTxt = "_Masla Id: ${response!!["id"]}_\n" + copyTxt
-                smallTxt = " Saved and Copied "
+                smallTxt = "Saved and Copied "
                 inputContainer.contentContainer.setAttribute("data-saved", "true")
             } else {
-                smallTxt = " Copied "
+                smallTxt = "Copied"
                 window.alert("Masla has not been saved. However, it has copied.")
             }
 

@@ -273,6 +273,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                     }
                 }
             }
+            content(Ids.ERROR_MESSAGE, CssC.INVIS)
         }
     }
 
