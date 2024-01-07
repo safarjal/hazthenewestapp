@@ -121,7 +121,6 @@ suspend fun sendData(toSend: SaveData): Json? {
 suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
     val response = client.get("$HAZAPP_BACKEND/maslas/$id") {
         contentType(ContentType.Application.Json)
-        setBody(id)
     }
 
     if (response.status == HttpStatusCode.OK) {
