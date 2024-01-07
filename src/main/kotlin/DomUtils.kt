@@ -16,9 +16,9 @@ import kotlin.js.Json
 import kotlin.js.json
 
 // MAKE ELEMENTS
-fun TagConsumer<HTMLElement>.content(classes: String? = null, block : P.() -> Unit = {}) {
+fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block : P.() -> Unit = {}) {
     p(classes = classes) {
-        id = "content"
+        id = idName ?: "content"
         style = "white-space: pre-wrap;"
         block()
     }

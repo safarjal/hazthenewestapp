@@ -347,14 +347,14 @@ private fun TagConsumer<HTMLElement>.content() {
         div(classes = CssC.URDU) {
             id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.LEFT, CssC.RTL)
-            content { id = Ids.Results.CONTENT_URDU }
+            content(Ids.Results.CONTENT_URDU, Ids.Results.CONTENT_ANSWER)
         }
         div(classes = CssC.ENGLISH) {
             id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.RIGHT)
-            content { id = Ids.Results.CONTENT_ENGLISH }
+            content(Ids.Results.CONTENT_ENGLISH, Ids.Results.CONTENT_ANSWER)
         }
-        content { id = Ids.Results.CONTENT_DATES }
+        content(Ids.Results.CONTENT_DATES)
         hr()
     }
 }

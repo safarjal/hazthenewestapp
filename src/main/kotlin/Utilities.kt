@@ -323,6 +323,7 @@ fun OutputStringsLanguages.replaceDur(placeholder: String,
 // VALS TO USE
 object Ids {
     const val LANGUAGE = "language"
+    const val ERROR_MESSAGE = "error_message"
 
     object InputContainers {
         const val INPUT_CONTAINERS_CONTAINER = "input_containers_container"
