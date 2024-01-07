@@ -90,7 +90,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         makeLabel(Ids.Inputs.MASLA_TYPE_SELECT, Strings::typeOfMasla)
         select {
             id = Ids.Inputs.MASLA_TYPE_SELECT
-            onChangeFunction = { event -> maslaChanging(event) }
+            onChangeFunction = { event -> maslaChanging((event.currentTarget as HTMLSelectElement).value) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, Strings::mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, Strings::nifas)
             makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, Strings::mubtadia, "dev") {
@@ -258,7 +258,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 name = Ids.Inputs.INPUT_ID
                 value = inputContainerToCopyFrom?.inputID.orEmpty()
             }
-            button {
+            button(classes = CssC.CALC_BTN) {
                 id = Ids.Inputs.SUBMIT
                 name = Ids.Inputs.SUBMIT
                 type = ButtonType.button

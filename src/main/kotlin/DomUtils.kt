@@ -463,10 +463,9 @@ fun setOptionInSelect(selectElement: HTMLSelectElement, selectedOption: String =
             option.value == selectedOption && option.classList.contains(languageSelected) }
         ?.selected = true
 }
-fun maslaChanging(event: Event) {
-    val selectedOption = (event.currentTarget as HTMLSelectElement).value
+fun maslaChanging(selectedMasla: String) {
     inputsContainers.forEach {
-        setOptionInSelect(it.maslaSelect, selectedOption)
+        setOptionInSelect(it.maslaSelect, selectedMasla)
         disableTree(it)
     }
 }
@@ -601,13 +600,14 @@ private fun switchToDurationTable(inputContainer: HTMLElement, isDuration: Boole
     inputContainer.haizInputTable.visibility = !isDuration
     inputContainer.haizDurationInputTable.visibility = isDuration
 }
-private fun typeChanging(
+fun typeChanging(
     inputContainer: HTMLElement,
     selectedOption: String,
-    isDateOnly: Boolean,
-    isDateTime: Boolean,
     timeZone: String? = null) {
+
     setOptionInSelect(inputContainer.typeSelect, selectedOption)
+    val isDateOnly = selectedOption == Vls.Types.DATE_ONLY
+    val isDateTime = selectedOption == Vls.Types.DATE_TIME
 
     for (timeInput in inputContainer.timeInputsGroups.flatten()) {
         val newValue = convertInputValue(timeInput.value, isDateOnly, timeZone)
