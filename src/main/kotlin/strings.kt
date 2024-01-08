@@ -7,6 +7,7 @@ val urduStrings = Strings(
     "<b>واللہ تعالی اعلم بالصواب</b>\n\n",
     "فی الحال آپ کے پاکی کے دن ہیں اپنی عبادات جاری رکھیں۔\n\n",
     "فی الحال آپ کے حیض کے دن ہیں۔ خون جاری رہنے کی صورت میں عبادات سے رکیں۔\n\n",
+    "اگر خون ${Rplc.DT1} سے پہلے بند ہو گیا اور پندرہ دن کی کامل پاکی مل گیٔ جس میں خون اور دھبے نہیں پڑے تب پھر <b>مسلہ ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلے کی صورت بدل جائے گی۔</b>\n\n",
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>${Rplc.DT1} کو ضرور دوبارہ پوچھ لیں، اس لیے کہ مسئلہ کی صورت بدل جائے گی۔</b>\n\n",
     "اگر ${Rplc.DT1} تک بھی خون جاری ہی رہے  تب بھی <b>${Rplc.DT1} کو غسل کر کے اپنی عبادات شروع کر دیں۔</b>\n\n",
     "حمل سے پہلے اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
@@ -129,6 +130,9 @@ val englishStrings = Strings(
             "worship as usual.\n\n",
     "You are in the days of your period right now, so, if bleeding continues you" +
             " cannot do any of your ritual worship.\n\n",
+    "In case this bleeding stops before ${Rplc.DT1} and there is a gap of 15 days or more of  complete " +
+            "purity with no bleeding and spotting, then <b>kindly do contact us again as " +
+            "the current ruling may change accordingly.</b>\n\n",
     "In case this bleeding continues without gap, or, it continues with gaps " +
             "less than 15 days at a stretch, then <b>kindly do contact us again on ${Rplc.DT1} as " +
             "the current ruling may change accordingly.</b>\n\n",
