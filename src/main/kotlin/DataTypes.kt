@@ -127,7 +127,8 @@ data class Strings(
     val username: String,
     val password: String,
     val submit: String,
-    val logout: String
+    val logout: String,
+    val loginAgain: String
     )
 
 data class AllTheInputs(
