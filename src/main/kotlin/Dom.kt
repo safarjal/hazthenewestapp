@@ -69,14 +69,14 @@ private fun FlowContent.ikhtilafiMasle() {
                 span(classes = CssC.ENGLISH) { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = CssC.URDU) { StringsOfLanguages.URDU.ikhtilafimasail }
             }
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf, true)
             makeIkhtilafiMasla(
                 Ids.Ikhtilafat.IKHTILAF2,
-                Strings::aadatIncreasingAtEndOfDaurIkhtilaf,
+                Strings::aadatIncreasingAtEndOfDaurIkhtilaf, false,
                 extraClasses = CssC.DEV
             )
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3, Strings::ayyameqabliyyaikhtilaf, extraClasses = CssC.DEV)
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4, Strings::mubtadiaikhitilaf, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3, Strings::ayyameqabliyyaikhtilaf, false, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4, Strings::mubtadiaikhitilaf, false, extraClasses = CssC.DEV)
         }
     }
 }

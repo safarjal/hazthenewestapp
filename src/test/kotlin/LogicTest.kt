@@ -2068,6 +2068,49 @@ class LogicTest {
 
 
     @Test
+    fun testBugMaslaIssue212() {
+        val entries = mutableListOf<Entry>()
+        entries +=//30Apr-5May
+            Entry(makeInstant(2023, 4, 30),
+                makeInstant(2023, 5, 5, ))
+        entries +=//25may-1jun
+            Entry(makeInstant(2023, 5, 25, ),
+                makeInstant(2023, 6, 1, ))
+        //haml + isqat (ghair mustabeen) on 1 sept
+        entries +=//1sep-15sep
+            Entry(makeInstant(2023, 9, 1, ),
+                makeInstant(2023, 9, 15, ))
+
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.NIFAS,
+                pregnancy = Pregnancy(makeInstant(2023, 6, 1),
+                    makeInstant(2023, 9, 1),
+                    40.getMilliDays(),
+                    mustabeenUlKhilqat = false)))
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("7")!!, parseDays("92")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2023,12, 9), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        println(output.outputText.urduString)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
+
+    @Test
     fun testBugMaslaIssue134() {
         val entries = mutableListOf<Entry>()
         entries +=//each month has to be one minus the real

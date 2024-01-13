@@ -128,10 +128,11 @@ fun FlowContent.makeLabel(
     }
 }
 
-fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
+fun FlowContent.makeSwitch(inputId: String, value: Boolean, block: INPUT.() -> Unit = {}) {
     label(classes = CssC.SWITCH) {
         checkBoxInput {
             id = inputId
+            checked = value
             block()
         }
         span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
@@ -139,12 +140,12 @@ fun FlowContent.makeSwitch(inputId: String, block: INPUT.() -> Unit = {}) {
 }
 
 fun FlowContent.makeIkhtilafiMasla(
-    inputId: String, text: Strings.() -> String, extraClasses: String? = null, block: DIV.() -> Unit = {}
+    inputId: String, text: Strings.() -> String, value: Boolean, extraClasses: String? = null, block: DIV.() -> Unit = {}
 ) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
             makeLabel(inputId, text)
-            makeSwitch(inputId)
+            makeSwitch(inputId, value)
         }
         block()
     }
