@@ -460,7 +460,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                     fixedDurations[i].biggerThanTen = biggerThanTen
                     iztirariAadatTuhr=30.getMilliDays()-haiz
                 }
-            }else{//we have an istehaza after sitch
+            }else{//we have a daur with a potential istehaza after sitch
 //                println("6")
 
                 haiz = iztirariAadatHaiz
@@ -469,15 +469,15 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                 //now we gotta check if a daur happened
                 iztirariAadatHaiz = dealWithIstihazaAfter(istehazaAfter, haiz, iztirariAadatTuhr, fixedDurations, i, endOfDaurIkhtilaf)
 //                println("7")
-//                println("istehaza after was ${istehazaAfter.daysFromMillis()}")
-//                println("deal with istihaza after returned this aadat ${iztirariAadatHaiz.daysFromMillis()} ")
+//                println("istehaza after was ${istehazaAfter/MILLISECONDS_IN_A_DAY}")
+//                println("deal with istihaza after returned this aadat ${iztirariAadatHaiz/MILLISECONDS_IN_A_DAY} ")
 
                 //now we wanna check if aadat did change.
                 //a bit hackish but..
                 val remainder = istehazaAfter%(30.getMilliDays())
 //                println("remainder was $remainder")
                 if(iztirariAadatHaiz<10.getMilliDays() ||
-                    (iztirariAadatHaiz==10.getMilliDays() && remainder==10.getMilliDays())){
+                    (iztirariAadatHaiz==10.getMilliDays() && remainder==0L)){//either it is less than 10, or it is 10, but no more
 //                    println("8")
 
                     //in this case we gotta check further
