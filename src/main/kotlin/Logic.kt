@@ -1156,6 +1156,7 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,
         }
         //now we have aadaat
 
+        //get mawjoodah paki efor last dam
         var mp = inputtedMawjoodaTuhr
         if(fixedDurations.size>1){
             mp = fixedDurations[fixedDurations.size-2].timeInMilliseconds+
@@ -1166,7 +1167,8 @@ fun checkForAyyameQabliyya(fixedDurations: MutableList<FixedDuration>,
             val ayyaameqabliyyah = gp-mp
             if(ayyaameqabliyyah+hz>10.getMilliDays() &&
                 ayyaameqabliyyah<18.getMilliDays()&&
-                fixedDurations.last().timeInMilliseconds<ayyaameqabliyyah){//hasn't entered into aadat yet
+                fixedDurations.last().timeInMilliseconds<ayyaameqabliyyah &&
+                fixedDurations.last().days<=10){//hasn't entered into aadat yet and is less than 10 days. if it is more than 10 days, then A-3
                 fixedDurations.last().type = DurationType.ISTEHAZA_AYYAMEQABLIYYA
                 fixedDurations.last().ayyameqabliyya=AyyameQabliyya(ayyaameqabliyyah, hz, gp)
             }
