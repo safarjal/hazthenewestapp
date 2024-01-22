@@ -118,6 +118,7 @@ val urduStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -267,6 +268,7 @@ val englishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 
 object StringsOfLanguages{
