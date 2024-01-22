@@ -60,7 +60,7 @@ fun logout() {
 fun loggedIn(): Boolean {
     val dateDiff =
         if (tokenDate != null) Instant.now().minusMillis(tokenDate!!.toEpochMilli()).getMillisLong().getDays()
-        else 0
+        else 29
 
     return !bearerToken.isNullOrEmpty() && dateDiff < 29
 }
