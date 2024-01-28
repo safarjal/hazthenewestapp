@@ -420,6 +420,8 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                 //give error
                 if(language==Vls.Langs.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                }else if(language==Vls.Langs.MMENGLISH){
+                    window.alert(StringsOfLanguages.MMENGLISH.errorEnterMawjoodaPaki)
                 }else if(language==Vls.Langs.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                 }
@@ -529,6 +531,8 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                     //give error
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterNifasAadat)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterNifasAadat)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterNifasAadat)
                     }
@@ -917,6 +921,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                     }
@@ -936,6 +942,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 //give error message
                 if(language==Vls.Langs.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                }else if(language==Vls.Langs.MMENGLISH){
+                    window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
                 }else if(language==Vls.Langs.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                 }
@@ -946,6 +954,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterMawjoodaPaki)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                     }

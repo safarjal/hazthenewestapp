@@ -56,6 +56,7 @@ data class Strings(
     val dateAndTime:String,
     val urdu:String,
     val english:String,
+    val mmenglish:String,
     val haizAadat:String,
     val tuhrAadat:String,
     val mawjoodahTuhr:String,
@@ -154,6 +155,7 @@ data class SaveData(
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
     val answerEnglish: String? = "",
+    val answerMMEnglish: String? = "",
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
 )
@@ -164,6 +166,7 @@ data class LoadData(
     val typeOfInput: String,
     val entries: List<SaveEntries>,
     val answerEnglish: String,
+    val answerMMEnglish: String,
     val answerUrdu: String,
     val more_infos: OtherValues? = null,
     val user_id: Int? = null,
@@ -405,7 +408,8 @@ data class AadatAfterIndexOfFixedDuration(
 
 data class OutputStringsLanguages(
     var urduString: String = "",
-    var englishString: String = ""
+    var englishString: String = "",
+    var mmEnglishString: String = ""
 )
 
 data class TzInfo (

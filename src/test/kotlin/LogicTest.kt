@@ -2243,6 +2243,7 @@ class LogicTest {
             parseDays("27:6:20"),
             false),
             typeOfMasla = TypesOfMasla.NIFAS,
+                typeOfInput = TypesOfInputs.DATE_AND_TIME,
             pregnancy = Pregnancy(makeInstant(2021, 12, 12, 0, 0), makeInstant(2021, 12, 30, 0, 0),
                 40.getMilliDays(), mustabeenUlKhilqat = false)))
 
@@ -2262,6 +2263,48 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
+    }
+    @Test
+    fun testMenstrualMatters() {
+        val entries = mutableListOf<Entry>()
+        entries +=//20th Nov 12.30pm- 24th 7am
+            Entry(makeInstant(2021, 11, 20, 12, 30),
+                makeInstant(2021, 11, 24, 7, 0))
+        entries +=//15th Dec 12.30pm- 30th Dec 7pm
+            Entry(makeInstant(2021, 12, 15, 12, 30),
+                makeInstant(2021, 12, 30, 19,0 ))
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,PreMaslaValues(
+                    parseDays(""),
+                    parseDays("60"),
+                    parseDays(""),
+                    false),
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                typeOfInput = TypesOfInputs.DATE_AND_TIME,
+            )
+        )
+        println(output.outputText.mmEnglishString)
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("6:16:40")!!, parseDays("27:6:20")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2022, 4, 11, 12, 20), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                )
+            )
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+//        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+//        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+//        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+//            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+        println(output.outputText.mmEnglishString)
+
     }
     @Test
     fun testBugMaslaIssue136() {

@@ -122,6 +122,12 @@ fun FlowContent.makeLabel(
     }
     label {
         htmlFor = inputId
+        classes = setOf(CssC.MMENGLISH, extraClasses)
+        block()
+        +StringsOfLanguages.MMENGLISH.text()
+    }
+    label {
+        htmlFor = inputId
         classes = setOf(CssC.URDU, extraClasses)
         block()
         +StringsOfLanguages.URDU.text()
@@ -170,6 +176,16 @@ fun TagConsumer<HTMLElement>.makeDropdownOptions(
     }
     option {
         classes = setOfNotNull(
+            CssC.MMENGLISH, extraClasses, if (languageSelected != Vls.Langs.MMENGLISH) CssC.LANG_INVIS else null
+        )
+        selected = isSelected && languageSelected == Vls.Langs.MMENGLISH
+        value = optionVal
+        id = optionVal
+        block()
+        +StringsOfLanguages.MMENGLISH.text()
+    }
+    option {
+        classes = setOfNotNull(
             CssC.URDU, extraClasses, if (languageSelected != Vls.Langs.URDU) CssC.LANG_INVIS else null
         )
         selected = isSelected && languageSelected == Vls.Langs.URDU
@@ -193,10 +209,14 @@ fun FlowContent.makeNumberInput(
     }
 }
 
-fun TagConsumer<HTMLElement>.makeSpans(englishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
+fun TagConsumer<HTMLElement>.makeSpans(englishText: String, mmEnglishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
     span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +englishText
+    }
+    span(classes = "${CssC.MMENGLISH} ${if (languageSelected == Vls.Langs.MMENGLISH) "" else CssC.LANG_INVIS}") {
+        block()
+        +mmEnglishText
     }
     span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
@@ -208,6 +228,10 @@ fun TagConsumer<HTMLElement>.makeSpans(text: Strings.() -> String, block: SPAN.(
     span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +StringsOfLanguages.ENGLISH.text()
+    }
+    span(classes = "${CssC.MMENGLISH} ${if (languageSelected == Vls.Langs.MMENGLISH) "" else CssC.LANG_INVIS}") {
+        block()
+        +StringsOfLanguages.MMENGLISH.text()
     }
     span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
         block()
@@ -441,6 +465,13 @@ private fun TagConsumer<HTMLElement>.calcAllBtn(text: String) {
     }
     button {
         classes = setOf(
+            CssC.CALC_BTN, CssC.MMENGLISH, if (languageSelected == Vls.Langs.MMENGLISH) "" else CssC.INVIS
+        )
+        +text
+        onClickFunction = { calcAll() }
+    }
+    button {
+        classes = setOf(
             CssC.CALC_BTN, CssC.URDU, if (languageSelected == Vls.Langs.URDU) "" else CssC.INVIS
         )
         +text
@@ -526,6 +557,8 @@ fun disableTree(inputContainer: HTMLElement) {
 private fun HTMLInputElement.validateAadat(validityRange: ClosedRange<Int>) {
     val errormessage = if (languageSelected == Vls.Langs.ENGLISH) {
         StringsOfLanguages.ENGLISH.incorrectAadat
+    } else if (languageSelected == Vls.Langs.MMENGLISH) {
+        StringsOfLanguages.MMENGLISH.incorrectAadat
     } else {
         StringsOfLanguages.URDU.incorrectAadat
     }

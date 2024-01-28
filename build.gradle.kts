@@ -39,6 +39,9 @@ kotlin {
                 }
             }
         }
+        tasks.named("browserDevelopmentRun") {
+            finalizedBy(":developmentExecutableCompileSync")
+        }
     }
 
     sourceSets.all {
