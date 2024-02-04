@@ -173,13 +173,15 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
         if(typeOfInput==TypesOfInputs.DURATION){
             newStr.add(outputStringHeaderLineDuration(fixedDurations,index)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
                 .add(outputStringBiggerThan10HallDurations(fixedDurations, index))
-            if(index==fixedDurations.size-1){//if this os the last index
+            if(index==fixedDurations.size-1){//if this is the last index
                 newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
             }
         }else{//not durations
             newStr.add(outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
                 .add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
-            if(index==fixedDurations.size-1){//if this os the last index
+            if(index==fixedDurations.size-1){//if this is the last index
+                newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
+                newStr.add(baseStr (Strings::tableendtag) )
                 newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
             }
         }
@@ -192,7 +194,8 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
                            typeOfInput: TypesOfInputs,
                            timeZone: String):OutputStringsLanguages{
     val aadats = endingOutputValues.aadats
-    val newStr = outputStringAadatLine(typeOfInput, aadats)
+    val newStr = OutputStringsLanguages()
+    newStr.add(outputStringAadatLine(typeOfInput, aadats))
     if (typeOfInput==TypesOfInputs.DURATION) { return newStr }
 
     val filHaal = endingOutputValues.filHaalPaki
@@ -438,6 +441,19 @@ fun outputStringBiggerThan10HallDurations(
         newStr.addStrings(Strings::khatimaplusnewline)
     }
     return newStr
+}
+
+fun generateAadatatThisPoint(fixedDurations: MutableList<FixedDuration>,
+                                         index: Int,
+                                         typeOfInput: TypesOfInputs):OutputStringsLanguages {
+    if(fixedDurations[index].aadatsAfterthis.aadatHaiz==-1L &&
+        fixedDurations[index].aadatsAfterthis.aadatTuhr==-1L){
+        return baseStr (Strings::nocomment)
+    }
+
+    return baseStr (Strings::habitincomment)
+        .replaceDur(Rplc.DUR1,fixedDurations[index].aadatsAfterthis.aadatHaiz,typeOfInput,"b")
+        .replaceDur(Rplc.DUR2,fixedDurations[index].aadatsAfterthis.aadatTuhr,typeOfInput,"p")
 }
 
 fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
@@ -696,27 +712,54 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            newStr.add(
-                baseStr(Strings::haizdays)
-                    .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
-            )
-        }else{//bigger than 10
-            if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
+            if(index==fixedDurations.lastIndex){//if this is the last fixedduration
                 newStr.add(
-                    baseStr(Strings::continuosbleeding)
+                    baseStr(Strings::lasthaizdays)
                         .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                    .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                    .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                        .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
                 )
             }else{
                 newStr.add(
-                    baseStr(Strings::blooddays)
+                    baseStr(Strings::haizdays)
                         .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                    .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                    .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                        .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
                 )
+            }
+        }else{//bigger than 10
+            if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
+                if(index==fixedDurations.lastIndex){//if this is the last fixedduration
+                    newStr.add(
+                        baseStr(Strings::lasthaizdays)
+                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                    )
+                }else{
+                    newStr.add(
+                        baseStr(Strings::continuosbleeding)
+                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                    )
+                }
+            }else{
+                if(index==fixedDurations.lastIndex){//if this is the last fixedduration
+                    newStr.add(
+                        baseStr(Strings::lasthaizdays)
+                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                    )
+                }else{
+                    newStr.add(
+                        baseStr(Strings::blooddays)
+                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                    )
+                }
             }
         }
     }else if (fixedDurations[index].type == DurationType.TUHR||
@@ -730,11 +773,13 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
             newStr.addStrings(Strings::becamemutadah)
         }
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
         newStr.add(
             baseStr(Strings::tuhrfasid)
                 .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
         )
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         newStr.add(
@@ -743,6 +788,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
             .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
         )
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
@@ -769,6 +815,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                     .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
             )
         }
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!mustabeen){
             newStr.add(
@@ -778,6 +825,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                 .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
             )
         }
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
         "PLACEHOLDER"
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
@@ -785,6 +833,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             baseStr(Strings::twomonthstuhr)
                 .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
         )
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
@@ -794,6 +843,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
             .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.p)
         )
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }
     return newStr
 }

@@ -34,6 +34,7 @@ data class Strings(
     val endofpaki: String,
     val habit: String,
     val haizdays: String,
+    val lasthaizdays: String,
     val haizdaysinsolution:String,
     val istihazadays: String,
     val nifasdays: String,
@@ -129,7 +130,10 @@ data class Strings(
     val username: String,
     val password: String,
     val submit: String,
-    val logout: String
+    val logout: String,
+    val tableendtag:String,
+    val habitincomment:String,
+    val nocomment:String,
     )
 
 data class AllTheInputs(
@@ -356,6 +360,7 @@ data class FixedDuration(
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Instant = Instant.EPOCH,
+    var aadatsAfterthis: AadatsOfHaizAndTuhr = AadatsOfHaizAndTuhr(-1L,-1L),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Instant get() = this.startDate.plusMillis(this.timeInMilliseconds)
@@ -401,7 +406,7 @@ data class AadaatWithChangeability(
     var isChangeable:Boolean
 )
 
-data class AadatAfterIndexOfFixedDuration(
+data class AadatAfterIndexOfFixedDuration(//these go into both adat of haiz list and adat of tuhr list
     var aadat: Long,
     var index: Int
 )

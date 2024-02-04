@@ -20,6 +20,7 @@ val urduStrings = Strings(
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>${Rplc.DT1} تک آپ کے یقینی پاکی کے دن ہوں گے۔</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: حیض: ${Rplc.DUR1}، پاکی: ${Rplc.DUR2}</b>\n\n",
     "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
+    "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
     "${UnicodeChars.ORANGE_DIAMOND} ${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
     "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} نفاس کے ہیں۔\n\n",
@@ -119,6 +120,9 @@ val urduStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
+    "",
+    "",
+    ""
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -151,6 +155,7 @@ val englishStrings = Strings(
     "In case this bleeding continues without complete 15 days of purity, " +
             "then <b>until ${Rplc.DT1}, are certainly the days of purity (tuh'r)</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${UnicodeChars.ORANGE_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
@@ -269,10 +274,13 @@ val englishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
+    "",
+    "",
+    ""
     )
 val mmEnglishStrings = Strings(
     "In the name of Allah, the Inspirer of truth\n\n",
-    "",
+    "<table><tr><th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th></tr>",
     "",
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\n",
@@ -291,22 +299,22 @@ val mmEnglishStrings = Strings(
     "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the bleeding stops and she performs ghusl and resumes salah, intimacy with husband remains prohibited till ${Rplc.DT1}.\n\n",
     "In case this bleeding continues without complete 15 days of purity,  then <b>until ${Rplc.DT1}, are certainly the days of tuhr</b>\n\n",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
-    "${Rplc.DT1}-${Rplc.DT2} --- ${Rplc.DUR1}",
-    "${Rplc.DT1}-${Rplc.DT2} would be hayd.\n\n",
-    "${Rplc.DT1}-${Rplc.DT2} is surely days of istihada.\n\n",
-    "${Rplc.DT1}-${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding (nifas).\n\n",
-    "${Rplc.DT1}-${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding (nifas).\n\n",
-    "\n\n${Rplc.DT1}-${Rplc.DT2} --- ${Rplc.DUR1}",
-    "According to the hayd and purity habit,\n\n",
+    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td>${Rplc.DUR1}</td>",
+    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td colspan=\"2\">${Rplc.DUR1}</td>",
     "",
-    "If you took ghusl and started your salat from that day onwards, salat after it are all valid. If you did not take ghusl on the ${Rplc.DT1}, " +
-            " please make qada of all the salat until you took ghusl.\n\n",
+    "",
+    "${Rplc.DT1}-${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding (nifas).\n\n",
+    "${Rplc.DT1}-${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding (nifas).\n\n",
+    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td><td>${Rplc.DUR1}</td>",
+    "",
+    "",
+    "",
     "${Rplc.DT1}-${Rplc.DT2} --- ${Rplc.DUR1}",
-    " --- ${Rplc.DUR1}",
+    "<td>${Rplc.DUR1}</td>",
     "${Rplc.DUR1} of invalid purity (tuhr fasid)\n\n",
-    "${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}\n\n",
-    "--- Purity of more than 6 months\n\n",
-    "\n\n",
+    "<td>${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}</td>",
+    "<td> Purity of more than 6 months</td>",
+    "",
     "From now on, she is a mu'tada (habitual woman)\n\n",
     "Till now, there is no habit of haid or purity (tuhr)\n\n",
     "\n\nHabit:${Rplc.DUR1}/?\n\n",
@@ -391,6 +399,9 @@ val mmEnglishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
+    "</table> \n this one \n\n",
+    "<td>Habit: ${Rplc.DUR1}/${Rplc.DUR2}</td></tr>",
+    "</tr>"
 
 
 )

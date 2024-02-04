@@ -255,6 +255,9 @@ fun daysHoursMinutesDigital(
         if (typeOfInput == TypesOfInputs.DATE_ONLY) {
             isDateOnly = true
         }
+        if(numberOfMilliseconds==-1L){
+            return "?"
+        }
 
         val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
         var strHours = hours.toString()
