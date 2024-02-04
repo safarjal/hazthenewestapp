@@ -67,6 +67,7 @@ private fun FlowContent.ikhtilafiMasle() {
             summary(classes = CssC.IKHTILAF)
             b {
                 span(classes = CssC.ENGLISH) { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
+                span(classes = CssC.MMENGLISH) { +StringsOfLanguages.MMENGLISH.ikhtilafimasail }
                 span(classes = CssC.URDU) { StringsOfLanguages.URDU.ikhtilafimasail }
             }
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF1, Strings::considerTuhrInGhiarMustabeenIsqaatIkhtilaf, true)
@@ -338,6 +339,13 @@ private fun FlowContent.calculateButton() {
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }
+    button(classes = "${CssC.MMENGLISH} ${CssC.CALC_BTN}") {
+        id = Ids.Results.CALCULATE_BUTTON
+        +StringsOfLanguages.MMENGLISH.calculate
+        onClickFunction = { event ->
+            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+        }
+    }
     button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
@@ -357,6 +365,11 @@ private fun TagConsumer<HTMLElement>.content() {
             id = Ids.Results.CONTENT_WRAPPER
             copyBtn(CssC.RIGHT)
             content(Ids.Results.CONTENT_ENGLISH, Ids.Results.CONTENT_ANSWER)
+        }
+        div(classes = CssC.MMENGLISH) {
+            id = Ids.Results.CONTENT_WRAPPER
+            copyBtn(CssC.RIGHT)
+            content(Ids.Results.CONTENT_MMENGLISH, Ids.Results.CONTENT_ANSWER)
         }
         content(Ids.Results.CONTENT_DATES)
         hr()

@@ -30,18 +30,22 @@ fun addCalcsGetDuration(){
     val endDate = addCalcsEndDate.value.instant()
     var strUrdu = ""
     var strEnglish = ""
+    var strMMEnglish = ""
     val typesOfInputs:TypesOfInputs = if(isDateOnly) TypesOfInputs.DATE_ONLY else TypesOfInputs.DATE_AND_TIME
 
     if(startDate.isBefore(endDate)){
         val result = (endDate.getMillisLong()-startDate.getMillisLong())
         strUrdu = daysHoursMinutesDigital(result, typesOfInputs, Vls.Langs.URDU)
         strEnglish = daysHoursMinutesDigital(result, typesOfInputs, Vls.Langs.ENGLISH)
+        strMMEnglish = daysHoursMinutesDigital(result, typesOfInputs, Vls.Langs.MMENGLISH)
     }
-    val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish)
+    val resultStrings =  OutputStringsLanguages(strUrdu,strEnglish, strMMEnglish)
     if(languageSelecter.value==Vls.Langs.URDU){
         addCalcsOutputDuration.innerHTML = resultStrings.urduString
     }else if(languageSelecter.value==Vls.Langs.ENGLISH){
         addCalcsOutputDuration.innerHTML = resultStrings.englishString
+    }else if(languageSelecter.value==Vls.Langs.MMENGLISH){
+        addCalcsOutputDuration.innerHTML = resultStrings.mmEnglishString
     }
 }
 
@@ -75,16 +79,20 @@ fun addCalcsAddTimeToDate() {
         val duration = parseDays(addCalcsDurationToAdd.value)
         var strResultUrdu = ""
         var strResultEnglish = ""
+        var strResultMMEnglish = ""
         if (duration != null) {
             val result = addTimeToDate(date, duration)
             strResultEnglish = languagedDateFormat(result, typesOfInputs, Vls.Langs.ENGLISH, "UTC")
+            strResultMMEnglish = languagedDateFormat(result, typesOfInputs, Vls.Langs.MMENGLISH, "UTC")
             strResultUrdu = languagedDateFormat(result, typesOfInputs, Vls.Langs.URDU, "UTC")
         }
-        val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish)
+        val resultStrings = OutputStringsLanguages(strResultUrdu, strResultEnglish, strResultMMEnglish)
         if (languageSelecter.value == Vls.Langs.URDU) {
             addCalcsOutputDate.innerHTML = resultStrings.urduString
         } else if (languageSelecter.value == Vls.Langs.ENGLISH) {
             addCalcsOutputDate.innerHTML = resultStrings.englishString
+        }else if (languageSelecter.value == Vls.Langs.MMENGLISH) {
+            addCalcsOutputDate.innerHTML = resultStrings.mmEnglishString
         }
     }
 }

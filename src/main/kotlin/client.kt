@@ -60,7 +60,8 @@ private fun parseHREF() {
 
 fun languageChange() {
     val lang = languageSelected
-    // Invis every language dependent element based on if it DOESN'T have the selected language: // TODO: Make better.
+    // Invis every language dependent element based on if it DOESN'T have the selected language:
+    // TODO: Make better.
     for (element in languageElements) element.classList.toggle(CssC.LANG_INVIS, !element.classList.contains(lang))
 
     document.body!!.classList.toggle(CssC.RTL, lang == Vls.Langs.URDU) // RTL on body if Urdu
@@ -255,6 +256,7 @@ fun parseEntries(inputContainer: HTMLElement) {
         contentContainer.visibility = true
         contentContainer.setAttribute("data-saved", "false")
         contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.englishString)
+        contentMMEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.mmEnglishString)
         contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.urduString)
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
@@ -496,6 +498,7 @@ fun drawCompareTable(
                     if (date == 1) {
                         makeSpans(
                             englishMonthNames[headerDate.monthValue().toInt() - 1],
+                            mmEnglishMonthNames[headerDate.monthValue().toInt() - 1],
                             urduMonthNames[headerDate.monthValue().toInt() - 1]
                         )
                     }
@@ -605,6 +608,7 @@ val HTMLElement.isMawjoodaFasid get() = isMawjoodaFasidInput.checked
 
 val HTMLElement.contentContainer get() = (getChildById(Ids.Results.CONTENT_CONTAINER)!!) as HTMLDivElement
 val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH) as HTMLParagraphElement
+val HTMLElement.contentMMEnglish get() = getChildById(Ids.Results.CONTENT_MMENGLISH) as HTMLParagraphElement
 val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
 
@@ -624,8 +628,9 @@ private var HTMLElement.haizDatesList: List<Entry>?
     }
 
 private val englishElements get() = document.getElementsByClassName(CssC.ENGLISH).asList()
+private val mmenglishElements get() = document.getElementsByClassName(CssC.MMENGLISH).asList()
 private val urduElements get() = document.getElementsByClassName(CssC.URDU).asList()
-private val languageElements get() = listOf(englishElements, urduElements).flatten()
+private val languageElements get() = listOf(englishElements, urduElements, mmenglishElements).flatten()
 private val devElements get() = document.getElementsByClassName(CssC.DEV).asList()
 
 val HTMLElement.hazInputTableBody get() = haizInputTable.tBodies[0] as HTMLTableSectionElement

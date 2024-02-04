@@ -34,6 +34,7 @@ data class Strings(
     val endofpaki: String,
     val habit: String,
     val haizdays: String,
+    val lasthaizdays: String,
     val haizdaysinsolution:String,
     val istihazadays: String,
     val nifasdays: String,
@@ -56,6 +57,7 @@ data class Strings(
     val dateAndTime:String,
     val urdu:String,
     val english:String,
+    val mmenglish:String,
     val haizAadat:String,
     val tuhrAadat:String,
     val mawjoodahTuhr:String,
@@ -129,6 +131,10 @@ data class Strings(
     val password: String,
     val submit: String,
     val logout: String,
+    val tableendtag:String,
+    val habitincomment:String,
+    val nocomment:String,
+    val ayyameqabliyyacomment:String,
     val loginAgain: String
     )
 
@@ -155,6 +161,7 @@ data class SaveData(
     val typeOfInput: String = Vls.Types.DATE_ONLY,
     val entries: List<SaveEntries>? = null,
     val answerEnglish: String? = "",
+    val answerMMEnglish: String? = "",
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
 )
@@ -165,6 +172,7 @@ data class LoadData(
     val typeOfInput: String,
     val entries: List<SaveEntries>,
     val answerEnglish: String,
+    val answerMMEnglish: String,
     val answerUrdu: String,
     val more_infos: OtherValues? = null,
     val user_id: Int? = null,
@@ -354,6 +362,7 @@ data class FixedDuration(
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Instant = Instant.EPOCH,
+    var aadatsAfterthis: AadatsOfHaizAndTuhr = AadatsOfHaizAndTuhr(-1L,-1L),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Instant get() = this.startDate.plusMillis(this.timeInMilliseconds)
@@ -399,14 +408,15 @@ data class AadaatWithChangeability(
     var isChangeable:Boolean
 )
 
-data class AadatAfterIndexOfFixedDuration(
+data class AadatAfterIndexOfFixedDuration(//these go into both adat of haiz list and adat of tuhr list
     var aadat: Long,
     var index: Int
 )
 
 data class OutputStringsLanguages(
     var urduString: String = "",
-    var englishString: String = ""
+    var englishString: String = "",
+    var mmEnglishString: String = ""
 )
 
 data class TzInfo (

@@ -383,6 +383,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
             //we have a haiz aadat!
             aadatHaz = fixedDurations[i].timeInMilliseconds
             adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
+            fixedDurations[i].aadatsAfterthis.aadatHaiz=aadatHaz
             //change iztirari aadat of Tuhr
             iztirariAadatTuhr = 30.getMilliDays() - aadatHaz
             iztirariAadatHaiz = aadatHaz
@@ -394,6 +395,7 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                 //println("Mubtadia Soorat 1: Haiz Sahih, Tuhr Saheeh")
                 //return aadat
                 adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
+                fixedDurations[i].aadatsAfterthis.aadatTuhr=aadatTuhr
                 fixedDurations[i+1].type = DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW
                 return AadatsOfHaizAndTuhr(aadatHaz,aadatTuhr)
             }
@@ -420,6 +422,8 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                 //give error
                 if(language==Vls.Langs.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                }else if(language==Vls.Langs.MMENGLISH){
+                    window.alert(StringsOfLanguages.MMENGLISH.errorEnterMawjoodaPaki)
                 }else if(language==Vls.Langs.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                 }
@@ -445,11 +449,13 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                 //in this case, haiz and aadat of haiz is the same
                 aadatHaz = haiz
                 adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
+                fixedDurations[i].aadatsAfterthis.aadatHaiz=aadatHaz
                 iztirariAadatHaiz = aadatHaz
                 //check if the tuhr after this is saheeh
                 if(i<fixedDurations.size - 1 && fixedDurations[i+1].type == DurationType.TUHR){
                     aadatTuhr = fixedDurations[i+1].timeInMilliseconds
                     adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
+                    fixedDurations[i].aadatsAfterthis.aadatTuhr=aadatTuhr
                     //we have a mutadah
                     val biggerThanTen = BiggerThanTenDm(0,0,0,0,Soortain.A_1,istehazaBefore, haiz, 0L, haiz, -1, mutableListOf())
                     fixedDurations[i].biggerThanTen = biggerThanTen
@@ -488,10 +494,12 @@ fun dealWithMubtadiaDam(fixedDurations:MutableList<FixedDuration>,
                     //we have an aadat of haiz!!
                     aadatHaz = iztirariAadatHaiz
                     adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
+                    fixedDurations[i].aadatsAfterthis.aadatHaiz=aadatHaz
                     //check if the tuhr after this is saheeh
                     if(i<fixedDurations.size - 1 && fixedDurations[i+1].type == DurationType.TUHR){
                         aadatTuhr = fixedDurations[i+1].timeInMilliseconds
                         adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
+                        fixedDurations[i].aadatsAfterthis.aadatTuhr=aadatTuhr
                         //we have a mutadah
                         val biggerThanTen = BiggerThanTenDm(0,0,0,0,Soortain.A_1,istehazaBefore, haiz, istehazaAfter, aadatHaz, -1, mutableListOf())
                         fixedDurations[i].biggerThanTen = biggerThanTen
@@ -529,6 +537,8 @@ fun dealWithDamInMuddateNifas(fixedDurations:MutableList<FixedDuration>,pregnanc
                     //give error
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterNifasAadat)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterNifasAadat)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterNifasAadat)
                     }
@@ -917,6 +927,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                     }
@@ -936,6 +948,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 //give error message
                 if(language==Vls.Langs.ENGLISH){
                     window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                }else if(language==Vls.Langs.MMENGLISH){
+                    window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
                 }else if(language==Vls.Langs.URDU){
                     window.alert(StringsOfLanguages.URDU.errorEnterAadat)
                 }
@@ -946,6 +960,8 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterMawjoodaPaki)
                     }else if(language==Vls.Langs.URDU){
                         window.alert(StringsOfLanguages.URDU.errorEnterMawjoodaPaki)
                     }
@@ -1000,6 +1016,10 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
                 adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i) //this is the second aadat that goes to this i
 
             }
+        }
+        fixedDurations[i].aadatsAfterthis=AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,adatsOfTuhrList.last().aadat)
+        if(fixedDurations[i].type==DurationType.TUHR){
+            fixedDurations[i].aadatsAfterthis=AadatsOfHaizAndTuhr(adatsOfHaizList.last().aadat,fixedDurations[i].timeInMilliseconds)
         }
     }
     return true

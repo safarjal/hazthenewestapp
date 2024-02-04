@@ -82,6 +82,7 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): LoadData? {
             typeOfInput = typeSelect.value,
             entries = entries,
             answerEnglish = contentEnglish.textContent,
+            answerMMEnglish = contentMMEnglish.textContent,
             answerUrdu = contentUrdu.textContent,
             others = OtherValues(
                 saaila = saailaDetails,
