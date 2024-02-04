@@ -318,7 +318,7 @@ private fun handleRangedInput(
 
 fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz: String, aadatTuhr: String, mawjoodaTuhr: String) {
     with(inputContainer) {
-        if (descriptionText.value == "") {
+        if (saailaDetails == "") {
             var text = "$aadatHaz/$aadatTuhr/$mawjoodaTuhr".trim()
             if (text.contains("//")) {
                 text = text.replace("//", "/")
@@ -329,7 +329,7 @@ fun populateTitleFieldIfEmpty(inputContainer: HTMLElement, aadatHaz: String, aad
             if (text.endsWith("/")) {
                 text = text.dropLast(1)
             }
-            descriptionText.value = text
+            saailaDetailsInput.value = text
         }
     }
 }
@@ -469,7 +469,7 @@ fun convertDurationsIntoEntries(
 
 fun compareResults() {
     val listOfLists = inputsContainers.map { it.haizDatesList!! }
-    val listOfDescriptions = inputsContainers.map { it.descriptionText.value }
+    val listOfDescriptions = inputsContainers.map { it.saailaDetails }
     val output = generatInfoForCompareTable(listOfLists.toMutableList())
     drawCompareTable(output.headerList, output.listOfColorsOfDaysList, output.resultColors, listOfDescriptions)
 }
@@ -611,8 +611,6 @@ val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH)
 val HTMLElement.contentMMEnglish get() = getChildById(Ids.Results.CONTENT_MMENGLISH) as HTMLParagraphElement
 val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
-
-private val HTMLElement.descriptionText get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement)
 
 val HTMLElement.ikhtilaf1Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement)
 val HTMLElement.ikhtilaf1 get() = ikhtilaf1Input.checked

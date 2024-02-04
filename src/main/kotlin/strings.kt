@@ -124,6 +124,7 @@ val urduStrings = Strings(
     "",
     "",
     ""
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -279,6 +280,7 @@ val englishStrings = Strings(
     "",
     "",
     ""
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 val mmEnglishStrings = Strings(
     "In the name of Allah, the Inspirer of truth\n\n",
@@ -404,7 +406,8 @@ val mmEnglishStrings = Strings(
     "</table>\n\n",
     "<td>Habit: ${Rplc.DUR1}/${Rplc.DUR2}</td></tr>",
     "</tr>",
-    "<td>This is a case of Ayyam-e-Qabliyya</td></tr>"
+    "<td>This is a case of Ayyam-e-Qabliyya</td></tr>",
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
 
 
 )

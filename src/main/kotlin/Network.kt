@@ -60,12 +60,12 @@ fun logout() {
 fun loggedIn(): Boolean {
     val dateDiff =
         if (tokenDate != null) Instant.now().minusMillis(tokenDate!!.toEpochMilli()).getMillisLong().getDays()
-        else 0
+        else 29
 
     return !bearerToken.isNullOrEmpty() && dateDiff < 29
 }
 
-suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
+suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): LoadData? {
     with(inputsContainer) {
         val entries = if (isDuration) haizDurationInputDatesRows.map { row ->
             SaveEntries(
@@ -106,7 +106,7 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): Json? {
     }
 }
 
-suspend fun sendData(toSend: SaveData): Json? {
+suspend fun sendData(toSend: SaveData): LoadData? {
     val response = client.post("$HAZAPP_BACKEND/maslas/") {
         headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
         contentType(ContentType.Application.Json)
@@ -114,7 +114,7 @@ suspend fun sendData(toSend: SaveData): Json? {
     }
 
     return if (response.status == HttpStatusCode.Created) {
-        JSON.parse(response.body())
+        return response.body<LoadData>()
     } else null
 }
 

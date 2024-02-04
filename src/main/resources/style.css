@@ -273,12 +273,10 @@ tbody > tr:nth-child(odd) {
 }
 
 .left {
-  position: absolute;
   left: 0;
 }
 
 .right {
-  position: absolute;
   right: 0;
 }
 

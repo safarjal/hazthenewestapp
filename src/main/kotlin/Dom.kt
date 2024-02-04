@@ -268,8 +268,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                     val inputsContiner = findInputContainer(event)
                     val id = inputsContiner.inputID
                     console.log(id)
-                    var response: Json = json(Pair("id", id))
-                    GlobalScope.launch { response = loadData(id, inputsContiner) }
+                    GlobalScope.launch { loadData(id, inputsContiner) }
                 }
             }
             content(Ids.ERROR_MESSAGE, CssC.INVIS)

@@ -11,7 +11,6 @@ import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
 import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
-import kotlin.js.Json
 
 // MAKE ELEMENTS
 fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block: P.() -> Unit = {}) {
@@ -922,18 +921,20 @@ private fun copyText(event: Event) {
     val saailaDetails = inputContainer.saailaDetails
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
     val answerTxt = div?.querySelector("p.${Ids.Results.CONTENT_ANSWER}")?.textContent
-    var copyTxt = "*$dateStr*\n\n" + "$saailaDetails\n\n" + "$questionTxt\n\n" + "$divider\n\n" + "$answerTxt"
+    var copyTxt = "*$dateStr*\n\n$saailaDetails\n\n$questionTxt\n\n$divider\n\n$answerTxt"
+    copyTxt.let { window.navigator.clipboard.writeText(it) }
 
     val small = div?.querySelector("small")
     var smallTxt: String
 
     if (inputContainer.contentContainer.dataset["saved"] == "false") {
-        var response: Json? = null
+        var response: LoadData? = null
         GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
-            if (response != null && response!!["id"] != null) {
-                copyTxt = "_Masla Id: ${response!!["id"]}_\n" + copyTxt
+            if (response != null) {
+                copyTxt = "_Masla Id: ${response!!.id}_\n" + copyTxt
                 smallTxt = "Saved and Copied "
-                inputContainer.contentContainer.setAttribute("data-saved", response!!["id"].toString())
+                if (response!!.user_id == null) smallTxt += englishStrings.loginAgain
+                inputContainer.contentContainer.setAttribute("data-saved", response!!.id.toString())
             } else {
                 smallTxt = "Copied"
                 window.alert("Masla has not been saved. However, it has been copied.")

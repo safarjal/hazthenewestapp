@@ -135,6 +135,7 @@ data class Strings(
     val habitincomment:String,
     val nocomment:String,
     val ayyameqabliyyacomment:String,
+    val loginAgain: String
     )
 
 data class AllTheInputs(
