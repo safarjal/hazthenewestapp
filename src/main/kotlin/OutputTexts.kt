@@ -115,6 +115,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
+        newStr.add(baseStr (Strings::tableendtag) )
         newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
     }else{//if it is ghair mustabeenulkhilqat
         newStr.addStrings(Strings::headerline)
@@ -148,6 +149,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
+        newStr.add(baseStr (Strings::tableendtag) )
         newStr.add(outputStringFinalLines (endingOutputValues, typeOfInput, timeZone))
     }
     return newStr
