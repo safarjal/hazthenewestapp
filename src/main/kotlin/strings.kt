@@ -123,7 +123,7 @@ val urduStrings = Strings(
     "",
     "",
     "",
-    ""
+    "",
     "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 val englishStrings = Strings(
@@ -279,7 +279,7 @@ val englishStrings = Strings(
     "",
     "",
     "",
-    ""
+    "",
     "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
     )
 val mmEnglishStrings = Strings(
