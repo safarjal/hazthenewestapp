@@ -452,8 +452,8 @@ fun generateAadatatThisPoint(fixedDurations: MutableList<FixedDuration>,
     }
 
     return baseStr (Strings::habitincomment)
-        .replaceDur(Rplc.DUR1,fixedDurations[index].aadatsAfterthis.aadatHaiz,typeOfInput,"b")
-        .replaceDur(Rplc.DUR2,fixedDurations[index].aadatsAfterthis.aadatTuhr,typeOfInput,"p")
+        .replaceDur(Rplc.DUR1,fixedDurations[index].aadatsAfterthis.aadatHaiz,typeOfInput,Letters.b)
+        .replaceDur(Rplc.DUR2,fixedDurations[index].aadatsAfterthis.aadatTuhr,typeOfInput, Letters.p)
 }
 
 fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
@@ -841,9 +841,9 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             baseStr(Strings::daysayyameqabliyya)
                 .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.p)
+            .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
         )
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
+        newStr.add(baseStr(Strings::ayyameqabliyyacomment))
     }
     return newStr
 }

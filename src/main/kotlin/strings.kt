@@ -122,6 +122,7 @@ val urduStrings = Strings(
     "Log Out",
     "",
     "",
+    "",
     ""
     )
 val englishStrings = Strings(
@@ -276,6 +277,7 @@ val englishStrings = Strings(
     "Log Out",
     "",
     "",
+    "",
     ""
     )
 val mmEnglishStrings = Strings(
@@ -283,7 +285,7 @@ val mmEnglishStrings = Strings(
     "<table><tr><th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th></tr>",
     "",
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
-    "<b>And Allah Ta’ala knows best.</b>\n\n",
+    "<b>And Allah Ta’ala knows best.</b>\n\nAnswered by,\n\n",
     "You are in the days of your tuhr right now, so keep up your ritual worship as usual.\n\n",
     "You are in the days of your hayd right now, so, if bleeding continues you cannot do any of your ritual worship.\n\n",
     "If this bleeding has stopped before ${Rplc.DT1} and you get purity of complete 15 days or more, refer again for further assistance.\n\n",
@@ -372,7 +374,7 @@ val mmEnglishStrings = Strings(
             "If bleeding continues past ${Rplc.DT1}, all ibadaat will remain valid.\n\n",
     "It is not correct for you to stop ibadaat when bleeding starts. You should continue ibadaat till ${Rplc.DT1}, the start of your habit.\n\n " +
         "Your habit days are beginning from ${Rplc.DT1}. If bleeding continues till then, then you should stop praying from ${Rplc.DT1}.\n\n",
-    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
+    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td colspan = \"2\">${Rplc.DUR1}</td>",
     "Mubtadi’a",
     "Mu'tada",
     "Type of Masla",
@@ -399,9 +401,10 @@ val mmEnglishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
-    "</table> \n this one \n\n",
+    "</table>\n\n",
     "<td>Habit: ${Rplc.DUR1}/${Rplc.DUR2}</td></tr>",
-    "</tr>"
+    "</tr>",
+    "<td>This is a case of Ayyam-e-Qabliyya</td></tr>"
 
 
 )

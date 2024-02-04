@@ -134,6 +134,7 @@ data class Strings(
     val tableendtag:String,
     val habitincomment:String,
     val nocomment:String,
+    val ayyameqabliyyacomment:String,
     )
 
 data class AllTheInputs(
