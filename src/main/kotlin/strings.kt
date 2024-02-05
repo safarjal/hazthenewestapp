@@ -124,7 +124,12 @@ val urduStrings = Strings(
     "",
     "",
     "",
-    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
+    "",
+    "",
+    "",
+    "",
+    "",
     )
 val englishStrings = Strings(
     "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
@@ -162,7 +167,7 @@ val englishStrings = Strings(
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${UnicodeChars.ORANGE_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
             " purity (istehadha).\n\n",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td><td>${Rplc.DUR1}</td>",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
     "\n\n${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of blood.\n\n",
     "${UnicodeChars.HAND_WRITING} <b>Solution:</b>\n\n",
@@ -280,12 +285,18 @@ val englishStrings = Strings(
     "",
     "",
     "",
-    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
+    "",
+    "",
+    "",
+    "",
+    "",
     )
 val mmEnglishStrings = Strings(
     "In the name of Allah, the Inspirer of truth\n\n",
-    "<table><tr><th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th></tr>",
-    "<table><tr><th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th></tr>",
+    "The bleeding and purity (tuhr) has been in the following sequence:\n\n",
+    "The bleeding and purity (tuhr) has been in the following " +
+            "sequence for the menstruation beginner:\n\n",
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\nAnswered by,\n\n",
     "You are in the days of your tuhr right now, so keep up your ritual worship as usual.\n\n",
@@ -294,41 +305,47 @@ val mmEnglishStrings = Strings(
     "If there is no complete purity of 15 days and the intermittent bleeding spotting continues until ${Rplc.DT1}, " +
             "please refer again as the whole masala could change.\n\n",
     "If bleeding continues till ${Rplc.DT1}, then you must <b>do ghusl on ${Rplc.DT1} and begin ibadaat.</b>\n\n",
-    "<table><tr><th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th></tr>",
-    "<td>Pregnancy</td>",
-    "",
-    "",
+    "The bleeding and purity (tuhr) has been in the following sequence before pregnancy:\n\n",
+    "\nPregnancy\n",
+    "\n<b>Date of delivery: ${Rplc.DT1}</b>\n",
+    "\n<b>The bleeding and purity (tuhr) has been in the following sequence after delivery:</b>\n",
     "\n<b>Miscarriage of an undeveloped fetus confirmed on ${Rplc.DT1}</b>\n",
     "If the bleeding stops before ${Rplc.DT1} then take ghusl immediately and start saying your prayers but take ghusl on ${Rplc.DT1} too to be on the safe side.\n\n\n",
     "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the bleeding stops and she performs ghusl and resumes salah, intimacy with husband remains prohibited till ${Rplc.DT1}.\n\n",
     "In case this bleeding continues without complete 15 days of purity,  then <b>until ${Rplc.DT1}, are certainly the days of tuhr</b>\n\n",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td>${Rplc.DUR1}</td>",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td colspan=\"2\">${Rplc.DUR1}</td>",
-    "",
-    "",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td><td>${Rplc.DUR1}</td>",
-    "${Rplc.DT1}-${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding (nifas).\n\n",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td><td>${Rplc.DUR1}</td>",
-    "",
-    "",
-    "",
-    "${Rplc.DT1}-${Rplc.DT2} --- ${Rplc.DUR1}",
-    "<td>${Rplc.DUR1}</td>",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
+            " purity (istehada).\n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
+    "\n\n${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of blood.\n\n",
+    "<b>Solution:</b>\n\n",
+    "If you left any salah thinking of it as haid and it turned " +
+            "out to be istehada, then make qada of them.\n\n",
+    "If you performed ghusl on ${Rplc.DT1}, salah after " +
+            "it are all valid. If you didn't, then make qada of all the salah until you took ghusl.\n\n",
+    "\n\n${Rplc.DUR1} of continued bleeding from ${Rplc.DT1} to ${Rplc.DT2} (since you haven’t had 15 " +
+            "or more blood-free days at a stretch in there)\n\n",
+    "${Rplc.DUR1} of purity (tuhr)\n\n",
     "${Rplc.DUR1} of invalid purity (tuhr fasid)\n\n",
-    "<td>${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}</td>",
-    "<td> Purity of more than 6 months</td>",
-    "",
+    "${Rplc.DUR1} of istehada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid" +
+            " purity (tuhr fasid).\n\n",
+    "${Rplc.DUR1} of purity (tuhr). (Since purity (tuhr) is of more than 6 months, " +
+            "therefore 60 days shall be taken as habit of purity (tuhr)\n\n",
+    "\n\n",
     "From now on, she is a mu'tada (habitual woman)\n\n",
     "Till now, there is no habit of haid or purity (tuhr)\n\n",
-    "\n\nHabit:${Rplc.DUR1}/?\n\n",
+    "${Rplc.DUR1} is the habit of haid. There is no habit of purity (tuhr) yet.\n\n",
     "Select Language",
     "Date only",
     "Date and Time",
     "اردو",
     "English",
     "MMEnglish",
-    "Habit in Haidh",
+    "Habit in Haid",
     "Habit in Purity (Tuhr)",
     "Current Purity (Tuhr)",
     "Invalid Purity (Tuhr Fasid)",
@@ -355,7 +372,7 @@ val mmEnglishStrings = Strings(
     "${Rplc.DUR1} purity (tuhr)\n\n",
     "${Rplc.DUR1} invalid purity (tuhr fasid)\n\n",
     "${Rplc.DUR1} of istihada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid purity (tuhr fasid)\n\n",
-    "${Rplc.DUR1} haidh\n\n",
+    "${Rplc.DUR1} haid\n\n",
     "${Rplc.DUR1} nifas\n\n",
     "The first ${Rplc.DUR1} are istihada",
     "The first ${Rplc.DUR1} are haid",
@@ -376,13 +393,13 @@ val mmEnglishStrings = Strings(
             "If bleeding continues past ${Rplc.DT1}, all ibadaat will remain valid.\n\n",
     "It is not correct for you to stop ibadaat when bleeding starts. You should continue ibadaat till ${Rplc.DT1}, the start of your habit.\n\n " +
         "Your habit days are beginning from ${Rplc.DT1}. If bleeding continues till then, then you should stop praying from ${Rplc.DT1}.\n\n",
-    "<tr><td>${Rplc.DT1}-${Rplc.DT2}</td> <td colspan = \"2\">${Rplc.DUR1}</td>",
+    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadi’a",
     "Mu'tada",
     "Type of Masla",
     "If bleeding continues, or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
     "As the maximum duration for haid is 10 days, and it is now ten days, please do ghusl and resume your ibadaat.\n\n",
-    "Habit: Nifas : ${Rplc.DUR3}, Haidh : ${Rplc.DUR1}, Purity (Tuhr): ${Rplc.DUR2} \n\n",
+    "Habit: Nifas : ${Rplc.DUR3}, Haid : ${Rplc.DUR1}, Purity (Tuhr): ${Rplc.DUR2} \n\n",
     "\n<b>Miscarriage of an undeveloped fetus</b>\n",
     "Will ibadaat be continued during ayyam-e-qabliyya?",
     "Does iztirari habit become real habit in mubtadi’a?",
@@ -403,14 +420,20 @@ val mmEnglishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
-    "</table>\n\n",
-    "<td>Habit: ${Rplc.DUR1}/${Rplc.DUR2}</td></tr>",
-    "</tr>",
-    "<td>This is a case of Ayyam-e-Qabliyya</td></tr>",
-    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name."
+    "",
+    "Habit: ${Rplc.DUR1}/${Rplc.DUR2}",
+    "",
+    "This is a case of Ayyam-e-Qabliyya",
+    "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
+    "${Rplc.DT1}-${Rplc.DT2}",
+    "${Rplc.DUR1}",
+    "${Rplc.DUR1} (tuhr faasid)",
+    "${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}",
+    "Pregnancy",
 
 
-)
+
+    )
 
 
 object StringsOfLanguages{
@@ -419,6 +442,16 @@ object StringsOfLanguages{
     val MMENGLISH: Strings = mmEnglishStrings
 }
 
+object HTMLTags{
+    val table = "<table>"
+    val tableendtag = "</table>"
+    val td = "<td>"
+    val tdendtag = "</td>"
+    val tr = "<tr>"
+    val trendtag = "</tr>"
+    val tdcolspan2 = "<td colspan = \"2\">"
+    val tableheaderrow = "<th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th>"
+}
 
 var dtStrings = arrayOf (
     TzInfo("(GMT-08:00) US & Canada","America/Los_Angeles"),

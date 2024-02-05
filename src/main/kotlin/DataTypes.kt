@@ -135,7 +135,12 @@ data class Strings(
     val habitincomment:String,
     val nocomment:String,
     val ayyameqabliyyacomment:String,
-    val loginAgain: String
+    val loginAgain: String,
+    val tabledatesline:String,
+    val tabledurationline:String,
+    val tabletuhrfaasidline:String,
+    val tabletuhrfasidwithistehazaline:String,
+    val tablepregnancy:String,
     )
 
 data class AllTheInputs(

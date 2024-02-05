@@ -79,7 +79,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
     val mustabeen = pregnancy.mustabeenUlKhilqat
     val birthTime = pregnancy.birthTime
     val newStr = baseStr(Strings::answer)
-
+    newStr.add(generateTableForMenstrualMatters(fixedDurations,typeOfInput,timeZone))
     if(mustabeen){
         if(fixedDurations[0].type!=DurationType.HAML){
             newStr.addStrings(Strings::beforepregheader)
@@ -149,11 +149,134 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
-        newStr.add(baseStr (Strings::tableendtag) )
         newStr.add(outputStringFinalLines (endingOutputValues, typeOfInput, timeZone))
     }
     return newStr
 }
+fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
+                         typeOfInput: TypesOfInputs,
+                         timeZone: String): OutputStringsLanguages {
+    var newStr = OutputStringsLanguages()
+    val str = HTMLTags.table + HTMLTags.tr + HTMLTags.tableheaderrow + HTMLTags.trendtag //table start and header row
+    newStr.addStr(str)
+    for(index in fixedDurations.indices){
+        val sd = fixedDurations[index].startDate
+        val et = fixedDurations[index].endDate
+        val time = fixedDurations[index].timeInMilliseconds
+        if(fixedDurations[index].type == DurationType.DAM ||
+            fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD||
+            fixedDurations[index].type == DurationType.DAM_MUBTADIA||
+            fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+            //the first two columns should be covered by this
+
+            newStr.addStr(HTMLTags.tr)//new row start
+            newStr.addStr(HTMLTags.td)//new cell start and endtime of bleeding cell
+            newStr.add(baseStr(Strings::tabledatesline)
+                    .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                    .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+            )
+            newStr.addStr(HTMLTags.tdendtag)//cell ended
+
+            if(index==fixedDurations.lastIndex){
+                newStr.addStr(HTMLTags.tdcolspan2)//if this is the last line, then no paki after, so make this take 2 spaces
+            }else{
+                newStr.addStr(HTMLTags.td)//new cell bleeding duration
+            }
+
+            newStr.add(baseStr(Strings::tabledurationline)
+                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.b)
+            )
+            newStr.addStr(HTMLTags.tdendtag)//cell ended
+
+            if(index==fixedDurations.lastIndex){//gotta do this since there won't be a paki cell
+                newStr.add(addCommentCell(fixedDurations,index,typeOfInput))//we need to add comment cell at this point
+            }
+        }else{
+            //this set of ifs and elseifs should decide what goes in column3
+            newStr.addStr(HTMLTags.td)//new cell paki cell
+            if (fixedDurations[index].type == DurationType.TUHR||
+                fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
+                fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+                newStr.add(baseStr(Strings::tabledurationline)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                )
+            }else if (fixedDurations[index].type == DurationType.TUHREFAASID||
+                fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
+                newStr.add(
+                    baseStr(Strings::tabletuhrfaasidline)
+                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                )
+            }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
+                fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
+                newStr.add(
+                    baseStr(Strings::tabletuhrfasidwithistehazaline)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.b)
+                        .replaceDur(Rplc.DUR2, time, typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+                )
+            }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
+                //we need to figure out what to do here
+//                if(!mustabeen){
+//                    val time = fixedDurations[index].timeInMilliseconds
+//                    newStr.add(
+//                        baseStr(Strings::pakidays)
+//                            .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+//                    )
+//                }
+            }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
+                //we need to figure out what to do here
+//                if(!mustabeen){
+//                    newStr.add(
+//                        baseStr(Strings::tuhrfasidwithaddition)
+//                            .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.p)
+//                            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
+//                            .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+//                    )
+//                }
+            }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
+                "PLACEHOLDER"
+            }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
+                newStr.add(
+                    baseStr(Strings::tabledurationline)
+                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                )
+            }else if (fixedDurations[index].type == DurationType.HAML){
+
+            }else if (fixedDurations[index].type == DurationType.WILADAT_ISQAT){
+
+            }
+            newStr.addStr(HTMLTags.tdendtag)//paki cell ended
+
+            newStr.add(addCommentCell(fixedDurations, index, typeOfInput))
+        }
+    }
+    //for last line in table
+
+
+    newStr.addStr( HTMLTags.tableendtag)    //table end
+    //as html tags have probably accumulated in the other strings, let's erase them
+    newStr.englishString=""
+    newStr.urduString=""
+    return newStr
+}
+
+fun addCommentCell(fixedDurations: MutableList<FixedDuration>, index: Int, typeOfInput: TypesOfInputs): OutputStringsLanguages {
+    //this should deal with the last cell, the comment cell
+    var newStr = OutputStringsLanguages()
+    newStr.addStr(HTMLTags.td)//new cell comment cell
+    if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
+        //maybe a special comment here?
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
+    }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+        newStr.add(baseStr(Strings::ayyameqabliyyacomment))
+    }else{
+        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
+    }
+    newStr.addStr(HTMLTags.tdendtag)//cell ended
+    newStr.addStr(HTMLTags.trendtag)//row ended
+    return newStr
+}
+
 
 fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
                          endingOutputValues: EndingOutputValues,
@@ -162,6 +285,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
                          preMaslaValues: PreMaslaValues,
                          timeZone: String): OutputStringsLanguages{
     val newStr = baseStr(Strings::answer) //جواب:
+        .add(generateTableForMenstrualMatters(fixedDurations,typeOfInput,timeZone))
         .add(addPreMaslaValuesText(preMaslaValues))
 
     if(typesOfMasla==TypesOfMasla.MUTADAH){
@@ -182,8 +306,6 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
             newStr.add(outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
                 .add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
             if(index==fixedDurations.size-1){//if this is the last index
-                newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
-                newStr.add(baseStr (Strings::tableendtag) )
                 newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
             }
         }
@@ -775,13 +897,11 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
             newStr.addStrings(Strings::becamemutadah)
         }
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
         newStr.add(
             baseStr(Strings::tuhrfasid)
                 .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
         )
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         newStr.add(
@@ -790,7 +910,6 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
             .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
         )
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
@@ -817,7 +936,6 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                     .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
             )
         }
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!mustabeen){
             newStr.add(
@@ -827,7 +945,6 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                 .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
             )
         }
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
         "PLACEHOLDER"
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
@@ -835,7 +952,6 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             baseStr(Strings::twomonthstuhr)
                 .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
         )
-        newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         val sd = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
@@ -845,7 +961,6 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
             .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
         )
-        newStr.add(baseStr(Strings::ayyameqabliyyacomment))
     }
     return newStr
 }
