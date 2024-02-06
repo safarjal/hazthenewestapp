@@ -79,7 +79,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
     val mustabeen = pregnancy.mustabeenUlKhilqat
     val birthTime = pregnancy.birthTime
     val newStr = baseStr(Strings::answer)
-    newStr.add(generateTableForMenstrualMatters(fixedDurations,typeOfInput,timeZone))
+    newStr.add(generateTableForMenstrualMatters(fixedDurations,typeOfInput,timeZone, mustabeen))
     if(mustabeen){
         if(fixedDurations[0].type!=DurationType.HAML){
             newStr.addStrings(Strings::beforepregheader)
@@ -115,7 +115,6 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
-        newStr.add(baseStr (Strings::tableendtag) )
         newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
     }else{//if it is ghair mustabeenulkhilqat
         newStr.addStrings(Strings::headerline)
@@ -155,7 +154,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
 }
 fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
                          typeOfInput: TypesOfInputs,
-                         timeZone: String): OutputStringsLanguages {
+                         timeZone: String, mustabeenUlKhilqat:Boolean = true): OutputStringsLanguages {
     var newStr = OutputStringsLanguages()
     val str = HTMLTags.table + HTMLTags.tr + HTMLTags.tableheaderrow + HTMLTags.trendtag //table start and header row
     newStr.addStr(str)
@@ -166,33 +165,53 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
         if(fixedDurations[index].type == DurationType.DAM ||
             fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD||
             fixedDurations[index].type == DurationType.DAM_MUBTADIA||
-            fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
+            fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA||
+            fixedDurations[index].type == DurationType.WILADAT_ISQAT){
             //the first two columns should be covered by this
 
             newStr.addStr(HTMLTags.tr)//new row start
             newStr.addStr(HTMLTags.td)//new cell start and endtime of bleeding cell
-            newStr.add(baseStr(Strings::tabledatesline)
+            if(fixedDurations[index].type == DurationType.WILADAT_ISQAT){
+                newStr.add(baseStr(Strings::tableonedateline)
+                    .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                )
+            }else{
+                newStr.add(baseStr(Strings::tabletwodatesline)
                     .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                     .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-            )
+                )
+            }
             newStr.addStr(HTMLTags.tdendtag)//cell ended
 
+            //new cell bleeding duration
             if(index==fixedDurations.lastIndex){
                 newStr.addStr(HTMLTags.tdcolspan2)//if this is the last line, then no paki after, so make this take 2 spaces
+            }else if (fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                newStr.addStr(HTMLTags.tdcolspan3)
             }else{
-                newStr.addStr(HTMLTags.td)//new cell bleeding duration
+                newStr.addStr(HTMLTags.td)
             }
+            if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
+                if(mustabeenUlKhilqat){
+                    newStr.add(baseStr(Strings::tablebirth))
+                }else{
+                    newStr.add(baseStr(Strings::tablemiscarriage))
+                }
+                newStr.addStr(HTMLTags.tdendtag)//cell ended
+                newStr.addStr(HTMLTags.trendtag)//row ended
 
-            newStr.add(baseStr(Strings::tabledurationline)
-                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.b)
-            )
-            newStr.addStr(HTMLTags.tdendtag)//cell ended
+            }else{
+                newStr.add(baseStr(Strings::tabledurationline)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.b)
+                )
+                newStr.addStr(HTMLTags.tdendtag)//cell ended
+            }
 
             if(index==fixedDurations.lastIndex){//gotta do this since there won't be a paki cell
                 newStr.add(addCommentCell(fixedDurations,index,typeOfInput))//we need to add comment cell at this point
             }
-        }else{
-            //this set of ifs and elseifs should decide what goes in column3
+        }else if(index>0){//the index more than 0 is because table should not have these be the first value
+            //this set of ifs and elseifs should decide what goes in column3 subsequent purity
             newStr.addStr(HTMLTags.td)//new cell paki cell
             if (fixedDurations[index].type == DurationType.TUHR||
                 fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
@@ -235,15 +254,15 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
 //                }
             }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
                 "PLACEHOLDER"
-            }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
+            }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS) {
                 newStr.add(
                     baseStr(Strings::tabledurationline)
                         .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
                 )
             }else if (fixedDurations[index].type == DurationType.HAML){
-
-            }else if (fixedDurations[index].type == DurationType.WILADAT_ISQAT){
-
+                newStr.add(
+                    baseStr(Strings::tablepregnancy)
+                )
             }
             newStr.addStr(HTMLTags.tdendtag)//paki cell ended
 
@@ -571,7 +590,7 @@ fun generateAadatatThisPoint(fixedDurations: MutableList<FixedDuration>,
                                          index: Int,
                                          typeOfInput: TypesOfInputs):OutputStringsLanguages {
     if(fixedDurations[index].aadatsAfterthis.aadatHaiz==-1L &&
-        fixedDurations[index].aadatsAfterthis.aadatTuhr==-1L){
+        fixedDurations[index].aadatsAfterthis.aadatTuhr==-1L){//if there is no aadat
         return baseStr (Strings::nocomment)
     }
 
@@ -836,54 +855,27 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         val sd:Instant = fixedDurations[index].startDate
         val et = fixedDurations[index].endDate
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
-            if(index==fixedDurations.lastIndex){//if this is the last fixedduration
-                newStr.add(
-                    baseStr(Strings::lasthaizdays)
-                        .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                        .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
-                )
-            }else{
-                newStr.add(
-                    baseStr(Strings::haizdays)
-                        .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                        .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
-                )
-            }
+            newStr.add(
+                baseStr(Strings::haizdays)
+                    .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                    .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                    .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
+            )
         }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
-                if(index==fixedDurations.lastIndex){//if this is the last fixedduration
-                    newStr.add(
-                        baseStr(Strings::lasthaizdays)
-                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
-                    )
-                }else{
-                    newStr.add(
-                        baseStr(Strings::continuosbleeding)
-                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
-                    )
-                }
+                newStr.add(
+                    baseStr(Strings::continuosbleeding)
+                        .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                )
             }else{
-                if(index==fixedDurations.lastIndex){//if this is the last fixedduration
-                    newStr.add(
-                        baseStr(Strings::lasthaizdays)
-                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
-                    )
-                }else{
-                    newStr.add(
-                        baseStr(Strings::blooddays)
-                            .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
-                            .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
-                    )
-                }
+                newStr.add(
+                    baseStr(Strings::blooddays)
+                        .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
+                        .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                )
             }
         }
     }else if (fixedDurations[index].type == DurationType.TUHR||
