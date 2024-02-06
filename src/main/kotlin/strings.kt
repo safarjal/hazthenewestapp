@@ -20,7 +20,6 @@ val urduStrings = Strings(
     "اگر خون اسی طرح جاری رہے یا فی الحال بند ہوجائے لیکن پندرہ دن کی کامل پاکی نہیں ملی کہ دوبارہ خون یا دھبہ آگیا تب پھر <b>${Rplc.DT1} تک آپ کے یقینی پاکی کے دن ہوں گے۔</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} <b>عادت: حیض: ${Rplc.DUR1}، پاکی: ${Rplc.DUR2}</b>\n\n",
     "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
-    "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} حیض کے ہیں۔\n\n",
     "${UnicodeChars.ORANGE_DIAMOND} ${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} یقینی پاکی (استحاضہ) کے ہیں۔\n\n",
     "${Rplc.DT1} تا ${Rplc.DT2} کل ${Rplc.DUR1} نفاس کے ہیں۔\n\n",
@@ -123,8 +122,10 @@ val urduStrings = Strings(
     "",
     "",
     "",
-    "",
     "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
+    "",
+    "",
+    "",
     "",
     "",
     "",
@@ -162,7 +163,6 @@ val englishStrings = Strings(
     "In case this bleeding continues without complete 15 days of purity, " +
             "then <b>until ${Rplc.DT1}, are certainly the days of purity (tuh'r)</b>\n\n",
     "${UnicodeChars.SNOWFLAKE} Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
-    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${UnicodeChars.RED_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${UnicodeChars.ORANGE_DIAMOND} ${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
@@ -284,8 +284,10 @@ val englishStrings = Strings(
     "",
     "",
     "",
-    "",
     "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
+    "",
+    "",
+    "",
     "",
     "",
     "",
@@ -314,7 +316,6 @@ val mmEnglishStrings = Strings(
     "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the bleeding stops and she performs ghusl and resumes salah, intimacy with husband remains prohibited till ${Rplc.DT1}.\n\n",
     "In case this bleeding continues without complete 15 days of purity,  then <b>until ${Rplc.DT1}, are certainly the days of tuhr</b>\n\n",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
-    "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
@@ -420,16 +421,18 @@ val mmEnglishStrings = Strings(
     "Password",
     "Submit",
     "Log Out",
-    "",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2}",
     "",
     "This is a case of Ayyam-e-Qabliyya",
     "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
     "${Rplc.DT1}-${Rplc.DT2}",
+    "${Rplc.DT1}",
     "${Rplc.DUR1}",
     "${Rplc.DUR1} (tuhr faasid)",
     "${Rplc.DUR1} istehada + ${Rplc.DUR2} = ${Rplc.DUR3}",
     "Pregnancy",
+    "Miscarriage",
+    "Birth",
 
 
 
@@ -444,12 +447,13 @@ object StringsOfLanguages{
 
 object HTMLTags{
     val table = "<table>"
-    val tableendtag = "</table>"
+    val tableendtag = "</table>\n\n"
     val td = "<td>"
     val tdendtag = "</td>"
     val tr = "<tr>"
     val trendtag = "</tr>"
     val tdcolspan2 = "<td colspan = \"2\">"
+    val tdcolspan3 = "<td colspan = \"3\">"
     val tableheaderrow = "<th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th>"
 }
 

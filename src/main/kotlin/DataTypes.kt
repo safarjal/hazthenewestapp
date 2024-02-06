@@ -34,7 +34,6 @@ data class Strings(
     val endofpaki: String,
     val habit: String,
     val haizdays: String,
-    val lasthaizdays: String,
     val haizdaysinsolution:String,
     val istihazadays: String,
     val nifasdays: String,
@@ -131,16 +130,18 @@ data class Strings(
     val password: String,
     val submit: String,
     val logout: String,
-    val tableendtag:String,
     val habitincomment:String,
     val nocomment:String,
     val ayyameqabliyyacomment:String,
     val loginAgain: String,
-    val tabledatesline:String,
+    val tabletwodatesline:String,
+    val tableonedateline:String,
     val tabledurationline:String,
     val tabletuhrfaasidline:String,
     val tabletuhrfasidwithistehazaline:String,
     val tablepregnancy:String,
+    val tablemiscarriage:String,
+    val tablebirth:String,
     )
 
 data class AllTheInputs(
