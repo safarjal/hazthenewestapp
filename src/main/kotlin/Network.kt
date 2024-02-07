@@ -166,6 +166,7 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         contentContainer.visibility = true
         contentEnglish.innerHTML = replaceStarWithStarAndBoldTag(data.answerEnglish)
         contentUrdu.innerHTML = replaceStarWithStarAndBoldTag(data.answerUrdu)
+        contentMMEnglish.innerHTML = data.answerMMEnglish?.let { replaceStarWithStarAndBoldTag(it) }.toString()
         contentContainer.scrollIntoView()
     }
 }

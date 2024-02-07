@@ -178,7 +178,7 @@ data class LoadData(
     val typeOfInput: String,
     val entries: List<SaveEntries>,
     val answerEnglish: String,
-    val answerMMEnglish: String,
+    val answerMMEnglish: String? = "",
     val answerUrdu: String,
     val more_infos: OtherValues? = null,
     val user_id: Int? = null,

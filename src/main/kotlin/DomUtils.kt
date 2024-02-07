@@ -75,8 +75,8 @@ fun FlowContent.timeInput(
 ) {
     timeInput(inputContainerToCopyFrom.isDateOnly) {
         block()
-        @Suppress("NAME_SHADOWING")
-        val timeInputToCopyFrom = timeInputToCopyFrom ?: inputContainerToCopyFrom.getChildById(id) as HTMLInputElement
+        @Suppress("NAME_SHADOWING") val timeInputToCopyFrom =
+            timeInputToCopyFrom ?: inputContainerToCopyFrom.getChildById(id) as HTMLInputElement
         value = timeInputToCopyFrom.value
         min = timeInputToCopyFrom.min
         max = timeInputToCopyFrom.max
@@ -145,7 +145,11 @@ fun FlowContent.makeSwitch(inputId: String, value: Boolean, block: INPUT.() -> U
 }
 
 fun FlowContent.makeIkhtilafiMasla(
-    inputId: String, text: Strings.() -> String, value: Boolean, extraClasses: String? = null, block: DIV.() -> Unit = {}
+    inputId: String,
+    text: Strings.() -> String,
+    value: Boolean,
+    extraClasses: String? = null,
+    block: DIV.() -> Unit = {}
 ) {
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
@@ -208,7 +212,9 @@ fun FlowContent.makeNumberInput(
     }
 }
 
-fun TagConsumer<HTMLElement>.makeSpans(englishText: String, mmEnglishText: String, urduText: String, block: SPAN.() -> Unit = {}) {
+fun TagConsumer<HTMLElement>.makeSpans(
+    englishText: String, mmEnglishText: String, urduText: String, block: SPAN.() -> Unit = {}
+) {
     span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
         block()
         +englishText
@@ -931,10 +937,12 @@ private fun copyText(event: Event) {
         var response: LoadData? = null
         GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
             if (response != null) {
-                copyTxt = "_Masla Id: ${response!!.id}_\n" + copyTxt
+                val maslaId = response!!.id
+//                (event.target as HTMLButtonElement).innerText = "Copy no#$maslaId"
+                copyTxt = "_Masla Id: ${maslaId}_\n" + copyTxt
                 smallTxt = "Saved and Copied "
                 if (response!!.user_id == null) smallTxt += englishStrings.loginAgain
-                inputContainer.contentContainer.setAttribute("data-saved", response!!.id.toString())
+                inputContainer.contentContainer.setAttribute("data-saved", maslaId.toString())
             } else {
                 smallTxt = "Copied"
                 window.alert("Masla has not been saved. However, it has been copied.")
