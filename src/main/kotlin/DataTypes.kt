@@ -209,7 +209,8 @@ data class OtherValues(
     val daurHaizIkhtilaf: Boolean? = false,
     var ayyameQabliyyaIkhtilaf: Boolean? = false,
     val mubtadiaIkhitilaf: Boolean? = false,
-    val timeZone: String? = null
+    val timeZone: String? = null,
+    val language: String? = null
 )
 
 @Serializable

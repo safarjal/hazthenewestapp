@@ -100,6 +100,7 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): LoadData? {
                 ayyameQabliyyaIkhtilaf = ikhtilaf3,
                 mubtadiaIkhitilaf = ikhtilaf4,
                 timeZone = if (isDateTime && !timezoneSelect.disabled) timezoneSelect.value else null,
+                language = languageSelected
             )
         )
         return sendData(toSend)
