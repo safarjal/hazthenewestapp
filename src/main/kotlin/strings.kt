@@ -302,8 +302,10 @@ val mmEnglishStrings = Strings(
     "Kindly, keep note of the bleeding/spotting with month, date and time.\n\n",
     "<b>And Allah Ta’ala knows best.</b>\n\nAnswered by,\n\n",
     "You are in the days of your tuhr right now, so keep up your ritual worship as usual.\n\n",
-    "You are in the days of your hayd right now, so, if bleeding continues you cannot do any of your ritual worship.\n\n",
-    "If this bleeding has stopped before ${Rplc.DT1} and you get purity of complete 15 days or more, refer again for further assistance.\n\n",
+    "You are in the days of your hayd right now, so, if bleeding continues" +
+            " you cannot do any of your ritual worship.\n\n",
+    "If this bleeding has stopped before ${Rplc.DT1} and you get purity" +
+            " of complete 15 days or more, refer again for further assistance.\n\n",
     "If there is no complete purity of 15 days and the intermittent bleeding spotting continues until ${Rplc.DT1}, " +
             "please refer again as the whole masala could change.\n\n",
     "If bleeding continues till ${Rplc.DT1}, then you must <b>do ghusl on ${Rplc.DT1} and begin ibadaat.</b>\n\n",
@@ -312,27 +314,30 @@ val mmEnglishStrings = Strings(
     "\n<b>Date of delivery: ${Rplc.DT1}</b>\n",
     "\n<b>The bleeding and purity (tuhr) has been in the following sequence after delivery:</b>\n",
     "\n<b>Miscarriage of an undeveloped fetus confirmed on ${Rplc.DT1}</b>\n",
-    "If the bleeding stops before ${Rplc.DT1} then take ghusl immediately and start saying your prayers but take ghusl on ${Rplc.DT1} too to be on the safe side.\n\n\n",
-    "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the bleeding stops and she performs ghusl and resumes salah, intimacy with husband remains prohibited till ${Rplc.DT1}.\n\n",
-    "In case this bleeding continues without complete 15 days of purity,  then <b>until ${Rplc.DT1}, are certainly the days of tuhr</b>\n\n",
+    "If the bleeding stops before ${Rplc.DT1} then take ghusl immediately and " +
+            "start saying your prayers but take ghusl on ${Rplc.DT1} too to be on the safe side.\n\n\n",
+    "If the questioner is married, then she should keep this in mind as well: \n \n\nEven if the " +
+            "bleeding stops and she performs ghusl and resumes salah, intimacy with husband remains prohibited till ${Rplc.DT1}.\n\n",
+    "In case this bleeding continues without complete 15 days of purity,  " +
+            "then <b>until ${Rplc.DT1}, are certainly the days of tuhr</b>\n\n",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2} \n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of period.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of definitive" +
-            " invalid purity (istehada).\n\n",
+            " invalid purity (istihada).\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of post-natal bleeding.\n\n",
     "\n\n${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of blood.\n\n",
     "<b>Solution:</b>\n\n",
     "If you left any salat thinking of it as hayd and it turned " +
-            "out to be istehada, then make qada of them.\n\n",
+            "out to be istihada, then make qada of them.\n\n",
     "If you performed ghusl on ${Rplc.DT1}, salat after " +
             "it are all valid. If you didn't, then make qada of all the salat until you took ghusl.\n\n",
     "\n\n${Rplc.DUR1} of continued bleeding from ${Rplc.DT1} to ${Rplc.DT2} (since you haven’t had 15 " +
             "or more blood-free days at a stretch in there)\n\n",
     "${Rplc.DUR1} of purity (tuhr)\n\n",
     "${Rplc.DUR1} of invalid purity (tuhr fasid)\n\n",
-    "${Rplc.DUR1} of istehada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid" +
+    "${Rplc.DUR1} of istihada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid" +
             " purity (tuhr fasid).\n\n",
     "${Rplc.DUR1} of purity (tuhr). (Since purity (tuhr) is of more than 6 months, " +
             "therefore 60 days shall be taken as habit of purity (tuhr)\n\n",
@@ -363,7 +368,8 @@ val mmEnglishStrings = Strings(
     "Please enter a duration for Current Purity",
     "Please enter Nifas Habit to solve this. If this is a first baby, please enter 40.",
     "Please enter password here. To request the password, please contact safarjal22@gmail.com",
-    "Attention!! This app is only for use by Ulema and Aalimaat who are experts in solving the masail of hayd and nifas, and understand the minutiae of the information required to solve this.",
+    "Attention!! This app is only for use by Ulema and Aalimaat who are experts in " +
+            "solving the masail of hayd and nifas, and understand the minutiae of the information required to solve this.",
     "Type of input: ",
     "Duration",
     "Dam/Purity",
@@ -372,28 +378,36 @@ val mmEnglishStrings = Strings(
     "${Rplc.DUR1} dam\n\n",
     "${Rplc.DUR1} purity (tuhr)\n\n",
     "${Rplc.DUR1} invalid purity (tuhr fasid)\n\n",
-    "${Rplc.DUR1} of istehada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid purity (tuhr fasid)\n\n",
+    "${Rplc.DUR1} of istihada + ${Rplc.DUR2} of purity (tuhr) = ${Rplc.DUR3} of invalid purity (tuhr fasid)\n\n",
     "${Rplc.DUR1} hayd\n\n",
     "${Rplc.DUR1} nifas\n\n",
-    "The first ${Rplc.DUR1} are istehada",
+    "The first ${Rplc.DUR1} are istihada",
     "The first ${Rplc.DUR1} are hayd",
-    ", then the next ${Rplc.DUR1} are istehada",
+    ", then the next ${Rplc.DUR1} are istihada",
     ", then the next ${Rplc.DUR1} are hayd",
     ".\n\n",
     "Birth\n\n",
     "Pregnancy\n\n",
     "The first ${Rplc.DUR1} are nifas",
-    "If its less than 3 days and nights, it will all be istehada.\n\n",
-    "If bleeding stops before ${Rplc.DT1} (3 days), then please ask again, as the masla will change.\n\n",
-    "If bleeding continues after ${Rplc.DT1} (40 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
-    "If bleeding continues after ${Rplc.DT1} (10 days), or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
-    "Can the purity during pregnancy be used as a habit in case of miscarriage of an unformed fetus?",
+    "If its less than 3 days and nights, it will all be istihada.\n\n",
+    "If bleeding stops before ${Rplc.DT1} (3 days), then please ask" +
+            " again, as the masla will change.\n\n",
+    "If bleeding continues after ${Rplc.DT1} (40 days), or stops, but starts again with " +
+            "gaps of less than 15 days, then please ask the masla again.\n\n",
+    "If bleeding continues after ${Rplc.DT1} (10 days), or stops, but starts again with " +
+            "gaps of less than 15 days, then please ask the masla again.\n\n",
+    "Can the purity during pregnancy be used as a habit in case of " +
+            "miscarriage of an unformed fetus?",
     "Differences of opinion",
     "Can more days than habit become hayd at the end of daur?",
-    "If bleeding stopped at or before ${Rplc.DT1}, and there was an interval of at 15 days of complete purity after it, all of this will become hayd, and ibadaat performed in this time will become null and void.\n\n  " +
+    "If bleeding stopped at or before ${Rplc.DT1}, and there " +
+            "was an interval of at 15 days of complete purity after it, all of this will become hayd, " +
+            "and ibadaat performed in this time will become null and void.\n\n  " +
             "If bleeding continues past ${Rplc.DT1}, all ibadaat will remain valid.\n\n",
-    "It is not correct for you to stop ibadaat when bleeding starts. You should continue ibadaat till ${Rplc.DT1}, the start of your habit.\n\n " +
-        "Your habit days are beginning from ${Rplc.DT1}. If bleeding continues till then, then you should stop praying from ${Rplc.DT1}.\n\n",
+    "It is not correct for you to stop ibadaat when bleeding starts. You should " +
+            "continue ibadaat till ${Rplc.DT1}, the start of your habit.\n\n " +
+        "Your habit days are beginning from ${Rplc.DT1}. If bleeding continues till then, then you " +
+            "should stop praying from ${Rplc.DT1}.\n\n",
     "${Rplc.DT1} to ${Rplc.DT2}, a total of ${Rplc.DUR1} of bleeding. (This is a case of Ayyam-e-Qabliyya).\n\n",
     "Mubtadi’a",
     "Mu'tada",
@@ -429,7 +443,7 @@ val mmEnglishStrings = Strings(
     "${Rplc.DT1}",
     "${Rplc.DUR1}",
     "${Rplc.DUR1} (tuhr faasid)",
-    "${Rplc.DUR1} istehada + ${Rplc.DUR2} = ${Rplc.DUR3}",
+    "${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}",
     "Pregnancy",
     "Miscarriage",
     "Birth",
