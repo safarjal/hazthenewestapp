@@ -310,6 +310,8 @@ data class Pregnancy(
 
 enum class DurationType {
     DAM,
+    UNSOLVABLE_DAM_NO_HABIT,
+    TUHR_AFTER_UNSOVABLE_DAM, //cannot be habit either
     TUHR,
     TUHREFAASID,
     TUHR_IN_HAML,

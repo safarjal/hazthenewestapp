@@ -2226,6 +2226,71 @@ class LogicTest {
             assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
     }
+    @Test
+    fun testFeatureMaslaIssue200() {
+//        August 4th - 12th august
+//        September 1st - 9th September
+//        September 23rd - 30th September
+//        masla was solvable from here
+//        October 18th - 25th
+//        November 11th-19th November
+//        December 6th -14th December
+//        January 1st-9th
+//        January 16 - 27th January
+//        Started bleeding again
+//        On the 2nd February still bleeding was only spotting
+//                But 15Feb my period has become heavy with blood clots
+
+
+        val entries = mutableListOf<Entry>()
+//        entries +=
+//            Entry(makeInstant(2023, 8,4), makeInstant(2023,8,12))
+//        entries +=
+//            Entry(makeInstant(2023, 9, 1), makeInstant(2023, 9, 9))
+//        entries +=
+//            Entry(makeInstant(2023, 9, 23), makeInstant(2023, 9, 30))
+        //habit
+        entries +=
+            Entry(makeInstant(2023, 10, 18), makeInstant(2023, 10, 25))
+        entries +=
+            Entry(makeInstant(2023, 11, 11), makeInstant(2023, 11, 19))
+        entries +=
+            Entry(makeInstant(2023, 12, 6), makeInstant(2023, 12, 14))
+        entries +=
+            Entry(makeInstant(2024, 1, 1), makeInstant(2024, 1, 9))
+        entries +=
+            Entry(makeInstant(2024, 1, 16), makeInstant(2024, 1, 27))
+        entries +=
+            Entry(makeInstant(2024, 2, 2), makeInstant(2024, 2, 15))
+        println("made entries")
+
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+                typeOfInput = TypesOfInputs.DATE_ONLY,
+            )
+        )
+        println(output.fixedDurations)
+        println("This one")
+
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("7")!!, parseDays("18")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2024, 2, 20), TypesOfFutureDates.END_OF_AADAT_TUHR)
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        assertEquals(expectedEndingOutputValues.futureDateType.size, output.endingOutputValues.futureDateType.size)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+    }
 
     @Test
     fun testBugMaslaIssue134() {

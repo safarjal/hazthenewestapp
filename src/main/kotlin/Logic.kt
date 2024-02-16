@@ -843,7 +843,7 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>,
 //          less than 10, update it into HazAadat. each time you encounter a tuhur
 //          (not a tuhr-e-faasid), update it into aadat too.
 
-fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
+fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                             preMaslaValues: PreMaslaValues,
                             language: String,
                             adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
@@ -856,27 +856,18 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
     // - amount of dam left after haiz
     // - new aadats of haiz and tuhr
     // - we use a function dealWithIstihazaAfter, to figure out if aadat of haiz needs to be updated in case of daur
-    val inputtedAadatHaz = preMaslaValues.inputtedAadatHaiz
-    val inputtedAadatTuhr = preMaslaValues.inputtedAadatTuhr
-    val inputtedMawjoodaTuhr = preMaslaValues.inputtedMawjoodahTuhr
+    var fixedDurations = receivedfixedDurations
+
     val isMawjoodaFasid  = preMaslaValues.isMawjoodaFasid
 
+    var aadatHaz:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatHaiz!!
+    var aadatTuhr:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatTuhr!!
+    var mawjoodaTuhr:Long = dealWithPreMaslaValues(preMaslaValues).inputtedMawjoodahTuhr!!
+    adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,-1)
+    adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,-1)
 
-    var aadatHaz:Long = -1
-    var aadatTuhr:Long = -1
-    var mawjoodaTuhr:Long = -1
 
-    if (inputtedAadatHaz != null && inputtedAadatHaz>=3.getMilliDays() && inputtedAadatHaz<=10.getMilliDays()){
-        aadatHaz = inputtedAadatHaz
-        adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,-1)
-    }
-    if (inputtedAadatTuhr!= null && inputtedAadatTuhr>=15.getMilliDays()){
-        aadatTuhr = inputtedAadatTuhr
-        adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,-1)
-    }
-    if (inputtedMawjoodaTuhr!= null && inputtedMawjoodaTuhr>=15.getMilliDays()){
-        mawjoodaTuhr = inputtedMawjoodaTuhr
-    }
+
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
@@ -884,23 +875,15 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10&&fixedDurations[i].days>=3){
             aadatHaz = fixedDurations[i].timeInMilliseconds
             adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
-            if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
-                aadatTuhr = fixedDurations[i-1].timeInMilliseconds
-                //if aadat is bigger than or equal to 6 months
-                if(aadatTuhr>=30*6.getMilliDays()){
-                    //make aadat 2 months
-                    aadatTuhr = 30*2.getMilliDays()
-                    //mark that tuhr as a super long tuhr
-                    fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
-                }
-                adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
-            }else if(i==0 && mawjoodaTuhr!=-1L && !isMawjoodaFasid){
-                aadatTuhr = mawjoodaTuhr
-                //if aadat is bigger than or equal to 6 months
-                if(aadatTuhr>=30*6.getMilliDays()){
-                    //make aadat 2 months
-                    aadatTuhr = 30*2.getMilliDays()
-                }
+            aadatTuhr = checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).first
+            fixedDurations = checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).second
+//            if(checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).second){
+//                //if it is, mark it as long tuhr
+//                fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
+//            }
+            adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
+            if(i==0 && mawjoodaTuhr!=-1L && !isMawjoodaFasid){
+                aadatTuhr = markTuhrAsAadat(-1, fixedDurations, mawjoodaTuhr).first
                 adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
             }
 
@@ -911,7 +894,7 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             val aadatNifas = fixedDurations[i].biggerThanForty!!.nifas
             val istihazaAfter = fixedDurations[i].biggerThanForty!!.istihazaAfter
 
-            //if istihaza after is less than 15, so ther is no possibilty of daur,
+            //if istihaza after is less than 15, so there is no possibilty of daur,
             // and it is followed by a Tuhr-e tamm, then we don't need aadats just yet
             if((istihazaAfter<18.getMilliDays() && i != fixedDurations.lastIndex)||
                     istihazaAfter<15.getMilliDays()){
@@ -923,7 +906,9 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
             }else{
                 //we do need aadaat
                 //we don't need mawjoodah paki
-                if(aadatHaz==(-1).toLong() ||aadatTuhr==(-1).toLong()){
+
+                if(aadatHaz==-1L ||aadatTuhr==-1L){
+//                    TODO:See if we can solve after this even if we can't solve this
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
@@ -944,18 +929,28 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
+
             if(aadatHaz==-1L ||aadatTuhr==-1L){
-                //give error message
-                if(language==Vls.Langs.ENGLISH){
-                    window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
-                }else if(language==Vls.Langs.MMENGLISH){
-                    window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
-                }else if(language==Vls.Langs.URDU){
-                    window.alert(StringsOfLanguages.URDU.errorEnterAadat)
-                }
-                return false
-            }
-            else{//we have aadat
+//                //here is where we want to change. if there is no habit,
+//                // instead of give error message and break, go on to the next one.
+//                // Mark this as unsolvable.
+//                fixedDurations[i].type==DurationType.UNSOLVABLE_DAM_NO_HABIT
+//                if(i<fixedDurations.lastIndex){//if there is a tuhr after this
+//                    fixedDurations[i].type==DurationType.TUHR_AFTER_UNSOVABLE_DAM
+//                //cannot be habit as we cannot be certain it don't have istehaza
+//                }else if(i==fixedDurations.lastIndex){
+//                    //if we reach the  end and still no habit
+                    //give error message
+                    if(language==Vls.Langs.ENGLISH){
+                        window.alert(StringsOfLanguages.ENGLISH.errorEnterAadat)
+                    }else if(language==Vls.Langs.MMENGLISH){
+                        window.alert(StringsOfLanguages.MMENGLISH.errorEnterAadat)
+                    }else if(language==Vls.Langs.URDU){
+                        window.alert(StringsOfLanguages.URDU.errorEnterAadat)
+                    }
+                    return false
+//                }
+            }else{//we have aadat
                 if(mawjoodaTuhr==-1L && i<1){//if mawjoodah tuhr doesn't exist and the first period is bigger than 10
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
@@ -1023,6 +1018,61 @@ fun dealWithBiggerThan10Dam(fixedDurations: MutableList<FixedDuration>,
         }
     }
     return true
+}
+
+fun checkIfPreviousTuhrIsAadat(i: Int, receivedfixedDurations: MutableList<FixedDuration>, previousTuhrAadat:Long): Pair<Long,MutableList<FixedDuration>> {
+    var aadatTuhr= previousTuhrAadat
+    var fixedDurations = receivedfixedDurations
+
+    if(i>0 && fixedDurations[i-1].type==DurationType.TUHR){
+        //if there is a tuhr saheeh before this, mark it as aadat
+        aadatTuhr = markTuhrAsAadat(i-1, fixedDurations).first
+        fixedDurations = markTuhrAsAadat(i-1, fixedDurations).second
+    }
+    return Pair(aadatTuhr,fixedDurations)
+}
+
+fun markTuhrAsAadat(i: Int, fixedDurations: MutableList<FixedDuration>, lengthOfTuhr:Long=0): Pair<Long,MutableList<FixedDuration>> {
+    var aadatTuhr = lengthOfTuhr
+    if(i==-1){
+        aadatTuhr = lengthOfTuhr
+        //if aadat is bigger than or equal to 6 months
+        if(aadatTuhr>=30*6.getMilliDays()){
+            //make aadat 2 months
+            aadatTuhr = 30*2.getMilliDays()
+        }
+
+    }else{
+        aadatTuhr = fixedDurations[i].timeInMilliseconds
+        //if aadat is bigger than or equal to 6 months
+        if(aadatTuhr>=30*6.getMilliDays()){
+            //make aadat 2 months
+            aadatTuhr = 30*2.getMilliDays()
+            //mark that tuhr as a super long tuhr
+            fixedDurations[i].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
+        }
+    }
+    return Pair(aadatTuhr,fixedDurations)
+}
+
+fun dealWithPreMaslaValues(preMaslaValues: PreMaslaValues):PreMaslaValues {
+    var aadatHaz:Long = -1
+    var aadatTuhr:Long = -1
+    var mawjoodaTuhr:Long = -1
+    val inputtedAadatHaz = preMaslaValues.inputtedAadatHaiz
+    val inputtedAadatTuhr = preMaslaValues.inputtedAadatTuhr
+    val inputtedMawjoodaTuhr = preMaslaValues.inputtedMawjoodahTuhr
+    val isMawjoodaFasid  = preMaslaValues.isMawjoodaFasid
+    if (inputtedAadatHaz != null && inputtedAadatHaz>=3.getMilliDays() && inputtedAadatHaz<=10.getMilliDays()){
+        aadatHaz = inputtedAadatHaz
+    }
+    if (inputtedAadatTuhr!= null && inputtedAadatTuhr>=15.getMilliDays()){
+        aadatTuhr = inputtedAadatTuhr
+    }
+    if (inputtedMawjoodaTuhr!= null && inputtedMawjoodaTuhr>=15.getMilliDays()){
+        mawjoodaTuhr = inputtedMawjoodaTuhr
+    }
+    return PreMaslaValues(aadatHaz,aadatTuhr,mawjoodaTuhr,preMaslaValues.isMawjoodaFasid)
 }
 
 fun dealWithIstihazaAfter(istihazaAfter: Long,
