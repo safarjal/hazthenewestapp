@@ -1,14 +1,14 @@
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.html.dom.append
 import kotlinx.html.*
+import kotlinx.html.dom.append
 import kotlinx.html.form
 import kotlinx.html.js.*
-import kotlinx.html.tr
-import org.w3c.dom.*
-import kotlin.js.Json
-import kotlin.js.json
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLSelectElement
+import org.w3c.dom.Node
 
 fun Node.addInputLayout() {
     append {
@@ -76,7 +76,12 @@ private fun FlowContent.ikhtilafiMasle() {
                 Strings::aadatIncreasingAtEndOfDaurIkhtilaf, false,
                 extraClasses = CssC.DEV
             )
-            makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF3, Strings::ayyameqabliyyaikhtilaf, false, extraClasses = CssC.DEV)
+            makeIkhtilafiMasla(
+                Ids.Ikhtilafat.IKHTILAF3,
+                Strings::ayyameqabliyyaikhtilaf,
+                false,
+                extraClasses = CssC.DEV
+            )
             makeIkhtilafiMasla(Ids.Ikhtilafat.IKHTILAF4, Strings::mubtadiaikhitilaf, false, extraClasses = CssC.DEV)
         }
     }
@@ -100,7 +105,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         }
         // Zaalla?
         div(classes = CssC.DEV) {
-            makeLabel(Ids.Inputs.ZAALLA_CHECKBOX, Strings::zaalla, "Zaalla")
+            makeLabel(Ids.Inputs.ZAALLA_CHECKBOX, Strings::zaalla, CssC.ZAALLA)
             checkBoxInput {
                 id = Ids.Inputs.ZAALLA_CHECKBOX
                 name = Ids.Inputs.ZAALLA_CHECKBOX
@@ -358,17 +363,17 @@ private fun TagConsumer<HTMLElement>.content() {
         id = Ids.Results.CONTENT_CONTAINER
         div(classes = CssC.URDU) {
             id = Ids.Results.CONTENT_WRAPPER
-            copyBtn(CssC.LEFT, CssC.RTL)
+            copyBtn(Ids.Results.CONTENT_URDU, CssC.LEFT)
             content(Ids.Results.CONTENT_URDU, Ids.Results.CONTENT_ANSWER)
         }
         div(classes = CssC.ENGLISH) {
             id = Ids.Results.CONTENT_WRAPPER
-            copyBtn(CssC.RIGHT)
+            copyBtn(Ids.Results.CONTENT_ENGLISH, CssC.RIGHT)
             content(Ids.Results.CONTENT_ENGLISH, Ids.Results.CONTENT_ANSWER)
         }
         div(classes = CssC.MMENGLISH) {
             id = Ids.Results.CONTENT_WRAPPER
-            copyBtn(CssC.RIGHT)
+            copyBtn(Ids.Results.CONTENT_MMENGLISH, CssC.RIGHT, true)
             content(Ids.Results.CONTENT_MMENGLISH, Ids.Results.CONTENT_ANSWER)
         }
         content(Ids.Results.CONTENT_DATES)

@@ -55,6 +55,7 @@ private fun parseHREF() {
     // DEFAULT LANGUAGE
     languageSelector.onchange = { languageChange() }
     if (window.location.href.contains("lang=en")) languageSelector.value = Vls.Langs.ENGLISH
+    if (window.location.href.contains("lang=mm")) languageSelector.value = Vls.Langs.MMENGLISH
     languageChange()
 }
 

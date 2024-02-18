@@ -1,17 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
 
-import io.ktor.util.date.*
 import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.CompositeDecoder
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.decodeStructure
-import org.w3c.dom.url.URL
-import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 data class Strings(
     val answer: String,
@@ -21,104 +12,104 @@ data class Strings(
     val allahknows: String,
     val currentpaki: String,
     val currenthaiz: String,
-    val situationmaychangeifgap:String,
-    val situationmaychangeifnogap:String,
+    val situationmaychangeifgap: String,
+    val situationmaychangeifnogap: String,
     val haizend: String,
     val beforepregheader: String,
     val preg: String,
     val birth: String,
-    val afterpregheader:String,
+    val afterpregheader: String,
     val earlymiscarriage: String,
     val ihtiyatighusl: String,
     val sexnotallowed: String,
     val endofpaki: String,
     val habit: String,
     val haizdays: String,
-    val haizdaysinsolution:String,
+    val haizdaysinsolution: String,
     val istihazadays: String,
     val nifasdays: String,
-    val nifasdaysinsolution:String,
+    val nifasdaysinsolution: String,
     val blooddays: String,
     val solution: String,
     val istihazadetailslineone: String,
     val istihazadetailslinetwo: String,
     val continuosbleeding: String,
-    val pakidays:String,
-    val tuhrfasid:String,
-    val tuhrfasidwithaddition:String,
+    val pakidays: String,
+    val tuhrfasid: String,
+    val tuhrfasidwithaddition: String,
     val twomonthstuhr: String,
     val dashesline: String,
-    val becamemutadah:String,
-    val thereisnoaadat:String,
-    val aadatofhaizonly:String,
-    val selectLanguage:String,
-    val dateOnly:String,
-    val dateAndTime:String,
-    val urdu:String,
-    val english:String,
-    val mmenglish:String,
-    val haizAadat:String,
-    val tuhrAadat:String,
-    val mawjoodahTuhr:String,
-    val faasid:String,
-    val nifasAadat:String,
-    val pregnancyStartTime:String,
-    val birthMiscarrriageTime:String,
-    val startTime:String,
-    val endTime:String,
-    val calculate:String,
-    val incorrectAadat:String,
-    val nifas:String,
+    val becamemutadah: String,
+    val thereisnoaadat: String,
+    val aadatofhaizonly: String,
+    val selectLanguage: String,
+    val dateOnly: String,
+    val dateAndTime: String,
+    val urdu: String,
+    val english: String,
+    val mmenglish: String,
+    val haizAadat: String,
+    val tuhrAadat: String,
+    val mawjoodahTuhr: String,
+    val faasid: String,
+    val nifasAadat: String,
+    val pregnancyStartTime: String,
+    val birthMiscarrriageTime: String,
+    val startTime: String,
+    val endTime: String,
+    val calculate: String,
+    val incorrectAadat: String,
+    val nifas: String,
     val mustabeenUlKhilqa: String,
     val errorEnterAadat: String,
-    val errorEnterMawjoodaPaki:String,
-    val errorEnterNifasAadat:String,
-    val passwordRequired:String,
-    val warningOnlyAuthorizedPersonnel:String,
+    val errorEnterMawjoodaPaki: String,
+    val errorEnterNifasAadat: String,
+    val passwordRequired: String,
+    val warningOnlyAuthorizedPersonnel: String,
     val typeOfInput: String,
     val duration: String,
     val damOrTuhr: String,
     val dam: String,
     val tuhr: String,
     val durationDam: String,
-    val durationPaki:String,
-    val durationTuhrefasid:String,
-    val durationTuhreFasidWithAddition:String,
-    val durationHaiz:String,
-    val durationNifas:String,
-    val startingFromIstehaza:String,
-    val startingFromHaiz:String,
-    val followedByistehazaAfter:String,
-    val followedByHaizAfter:String,
-    val khatimaplusnewline:String,
+    val durationPaki: String,
+    val durationTuhrefasid: String,
+    val durationTuhreFasidWithAddition: String,
+    val durationHaiz: String,
+    val durationNifas: String,
+    val startingFromIstehaza: String,
+    val startingFromHaiz: String,
+    val followedByistehazaAfter: String,
+    val followedByHaizAfter: String,
+    val khatimaplusnewline: String,
     val birthduration: String,
-    val pregduration:String,
-    val startingFromNifas:String,
-    val bleedingstopsbeforethree:String,
+    val pregduration: String,
+    val startingFromNifas: String,
+    val bleedingstopsbeforethree: String,
     val bleedingstopsbeforethreemaslachanges: String,
-    val afterfortydays:String,
-    val aftertendays:String,
-    val considerTuhrInGhiarMustabeenIsqaatIkhtilaf:String,
+    val afterfortydays: String,
+    val aftertendays: String,
+    val considerTuhrInGhiarMustabeenIsqaatIkhtilaf: String,
     val ikhtilafimasail: String,
-    val aadatIncreasingAtEndOfDaurIkhtilaf:String,
-    val beforetendaysayyameqabliyyaallconsideredhaiz:String,
-    val endofistehazaayyameqabliyya:String,
-    val daysayyameqabliyya:String,
-    val mubtadia:String,
-    val mutada:String,
-    val typeOfMasla:String,
-    val askagainnodate:String,
-    val tendaysdoghusl:String,
+    val aadatIncreasingAtEndOfDaurIkhtilaf: String,
+    val beforetendaysayyameqabliyyaallconsideredhaiz: String,
+    val endofistehazaayyameqabliyya: String,
+    val daysayyameqabliyya: String,
+    val mubtadia: String,
+    val mutada: String,
+    val typeOfMasla: String,
+    val askagainnodate: String,
+    val tendaysdoghusl: String,
     val habitwithnifas: String,
     val earlymiscarriageduration: String,
-    val ayyameqabliyyaikhtilaf:String,
-    val mubtadiaikhitilaf:String,
-    val onlynifashabit:String,
-    val nifasAndHaizHabit:String,
-    val nifasAndTuhrHabit:String,
-    val onlyTuhrHabit:String,
-    val saailaDetailsFieldLabel:String,
-    val questionTextFieldLabel:String,
+    val ayyameqabliyyaikhtilaf: String,
+    val mubtadiaikhitilaf: String,
+    val onlynifashabit: String,
+    val nifasAndHaizHabit: String,
+    val nifasAndTuhrHabit: String,
+    val onlyTuhrHabit: String,
+    val saailaDetailsFieldLabel: String,
+    val questionTextFieldLabel: String,
     val isqat: String,
     val preMaslaHabitOfHaizAndTuhr: String,
     val preMaslaValueOfMawjoodaPaki: String,
@@ -130,28 +121,28 @@ data class Strings(
     val password: String,
     val submit: String,
     val logout: String,
-    val habitincomment:String,
-    val nocomment:String,
-    val ayyameqabliyyacomment:String,
+    val habitincomment: String,
+    val nocomment: String,
+    val ayyameqabliyyacomment: String,
     val loginAgain: String,
-    val tabletwodatesline:String,
-    val tableonedateline:String,
-    val tabledurationline:String,
-    val tabletuhrfaasidline:String,
-    val tabletuhrfasidwithistehazaline:String,
-    val tablepregnancy:String,
-    val tablemiscarriage:String,
-    val tablebirth:String,
-    )
+    val tabletwodatesline: String,
+    val tableonedateline: String,
+    val tabledurationline: String,
+    val tabletuhrfaasidline: String,
+    val tabletuhrfasidwithistehazaline: String,
+    val tablepregnancy: String,
+    val tablemiscarriage: String,
+    val tablebirth: String,
+)
 
 data class AllTheInputs(
-    val entries: List<Entry>?= null,
-    val preMaslaValues: PreMaslaValues = PreMaslaValues(null,null, null, false),
-    val typeOfMasla:TypesOfMasla = TypesOfMasla.MUTADAH,
+    val entries: List<Entry>? = null,
+    val preMaslaValues: PreMaslaValues = PreMaslaValues(null, null, null, false),
+    val typeOfMasla: TypesOfMasla = TypesOfMasla.MUTADAH,
     val pregnancy: Pregnancy? = null,
     val typeOfInput: TypesOfInputs = TypesOfInputs.DATE_ONLY,
     val language: String = Vls.Langs.URDU,
-    val ikhtilaafaat:Ikhtilaafaat = Ikhtilaafaat(
+    val ikhtilaafaat: Ikhtilaafaat = Ikhtilaafaat(
         ghairMustabeenIkhtilaaf = true,
         daurHaizIkhtilaf = false,
         ayyameQabliyyaIkhtilaf = false,
@@ -171,6 +162,7 @@ data class SaveData(
     val answerUrdu: String? = "",
     val others: OtherValues? = null,
 )
+
 @Serializable
 data class LoadData(
     val id: Int,
@@ -185,6 +177,7 @@ data class LoadData(
     val created_at: String,
     val url: String,
 )
+
 @Serializable
 data class SaveEntries(
     val startTime: String? = null,
@@ -217,7 +210,8 @@ data class OtherValues(
 data class ErrorResponse(val error: String)
 
 @Serializable
-data class User( val user: UserData)
+data class User(val user: UserData)
+
 @Serializable
 data class UserData(
     val username: String,
@@ -241,25 +235,22 @@ data class Ikhtilaafaat(
 
 
 enum class TypesOfInputs {
-    DATE_ONLY,
-    DATE_AND_TIME,
-    DURATION
+    DATE_ONLY, DATE_AND_TIME, DURATION
 }
 
 enum class TypesOfMasla {
-    MUBTADIA,
-    MUTADAH,
-    NIFAS
+    MUBTADIA, MUTADAH, NIFAS
 }
 
 data class Entry(
-    val startTime: Instant,
-    val endTime: Instant
+    val startTime: Instant, val endTime: Instant
 )
+
 data class LocalEntry(
     val startTime: LocalDateTime,
     val endTime: LocalDateTime
 )
+
 enum class TypesOfFutureDates {
     A3_CHANGING_TO_A2,
     END_OF_AADAT_HAIZ,
@@ -277,20 +268,21 @@ enum class TypesOfFutureDates {
 }
 
 class FutureDateType(
-    val date:Instant,
-    val futureDates:TypesOfFutureDates,
-    val date2:Instant? = null,
+    val date: Instant,
+    val futureDates: TypesOfFutureDates,
 )
+
 class EndingOutputValues(
-    val filHaalPaki:Boolean?,
-    val aadats:AadatsOfHaizAndTuhr?,
+    val filHaalPaki: Boolean?,
+    val aadats: AadatsOfHaizAndTuhr?,
     val futureDateType: MutableList<FutureDateType>
 )
-class OutputTexts (
+
+class OutputTexts(
     var outputText: OutputStringsLanguages,
-    var haizDatesText:String,
+    var haizDatesText: String,
     var hazDatesList: MutableList<Entry>,
-    var endingOutputValues:EndingOutputValues,
+    var endingOutputValues: EndingOutputValues,
     var fixedDurations: MutableList<FixedDuration>
 )
 
@@ -365,11 +357,11 @@ data class FixedDuration(
     var timeInMilliseconds: Long,
     var indices: MutableList<Int> = mutableListOf(),
     var istihazaAfter: Long = 0,
-    var ayyameqabliyya:AyyameQabliyya? = null,
+    var ayyameqabliyya: AyyameQabliyya? = null,
     var biggerThanTen: BiggerThanTenDm? = null,
     var biggerThanForty: BiggerThanFortyNifas? = null,
     var startDate: Instant = Instant.EPOCH,
-    var aadatsAfterthis: AadatsOfHaizAndTuhr = AadatsOfHaizAndTuhr(-1L,-1L),
+    var aadatsAfterthis: AadatsOfHaizAndTuhr = AadatsOfHaizAndTuhr(-1L, -1L),
 ) {
     val days: Double get() = timeInMilliseconds / MILLISECONDS_IN_A_DAY.toDouble()
     val endDate: Instant get() = this.startDate.plusMillis(this.timeInMilliseconds)
@@ -388,19 +380,20 @@ data class BiggerThanTenDm(
     var hz: Long, //aadat of haiz before solving this
     var qism: Soortain, //name of that case A-1, A-2, A-3, B-2, B-3
     var istihazaBefore: Long, //number of days of istihaza before haiz
-    var haiz:Long, //number of days of haiz (also aadat of haiz before istimrar)
+    var haiz: Long, //number of days of haiz (also aadat of haiz before istimrar)
     var istihazaAfter: Long, //number of days of istihaza after haiz
-    var aadatHaiz:Long, //aadat of haiz after end of istimrar
-    var aadatTuhr:Long, //aadat of tuhur after solving this
+    var aadatHaiz: Long, //aadat of haiz after end of istimrar
+    var aadatTuhr: Long, //aadat of tuhur after solving this
     var durationsList: MutableList<Duration>
 
 )
+
 data class BiggerThanFortyNifas(
     var nifas: Long, //muddate nifas
     var istihazaAfter: Long, //number of days of istihaza after nifas
-    var haiz:Long, //aadat of haiz before solving this
-    var aadatHaiz:Long, //aadat of haiz after solving this
-    var aadatTuhr:Long, //aadat of tuhur after solving this
+    var haiz: Long, //aadat of haiz before solving this
+    var aadatHaiz: Long, //aadat of haiz after solving this
+    var aadatTuhr: Long, //aadat of tuhur after solving this
     var durationsList: MutableList<Duration>
 )
 
@@ -411,8 +404,8 @@ data class AadatsOfHaizAndTuhr(
 )
 
 data class AadaatWithChangeability(
-    var aadaat:AadatsOfHaizAndTuhr,
-    var isChangeable:Boolean
+    var aadaat: AadatsOfHaizAndTuhr,
+    var isChangeable: Boolean
 )
 
 data class AadatAfterIndexOfFixedDuration(//these go into both adat of haiz list and adat of tuhr list
@@ -426,7 +419,7 @@ data class OutputStringsLanguages(
     var mmEnglishString: String = ""
 )
 
-data class TzInfo (
+data class TzInfo(
     val info: String,
     val tz: String
 )

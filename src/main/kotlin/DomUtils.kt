@@ -1,11 +1,7 @@
 @file:Suppress("SpellCheckingInspection") @file:OptIn(DelicateCoroutinesApi::class)
 
 import kotlinx.browser.document
-import kotlinx.browser.window
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
@@ -13,7 +9,7 @@ import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.*
 
 // MAKE ELEMENTS
-fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block: P.() -> Unit = {}) {
+fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = null, block: () -> Unit = {}) {
     p(classes = classes) {
         id = idName ?: "content"
         style = "white-space: pre-wrap;"
@@ -21,17 +17,29 @@ fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = 
     }
 }
 
-fun FlowContent.copyBtn(divClass: String, btnClass: String? = null) {
-    div(classes = divClass) {
-        button(classes = btnClass) {
+fun FlowContent.copyBtn(contentId: String, divClass: String, clipboard: Boolean = false) {
+    div(classes = "$divClass ${CssC.COPY_BTN}") {
+        button(classes = CssC.CALC_BTN) {
+            id = if (clipboard) Ids.Results.CLIPBOARD_JS_BTN else Ids.Results.COPY_BTN
+            if (clipboard) attributes.put("data-clipboard-target", "#$contentId")
             onClickFunction = { event ->
-                copyText(event)
+                if (clipboard) saveText(event) else copyText(event)
             }
-            +"Save and Copy ⎙"
+            +"Save and Copy"
+
+            val iconName = if (clipboard) "word" else "whatsapp"
+            img(src = "/images/$iconName-icon.svg") {
+                alt = "Copy Icon"
+                width = "16" // Set the width as needed
+                height = "16" // Set the height as needed
+            }
+
+            span(classes = Ids.Results.COPY_TOOLTIP) {
+                +"Copy to clipboard"
+            }
         }
-        br()
-        small(classes = btnClass)
     }
+    if (clipboard) copyClipboard(Ids.Results.CLIPBOARD_JS_BTN)
 }
 
 // Dealing with time inputs
@@ -894,70 +902,6 @@ private fun disableTime() {
             disableOpt(inputsContainer, Ids.Inputs.INPUT_TYPE_SELECT, Vls.Types.DATE_TIME, true)
             if (inputsContainer.isDateTime) inputsContainer.typeSelect.value = Vls.Types.DATE_ONLY
         }
-    }
-}
-
-// Copy Answer
-
-// ANSWER
-//private fun getNow(): String {
-//    var dateStr = ""
-//    val now = Date.now()
-//    val now = Instant.now()
-//    val date = languagedDateFormat(now, TypesOfInputs.DATE_ONLY, languageSelected)
-//    val day = now.
-//    val day = Date(now).getDate()
-//    val month = Date(now).getMonth()
-//    if (languageSelected == Vls.Langs.URDU){
-//        val urduMonth = urduMonthNames[month]
-//        val urduDay:String = if (day == 1) "یکم" else day.toString()
-//        dateStr = "$urduDay $urduMonth ${Date(now).getFullYear()}"
-//    }else if(languageSelected == Vls.Langs.ENGLISH){
-//        dateStr = Date(now).toDateString().drop(4)
-//    }
-//    return date
-//}
-
-private fun copyText(event: Event) {
-    val div = (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
-    val inputContainer = findInputContainer(event)
-
-    val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
-    val questionTxt = inputContainer.questionText
-    val saailaDetails = inputContainer.saailaDetails
-    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
-    val answerTxt = div?.querySelector("p.${Ids.Results.CONTENT_ANSWER}")?.textContent
-    var copyTxt = "*$dateStr*\n\n$saailaDetails\n\n$questionTxt\n\n$divider\n\n$answerTxt"
-    copyTxt.let { window.navigator.clipboard.writeText(it) }
-
-    val small = div?.querySelector("small")
-    var smallTxt: String
-
-    if (inputContainer.contentContainer.dataset["saved"] == "false") {
-        var response: LoadData? = null
-        GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
-            if (response != null) {
-                val maslaId = response!!.id
-//                (event.target as HTMLButtonElement).innerText = "Copy no#$maslaId"
-                copyTxt = "_Masla Id: ${maslaId}_\n" + copyTxt
-                smallTxt = "Saved and Copied "
-                if (response!!.user_id == null) smallTxt += englishStrings.loginAgain
-                inputContainer.contentContainer.setAttribute("data-saved", maslaId.toString())
-            } else {
-                smallTxt = "Copied"
-                window.alert("Masla has not been saved. However, it has been copied.")
-            }
-
-            copyTxt.let { window.navigator.clipboard.writeText(it) }
-            small?.innerHTML?.let { small.innerHTML = smallTxt }
-            window.setTimeout({ small?.innerHTML = "" }, 5000)
-        }
-    } else {
-        smallTxt = "Copied!"
-        copyTxt = "_Masla Id: ${inputContainer.contentContainer.dataset["saved"]}_\n" + copyTxt
-        copyTxt.let { window.navigator.clipboard.writeText(it) }
-        small?.innerHTML?.let { small.innerHTML = smallTxt }
-        window.setTimeout({ small?.innerHTML = "" }, 5000)
     }
 }
 

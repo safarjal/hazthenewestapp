@@ -14,6 +14,9 @@ val Document.isHidden get() = this["hidden"] as Boolean
 fun replaceBoldTagWithBoldAndStar(string: String): String {
     return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
         .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
+        .split("\n\n").joinToString("") { paragraph ->
+            "<p>$paragraph</p>"
+        }
 }
 
 fun replaceStarWithStarAndBoldTag(string: String): String {
@@ -78,14 +81,12 @@ var Element.visibility: Boolean
     }
 
 val HTMLTableRowElement.rowIndexWithinTableBody
-    get() =
-        (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
+    get() = (parentElement as HTMLTableSectionElement).children.asList().indexOf(this)
 
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
-    classes: String? = null,
-    block: INPUT.() -> Unit = {}
+    classes: String? = null, block: INPUT.() -> Unit = {}
 ) {
     dateTimeLocalInput(classes = classes) {
         placeholder = "YYYY-MM-DDThh:mm"
@@ -96,16 +97,13 @@ fun FlowOrInteractiveOrPhrasingContent.dateTimeLocalInputWithFallbackGuidelines(
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.customDateTimeInput(
-    isDateOnly: Boolean,
-    classes: String? = null,
-    block: INPUT.() -> Unit = {}
+    isDateOnly: Boolean, classes: String? = null, block: INPUT.() -> Unit = {}
 ) {
     if (isDateOnly) dateInput(classes = classes, block = block)
     else dateTimeLocalInputWithFallbackGuidelines(classes = classes, block = block)
 }
 
-fun LocalDateTime.addTimeZone(tz: String?) =
-    ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
+fun LocalDateTime.addTimeZone(tz: String?) = ZonedDateTime.of(this, ZoneId.of(tz ?: "UTC"))
 
 fun String.getUTC(tz: String?) = LocalDateTime.parse(this).addTimeZone(tz ?: "UTC").toInstant()
 //fun Instant.getLocal(tz: String = "UTC") = LocalDateTime.ofInstant(this, ZoneId.of(tz.ifEmpty { "UTC" }))
@@ -130,17 +128,10 @@ fun Int.leadingZero() = if (this < 10) "0$this" else toString()
 //fun instant(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0): Instant =
 //    ("$year-${(month+1).leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant()
 fun makeInstant(
-    year: Int,
-    month: Int,
-    day: Int,
-    hour: Int = 0,
-    minute: Int = 0,
-    tz: Boolean = false,
-    tzStr: String? = null
+    year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, tz: Boolean = false, tzStr: String? = null
 ): Instant =
     ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(
-        tzStr,
-        tz
+        tzStr, tz
     )
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
@@ -255,7 +246,7 @@ fun daysHoursMinutesDigital(
         if (typeOfInput == TypesOfInputs.DATE_ONLY) {
             isDateOnly = true
         }
-        if(numberOfMilliseconds==-1L){
+        if (numberOfMilliseconds == -1L) {
             return "?"
         }
 
@@ -266,7 +257,7 @@ fun daysHoursMinutesDigital(
 
         when (days) {
             0.0 -> strDays = "0${Rplc.LETTER}"
-            else -> strDays += "${Rplc.LETTER}"
+            else -> strDays += Rplc.LETTER
         }
         when (hours) {
             0.0 -> strHours = ""
@@ -301,11 +292,7 @@ fun localHazDatesList(hazDatesList: MutableList<Entry>, tz: String): List<LocalE
 }
 
 fun languagedDateFormat(
-    date: Instant,
-    typeOfInput: TypesOfInputs,
-    language: String,
-    timeZone: String = "UTC",
-    addYear: Boolean = false
+    date: Instant, typeOfInput: TypesOfInputs, language: String, timeZone: String = "UTC", addYear: Boolean = false
 ): String {
     var isDateOnly = false
     if (typeOfInput == TypesOfInputs.DATE_ONLY) {
@@ -365,7 +352,7 @@ fun languagedDateFormat(
             dayth = "${day}th"
         }
 
-        val dateStr = "${dayth} ${englishMonth} $year".trim()
+        val dateStr = "$dayth $englishMonth $year".trim()
 
         var ampm = "am"
         if (hours >= 12) {
@@ -426,10 +413,7 @@ fun OutputStringsLanguages.replace(oldUr: String, newUr: String, oldEn: String, 
 }
 
 fun OutputStringsLanguages.replaceDT(
-    placeholder: String,
-    date: Instant,
-    typeOfInput: TypesOfInputs,
-    timeZone: String
+    placeholder: String, date: Instant, typeOfInput: TypesOfInputs, timeZone: String
 ): OutputStringsLanguages {
     urduString = urduString.replace(placeholder, languagedDateFormat(date, typeOfInput, Vls.Langs.URDU, timeZone))
     englishString =
@@ -440,15 +424,13 @@ fun OutputStringsLanguages.replaceDT(
 }
 
 fun OutputStringsLanguages.replaceDur(
-    placeholder: String,
-    millis: Long,
-    typeOfInput: TypesOfInputs, letter: String = ""
+    placeholder: String, millis: Long, typeOfInput: TypesOfInputs, letter: String = ""
 ): OutputStringsLanguages {
     urduString = urduString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.URDU))
     englishString = englishString.replace(placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.ENGLISH))
     mmEnglishString = mmEnglishString.replace(
         placeholder, daysHoursMinutesDigital(millis, typeOfInput, Vls.Langs.MMENGLISH).replace(
-            "${Rplc.LETTER}",
+            Rplc.LETTER,
             letter.ifEmpty { "d" }
         )
     )
@@ -515,6 +497,9 @@ object Ids {
         const val CONTENT_DATES = "content_dates"
         const val CALCULATE_ALL_DIV = "calculate_all_div"
         const val CALCULATE_BUTTON = "calculate_button"
+        const val COPY_BTN = "copy_button"
+        const val CLIPBOARD_JS_BTN = "clipboard_js_button"
+        const val COPY_TOOLTIP = "copy_tooltip"
         const val COMPARISON_CONTAINER = "comparison_container"
         const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
     }
@@ -549,24 +534,24 @@ object Ids {
     }
 }
 
-object Letters{
+object SaveMaslaId {
+    const val SAVED: String = "saved"
+    const val DATA_SAVED: String = "data-saved"
+}
+
+object Letters {
     const val b: String = "b"
     const val p: String = "p"
 }
 
 object CssC {
-    const val INVIS =
-        "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
+    const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
-    const val HIDDEN =
-        "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
+    const val HIDDEN = "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
 
-    const val ENGLISH =
-        "english"                   // Switch. Put on any element that should only show when lang is english
-    const val MMENGLISH =
-        "mmenglish"                   // Switch. Put on any element that should only show when lang is english
-    const val URDU =
-        "urdu"                         // Switch. Put on any element that should only show when lang is urdu
+    const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
+    const val MMENGLISH = "mmenglish"               // Switch. Put on any element that should only show when lang is english
+    const val URDU = "urdu"                         // Switch. Put on any element that should only show when lang is urdu
     const val DEV = "dev"                           // Switch. Put on any element that should only show when devmode
     const val RTL = "rtl"                           // Switch. Put on any element that should switch rtl but NOT invis
 
@@ -601,10 +586,12 @@ object CssC {
     const val MONTHS_ROW = "months_row"             // CSS Style.
     const val DATES_ROW = "dates_row"               // CSS Style.
     const val BORDERED = "bordered"                 // CSS Style.
-    const val HALF_TABLE_CELL = "half_table_cell"  // CSS Style.
+    const val HALF_TABLE_CELL = "half_table_cell"   // CSS Style.
     const val EMPTY_TABLE_CELL = "empty_table_cell" // CSS Style.
     const val NA_PAAKI = "na_paaki"                 // CSS Style.
     const val AYYAM_E_SHAKK = "ayyam_e_shakk"       // CSS Style.
+
+    const val COPY_BTN = "copy_btn"
 }
 
 object Vls {                                        // Values
