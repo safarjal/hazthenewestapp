@@ -100,8 +100,8 @@ h1 {
 .icon {
   width: clamp(13px, 6vw, 1.8rem);
   height: clamp(13px, 6vw, 1.8rem);
-  max-width: 36px;
-  max-height: 36px;
+  max-width: 24px;
+  max-height: 24px;
 }
 
 h2 {
