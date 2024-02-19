@@ -18,6 +18,7 @@ dependencies {
     implementation(npm("html2canvas", "1.4.1"))
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation(npm("@js-joda/timezone", "2.3.0"))
+    implementation(npm("clipboard", "v2.0.11"))
 
     val ktorVersion = "2.2.1"
     implementation("io.ktor:ktor-client-core:$ktorVersion")

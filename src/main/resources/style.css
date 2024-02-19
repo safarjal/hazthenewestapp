@@ -280,8 +280,54 @@ tbody > tr:nth-child(odd) {
   right: 0;
 }
 
-small {
-  margin: 0.2rem;
+.copy_btn {
+  position: relative;
+  display: inline;
+}
+
+.copy_btn .copy_tooltip {
+  visibility: hidden;
+  width: 100px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: -50%;
+  opacity: 0;
+  transition: opacity 0.3s;
+  margin-bottom: -23px;
+  font-size: initial;
+}
+.copy_btn.right .copy_tooltip {
+  left: 100%;
+}
+.copy_btn.left .copy_tooltip {
+  right: 100%;
+}
+
+.copy_btn .copy_tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+}
+.copy_btn.right .copy_tooltip::after {
+  right: 100%;
+  border-color: transparent #555 transparent transparent;
+}
+.copy_btn.left .copy_tooltip::after {
+  left: 100%;
+  border-color: transparent transparent transparent #555;
+}
+
+.copy_btn:hover .copy_tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 .flex {
