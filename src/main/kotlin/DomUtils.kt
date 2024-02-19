@@ -29,7 +29,7 @@ fun FlowContent.copyBtn(contentId: String, divClass: String, clipboard: Boolean 
 
             val iconName = if (clipboard) "word" else "whatsapp"
             img(src = "/images/$iconName-icon.svg") {
-                alt = "Copy Icon"
+                alt = ""
                 width = "16" // Set the width as needed
                 height = "16" // Set the height as needed
             }
