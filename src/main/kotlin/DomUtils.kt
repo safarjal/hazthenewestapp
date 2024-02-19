@@ -25,7 +25,7 @@ fun FlowContent.copyBtn(contentId: String, divClass: String, clipboard: Boolean 
             onClickFunction = { event ->
                 if (clipboard) saveText(event) else copyText(event)
             }
-            +"Save and Copy"
+            +"Save and Copy "
 
             val iconName = if (clipboard) "word" else "whatsapp"
             img(src = "./images/$iconName-icon.svg") {
