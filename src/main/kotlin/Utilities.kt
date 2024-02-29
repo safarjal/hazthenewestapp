@@ -22,6 +22,8 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
 fun replaceStarWithStarAndBoldTag(string: String): String {
     return string.replace(Regex("\\*(.*?)\\*")) {
         "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
+    }.split("\n\n").joinToString("") { paragraph ->
+        "<p>$paragraph</p>"
     }
 }
 
