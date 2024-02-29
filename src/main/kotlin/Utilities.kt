@@ -12,16 +12,32 @@ fun <T> buildJsObject(block: T.() -> Unit): T = (js("{}") as T).apply(block)
 val Document.isHidden get() = this["hidden"] as Boolean
 
 fun replaceBoldTagWithBoldAndStar(string: String): String {
-    return string.replace("<b>", "<b><span class='${CssC.INVIS}'>*</span>")
-        .replace("</b>", "<span class='${CssC.INVIS}'>*</span></b>")
+    return string
+        .replace("<b>", "<b>$INVISIBLE_STAR")
+        .replace("</b>", "$INVISIBLE_STAR</b>")
         .split("\n\n").joinToString("") { paragraph ->
             "<p>$paragraph</p>"
         }
 }
 
+fun String.replaceHtmlTagsWithStringSafe(): String {
+    return replace("<p>", "")
+        .replace("</p>", "\n\n")
+        .replace("</th></tr>", "\n\n")
+        .replace("</td></tr>", "\n")
+        .replace("</th>", "\t")
+        .replace("</td>", "\t")
+        .replace("\n\n\n\n", "\n\n")
+        .replace(Regex("<.*?>"), "")
+}
+
+const val INVISIBLE_STAR = "<span class='${CssC.INVIS}'>*</span>"
+
 fun replaceStarWithStarAndBoldTag(string: String): String {
     return string.replace(Regex("\\*(.*?)\\*")) {
-        "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
+        "<b>$INVISIBLE_STAR${it.groupValues[1]}$INVISIBLE_STAR</b>"
+    }.split("\n\n").joinToString("") { paragraph ->
+        "<p>$paragraph</p>"
     }
 }
 
@@ -341,7 +357,7 @@ fun languagedDateFormat(
     } else if (language == Vls.Langs.MMENGLISH) {
 //         2023-04-02T00:22:00Z
         val englishMonth = englishMonthNames[month.value().toInt() - 1]
-        var dayth = ""
+        var dayth: String
         if (day == 1 || day == 21 || day == 31) {
             dayth = "${day}st"
         } else if (day == 2 || day == 22) {
