@@ -31,14 +31,36 @@ fun String.replaceHtmlTagsWithStringSafe(): String {
         .replace(Regex("<.*?>"), "")
 }
 
-const val INVISIBLE_STAR = "<span class='${CssC.INVIS}'>*</span>"
+fun String?.ifEmptyContent(): String {
+    if (isNullOrEmpty()) return "Answer was not saved. Please calculate again."
+    return this
+}
 
-fun replaceStarWithStarAndBoldTag(string: String): String {
-    return string.replace(Regex("\\*(.*?)\\*")) {
-        "<b>$INVISIBLE_STAR${it.groupValues[1]}$INVISIBLE_STAR</b>"
-    }.split("\n\n").joinToString("") { paragraph ->
-        "<p>$paragraph</p>"
-    }
+const val INVISIBLE_STAR = "<span class='${CssC.INVIS}'>*</span>"
+val BOLDED_TEXT_REGEX = Regex("\\*(.*?)\\*")
+
+fun String.replaceStarWithStarAndBoldTag(): String {
+    val formattedText =
+        replace(BOLDED_TEXT_REGEX, "<b>$INVISIBLE_STAR$1$INVISIBLE_STAR</b>")
+        .split("\n\n")
+        .joinToString("") { paragraph ->
+            if (paragraph.contains("\t")) {
+                val cells = paragraph.split("\t").joinToString("") { cell ->
+                    "<td>$cell</td>"
+                }
+                "<tr>$cells</tr>"
+            } else {
+                "<p>$paragraph</p>"
+            }
+        }
+
+    val lastIndex = formattedText.lastIndexOf("</tr>")
+    if (lastIndex == -1) return formattedText
+
+    return formattedText
+        .replaceFirst("<tr>", "<table><tbody><tr>")
+        .replaceAfterLast("</tr>", "</tbody></table>") +
+            formattedText.substring(lastIndex + 5)
 }
 
 private fun insertRelative(

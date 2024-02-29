@@ -165,9 +165,9 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         questionTextInput.value = data.more_infos?.question.orEmpty()
         contentContainer.setAttribute("data-saved", "true")
         contentContainer.visibility = true
-        contentEnglish.innerHTML = replaceStarWithStarAndBoldTag(data.answerEnglish)
-        contentUrdu.innerHTML = replaceStarWithStarAndBoldTag(data.answerUrdu)
-        contentMMEnglish.innerHTML = data.answerMMEnglish?.let { replaceStarWithStarAndBoldTag(it) }.toString()
+        contentEnglish.innerHTML = data.answerEnglish.replaceStarWithStarAndBoldTag()
+        contentUrdu.innerHTML = data.answerUrdu.replaceStarWithStarAndBoldTag()
+        contentMMEnglish.innerHTML = data.answerMMEnglish.ifEmptyContent().replaceStarWithStarAndBoldTag()
         contentContainer.scrollIntoView()
     }
 }
