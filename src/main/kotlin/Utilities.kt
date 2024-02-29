@@ -19,6 +19,13 @@ fun replaceBoldTagWithBoldAndStar(string: String): String {
         }
 }
 
+fun String.replaceHtmlTagsWithStringSafe(): String {
+    return replace("<p>", "")
+        .replace("</p>", "\n\n")
+        .replace("\n\n\n\n", "\n\n")
+        .replace(Regex("<.*?>"), "")
+}
+
 fun replaceStarWithStarAndBoldTag(string: String): String {
     return string.replace(Regex("\\*(.*?)\\*")) {
         "<b><span class='${CssC.INVIS}'>*</span>${it.groupValues[1]}<span class='${CssC.INVIS}'>*</span></b>"
