@@ -59,7 +59,8 @@ fun String.replaceStarWithStarAndBoldTag(): String {
 
     return formattedText
         .replaceFirst("<tr>", "<table><tbody><tr>")
-        .replaceAfterLast("</tr>", "</tbody></table>") +
+        .replaceAfterLast("</tr>", "</tbody></table>")
+        .replace(Regex("(</tr>.*?<tr><td>.*?</td>)<td>"), "$1<td colspan='2'>") +
             formattedText.substring(lastIndex + 5)
 }
 
