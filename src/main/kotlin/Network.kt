@@ -163,7 +163,7 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         handleLoadedEntries(data)
         saailaDetailsInput.value = data.more_infos?.saaila.orEmpty()
         questionTextInput.value = data.more_infos?.question.orEmpty()
-        contentContainer.setAttribute("data-saved", "true")
+        contentContainer.setAttribute("data-saved", data.id.toString())
         contentContainer.visibility = true
         contentEnglish.innerHTML = data.answerEnglish.replaceStarWithStarAndBoldTag()
         contentUrdu.innerHTML = data.answerUrdu.replaceStarWithStarAndBoldTag()
