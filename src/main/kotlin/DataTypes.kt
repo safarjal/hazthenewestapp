@@ -224,7 +224,7 @@ data class DisplayName(val displayname: String) : UserData()
 data class UserReturnData(
     val id: String,
     val username: String,
-    val displayname: String,
+    val displayname: String?,
     val created_at: String,
     val updated_at: String
 ) : UserData()
