@@ -12,8 +12,8 @@ import kotlinx.html.dom.append
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
 
-//val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk")
-val HAZAPP_BACKEND = Url("http://localhost:3000")
+val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk")
+//val HAZAPP_BACKEND = Url("http://localhost:3000")
 
 const val USERID = "UserId"
 const val DISPLAY_NAME = "DisplayName"

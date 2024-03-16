@@ -25,7 +25,6 @@ private fun getPreAnswerDetails(inputContainer: HTMLElement, answerElement: HTML
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText + NEW_LINE
     val saailaDetails = inputContainer.saailaDetails + NEW_LINE
-    console.log(savedDisplayName, savedDisplayName.isNullOrEmpty())
     val answerer = if (!savedDisplayName.isNullOrEmpty() && savedDisplayName != "null")
         "Answered by: $savedDisplayName$NEW_LINE" else ""
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}$NEW_LINE"
