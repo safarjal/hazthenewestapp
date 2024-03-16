@@ -25,7 +25,8 @@ var userId
     set(id) = localStorage.setItem(USERID, id.toString())
 var savedDisplayName
     get() = localStorage.getItem(DISPLAY_NAME)
-    set(name) = localStorage.setItem(DISPLAY_NAME, name.toString())
+    set(name) = if (name != "null") localStorage.setItem(DISPLAY_NAME, name.toString())
+    else localStorage.removeItem(DISPLAY_NAME)
 var bearerToken
     get() = localStorage.getItem(AUTHORIZATION)
     set(token) = localStorage.setItem(AUTHORIZATION, token.toString())
