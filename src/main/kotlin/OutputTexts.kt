@@ -349,6 +349,10 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
         .addStrings(Strings::writedown) //plis note down line
         .addStrings(Strings::allahknows) //Allahu Aaalam line
 
+    if (!noDisplayName) {
+        newStr.mmEnglishString += savedDisplayName
+    }
+
     return newStr
 }
 fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
