@@ -118,9 +118,11 @@ data class Strings(
     val isDaylightSavings: String,
     val loadMaslaFromID: String,
     val username: String,
+    val displayname: String,
     val password: String,
     val submit: String,
     val logout: String,
+    val goBack: String,
     val habitincomment: String,
     val nocomment: String,
     val ayyameqabliyyacomment: String,
@@ -210,14 +212,31 @@ data class OtherValues(
 data class ErrorResponse(val error: String)
 
 @Serializable
+sealed class UserData
+
+@Serializable
+data class UsernamePassword(val username: String, val password: String) : UserData()
+
+@Serializable
+data class DisplayName(val displayname: String) : UserData()
+
+@Serializable
+data class UserReturnData(
+    val id: String,
+    val username: String,
+    val displayname: String,
+    val created_at: String,
+    val updated_at: String
+) : UserData()
+
+@Serializable
 data class User(val user: UserData)
 
 @Serializable
-data class UserData(
-    val username: String,
-    val password: String,
+data class UserLoadData(
+    val message: String,
+    val user: UserReturnData
 )
-
 
 data class PreMaslaValues(
     var inputtedAadatHaiz: Long? = null,

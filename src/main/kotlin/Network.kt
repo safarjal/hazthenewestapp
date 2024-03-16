@@ -13,9 +13,19 @@ import org.w3c.dom.HTMLElement
 import kotlin.js.Json
 
 val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk")
-//val HAZAPP_BACKEND = Url("http://localhost:3000/")
+//val HAZAPP_BACKEND = Url("http://localhost:3000")
+
+const val USERID = "UserId"
+const val DISPLAY_NAME = "DisplayName"
 const val AUTHORIZATION = "Authorization"
 const val AUTHORIZATION_DATE = "Authorization-Date"
+
+var userId
+    get() = localStorage.getItem(USERID)
+    set(id) = localStorage.setItem(USERID, id.toString())
+var savedDisplayName
+    get() = localStorage.getItem(DISPLAY_NAME)
+    set(name) = localStorage.setItem(DISPLAY_NAME, name.toString())
 var bearerToken
     get() = localStorage.getItem(AUTHORIZATION)
     set(token) = localStorage.setItem(AUTHORIZATION, token.toString())
@@ -29,8 +39,23 @@ val client by lazy {
     }
 }
 
+suspend fun changeName(displayName: String) {
+    val userData = User(user = DisplayName(displayname = displayName))
+    val response = client.patch("$HAZAPP_BACKEND/users/$userId") {
+        headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
+        contentType(ContentType.Application.Json)
+        setBody(userData)
+    }
+    if (response.status == HttpStatusCode.OK){
+        val returnedUser = response.body<UserLoadData>()
+        savedDisplayName = returnedUser.user.displayname
+        document.body!!.errorMessage.innerText = returnedUser.message
+
+    }
+}
+
 suspend fun login(username: String, password: String) {
-    val userData = User(user = UserData(username = username, password = password))
+    val userData = User(user = UsernamePassword(username = username, password = password))
 
     val response = client.post("$HAZAPP_BACKEND/users/sign_in") {
         contentType(ContentType.Application.Json)
@@ -41,6 +66,12 @@ suspend fun login(username: String, password: String) {
     if (response.status == HttpStatusCode.OK && token != null) {
         bearerToken = token
         tokenDate = Instant.now()
+
+        val loadedUser = response.body<UserLoadData>()
+        userId = loadedUser.user.id
+        savedDisplayName = loadedUser.user.displayname
+        document.body!!.errorMessage.innerText = loadedUser.message
+
         hazappPage()
     } else {
         val message = response.body<ErrorResponse>()
@@ -49,6 +80,8 @@ suspend fun login(username: String, password: String) {
 }
 
 fun logout() {
+    localStorage.removeItem(USERID)
+    localStorage.removeItem(DISPLAY_NAME)
     localStorage.removeItem(AUTHORIZATION)
     localStorage.removeItem(AUTHORIZATION_DATE)
     if (bearerToken.isNullOrEmpty()) {
@@ -163,7 +196,7 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         handleLoadedEntries(data)
         saailaDetailsInput.value = data.more_infos?.saaila.orEmpty()
         questionTextInput.value = data.more_infos?.question.orEmpty()
-        contentContainer.setAttribute("data-saved", "true")
+        contentContainer.setAttribute("data-saved", data.id.toString())
         contentContainer.visibility = true
         contentEnglish.innerHTML = data.answerEnglish.replaceStarWithStarAndBoldTag()
         contentUrdu.innerHTML = data.answerUrdu.replaceStarWithStarAndBoldTag()

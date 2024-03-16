@@ -35,7 +35,7 @@ fun loginPage() {
                         }
                     }
                     div(classes = CssC.ROW) {
-                        submitInput {
+                        submitInput(classes = CssC.CALC_BTN) {
                             name = Ids.LoginLogout.SUBMIT
                             id = Ids.LoginLogout.SUBMIT
 //                            TODO:
@@ -58,28 +58,30 @@ val HTMLElement.errorMessage get() = getChildById(Ids.ERROR_MESSAGE) as HTMLPara
 private val HTMLElement.username get() = (getChildById(Ids.LoginLogout.USERNAME) as HTMLInputElement).value
 private val HTMLElement.password get() = (getChildById(Ids.LoginLogout.PASSWORD) as HTMLInputElement).value
 
-fun Node.addLogoutButton() {
+fun Node.addProfileButton() {
+    appendChild {
+        button(classes = "nav-link") {
+            name = Ids.LoginLogout.LOGOUT_BUTTON
+            id = Ids.LoginLogout.LOGOUT_BUTTON
+//            TODO:
+            onClickFunction = { profilePage() }
+//            makeSpans(Strings::logout)
+            img(classes = "icon") {
+                src = "/images/profile-icon.svg"
+                alt = "Profile"
+            }
+        }
+    }
+}
+
+fun Node.addHazappButton() {
     appendChild {
         button(classes = CssC.CALC_BTN) {
             name = Ids.LoginLogout.LOGOUT_BUTTON
             id = Ids.LoginLogout.LOGOUT_BUTTON
 //            TODO:
-            onClickFunction = { logout() }
-            makeSpans(Strings::logout)
+            onClickFunction = { hazappPage() }
+            makeSpans(Strings::goBack)
         }
     }
 }
-
-//fun Node.addLoginButton() {
-//    appendChild {
-//        button(classes = CssC.CALC_BTN) {
-//            name = "login_button"
-//            id = "login_button"
-////            TODO:
-//            onClickFunction = {
-//                loginPage()
-//            }
-//            makeSpans("Login", "Login")
-//        }
-//    }
-//}

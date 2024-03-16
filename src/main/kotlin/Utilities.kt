@@ -571,6 +571,11 @@ object Ids {
         const val LOGOUT_DIV = "logout_div"
         const val LOGOUT_BUTTON = "logout_button"
     }
+
+    object ProfilePage {
+        const val DISPLAY_NAME = "display-name"
+        const val CHANGE_BUTTON = "change-btn"
+    }
 }
 
 object SaveMaslaId {
@@ -698,6 +703,7 @@ object Events {
     const val VISIBILITY_CHANGE = "visibilitychange"
 }
 
+const val NEW_LINE = "\n\n"
 object UnicodeChars {
     const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
 

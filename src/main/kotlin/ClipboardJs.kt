@@ -23,16 +23,19 @@ external interface ClipboardEvent {
 
 private fun getPreAnswerDetails(inputContainer: HTMLElement, answerElement: HTMLElement): String {
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
-    val questionTxt = inputContainer.questionText
-    val saailaDetails = inputContainer.saailaDetails
-    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}"
+    val questionTxt = inputContainer.questionText + NEW_LINE
+    val saailaDetails = inputContainer.saailaDetails + NEW_LINE
+    val answerer = if (!savedDisplayName.isNullOrEmpty()) "Answered by $savedDisplayName$NEW_LINE" else ""
+    val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}$NEW_LINE"
+
     val answerTxt = answerElement.querySelector(".${Ids.Results.CONTENT_ANSWER}")?.innerHTML
-        ?.replace("<p>", "")
-        ?.replace("</p>", "\n\n")
-        ?.replace("\n\n\n\n", "\n\n")
-        ?.replace(Regex("<.*?>"), "")
-    console.log("ans", answerTxt)
-    return "*$dateStr*\n\n$saailaDetails\n\n$questionTxt\n\n$divider\n\n$answerTxt".replace(Regex("\\n{3,}"), "\n\n")
+        ?.replaceHtmlTagsWithStringSafe()
+    return ("*$dateStr*$NEW_LINE" +
+            saailaDetails +
+            questionTxt +
+            answerer +
+            divider +
+            answerTxt).replace(Regex("\\n{3,}"), NEW_LINE)
 }
 
 private fun HTMLElement.saveStatus(): String? = dataset[SaveMaslaId.SAVED]
@@ -94,7 +97,6 @@ fun copyText(event: Event) {
         (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
     val inputContainer = findInputContainer(event)
     var copyTxt = getPreAnswerDetails(inputContainer, answerElement!!)
-    console.log("copy text", copyTxt)
 
     val tooltip = answerElement.querySelector(".${Ids.Results.COPY_TOOLTIP}") as HTMLElement
     val smallTxt: String
@@ -120,8 +122,6 @@ fun copyClipboard(id: String) {
 //        this.text = text
 //        // Other options can be added here, e.g., container, etc.
 //    })
-
-    console.log("clipboard", clipboard)
 
     clipboard.on("success") { e ->
         console.info("Action: ${e.action}")

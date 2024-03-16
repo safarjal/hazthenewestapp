@@ -37,7 +37,7 @@ fun main() {
 fun hazappPage() {
     rootHazapp!!.innerHTML = ""
     logoutDiv.innerHTML = ""
-    logoutDiv.addLogoutButton()
+    logoutDiv.addProfileButton()
     rootHazapp.addInputLayout()
     setupRows(inputsContainers.first())
     document.addEventListener(Events.VISIBILITY_CHANGE, {

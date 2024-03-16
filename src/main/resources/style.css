@@ -110,6 +110,8 @@ a {
   box-shadow: 2px 2px 4px 0.5px;
   border-radius: 12px;
   padding: 0.3rem;
+  background: none;
+  border: none;
 }
 
 .icon {
