@@ -116,9 +116,11 @@ val urduStrings = Strings(
     "آئی ڈی سے مسلہ لوڈ کریں۔",
 //    TODO:
     "Username",
+    "Display Name",
     "Password",
     "Submit",
     "Log Out",
+    "Back",
     "",
     "",
     "",
@@ -278,9 +280,11 @@ val englishStrings = Strings(
     "Daylight Savings",
     "Load Masla From ID",
     "Username",
+    "Display Name",
     "Password",
     "Submit",
     "Log Out",
+    "Back",
     "",
     "",
     "",
@@ -432,9 +436,11 @@ val mmEnglishStrings = Strings(
     "Daylight Savings",
     "Load Masla From ID",
     "Username",
+    "Display Name",
     "Password",
     "Submit",
     "Log Out",
+    "Back",
     "Habit: ${Rplc.DUR1}/${Rplc.DUR2}",
     "",
     "This is a case of Ayyam-e-Qabliyya",
@@ -466,8 +472,8 @@ object HTMLTags{
     val tdendtag = "</td>"
     val tr = "<tr>"
     val trendtag = "</tr>"
-    val tdcolspan2 = "<td colspan = \"2\">"
-    val tdcolspan3 = "<td colspan = \"3\">"
+    val tdcolspan2 = "<td colspan = '2'>"
+    val tdcolspan3 = "<td colspan = '3'>"
     val tableheaderrow = "<th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th>"
 }
 

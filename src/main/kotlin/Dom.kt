@@ -272,7 +272,6 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 onClickFunction = { event ->
                     val inputsContiner = findInputContainer(event)
                     val id = inputsContiner.inputID
-                    console.log(id)
                     GlobalScope.launch { loadData(id, inputsContiner) }
                 }
             }
