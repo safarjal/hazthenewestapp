@@ -65,9 +65,8 @@ fun Node.addProfileButton() {
             id = Ids.LoginLogout.LOGOUT_BUTTON
 //            TODO:
             onClickFunction = { profilePage() }
-//            makeSpans(Strings::logout)
             img(classes = "icon") {
-                src = "/images/profile-icon.svg"
+                src = "./images/profile-icon.svg"
                 alt = "Profile"
             }
         }
