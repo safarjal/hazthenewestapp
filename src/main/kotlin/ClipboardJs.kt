@@ -64,6 +64,7 @@ private fun saveAndCopy(inputContainer: HTMLElement, small: HTMLElement, preCopi
     GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
         if (response != null) {
             val maslaId = response!!.id
+            if (isPersonalApper) userMaslaId = maslaId.toString()
             copyTxt = "_Masla Id: ${maslaId}_\n" + preCopiedText
             smallTxt = "Saved: Id #$maslaId"
             if (response!!.user_id == null) smallTxt += englishStrings.loginAgain

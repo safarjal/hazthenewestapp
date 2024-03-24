@@ -541,6 +541,7 @@ object Ids {
         const val COPY_TOOLTIP = "copy_tooltip"
         const val COMPARISON_CONTAINER = "comparison_container"
         const val DATES_DIFFERENCE_TABLE = "dates_difference_table"
+        const val MSG = "message"
     }
 
     object Inputs {

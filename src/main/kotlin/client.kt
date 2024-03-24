@@ -45,6 +45,9 @@ fun hazappPage() {
             setMaxToCurrentTimeForTimeInputs(inputsContainers.first())
         }
     })
+    if (isPersonalApper && !noUserMaslaId) {
+        GlobalScope.launch { loadData(userMaslaId!!, inputsContainers.first()) }
+    }
     parseHREF()
 }
 

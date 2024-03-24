@@ -146,6 +146,7 @@ fun FlowContent.makeSwitch(inputId: String, value: Boolean, block: INPUT.() -> U
         checkBoxInput {
             id = inputId
             checked = value
+            disabled = isPersonalApper
             block()
         }
         span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
@@ -337,6 +338,7 @@ fun TagConsumer<HTMLElement>.inputRow(
     minTimeInput: String,
     maxTimeInput: String,
     disable: Boolean = false,
+    noButtons: Boolean = false,
     values: SaveEntries? = null,
 ) {
     tr {
@@ -354,7 +356,11 @@ fun TagConsumer<HTMLElement>.inputRow(
                 disabled = disable
             }
         }
-        addRemoveButtonsTableData()
+        if (!noButtons) {
+            addRemoveButtonsTableData()
+        } else {
+            td{ id = Ids.Row.BUTTONS_CONTAINER }
+        }
     }
 }
 
@@ -419,7 +425,12 @@ private fun TagConsumer<HTMLElement>.makeDurationTableSelect(
 }
 
 fun TagConsumer<HTMLElement>.copyDurationInputRow(
-    durationValue: String, selectedOption: String, disable: Boolean, isNifaas: Boolean, mustabeen: Boolean
+    durationValue: String,
+    selectedOption: String,
+    disable: Boolean,
+    isNifaas: Boolean,
+    mustabeen: Boolean,
+    noButtons: Boolean = false
 ) {
     tr {
         td {
@@ -431,7 +442,11 @@ fun TagConsumer<HTMLElement>.copyDurationInputRow(
         td {
             makeDurationTableSelect(disable, selectedOption, isNifaas, mustabeen)
         }
-        addRemoveButtonsTableData(true)
+        if (!noButtons) {
+            addRemoveButtonsTableData(true)
+        } else {
+            td{ id = Ids.Row.BUTTONS_CONTAINER }
+        }
     }
 }
 
@@ -532,7 +547,7 @@ private fun disableByClass(
         row.classList.toggle(classInvis, disable)
         row.querySelectorAll("input").asList().map { input ->
             input as HTMLInputElement
-            input.disabled = disable
+            input.disabled = isPersonalApper || disable
             if (disable) input.value = ""
         }
     }
@@ -741,8 +756,13 @@ fun setupRows(inputContainer: HTMLElement) {
 }
 
 private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
-    val inputDatesRows = if (duration) inputContainer.haizDurationInputDatesRows else inputContainer.haizInputDatesRows
-    inputDatesRows.first().removeButton.visibility = inputDatesRows.size != 1
+    var inputDatesRows = if (duration) inputContainer.haizDurationInputDatesRows else inputContainer.haizInputDatesRows
+    inputDatesRows = inputDatesRows.filter { inputDatesRow -> inputDatesRow.removeButton != null }
+    if (inputDatesRows.isEmpty()) {
+        return
+    }
+
+    inputDatesRows.first().removeButton?.visibility = inputDatesRows.size != 1
     inputDatesRows.getOrNull(1)?.removeButton?.visibility = true
 }
 
@@ -791,12 +811,12 @@ private fun onChangeDurationOption(event: Event) {
 // Dealing with DateTime Inputs Max/Min Times
 fun setMaxToCurrentTimeForTimeInputs(inputContainer: HTMLElement) {
 //    val currentTime = currentTimeString(inputContainer.isDateOnly)
-    for (timeInputsGroup in inputContainer.timeInputsGroups) {
-        for (timeInput in timeInputsGroup.asReversed()) {
-//            timeInput.max = currentTime
-            if (timeInput.value.isNotEmpty()) break
-        }
-    }
+//    for (timeInputsGroup in inputContainer.timeInputsGroups) {
+//        for (timeInput in timeInputsGroup.asReversed()) {
+////            timeInput.max = currentTime
+//            if (timeInput.value.isNotEmpty()) break
+//        }
+//    }
 }
 
 private fun setMinMaxForTimeInputsOnInput(event: Event, indexWithinRow: Int) {
@@ -914,7 +934,7 @@ private fun calcAll() {
 // VALS
 val HTMLElement.haizInputTable get() = getChildById(Ids.InputTables.HAIZ_INPUT_TABLE) as HTMLTableElement
 val HTMLElement.haizDurationInputTable get() = getChildById(Ids.InputTables.HAIZ_DURATION_INPUT_TABLE) as HTMLTableElement
-private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement
+private val HTMLTableRowElement.removeButton get() = getChildById(Ids.Row.BUTTON_REMOVE) as HTMLButtonElement?
 
 val HTMLElement.inputID get() = (getChildById(Ids.Inputs.INPUT_ID) as HTMLInputElement).value
 val HTMLElement.saailaDetailsInput get() = (getChildById(Ids.Inputs.INPUT_SAAILA) as HTMLInputElement)
@@ -923,5 +943,6 @@ val HTMLElement.questionTextInput get() = (getChildById(Ids.Inputs.INPUT_QUESTIO
 val HTMLElement.questionText get() = questionTextInput.value
 
 private val calculateAllDiv get() = document.getElementById(Ids.Results.CALCULATE_ALL_DIV) as HTMLDivElement
+val HTMLElement.inputsContainerMessage get() = getChildById(Ids.Results.MSG) as HTMLDivElement
 private val HTMLElement.inputsContainerCloneButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_CLONE_BUTTON) as HTMLButtonElement
 private val HTMLElement.inputsContainerRemoveButton get() = getChildById(Ids.InputContainers.INPUTS_CONTAINER_REMOVE_BUTTON) as HTMLButtonElement

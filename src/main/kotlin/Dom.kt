@@ -33,7 +33,11 @@ fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement?
             removeInputsContainerButton()
         }
         addInputsContainerButton()
-        inputForm(inputContainerToCopyFrom)
+        if (isPersonalApper) {
+            inputFormPersonalApper(inputContainerToCopyFrom)
+        } else {
+            inputForm(inputContainerToCopyFrom)
+        }
         content()
     }
 }
@@ -42,27 +46,49 @@ fun TagConsumer<HTMLElement>.inputFormDiv(inputContainerToCopyFrom: HTMLElement?
 private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLElement?) {
     form(action = "javascript:void(0);") {
         autoComplete = false
-        ikhtilafiMasle()
-        br()
-        div(classes = CssC.LABEL_INPUT) {
-            maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
-            typeConfigurationSelectDropdown(inputContainerToCopyFrom)
-            nifasInputs(inputContainerToCopyFrom)
-            mutadaInputs(inputContainerToCopyFrom)
-        }
-        hr()
-        questionInput(inputContainerToCopyFrom)
-        hr()
-        haizDatesInputTable(inputContainerToCopyFrom)
-        haizDurationInputTable(inputContainerToCopyFrom)
-        calculateButton()
-        hr()
+        inputFormPreMasla(inputContainerToCopyFrom)
+        inputFormEntryTables(inputContainerToCopyFrom)
         onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
     }
 }
 
-private fun FlowContent.ikhtilafiMasle() {
-    div {
+private fun TagConsumer<HTMLElement>.inputFormPersonalApper(inputContainerToCopyFrom: HTMLElement?) {
+    form(action = "javascript:void(0);") {
+        autoComplete = false
+        div {
+            details {
+                summary(classes = CssC.IKHTILAF)
+                inputFormPreMasla(inputContainerToCopyFrom)
+            }
+        }
+        inputFormEntryTables(inputContainerToCopyFrom)
+        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
+    }
+}
+
+private fun TagConsumer<HTMLElement>.inputFormPreMasla(inputContainerToCopyFrom: HTMLElement?) {
+    ikhtilafiMasle()
+    br()
+    div(classes = CssC.LABEL_INPUT) {
+        maslaConfigurationSelectDropdown(inputContainerToCopyFrom)
+        typeConfigurationSelectDropdown(inputContainerToCopyFrom)
+        nifasInputs(inputContainerToCopyFrom)
+        mutadaInputs(inputContainerToCopyFrom)
+    }
+    hr()
+    questionInput(inputContainerToCopyFrom)
+    hr()
+}
+private fun TagConsumer<HTMLElement>.inputFormEntryTables(inputContainerToCopyFrom: HTMLElement?) {
+    haizDatesInputTable(inputContainerToCopyFrom)
+    haizDurationInputTable(inputContainerToCopyFrom)
+    calculateButton()
+    hr()
+}
+
+private fun TagConsumer<HTMLElement>.ikhtilafiMasle() {
+    val classes = if (isPersonalApper) CssC.INVIS else ""
+    div(classes = classes) {
         details {
             summary(classes = CssC.IKHTILAF)
             b {
@@ -96,6 +122,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
         makeLabel(Ids.Inputs.MASLA_TYPE_SELECT, Strings::typeOfMasla)
         select {
             id = Ids.Inputs.MASLA_TYPE_SELECT
+            disabled = isPersonalApper
             onChangeFunction = { event -> maslaChanging((event.currentTarget as HTMLSelectElement).value) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, Strings::mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, Strings::nifas)
@@ -110,6 +137,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
                 id = Ids.Inputs.ZAALLA_CHECKBOX
                 name = Ids.Inputs.ZAALLA_CHECKBOX
                 checked = inputContainerToCopyFrom?.isZaalla == true
+                disabled = isPersonalApper
                 onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             }
         }
@@ -126,6 +154,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
         makeLabel(Ids.Inputs.INPUT_TYPE_SELECT, Strings::typeOfInput)
         select {
             id = Ids.Inputs.INPUT_TYPE_SELECT
+            disabled = isPersonalApper
             onChangeFunction = { event -> onClickTypeConfigurationSelectDropdown(event) }
             makeDropdownOptions(isDateOnly, Vls.Types.DATE_ONLY, Strings::dateOnly)
             makeDropdownOptions(isDateTime, Vls.Types.DATE_TIME, Strings::dateAndTime)
@@ -137,6 +166,7 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
             makeLabel(Ids.Inputs.IS_DAYLIGHT_SAVINGS, Strings::isDaylightSavings)
             checkBoxInput {
                 id = Ids.Inputs.IS_DAYLIGHT_SAVINGS
+                disabled = isPersonalApper
                 onChangeFunction = {
                     val tzs = findInputContainer(it).timezoneSelect
                     tzs.disabled = !tzs.disabled
@@ -164,6 +194,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeLabel(Ids.Inputs.PREG_START_TIME_INPUT, Strings::pregnancyStartTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_START_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregStartTime?.value ?: ""
+            disabled = isPersonalApper
             onChangeFunction = { event ->
                 findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
             }
@@ -174,6 +205,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeLabel(Ids.Inputs.PREG_END_TIME_INPUT, Strings::birthMiscarrriageTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_END_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregEndTime?.value ?: ""
+            disabled = isPersonalApper
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
@@ -188,6 +220,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
                 id = Ids.Inputs.MUSTABEEN_CHECKBOX
                 name = Ids.Inputs.MUSTABEEN_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMustabeen != false
+                disabled = isPersonalApper
                 onChangeFunction = { event -> switchWiladatIsqat(findInputContainer(event)) }
             }
         }
@@ -199,7 +232,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeNumberInput(Ids.Inputs.AADAT_NIFAS_INPUT, inputContainerToCopyFrom?.aadatNifas?.value.orEmpty(), (1..40)) {
             step = "any"
             required = false
-            disabled = inputContainerToCopyFrom?.isNifas != true
+            disabled = isPersonalApper || inputContainerToCopyFrom?.isNifas != true
         }
     }
 }
@@ -210,6 +243,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeLabel(Ids.Inputs.AADAT_HAIZ_INPUT, Strings::haizAadat)
         makeNumberInput(Ids.Inputs.AADAT_HAIZ_INPUT, inputContainerToCopyFrom?.aadatHaz?.value.orEmpty(), (3..10)) {
             onChangeFunction = { event -> onlyTwo(event) }
+            disabled = isPersonalApper
         }
     }
     // Aadat of Tuhr
@@ -221,6 +255,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             (15..6 * 30)
         ) {
             onChangeFunction = { event -> onlyTwo(event) }
+            disabled = isPersonalApper
         }
     }
     // Zaalla Cycle Length
@@ -232,6 +267,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             (18..6 * 30 + 10)
         ) {
             onChangeFunction = { event -> onlyTwo(event) }
+            disabled = isPersonalApper
         }
     }
     // Mawjooda Tuhr
@@ -241,7 +277,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             Ids.Inputs.MAWJOODA_TUHR_INPUT,
             inputContainerToCopyFrom?.mawjoodaTuhr?.value.orEmpty(),
             (15..10000)
-        )
+        ) { disabled = isPersonalApper }
         // Fasid?
         div {
             makeLabel(Ids.Inputs.MAWJOODA_FAASID_CHECKBOX, Strings::faasid)
@@ -249,6 +285,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
                 id = Ids.Inputs.MAWJOODA_FAASID_CHECKBOX
                 name = Ids.Inputs.MAWJOODA_FAASID_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMawjoodaFasid?.or(false) == true
+                disabled = isPersonalApper
             }
         }
     }
@@ -263,6 +300,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 id = Ids.Inputs.INPUT_ID
                 name = Ids.Inputs.INPUT_ID
                 value = inputContainerToCopyFrom?.inputID.orEmpty()
+                disabled = isPersonalApper
             }
             button(classes = CssC.CALC_BTN) {
                 id = Ids.Inputs.SUBMIT
@@ -288,6 +326,7 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
                 id = Ids.Inputs.INPUT_SAAILA
                 name = Ids.Inputs.INPUT_SAAILA
                 value = inputContainerToCopyFrom?.saailaDetails.orEmpty()
+                disabled = isPersonalApper
             }
         }
     }
@@ -335,26 +374,15 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
     }
 }
 
-private fun FlowContent.calculateButton() {
-    button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
+private fun TagConsumer<HTMLElement>.calculateButton() {
+    button(classes = CssC.CALC_BTN) {
         id = Ids.Results.CALCULATE_BUTTON
-        +StringsOfLanguages.ENGLISH.calculate
+        makeLabel(Ids.Results.CALCULATE_BUTTON, Strings::calculate)
         onClickFunction = { event ->
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }
-    button(classes = "${CssC.MMENGLISH} ${CssC.CALC_BTN}") {
-        id = Ids.Results.CALCULATE_BUTTON
-        +StringsOfLanguages.MMENGLISH.calculate
-        onClickFunction = { event ->
-            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
-        }
-    }
-    button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
-        id = Ids.Results.CALCULATE_BUTTON
-        +StringsOfLanguages.URDU.calculate
-        onClickFunction = { event -> setMaxToCurrentTimeForTimeInputs(findInputContainer(event)) }
-    }
+    div { id=Ids.Results.MSG }
 }
 
 private fun TagConsumer<HTMLElement>.content() {
