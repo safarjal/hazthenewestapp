@@ -252,18 +252,25 @@ fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String, 
             )
         }
         if (isPersonalApper) {
+            val currentZonedDateTime = LocalDateTime.now(ZoneId.systemDefault())
+            val correspondingInstant = currentZonedDateTime.toInstant(ZoneOffset.UTC)
+
             val minTime = entries.last().endTime
             val lastDate = minTime.orEmpty().instant(tz)
-            val today = Instant.now()
-            console.log("compare.", lastDate.compareTo(today))
-            console.log("minus.", today.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays())
-            olderThanThreeMonths = today.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays() > 90
-            console.log("olderThanThreeMonths", olderThanThreeMonths)
+
+            //            console.log(
+//                today.toDateInputString(isDateOnly),
+//                currentZonedDateTime,
+//                correspondingInstant,
+//                correspondingInstant.toDateInputString(isDateOnly)
+//            )
+
+            olderThanThreeMonths = correspondingInstant.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays() > 90
             if (!olderThanThreeMonths) {
                 inputRow(
                     isDateOnly,
                     minTimeInput = minTime.orEmpty(),
-                    maxTimeInput = if (isPersonalApper) today.toDateInputString(isDateOnly) else ""
+                    maxTimeInput = if (isPersonalApper) correspondingInstant.toDateInputString(isDateOnly) else ""
                 )
             }
         }
