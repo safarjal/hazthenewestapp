@@ -135,6 +135,7 @@ data class Strings(
     val tablepregnancy: String,
     val tablemiscarriage: String,
     val tablebirth: String,
+    val tooOldMasla: String,
 )
 
 data class AllTheInputs(
@@ -225,8 +226,8 @@ data class UserReturnData(
     val id: String,
     val username: String,
     val displayname: String?,
-    val created_at: String,
-    val updated_at: String
+    val roleName: String?,
+    val maslaId: String?
 ) : UserData()
 
 @Serializable

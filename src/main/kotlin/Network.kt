@@ -16,22 +16,33 @@ val HAZAPP_BACKEND = Url("https://hazapp.ztree.pk")
 //val HAZAPP_BACKEND = Url("http://localhost:3000")
 
 const val USERID = "UserId"
+const val USER_ROLE = "UserRole"
+const val USER_MASLA_ID = "UserMaslaId"
 const val DISPLAY_NAME = "DisplayName"
 const val AUTHORIZATION = "Authorization"
 const val AUTHORIZATION_DATE = "Authorization-Date"
 
 var userId
     get() = localStorage.getItem(USERID)
-    set(id) = localStorage.setItem(USERID, id.toString())
+    set(id) = localStorage.setItem(USERID, id.orEmpty())
+
+var userRole
+    get() = localStorage.getItem(USER_ROLE)
+    set(role) = localStorage.setItem(USER_ROLE, role.orEmpty())
+val isPersonalApper get() = userRole == "personal_apper"
+var userMaslaId
+    get() = localStorage.getItem(USER_MASLA_ID)
+    set(maslaId) = localStorage.setItem(USER_MASLA_ID, maslaId.orEmpty())
+val noUserMaslaId get() = userMaslaId.isNullOrEmpty() || userMaslaId == "null"
 var savedDisplayName
     get() = localStorage.getItem(DISPLAY_NAME)
-    set(name) = if (name != "null") localStorage.setItem(DISPLAY_NAME, name.toString())
+    set(name) = if (!name.isNullOrBlank() || name != "null") localStorage.setItem(DISPLAY_NAME, name.orEmpty())
     else localStorage.removeItem(DISPLAY_NAME)
 val noDisplayName get() = savedDisplayName.isNullOrEmpty() || savedDisplayName == "null"
 
 var bearerToken
     get() = localStorage.getItem(AUTHORIZATION)
-    set(token) = localStorage.setItem(AUTHORIZATION, token.toString())
+    set(token) = localStorage.setItem(AUTHORIZATION, token.orEmpty())
 var tokenDate
     get() = localStorage.getItem(AUTHORIZATION_DATE)?.let { Instant.parse(it) }
     set(date) = localStorage.setItem(AUTHORIZATION_DATE, date.toString())
@@ -43,17 +54,20 @@ val client by lazy {
 }
 
 suspend fun changeName(displayName: String) {
+    document.body!!.errorMessage.innerText = ""
     val userData = User(user = DisplayName(displayname = displayName))
     val response = client.patch("$HAZAPP_BACKEND/users/$userId") {
         headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
         contentType(ContentType.Application.Json)
         setBody(userData)
     }
-    if (response.status == HttpStatusCode.OK){
+    if (response.status == HttpStatusCode.OK) {
         val returnedUser = response.body<UserLoadData>()
         savedDisplayName = returnedUser.user.displayname
         document.body!!.errorMessage.innerText = returnedUser.message
-
+    } else {
+        val message = response.body<ErrorResponse>()
+        document.body!!.errorMessage.innerText = message.error
     }
 }
 
@@ -73,6 +87,8 @@ suspend fun login(username: String, password: String) {
         val loadedUser = response.body<UserLoadData>()
         userId = loadedUser.user.id
         savedDisplayName = loadedUser.user.displayname
+        userRole = loadedUser.user.roleName
+        userMaslaId = loadedUser.user.maslaId
         document.body!!.errorMessage.innerText = loadedUser.message
 
         hazappPage()
@@ -157,11 +173,13 @@ suspend fun sendData(toSend: SaveData): LoadData? {
 
 suspend fun loadData(id: String, inputsContainer: HTMLElement): Json {
     val response = client.get("$HAZAPP_BACKEND/maslas/$id") {
+        headers { bearerToken?.let { append(HttpHeaders.Authorization, it) } }
         contentType(ContentType.Application.Json)
     }
 
     if (response.status == HttpStatusCode.OK) {
         val loadedMasla = response.body<LoadData>()
+        if (isPersonalApper) userMaslaId = loadedMasla.id.toString()
         inputsContainer.errorMessage.visibility = false
         reInputData(loadedMasla, inputsContainer)
     } else {
@@ -215,35 +233,62 @@ fun HTMLElement.handleLoadedEntries(data: LoadData) {
         entriesToDurationTable(entries, data.typeOfMasla, data.more_infos?.mustabeenUlKhilqat)
     } else {
         hazInputTableBody.innerHTML = ""
-        entriesToTable(entries, data.typeOfInput)
+        entriesToTable(entries, data.typeOfInput, data.more_infos?.timeZone)
     }
+    setupRows(inputContainer = this)
 }
 
-fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String) {
+fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String, tz: String?) {
     val isDateOnly = typeOfInput == Vls.Types.DATE_ONLY
+    var olderThanThreeMonths = false
     hazInputTableBody.append {
         entries.forEachIndexed { index, entry ->
             inputRow(
                 isDateOnly,
                 entries.getOrNull(index - 1)?.endTime.orEmpty(),
                 entries.getOrNull(index + 1)?.startTime.orEmpty(),
-                false,
+                isPersonalApper, isPersonalApper,
                 entry
             )
         }
-    }
-}
-
-fun HTMLElement.entriesToDurationTable(entries: List<SaveEntries>, typeOfMasla: String, mustabeenUlKhilqat: Boolean?) {
-    hazDurationInputTableBody.append {
-        entries.map { entry ->
-            val isNifaas = typeOfMasla == Vls.Maslas.NIFAS
-            val isMustabeen = mustabeenUlKhilqat == true
-            if (entry.value != null && entry.type != null) {
-                copyDurationInputRow(
-                    entry.value, entry.type, false, isNifaas, isMustabeen
+        if (isPersonalApper) {
+            val minTime = entries.last().endTime
+            val lastDate = minTime.orEmpty().instant(tz)
+            val today = Instant.now()
+            console.log("compare.", lastDate.compareTo(today))
+            console.log("minus.", today.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays())
+            olderThanThreeMonths = today.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays() > 90
+            console.log("olderThanThreeMonths", olderThanThreeMonths)
+            if (!olderThanThreeMonths) {
+                inputRow(
+                    isDateOnly,
+                    minTimeInput = minTime.orEmpty(),
+                    maxTimeInput = if (isPersonalApper) today.toDateInputString(isDateOnly) else ""
                 )
             }
         }
+    }
+    if (olderThanThreeMonths) {
+        inputsContainerMessage.appendChild { makeSpans(Strings::tooOldMasla) }
+    }
+}
+
+fun HTMLElement.entriesToDurationTable(
+    entries: List<SaveEntries>,
+    typeOfMasla: String,
+    mustabeenUlKhilqat: Boolean?
+) {
+    hazDurationInputTableBody.append {
+        val isNifaas = typeOfMasla == Vls.Maslas.NIFAS
+        val isMustabeen = mustabeenUlKhilqat == true
+        entries.map { entry ->
+            if (entry.value != null && entry.type != null) {
+                copyDurationInputRow(
+                    entry.value, entry.type, isPersonalApper, isNifaas, isMustabeen, isPersonalApper
+                )
+            }
+        }
+        val lastWasDam = entries.last().type != Vls.Opts.TUHR
+        durationInputRow(lastWasDam, false, isNifas, isMustabeen)
     }
 }
