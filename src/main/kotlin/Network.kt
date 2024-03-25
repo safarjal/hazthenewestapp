@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
-import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.internal.JSJoda.*
 import kotlinx.html.dom.append
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
