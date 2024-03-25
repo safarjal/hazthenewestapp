@@ -239,9 +239,11 @@ fun parseEntries(inputContainer: HTMLElement) {
                     endTime = row.endTimeInput.value.instant(timezone, isDateTime)
                 )
             }
+            console.log("entries", entries)
             allTheInputs = AllTheInputs(
                 entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
             )
+            console.log("AllTheInputs", allTheInputs)
         }
 
         if ((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode) {
@@ -252,10 +254,12 @@ fun parseEntries(inputContainer: HTMLElement) {
 
 //        @Suppress("UnsafeCastFromDynamic")
         val output: OutputTexts = if (allTheInputs.entries != null) {
+            console.log("handlingEntries")
             handleEntries(allTheInputs)
         } else {
             NO_OUTPUT
         }
+        console.log("handledEntries", output)
 
         contentContainer.visibility = true
         contentContainer.setAttribute("data-saved", "false")
