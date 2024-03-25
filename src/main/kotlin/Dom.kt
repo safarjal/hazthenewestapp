@@ -48,7 +48,9 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         autoComplete = false
         inputFormPreMasla(inputContainerToCopyFrom)
         inputFormEntryTables(inputContainerToCopyFrom)
-        onSubmitFunction = { event -> parseEntries(findInputContainer(event)) }
+        onSubmitFunction = { event ->
+            console.log("submitted")
+            parseEntries(findInputContainer(event)) }
     }
 }
 
@@ -79,6 +81,7 @@ private fun TagConsumer<HTMLElement>.inputFormPreMasla(inputContainerToCopyFrom:
     questionInput(inputContainerToCopyFrom)
     hr()
 }
+
 private fun TagConsumer<HTMLElement>.inputFormEntryTables(inputContainerToCopyFrom: HTMLElement?) {
     haizDatesInputTable(inputContainerToCopyFrom)
     haizDurationInputTable(inputContainerToCopyFrom)
@@ -376,14 +379,31 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
 }
 
 private fun TagConsumer<HTMLElement>.calculateButton() {
-    button(classes = CssC.CALC_BTN) {
+    button(classes = "${CssC.ENGLISH} ${CssC.CALC_BTN}") {
         id = Ids.Results.CALCULATE_BUTTON
-        makeLabel(Ids.Results.CALCULATE_BUTTON, Strings::calculate)
+        +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event ->
+            console.log("calculate english")
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }
-    div { id=Ids.Results.MSG }
+    button(classes = "${CssC.MMENGLISH} ${CssC.CALC_BTN}") {
+        id = Ids.Results.CALCULATE_BUTTON
+        +StringsOfLanguages.MMENGLISH.calculate
+        onClickFunction = { event ->
+            console.log("calculate mmenglish")
+            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+        }
+    }
+    button(classes = "${CssC.URDU} ${CssC.CALC_BTN}") {
+        id = Ids.Results.CALCULATE_BUTTON
+        +StringsOfLanguages.URDU.calculate
+        onClickFunction = { event ->
+            console.log("calculate urdu")
+            setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
+        }
+    }
+    div { id = Ids.Results.MSG }
 }
 
 private fun TagConsumer<HTMLElement>.content() {
