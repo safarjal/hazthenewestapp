@@ -141,12 +141,13 @@ fun FlowContent.makeLabel(
     }
 }
 
-fun FlowContent.makeSwitch(inputId: String, value: Boolean, block: INPUT.() -> Unit = {}) {
+fun FlowContent.makeSwitch(inputId: String, value: Boolean, disable: Boolean? = false, block: INPUT.() -> Unit = {}) {
     label(classes = CssC.SWITCH) {
         checkBoxInput {
             id = inputId
             checked = value
-            disabled = isPersonalApper
+            name = inputId
+            disabled = isPersonalApper || disable == true
             block()
         }
         span(classes = "${CssC.SLIDER} ${CssC.ROUND}")
@@ -160,10 +161,11 @@ fun FlowContent.makeIkhtilafiMasla(
     extraClasses: String? = null,
     block: DIV.() -> Unit = {}
 ) {
+    val disable = extraClasses?.contains(CssC.DEV);
     div(classes = "${CssC.ROW} $extraClasses") {
         div {
             makeLabel(inputId, text)
-            makeSwitch(inputId, value)
+            makeSwitch(inputId, value, disable)
         }
         block()
     }
