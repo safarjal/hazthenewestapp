@@ -126,7 +126,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
             onChangeFunction = { event -> maslaChanging((event.currentTarget as HTMLSelectElement).value) }
             makeDropdownOptions(isMutada, Vls.Maslas.MUTADA, Strings::mutada)
             makeDropdownOptions(isNifas, Vls.Maslas.NIFAS, Strings::nifas)
-            makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, Strings::mubtadia, "dev") {
+            makeDropdownOptions(isMubtadia, Vls.Maslas.MUBTADIA, Strings::mubtadia, CssC.DEV) {
                 disabled = !devmode
             }
         }
@@ -137,7 +137,7 @@ private fun TagConsumer<HTMLElement>.maslaConfigurationSelectDropdown(inputConta
                 id = Ids.Inputs.ZAALLA_CHECKBOX
                 name = Ids.Inputs.ZAALLA_CHECKBOX
                 checked = inputContainerToCopyFrom?.isZaalla == true
-                disabled = isPersonalApper
+                disabled = isPersonalApper || !devmode
                 onChangeFunction = { event -> disableTree(findInputContainer(event)) }
             }
         }
@@ -189,12 +189,13 @@ private fun TagConsumer<HTMLElement>.typeConfigurationSelectDropdown(inputContai
 }
 
 private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
+    val disable = isPersonalApper || inputContainerToCopyFrom?.isNifas ?: true
     // Pregnancy Start Time
     div(classes = "${CssC.ROW} ${CssC.NIFAS} ${CssC.INVIS} ${CssC.DATE_OR_TIME_AADAT}") {
         makeLabel(Ids.Inputs.PREG_START_TIME_INPUT, Strings::pregnancyStartTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_START_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregStartTime?.value ?: ""
-            disabled = isPersonalApper
+            disabled = disable
             onChangeFunction = { event ->
                 findInputContainer(event).pregEndTime.min = (event.currentTarget as HTMLInputElement).value
             }
@@ -205,7 +206,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeLabel(Ids.Inputs.PREG_END_TIME_INPUT, Strings::birthMiscarrriageTime)
         pregnancyTimeInput(inputContainerToCopyFrom, Ids.Inputs.PREG_END_TIME_INPUT) {
             value = inputContainerToCopyFrom?.pregEndTime?.value ?: ""
-            disabled = isPersonalApper
+            disabled = disable
             onChangeFunction = { event ->
                 findInputContainer(event).pregStartTime.max = (event.currentTarget as HTMLInputElement).value
             }
@@ -220,7 +221,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
                 id = Ids.Inputs.MUSTABEEN_CHECKBOX
                 name = Ids.Inputs.MUSTABEEN_CHECKBOX
                 checked = inputContainerToCopyFrom?.isMustabeen != false
-                disabled = isPersonalApper
+                disabled = disable
                 onChangeFunction = { event -> switchWiladatIsqat(findInputContainer(event)) }
             }
         }
@@ -232,7 +233,7 @@ private fun FlowContent.nifasInputs(inputContainerToCopyFrom: HTMLElement?) {
         makeNumberInput(Ids.Inputs.AADAT_NIFAS_INPUT, inputContainerToCopyFrom?.aadatNifas?.value.orEmpty(), (1..40)) {
             step = "any"
             required = false
-            disabled = isPersonalApper || inputContainerToCopyFrom?.isNifas != true
+            disabled = disable
         }
     }
 }
@@ -267,7 +268,7 @@ private fun FlowContent.mutadaInputs(inputContainerToCopyFrom: HTMLElement?) {
             (18..6 * 30 + 10)
         ) {
             onChangeFunction = { event -> onlyTwo(event) }
-            disabled = isPersonalApper
+            disabled = isPersonalApper || !devmode || inputContainerToCopyFrom?.isZaalla ?: true
         }
     }
     // Mawjooda Tuhr
