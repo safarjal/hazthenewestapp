@@ -49,7 +49,6 @@ private fun TagConsumer<HTMLElement>.inputForm(inputContainerToCopyFrom: HTMLEle
         inputFormPreMasla(inputContainerToCopyFrom)
         inputFormEntryTables(inputContainerToCopyFrom)
         onSubmitFunction = { event ->
-            console.log("submitted")
             parseEntries(findInputContainer(event)) }
     }
 }
@@ -93,7 +92,9 @@ private fun TagConsumer<HTMLElement>.ikhtilafiMasle() {
     val classes = if (isPersonalApper) CssC.INVIS else ""
     div(classes = classes) {
         details {
-            summary(classes = CssC.IKHTILAF)
+            summary(classes = CssC.IKHTILAF) {
+                onClickFunction = { for (element in collapsingElements) element.classList.toggle(CssC.COLLAPSE) }
+            }
             b {
                 span(classes = CssC.ENGLISH) { +StringsOfLanguages.ENGLISH.ikhtilafimasail }
                 span(classes = CssC.MMENGLISH) { +StringsOfLanguages.MMENGLISH.ikhtilafimasail }
@@ -376,6 +377,16 @@ private fun TagConsumer<HTMLElement>.haizDurationInputTable(inputContainerToCopy
             startDurationInputRow(inputContainerToCopyFrom, isDuration)
         }
     }
+    if (isPersonalApper) {
+        br()
+        div(classes = CssC.ROW) {
+            button(classes = CssC.CALC_BTN) {
+                type = ButtonType.button
+                onClickFunction = { event -> addNowRow(event) }
+                +"Add Now"
+            }
+        }
+    }
 }
 
 private fun TagConsumer<HTMLElement>.calculateButton() {
@@ -383,7 +394,6 @@ private fun TagConsumer<HTMLElement>.calculateButton() {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.ENGLISH.calculate
         onClickFunction = { event ->
-            console.log("calculate english")
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }
@@ -391,7 +401,6 @@ private fun TagConsumer<HTMLElement>.calculateButton() {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.MMENGLISH.calculate
         onClickFunction = { event ->
-            console.log("calculate mmenglish")
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }
@@ -399,7 +408,6 @@ private fun TagConsumer<HTMLElement>.calculateButton() {
         id = Ids.Results.CALCULATE_BUTTON
         +StringsOfLanguages.URDU.calculate
         onClickFunction = { event ->
-            console.log("calculate urdu")
             setMaxToCurrentTimeForTimeInputs(findInputContainer(event))
         }
     }

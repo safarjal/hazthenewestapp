@@ -2,6 +2,7 @@
 
 import kotlinx.browser.document
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.datetime.internal.JSJoda.ZoneId
 import kotlinx.html.*
 import kotlinx.html.dom.prepend
 import kotlinx.html.js.*
@@ -241,17 +242,12 @@ fun TagConsumer<HTMLElement>.makeSpans(
 }
 
 fun TagConsumer<HTMLElement>.makeSpans(text: Strings.() -> String, block: SPAN.() -> Unit = {}) {
-    span(classes = "${CssC.ENGLISH} ${if (languageSelected == Vls.Langs.ENGLISH) "" else CssC.LANG_INVIS}") {
+    makeSpans(
+        StringsOfLanguages.ENGLISH.text(),
+        StringsOfLanguages.MMENGLISH.text(),
+        StringsOfLanguages.URDU.text(),
+    ) {
         block()
-        +StringsOfLanguages.ENGLISH.text()
-    }
-    span(classes = "${CssC.MMENGLISH} ${if (languageSelected == Vls.Langs.MMENGLISH) "" else CssC.LANG_INVIS}") {
-        block()
-        +StringsOfLanguages.MMENGLISH.text()
-    }
-    span(classes = "${CssC.URDU} ${if (languageSelected == Vls.Langs.URDU) "" else CssC.LANG_INVIS}") {
-        block()
-        +StringsOfLanguages.URDU.text()
     }
 }
 
@@ -282,13 +278,17 @@ fun TagConsumer<HTMLElement>.makeTzOptions() {
 // Deal with input tables
 fun TagConsumer<HTMLElement>.addBeforeButton(duration: Boolean = false) {
     button(type = ButtonType.button, classes = CssC.PLUS) {
-        +"\u2795 \u25B2"
+        +if (isPersonalApper) "\uD83D\uDD0D \u25B2" else "\u2795 \u25B2"
         title = "Add at Start"
         id = Ids.Row.BUTTON_ADD_BEFORE
         onClickFunction = { event ->
-            val inputContainer = findInputContainer(event)
-            if (duration) addBeforeDurationRow(inputContainer)
-            else addBeforeInputRow(inputContainer)
+            if (isPersonalApper) {
+                for (element in collapsingElements) element.classList.toggle(CssC.COLLAPSE)
+            } else {
+                val inputContainer = findInputContainer(event)
+                if (duration) addBeforeDurationRow(inputContainer)
+                else addBeforeInputRow(inputContainer)
+            }
         }
     }
 }
@@ -313,6 +313,28 @@ private fun FlowContent.addButton(duration: Boolean = false) {
             } else {
                 addInputRow(inputContainer, row)
             }
+        }
+    }
+}
+
+fun addNowRow(event: Event, tz: String? = null) {
+    val timeZone = if (tz == null) ZoneId.systemDefault().toString() else tz
+    val inputContainer = findInputContainer(event)
+    val row = inputContainer.haizInputDatesRows.last()
+    val now = tzOffsetNOW.toDateInputString(inputContainer.isDateOnly)
+    if (row.startTimeInput.value.isEmpty()) {
+        row.startTimeInput.value = now
+        row.endTimeInput.value = now
+    } else if (row.endTimeInput.value.isEmpty()) {
+        row.endTimeInput.value = now
+    } else {
+        row.after {
+            inputRow(
+                inputContainer.isDateOnly,
+                row.endTimeInput.run { value.takeUnless(String::isEmpty) ?: min },
+                now, false, false,
+                SaveEntries(now, now), timeZone
+            )
         }
     }
 }
@@ -342,27 +364,30 @@ fun TagConsumer<HTMLElement>.inputRow(
     disable: Boolean = false,
     noButtons: Boolean = false,
     values: SaveEntries? = null,
+    tz: String? = null,
+    block: TR.() -> Unit = {}
 ) {
     tr {
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 0) {
                 if (values != null) value = values.startTime.orEmpty()
                 id = Ids.Row.INPUT_START_TIME
-                disabled = disable
+                disabled = disable || !values.startLessThanDaysAgo(daysAllowedPersonal, tz)
             }
         }
         td {
             timeInput(isDateOnlyLayout, minTimeInput, maxTimeInput, indexWithinRow = 1) {
                 if (values != null) value = values.endTime.orEmpty()
                 id = Ids.Row.INPUT_END_TIME
-                disabled = disable
+                disabled = disable || !values.endLessThanDaysAgo(daysAllowedPersonal, tz)
             }
         }
         if (!noButtons) {
             addRemoveButtonsTableData()
         } else {
-            td{ id = Ids.Row.BUTTONS_CONTAINER }
+            td { id = Ids.Row.BUTTONS_CONTAINER }
         }
+        block()
     }
 }
 
@@ -447,7 +472,7 @@ fun TagConsumer<HTMLElement>.copyDurationInputRow(
         if (!noButtons) {
             addRemoveButtonsTableData(true)
         } else {
-            td{ id = Ids.Row.BUTTONS_CONTAINER }
+            td { id = Ids.Row.BUTTONS_CONTAINER }
         }
     }
 }
@@ -739,7 +764,7 @@ private fun addDurationRow(inputContainer: HTMLElement, row: HTMLTableRowElement
     setupFirstRow(inputContainer, true)
 }
 
-private fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
+fun addInputRow(inputContainer: HTMLElement, row: HTMLTableRowElement) {
     row.after {
         inputRow(
             inputContainer.isDateOnly,
@@ -759,7 +784,7 @@ fun setupRows(inputContainer: HTMLElement) {
 
 private fun setupFirstRow(inputContainer: HTMLElement, duration: Boolean = false) {
     var inputDatesRows = if (duration) inputContainer.haizDurationInputDatesRows else inputContainer.haizInputDatesRows
-    inputDatesRows = inputDatesRows.filter { inputDatesRow -> inputDatesRow.removeButton != null }
+//    inputDatesRows = inputDatesRows.filter { inputDatesRow -> inputDatesRow.removeButton != null }
     if (inputDatesRows.isEmpty()) {
         return
     }

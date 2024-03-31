@@ -10,13 +10,13 @@ fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages
         //add line about previous habits
         newStr.add(
             baseStr(Strings::preMaslaHabitOfHaizAndTuhr)
-            .replaceDur(Rplc.DUR1, preMaslaValues.inputtedAadatHaiz!!, TypesOfInputs.DURATION, Letters.b)
-            .replaceDur(Rplc.DUR2, preMaslaValues.inputtedAadatTuhr!!, TypesOfInputs.DURATION, Letters.p)
+            .replaceDur(Rplc.DUR1, preMaslaValues.inputtedAadatHaiz!!, TypesOfInputs.DURATION, Letters.B)
+            .replaceDur(Rplc.DUR2, preMaslaValues.inputtedAadatTuhr!!, TypesOfInputs.DURATION, Letters.P)
         )
 
         newStr.add(
             baseStr(Strings::preMaslaValueOfMawjoodaPaki)
-            .replaceDur(Rplc.DUR1, preMaslaValues.inputtedMawjoodahTuhr!!, TypesOfInputs.DURATION, Letters.p)
+            .replaceDur(Rplc.DUR1, preMaslaValues.inputtedMawjoodahTuhr!!, TypesOfInputs.DURATION, Letters.P)
         )
         //remove the word fasid or invalid, if tuhr was saheeh
         if(!preMaslaValues.isMawjoodaFasid){//if tuhr is not fasid
@@ -156,7 +156,7 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
                          typeOfInput: TypesOfInputs,
                          timeZone: String, mustabeenUlKhilqat:Boolean = true): OutputStringsLanguages {
     var newStr = OutputStringsLanguages()
-    val str = HTMLTags.table + HTMLTags.tr + HTMLTags.tableheaderrow + HTMLTags.trendtag //table start and header row
+    val str = HTMLTags.TABLE_TAG + HTMLTags.TR_TAG + HTMLTags.THEAD_ROW + HTMLTags.TR_END_TAG //table start and header row
     newStr.addStr(str)
     for(index in fixedDurations.indices){
         val sd = fixedDurations[index].startDate
@@ -169,8 +169,8 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
             fixedDurations[index].type == DurationType.WILADAT_ISQAT){
             //the first two columns should be covered by this
 
-            newStr.addStr(HTMLTags.tr)//new row start
-            newStr.addStr(HTMLTags.td)//new cell start and endtime of bleeding cell
+            newStr.addStr(HTMLTags.TR_TAG)//new row start
+            newStr.addStr(HTMLTags.TD_TAG)//new cell start and endtime of bleeding cell
             if(fixedDurations[index].type == DurationType.WILADAT_ISQAT){
                 newStr.add(baseStr(Strings::tableonedateline)
                     .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
@@ -181,15 +181,15 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
                     .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
                 )
             }
-            newStr.addStr(HTMLTags.tdendtag)//cell ended
+            newStr.addStr(HTMLTags.TD_END_TAG)//cell ended
 
             //new cell bleeding duration
             if(index==fixedDurations.lastIndex){
-                newStr.addStr(HTMLTags.tdcolspan2)//if this is the last line, then no paki after, so make this take 2 spaces
+                newStr.addStr(HTMLTags.TD_SPAN_2)//if this is the last line, then no paki after, so make this take 2 spaces
             }else if (fixedDurations[index].type==DurationType.WILADAT_ISQAT){
-                newStr.addStr(HTMLTags.tdcolspan3)
+                newStr.addStr(HTMLTags.TD_SPAN_3)
             }else{
-                newStr.addStr(HTMLTags.td)
+                newStr.addStr(HTMLTags.TD_TAG)
             }
             if(fixedDurations[index].type==DurationType.WILADAT_ISQAT){
                 if(mustabeenUlKhilqat){
@@ -197,14 +197,14 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
                 }else{
                     newStr.add(baseStr(Strings::tablemiscarriage))
                 }
-                newStr.addStr(HTMLTags.tdendtag)//cell ended
-                newStr.addStr(HTMLTags.trendtag)//row ended
+                newStr.addStr(HTMLTags.TD_END_TAG)//cell ended
+                newStr.addStr(HTMLTags.TR_END_TAG)//row ended
 
             }else{
                 newStr.add(baseStr(Strings::tabledurationline)
-                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.B)
                 )
-                newStr.addStr(HTMLTags.tdendtag)//cell ended
+                newStr.addStr(HTMLTags.TD_END_TAG)//cell ended
             }
 
             if(index==fixedDurations.lastIndex){//gotta do this since there won't be a paki cell
@@ -212,26 +212,26 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
             }
         }else if(index>0){//the index more than 0 is because table should not have these be the first value
             //this set of ifs and elseifs should decide what goes in column3 subsequent purity
-            newStr.addStr(HTMLTags.td)//new cell paki cell
+            newStr.addStr(HTMLTags.TD_TAG)//new cell paki cell
             if (fixedDurations[index].type == DurationType.TUHR||
                 fixedDurations[index].type == DurationType.TUHR_MUBTADIA||
                 fixedDurations[index].type==DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
                 newStr.add(baseStr(Strings::tabledurationline)
-                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
                 )
             }else if (fixedDurations[index].type == DurationType.TUHREFAASID||
                 fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
                 newStr.add(
                     baseStr(Strings::tabletuhrfaasidline)
-                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
                 )
             }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
                 fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
                 newStr.add(
                     baseStr(Strings::tabletuhrfasidwithistehazaline)
-                        .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.b)
-                        .replaceDur(Rplc.DUR2, time, typeOfInput, Letters.p)
-                        .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.B)
+                        .replaceDur(Rplc.DUR2, time, typeOfInput, Letters.P)
+                        .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.P)
                 )
             }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
                 //we need to figure out what to do here
@@ -257,14 +257,14 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
             }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS) {
                 newStr.add(
                     baseStr(Strings::tabledurationline)
-                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
                 )
             }else if (fixedDurations[index].type == DurationType.HAML){
                 newStr.add(
                     baseStr(Strings::tablepregnancy)
                 )
             }
-            newStr.addStr(HTMLTags.tdendtag)//paki cell ended
+            newStr.addStr(HTMLTags.TD_END_TAG)//paki cell ended
 
             newStr.add(addCommentCell(fixedDurations, index, typeOfInput))
         }
@@ -272,7 +272,7 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
     //for last line in table
 
 
-    newStr.addStr( HTMLTags.tableendtag)    //table end
+    newStr.addStr( HTMLTags.TABLE_END_TAG)    //table end
     //as html tags have probably accumulated in the other strings, let's erase them
     newStr.englishString=""
     newStr.urduString=""
@@ -282,7 +282,7 @@ fun generateTableForMenstrualMatters(fixedDurations: MutableList<FixedDuration>,
 fun addCommentCell(fixedDurations: MutableList<FixedDuration>, index: Int, typeOfInput: TypesOfInputs): OutputStringsLanguages {
     //this should deal with the last cell, the comment cell
     var newStr = OutputStringsLanguages()
-    newStr.addStr(HTMLTags.td)//new cell comment cell
+    newStr.addStr(HTMLTags.TD_TAG)//new cell comment cell
     if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
         //maybe a special comment here?
         newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
@@ -291,8 +291,8 @@ fun addCommentCell(fixedDurations: MutableList<FixedDuration>, index: Int, typeO
     }else{
         newStr.add(generateAadatatThisPoint(fixedDurations,index,typeOfInput))
     }
-    newStr.addStr(HTMLTags.tdendtag)//cell ended
-    newStr.addStr(HTMLTags.trendtag)//row ended
+    newStr.addStr(HTMLTags.TD_END_TAG)//cell ended
+    newStr.addStr(HTMLTags.TR_END_TAG)//row ended
     return newStr
 }
 
@@ -487,7 +487,7 @@ fun outputStringAadatLine(
             if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
                 newStr.add(
                     baseStr(Strings::onlynifashabit)
-                    .replaceDur(Rplc.DUR1, aadats.aadatNifas!!, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, aadats.aadatNifas!!, typeOfInput, Letters.B)
                 )
 
             }else {//adat nifas doesn't exists
@@ -497,41 +497,41 @@ fun outputStringAadatLine(
             if (aadats.aadatNifas != null && aadats.aadatNifas != -1L) {//adat nifas exists
                 newStr.add(
                     baseStr(Strings::nifasAndHaizHabit)
-                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.b)
-                    .replaceDur(Rplc.DUR2, aadats.aadatNifas!!, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.B)
+                    .replaceDur(Rplc.DUR2, aadats.aadatNifas!!, typeOfInput, Letters.B)
                 )
             } else {//adat nifas doesn't exists
                 newStr.add(
                     baseStr(Strings::aadatofhaizonly)
-                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.B)
                 )
             }
         }else if(aadatHaiz==-1L && aadatTuhr!=-1L){//aadat tuhr exist and aadat haiz doesn;t exist
             if (aadats.aadatNifas != null && aadats.aadatNifas != -1L) {//adat nifas exists
                 newStr.add(
                     baseStr(Strings::nifasAndTuhrHabit)
-                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.b)
-                    .replaceDur(Rplc.DUR2, aadats.aadatNifas!!, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.B)
+                    .replaceDur(Rplc.DUR2, aadats.aadatNifas!!, typeOfInput, Letters.P)
                 )
             }else{
                 newStr.add(
                     baseStr(Strings::onlyTuhrHabit)
-                    .replaceDur(Rplc.DUR1, aadatTuhr, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, aadatTuhr, typeOfInput, Letters.P)
                 )
             }
         }else{//adats of haiz and tuhr exist
             if(aadats.aadatNifas != null && aadats.aadatNifas!=-1L){//adat nifas exists
                 newStr.add(
                     baseStr(Strings::habitwithnifas)
-                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.b)
-                    .replaceDur(Rplc.DUR2, aadatTuhr, typeOfInput, Letters.p)
-                    .replaceDur(Rplc.DUR3, aadats.aadatNifas!!, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.B)
+                    .replaceDur(Rplc.DUR2, aadatTuhr, typeOfInput, Letters.P)
+                    .replaceDur(Rplc.DUR3, aadats.aadatNifas!!, typeOfInput, Letters.B)
                 )
             }else{//adat nifas doesn't exists
                 newStr.add(
                     baseStr(Strings::habit)
-                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.b)
-                    .replaceDur(Rplc.DUR2, aadatTuhr, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, aadatHaiz, typeOfInput, Letters.B)
+                    .replaceDur(Rplc.DUR2, aadatTuhr, typeOfInput, Letters.P)
                 )
             }
         }
@@ -554,29 +554,29 @@ fun outputStringBiggerThan10HallDurations(
             if(duration.type == DurationType.ISTIHAZA_BEFORE){
                 newStr.add(
                     baseStr(Strings::startingFromIstehaza)
-                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.P)
                 )
             }else if(duration.type == DurationType.HAIZ){
                 if(duration==fixedDurations[index].biggerThanTen!!.durationsList[0]){
                     newStr.add(
                         baseStr(Strings::startingFromHaiz)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                     )
                 }else{
                     newStr.add(
                         baseStr(Strings::followedByHaizAfter)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                     )
                 }
             }else if(duration.type == DurationType.ISTIHAZA_AFTER){
                 newStr.add(
                     baseStr(Strings::followedByistehazaAfter)
-                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.p)
+                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.P)
                 )
             }else if(duration.type == DurationType.LESS_THAN_3_HAIZ){
                 newStr.add(
                     baseStr(Strings::followedByHaizAfter)
-                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                        .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                 )
                 //maybe we'll wanna add something about itibaar bil khawateem
             }else if(duration.type == DurationType.NIFAS){
@@ -599,8 +599,8 @@ fun generateAadatatThisPoint(fixedDurations: MutableList<FixedDuration>,
     }
 
     return baseStr (Strings::habitincomment)
-        .replaceDur(Rplc.DUR1,fixedDurations[index].aadatsAfterthis.aadatHaiz,typeOfInput,Letters.b)
-        .replaceDur(Rplc.DUR2,fixedDurations[index].aadatsAfterthis.aadatTuhr,typeOfInput, Letters.p)
+        .replaceDur(Rplc.DUR1,fixedDurations[index].aadatsAfterthis.aadatHaiz,typeOfInput,Letters.B)
+        .replaceDur(Rplc.DUR2,fixedDurations[index].aadatsAfterthis.aadatTuhr,typeOfInput, Letters.P)
 }
 
 fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
@@ -614,13 +614,13 @@ fun outputStringBiggerThan10Hall(fixedDurations: MutableList<FixedDuration>,
         return baseStr(Strings::haizdaysinsolution)
             .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.b)
+            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.B)
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs): OutputStringsLanguages {
         return baseStr(Strings::istihazadays)
             .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.p)
+            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.P)
     }
 
     if((fixedDurations[index].days>10 &&
@@ -669,21 +669,21 @@ fun outputStringBiggerThan40HallDuration(
                 DurationType.NIFAS -> {
                     newStr.add(
                         baseStr(Strings::startingFromNifas)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                     )
                 }
 
                 DurationType.ISTIHAZA_AFTER -> {
                     newStr.add(
                         baseStr(Strings::followedByistehazaAfter)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.p)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.P)
                     )
                 }
 
                 DurationType.HAIZ -> {
                     newStr.add(
                         baseStr(Strings::followedByHaizAfter)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                     )
                 }
 
@@ -691,7 +691,7 @@ fun outputStringBiggerThan40HallDuration(
 //                    TODO: same as above?
                     newStr.add(
                         baseStr(Strings::followedByHaizAfter)
-                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.b)
+                            .replaceDur(Rplc.DUR1, duration.timeInMilliseconds, typeOfInput, Letters.B)
                     )
                     //maybe we'll wanna add something about itibaar bil khawateem
                 }
@@ -715,19 +715,19 @@ fun outputStringBiggerThan40Hall(fixedDurations: MutableList<FixedDuration>,
         return baseStr(Strings::nifasdaysinsolution)
             .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.b)
+            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.B)
     }
     fun haizLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages{
         return baseStr(Strings::haizdaysinsolution)
             .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.b)
+            .replaceDur(Rplc.DUR1, (difference(sd,ed)), typeOfInput, Letters.B)
     }
     fun istihazaLine(sd:Instant, ed:Instant, typeOfInput: TypesOfInputs):OutputStringsLanguages {
         return baseStr(Strings::istihazadays)
             .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, ed, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd, ed)), typeOfInput, Letters.p)
+            .replaceDur(Rplc.DUR1, (difference(sd, ed)), typeOfInput, Letters.P)
     }
 
     if(fixedDurations[index].days>40&&fixedDurations[index].type==DurationType.DAM_IN_NIFAS_PERIOD){
@@ -773,12 +773,12 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         if(fixedDurations[index].days in 3.0..10.0){//if it's between 3 and 10, write haiz
             newStr.add(
                 baseStr(Strings::durationHaiz)
-                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.B)
             )
         }else{//bigger than 10
             newStr.add(
                 baseStr(Strings::durationDam)
-                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.B)
             )
         }
     }else if (fixedDurations[index].type == DurationType.TUHR||
@@ -787,7 +787,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         val time = fixedDurations[index].timeInMilliseconds
         newStr.add(
             baseStr(Strings::durationPaki)
-                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
         )
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
             newStr.addStrings(Strings::becamemutadah)
@@ -795,15 +795,15 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
         newStr.add(
             baseStr(Strings::durationTuhrefasid)
-            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
+            .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
         )
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         newStr.add(
             baseStr(Strings::durationTuhreFasidWithAddition)
-            .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.p)
-            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
-            .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+            .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.P)
+            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
+            .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.P)
         )
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
@@ -811,12 +811,12 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
         if(fixedDurations[index].days<=40){
             newStr.add(
                 baseStr(Strings::durationNifas)
-                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.B)
             )
         }else{//more than 40
             newStr.add(
                 baseStr(Strings::durationDam)
-                    .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.B)
             )
         }
     }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
@@ -824,16 +824,16 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
             val time = fixedDurations[index].timeInMilliseconds
             newStr.add(
                 baseStr(Strings::durationPaki)
-                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
             )
         }
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!isMustabeen){
             newStr.add(
                 baseStr(Strings::durationTuhreFasidWithAddition)
-                    .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.p)
-                .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
-                .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.P)
+                .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
+                .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.P)
             )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
@@ -841,7 +841,7 @@ fun outputStringHeaderLineDuration(fixedDurations: MutableList<FixedDuration>, i
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         newStr.add(
             baseStr(Strings::twomonthstuhr)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
         )
     }else if(fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         "PLACEHOLDER"
@@ -863,7 +863,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                 baseStr(Strings::haizdays)
                     .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                     .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                    .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
+                    .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.B)
             )
         }else{//bigger than 10
             if (fixedDurations[index].indices.size>1){//this dam is made up of more than 1
@@ -871,14 +871,14 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                     baseStr(Strings::continuosbleeding)
                         .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                         .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.B)
                 )
             }else{
                 newStr.add(
                     baseStr(Strings::blooddays)
                         .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                         .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                        .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.B)
                 )
             }
         }
@@ -888,7 +888,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
         val time = fixedDurations[index].timeInMilliseconds
         newStr.add(
             baseStr(Strings::pakidays)
-                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
         )
         if(fixedDurations[index].type == DurationType.TUHR_MUBTADIA_BECAME_A_MUTADA_NOW){
             newStr.addStrings(Strings::becamemutadah)
@@ -896,15 +896,15 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID||fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA){
         newStr.add(
             baseStr(Strings::tuhrfasid)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
         )
     }else if (fixedDurations[index].type==DurationType.TUHREFAASID_WITH_ISTEHAZA||
         fixedDurations[index].type==DurationType.TUHREFAASID_MUBTADIA_WITH_ISTEHAZA){
         newStr.add(
             baseStr(Strings::tuhrfasidwithaddition)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.p)
-            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
-            .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.P)
+            .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
+            .replaceDur(Rplc.DUR3, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.P)
         )
     }else if (fixedDurations[index].type == DurationType.DAM_IN_NIFAS_PERIOD){
         val sd = fixedDurations[index].startDate
@@ -914,14 +914,14 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
                 baseStr(Strings::nifasdays)
                     .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                 .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.b)
+                .replaceDur(Rplc.DUR1, difference(sd,et), typeOfInput, Letters.B)
             )
         }else{//more than 40
             newStr.add(
                 baseStr(Strings::blooddays)
                     .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
                 .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.b)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.B)
             )
         }
     }else if (fixedDurations[index].type == DurationType.TUHR_IN_HAML){
@@ -929,16 +929,16 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             val time = fixedDurations[index].timeInMilliseconds
             newStr.add(
                 baseStr(Strings::pakidays)
-                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.p)
+                    .replaceDur(Rplc.DUR1, time, typeOfInput, Letters.P)
             )
         }
     }else if (fixedDurations[index].type == DurationType.TUHREFAASID_IN_HAML){
         if(!mustabeen){
             newStr.add(
                 baseStr(Strings::tuhrfasidwithaddition)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.p)
-                .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
-                .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].istihazaAfter, typeOfInput, Letters.P)
+                .replaceDur(Rplc.DUR2, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
+                .replaceDur(Rplc.DUR2, (fixedDurations[index].istihazaAfter+fixedDurations[index].timeInMilliseconds), typeOfInput, Letters.P)
             )
         }
     }else if (fixedDurations[index].type == DurationType.DAM_IN_HAML){
@@ -946,7 +946,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
     }else if (fixedDurations[index].type == DurationType.TUHR_BIGGER_THAN_6_MONTHS){
         newStr.add(
             baseStr(Strings::twomonthstuhr)
-                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.p)
+                .replaceDur(Rplc.DUR1, fixedDurations[index].timeInMilliseconds, typeOfInput, Letters.P)
         )
     }else if (fixedDurations[index].type == DurationType.ISTEHAZA_AYYAMEQABLIYYA){
         val sd = fixedDurations[index].startDate
@@ -955,7 +955,7 @@ fun outputStringHeaderLine(fixedDurations: MutableList<FixedDuration>,
             baseStr(Strings::daysayyameqabliyya)
                 .replaceDT(Rplc.DT1, sd, typeOfInput, timeZone)
             .replaceDT(Rplc.DT2, et, typeOfInput, timeZone)
-            .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.b)
+            .replaceDur(Rplc.DUR1, (difference(sd,et)), typeOfInput, Letters.B)
         )
     }
     return newStr
