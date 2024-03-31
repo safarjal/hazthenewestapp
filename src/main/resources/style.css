@@ -82,6 +82,10 @@ body {
   visibility: hidden !important;
 }
 
+.collapse {
+  visibility: collapse !important;
+}
+
 /* Header */
 header {
   width: 100vw;

@@ -136,6 +136,7 @@ data class Strings(
     val tablemiscarriage: String,
     val tablebirth: String,
     val tooOldMasla: String,
+    val noPersonalMasla: String,
 )
 
 data class AllTheInputs(

@@ -47,6 +47,13 @@ fun hazappPage() {
     })
     if (isPersonalApper && !noUserMaslaId) {
         GlobalScope.launch { loadData(userMaslaId!!, inputsContainers.first()) }
+        window.alert(
+            "ANY MISSED BLEEDING/SPOTTING WILL RESULT IN AN INACCURATE RULING " +
+                    "AND POTENTIALLY RESULT IN MISSED FARD SALAWAAT!$NEW_LINE" +
+                    "PLEASE REMEMBER TO REPORT ALL SPOTTING.$NEW_LINE" +
+                    "IF THERE IS A SPOT IN THE PAST THAT YOU FORGOT TO RECORD, " +
+                    "PLEASE CONTACT YOUR ADMIN AND THEY WILL HELP YOU UPDATE THIS"
+        )
     }
     parseHREF()
 }
@@ -239,11 +246,9 @@ fun parseEntries(inputContainer: HTMLElement) {
                     endTime = row.endTimeInput.value.instant(timezone, isDateTime)
                 )
             }
-            console.log("entries", entries)
             allTheInputs = AllTheInputs(
                 entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
             )
-            console.log("AllTheInputs", allTheInputs)
         }
 
         if ((aadatHaz.value + aadatTuhr.value + aadatNifas.value).contains("-") && devmode) {
@@ -254,18 +259,16 @@ fun parseEntries(inputContainer: HTMLElement) {
 
 //        @Suppress("UnsafeCastFromDynamic")
         val output: OutputTexts = if (allTheInputs.entries != null) {
-            console.log("handlingEntries")
             handleEntries(allTheInputs)
         } else {
             NO_OUTPUT
         }
-        console.log("handledEntries", output)
 
         contentContainer.visibility = true
         contentContainer.setAttribute("data-saved", "false")
-        contentEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.englishString)
-        contentMMEnglish.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.mmEnglishString)
-        contentUrdu.innerHTML = replaceBoldTagWithBoldAndStar(output.outputText.urduString)
+        contentEnglish.innerHTML = output.outputText.englishString.replaceBoldTagWithBoldAndStar()
+        contentMMEnglish.innerHTML = output.outputText.mmEnglishString.replaceBoldTagWithBoldAndStar()
+        contentUrdu.innerHTML = output.outputText.urduString.replaceBoldTagWithBoldAndStar()
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
         contentContainer.scrollIntoView()
@@ -640,6 +643,7 @@ private val mmenglishElements get() = document.getElementsByClassName(CssC.MMENG
 private val urduElements get() = document.getElementsByClassName(CssC.URDU).asList()
 private val languageElements get() = listOf(englishElements, urduElements, mmenglishElements).flatten()
 private val devElements get() = document.getElementsByClassName(CssC.DEV).asList()
+val collapsingElements get() = document.getElementsByClassName(CssC.COLLAPSIBLE).asList()
 
 val HTMLElement.hazInputTableBody get() = haizInputTable.tBodies[0] as HTMLTableSectionElement
 val HTMLElement.hazDurationInputTableBody get() = haizDurationInputTable.tBodies[0] as HTMLTableSectionElement

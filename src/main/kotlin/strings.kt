@@ -1,4 +1,3 @@
-
 val urduStrings = Strings(
     answer = "${UnicodeChars.MEMO} <b>جواب:</b>\n\n",
     headerline = "اس ترتیب سے خون آیا اور پاکی ملی:\n\n",
@@ -133,8 +132,10 @@ val urduStrings = Strings(
     tablepregnancy = "",
     tablemiscarriage = "",
     tablebirth = "",
-    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla."
-    )
+    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
+    noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+
+)
 val englishStrings = Strings(
     answer = "${UnicodeChars.MEMO} <b>Answer:</b>\n\n",
     headerline = "The bleeding and purity (tuh’r) has been in the following sequence:\n\n",
@@ -298,8 +299,10 @@ val englishStrings = Strings(
     tablepregnancy = "",
     tablemiscarriage = "",
     tablebirth = "",
-    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla."
-    )
+    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
+    noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+
+)
 val mmEnglishStrings = Strings(
     answer = "In the name of Allah, the Inspirer of truth\n\n",
     headerline = "The bleeding and purity (tuhr) has been in the following sequence:\n\n",
@@ -448,39 +451,40 @@ val mmEnglishStrings = Strings(
     ayyameqabliyyacomment = "This is a case of Ayyam-e-Qabliyya",
     loginAgain = "\n\nIt seems that your login has expired. Please log out and log in again to save the maslas in your own name.",
     tabletwodatesline = "${Rplc.DT1}-${Rplc.DT2}",
-    tableonedateline = "${Rplc.DT1}",
-    tabledurationline = "${Rplc.DUR1}",
+    tableonedateline = Rplc.DT1,
+    tabledurationline = Rplc.DUR1,
     tabletuhrfaasidline = "${Rplc.DUR1} (tuhr faasid)",
     tabletuhrfasidwithistehazaline = "${Rplc.DUR1} istihada + ${Rplc.DUR2} = ${Rplc.DUR3}",
     tablepregnancy = "Pregnancy",
     tablemiscarriage = "Miscarriage",
     tablebirth = "Birth",
-    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla."
-    )
+    tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
+    noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+)
 
 
-object StringsOfLanguages{
+object StringsOfLanguages {
     val URDU: Strings = urduStrings
     val ENGLISH: Strings = englishStrings
     val MMENGLISH: Strings = mmEnglishStrings
 }
 
-object HTMLTags{
-    val table = "<table>"
-    val tableendtag = "</table>\n\n"
-    val td = "<td>"
-    val tdendtag = "</td>"
-    val tr = "<tr>"
-    val trendtag = "</tr>"
-    val tdcolspan2 = "<td colspan = '2'>"
-    val tdcolspan3 = "<td colspan = '3'>"
-    val tableheaderrow = "<th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th>"
+object HTMLTags {
+    const val TABLE_TAG = "<table>"
+    const val TABLE_END_TAG = "</table>\n\n"
+    const val TD_TAG = "<td>"
+    const val TD_END_TAG = "</td>"
+    const val TR_TAG = "<tr>"
+    const val TR_END_TAG = "</tr>"
+    const val TD_SPAN_2 = "<td colspan = '2'>"
+    const val TD_SPAN_3 = "<td colspan = '3'>"
+    const val THEAD_ROW = "<th>Dates</th><th>Bleeding</th><th>Subsequent Purity</th><th>Comments</th>"
 }
 
-var dtStrings = arrayOf (
-    TzInfo("(GMT-08:00) US & Canada","America/Los_Angeles"),
-    TzInfo("(GMT+00:00) Europe","Europe/London"),
-    TzInfo("(GMT+10:00) Australia","Australia/Canberra"),
+var dtStrings = arrayOf(
+    TzInfo("(GMT-08:00) US & Canada", "America/Los_Angeles"),
+    TzInfo("(GMT+00:00) Europe", "Europe/London"),
+    TzInfo("(GMT+10:00) Australia", "Australia/Canberra"),
 )
 
 //var tzStrings = arrayOf <TzInfo> (

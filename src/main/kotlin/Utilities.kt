@@ -11,9 +11,8 @@ fun <T> buildJsObject(block: T.() -> Unit): T = (js("{}") as T).apply(block)
 // HTML DOM MANIP
 val Document.isHidden get() = this["hidden"] as Boolean
 
-fun replaceBoldTagWithBoldAndStar(string: String): String {
-    return string
-        .replace("<b>", "<b>$INVISIBLE_STAR")
+fun String.replaceBoldTagWithBoldAndStar(): String {
+    return replace("<b>", "<b>$INVISIBLE_STAR")
         .replace("</b>", "$INVISIBLE_STAR</b>")
         .split("\n\n").joinToString("") { paragraph ->
             "<p>$paragraph</p>"
@@ -42,17 +41,17 @@ val BOLDED_TEXT_REGEX = Regex("\\*(.*?)\\*")
 fun String.replaceStarWithStarAndBoldTag(): String {
     val formattedText =
         replace(BOLDED_TEXT_REGEX, "<b>$INVISIBLE_STAR$1$INVISIBLE_STAR</b>")
-        .split("\n\n")
-        .joinToString("") { paragraph ->
-            if (paragraph.contains("\t")) {
-                val cells = paragraph.split("\t").joinToString("") { cell ->
-                    "<td>$cell</td>"
+            .split("\n\n")
+            .joinToString("") { paragraph ->
+                if (paragraph.contains("\t")) {
+                    val cells = paragraph.split("\t").joinToString("") { cell ->
+                        "<td>$cell</td>"
+                    }
+                    "<tr>$cells</tr>"
+                } else {
+                    "<p>$paragraph</p>"
                 }
-                "<tr>$cells</tr>"
-            } else {
-                "<p>$paragraph</p>"
             }
-        }
 
     val lastIndex = formattedText.lastIndexOf("</tr>")
     if (lastIndex == -1) return formattedText
@@ -186,7 +185,25 @@ fun convertInputValue(value: String, isDateOnly: Boolean, timeZone: String? = nu
         .toDateInputString(isDateOnly)
 }
 
-fun addTimeToDate(date: Instant, timeInMilliseconds: Long): Instant = date.plusMillis(timeInMilliseconds)
+fun Instant.addTime(timeInMilliseconds: Long): Instant = plusMillis(timeInMilliseconds)
+
+val tzOffsetNOW get() = LocalDateTime.now(ZoneId.systemDefault()).toInstant(ZoneOffset.UTC)
+fun Int.daysAgo() = tzOffsetNOW.minusSeconds(this * 24 * 3600)
+fun Instant.isLessThanDaysAgo(days: Int) = tzOffsetNOW.minusMillis(this.toEpochMilli()).getMillisLong().getDays() < days
+fun String.isLessThanDaysAgo(days: Int, tz: String? = null) = this.instant(tz).isLessThanDaysAgo(days)
+fun SaveEntries?.startLessThanDaysAgo(days: Int, tz: String? = null): Boolean {
+    if (this == null || !isPersonalApper) return true
+    return startTime?.isLessThanDaysAgo(days, tz) ?: true
+}
+fun SaveEntries?.endLessThanDaysAgo(days: Int, tz: String? = null): Boolean {
+    if (this == null || !isPersonalApper) return true
+    return endTime?.isLessThanDaysAgo(days, tz) ?: true
+}
+fun SaveEntries?.minLessThanDaysAgo(days: Int, tz: String? = null, dateInput: Boolean): String? {
+    if (!isPersonalApper) return this?.endTime
+    if (this == null) return days.daysAgo().toDateInputString(dateInput)
+    return if (endTime?.isLessThanDaysAgo(days, tz) == true)  startTime else days.daysAgo().toDateInputString(dateInput)
+}
 
 fun parseRange(input: String): Array<Int?> {
     val sections = input.split('-')
@@ -209,8 +226,8 @@ fun parseDays(input: String): Long? {
     return dur.toMillis().toLong()
 }
 
-fun milliToDayHrMin(numberOfMilliseconds: Long): Array<Double> {
-    var inst = Duration.ofMillis(numberOfMilliseconds)
+fun Long.toDayHrMin(): Array<Double> {
+    var inst = Duration.ofMillis(this)
     val days = inst.toDays()
     inst = inst.minusDays(days)
     val hours = inst.toHours()
@@ -230,7 +247,7 @@ fun daysHoursMinutesDigital(
             isDateOnly = true
         }
 
-        val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
+        val (days, hours, minutes) = numberOfMilliseconds.toDayHrMin()
         var strHours = hours.toString()
         var strMinutes = minutes.toString()
         var strDays = days.toString()
@@ -267,7 +284,7 @@ fun daysHoursMinutesDigital(
             isDateOnly = true
         }
 
-        val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
+        val (days, hours, minutes) = numberOfMilliseconds.toDayHrMin()
 
         val strHours = when (hours) {
             0.0 -> ""
@@ -289,7 +306,7 @@ fun daysHoursMinutesDigital(
             return "?"
         }
 
-        val (days, hours, minutes) = milliToDayHrMin(numberOfMilliseconds)
+        val (days, hours, minutes) = numberOfMilliseconds.toDayHrMin()
         var strHours = hours.toString()
         var strMinutes = minutes.toString()
         var strDays = days.toString()
@@ -403,7 +420,7 @@ fun languagedDateFormat(
         val hoursStr: String = hours.toString()
 
         return if (isDateOnly) dateStr //05 Jun 2021
-        else "$dateStr $hoursStr" + "." + "$minutesStr$ampm" //13 Dec at 7:30 pm
+        else "$dateStr $hoursStr.$minutesStr$ampm" //13 Dec at 7:30 pm
     }
     return "Error"
 }
@@ -444,7 +461,6 @@ fun OutputStringsLanguages.addStrings(baseString: Strings.() -> String): OutputS
 }
 
 fun OutputStringsLanguages.replace(oldUr: String, newUr: String, oldEn: String, newEn: String): OutputStringsLanguages {
-    //Todo: Check for this
     urduString = urduString.replace(oldUr, newUr)
     englishString = englishString.replace(oldEn, newEn)
     mmEnglishString = mmEnglishString.replace(oldEn, newEn)
@@ -585,14 +601,16 @@ object SaveMaslaId {
 }
 
 object Letters {
-    const val b: String = "b"
-    const val p: String = "p"
+    const val B: String = "b"
+    const val P: String = "p"
 }
 
 object CssC {
     const val INVIS = "invisible"                   // Invis. Put on any element that shouldn't show; also doable by elem.visibility
     const val LANG_INVIS = "lang-invisible"         // Invis. Put on any element that shouldn't show because of lang
     const val HIDDEN = "hidden"                     // Hidden. Put on any element that shouldn't show; but still exist and take up space
+    const val COLLAPSE = "collapse"                 // Collased. Put on any element that should be shrunk to nothingness
+    const val COLLAPSIBLE = "collapsible"           // Collapsable. Put on any element that should have togglable collasing
 
     const val ENGLISH = "english"                   // Switch. Put on any element that should only show when lang is english
     const val MMENGLISH = "mmenglish"               // Switch. Put on any element that should only show when lang is english
@@ -705,6 +723,7 @@ object Events {
 }
 
 const val NEW_LINE = "\n\n"
+
 object UnicodeChars {
     const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
 

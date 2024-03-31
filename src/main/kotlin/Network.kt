@@ -7,8 +7,12 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
-import kotlinx.datetime.internal.JSJoda.*
+import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.html.ButtonType
+import kotlinx.html.classes
 import kotlinx.html.dom.append
+import kotlinx.html.js.button
+import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLElement
 import kotlin.js.Json
 
@@ -110,11 +114,12 @@ fun logout() {
 }
 
 fun loggedIn(): Boolean {
+    val maxLoggedInDays = 29
     val dateDiff =
         if (tokenDate != null) Instant.now().minusMillis(tokenDate!!.toEpochMilli()).getMillisLong().getDays()
-        else 29
+        else maxLoggedInDays
 
-    return !bearerToken.isNullOrEmpty() && dateDiff < 29
+    return !bearerToken.isNullOrEmpty() && dateDiff < maxLoggedInDays
 }
 
 suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): LoadData? {
@@ -238,6 +243,7 @@ fun HTMLElement.handleLoadedEntries(data: LoadData) {
     setupRows(inputContainer = this)
 }
 
+const val daysAllowedPersonal = 2
 fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String, tz: String?) {
     val isDateOnly = typeOfInput == Vls.Types.DATE_ONLY
     var olderThanThreeMonths = false
@@ -245,38 +251,41 @@ fun HTMLElement.entriesToTable(entries: List<SaveEntries>, typeOfInput: String, 
         entries.forEachIndexed { index, entry ->
             inputRow(
                 isDateOnly,
-                entries.getOrNull(index - 1)?.endTime.orEmpty(),
+                entries.getOrNull(index - 1)?.minLessThanDaysAgo(daysAllowedPersonal, tz, isDateOnly).orEmpty(),
                 entries.getOrNull(index + 1)?.startTime.orEmpty(),
-                isPersonalApper, isPersonalApper,
-                entry
-            )
+                false, isPersonalApper,
+                entry, tz
+            ){
+                if (isPersonalApper && !entry.endTime!!.isLessThanDaysAgo(daysAllowedPersonal)) {
+                    classes = setOf(CssC.COLLAPSE, CssC.COLLAPSIBLE)
+                }
+            }
         }
-        if (isPersonalApper) {
-            val currentZonedDateTime = LocalDateTime.now(ZoneId.systemDefault())
-            val correspondingInstant = currentZonedDateTime.toInstant(ZoneOffset.UTC)
-
+        if (isPersonalApper && !noUserMaslaId) {
             val minTime = entries.last().endTime
-            val lastDate = minTime.orEmpty().instant(tz)
 
-            //            console.log(
-//                today.toDateInputString(isDateOnly),
-//                currentZonedDateTime,
-//                correspondingInstant,
-//                correspondingInstant.toDateInputString(isDateOnly)
-//            )
-
-            olderThanThreeMonths = correspondingInstant.minusMillis(lastDate.toEpochMilli()).getMillisLong().getDays() > 90
-            if (!olderThanThreeMonths) {
+            olderThanThreeMonths = !entries.last().endLessThanDaysAgo(90, tz)
+            if (!olderThanThreeMonths && !noUserMaslaId) {
                 inputRow(
                     isDateOnly,
-                    minTimeInput = minTime.orEmpty(),
-                    maxTimeInput = if (isPersonalApper) correspondingInstant.toDateInputString(isDateOnly) else ""
+                    minTimeInput = minTime ?: daysAllowedPersonal.daysAgo().toDateInputString(isDateOnly),
+                    maxTimeInput = tzOffsetNOW.toDateInputString(isDateOnly)
                 )
+            }
+            {
+                button {
+                    type = ButtonType.button
+                    onClickFunction = { event -> addNowRow(event, tz) }
+                    +"Add Now"
+                }
             }
         }
     }
     if (olderThanThreeMonths) {
         inputsContainerMessage.appendChild { makeSpans(Strings::tooOldMasla) }
+    }
+    if (isPersonalApper && noUserMaslaId) {
+        inputsContainerMessage.appendChild { makeSpans(Strings::noPersonalMasla) }
     }
 }
 
