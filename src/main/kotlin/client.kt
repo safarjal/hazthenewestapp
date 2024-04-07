@@ -49,7 +49,7 @@ fun hazappPage() {
         GlobalScope.launch { loadData(userMaslaId!!, inputsContainers.first()) }
         window.alert(
             "ANY MISSED BLEEDING/SPOTTING WILL RESULT IN AN INACCURATE RULING " +
-                    "AND POTENTIALLY RESULT IN MISSED FARD SALAWAAT!$NEW_LINE" +
+                    "AND POTENTIALLY RESULT IN MISSED FARD SALAH!$NEW_LINE" +
                     "PLEASE REMEMBER TO REPORT ALL SPOTTING.$NEW_LINE" +
                     "IF THERE IS A SPOT IN THE PAST THAT YOU FORGOT TO RECORD, " +
                     "PLEASE CONTACT YOUR ADMIN AND THEY WILL HELP YOU UPDATE THIS"
