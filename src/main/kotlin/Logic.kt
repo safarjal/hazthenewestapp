@@ -846,8 +846,8 @@ fun removeDamLessThan3 (fixedDurations: MutableList<FixedDuration>,
 fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                             preMaslaValues: PreMaslaValues,
                             language: String,
-                            adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
-                            adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
+                            recvdAdatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
+                            recvdAdatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>,
                             endOfDaurIkhtilaf: Boolean):Boolean{
 
     //This basically adds this info to each fixed duration of dam:
@@ -857,35 +857,28 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
     // - new aadats of haiz and tuhr
     // - we use a function dealWithIstihazaAfter, to figure out if aadat of haiz needs to be updated in case of daur
     var fixedDurations = receivedfixedDurations
+    var adatsOfHaizList=recvdAdatsOfHaizList
+    var adatsOfTuhrList=recvdAdatsOfTuhrList
 
     val isMawjoodaFasid  = preMaslaValues.isMawjoodaFasid
 
-    var aadatHaz:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatHaiz!!
-    var aadatTuhr:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatTuhr!!
+//    var aadatHaz:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatHaiz!!
+//    var aadatTuhr:Long = dealWithPreMaslaValues(preMaslaValues).inputtedAadatTuhr!!
     var mawjoodaTuhr:Long = dealWithPreMaslaValues(preMaslaValues).inputtedMawjoodahTuhr!!
-    adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,-1)
-    adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,-1)
+    adatsOfHaizList+=AadatAfterIndexOfFixedDuration(dealWithPreMaslaValues(preMaslaValues).inputtedAadatHaiz!!,-1)
+    adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(dealWithPreMaslaValues(preMaslaValues).inputtedAadatTuhr!!,-1)
 
 
 
     for (i in fixedDurations.indices){
         //iterate through fixedDurations
 
-        //get aadat if dam is less than 10
+        //get aadat if dam is less than or equal to 10
         if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days<=10&&fixedDurations[i].days>=3){
-            aadatHaz = fixedDurations[i].timeInMilliseconds
-            adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
-            aadatTuhr = checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).first
-            fixedDurations = checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).second
-//            if(checkIfPreviousTuhrIsAadat (i, fixedDurations, adatsOfTuhrList.last().aadat).second){
-//                //if it is, mark it as long tuhr
-//                fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
-//            }
-            adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
-            if(i==0 && mawjoodaTuhr!=-1L && !isMawjoodaFasid){
-                aadatTuhr = markTuhrAsAadat(-1, fixedDurations, mawjoodaTuhr).first
-                adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
-            }
+            fixedDurations = dealWithDamSaheeh(fixedDurations,i, adatsOfTuhrList.last().aadat, isMawjoodaFasid,mawjoodaTuhr).second
+
+            adatsOfHaizList+=AadatAfterIndexOfFixedDuration(dealWithDamSaheeh(fixedDurations,i, adatsOfTuhrList.last().aadat, isMawjoodaFasid, mawjoodaTuhr).first.aadatHaiz,i)
+            adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(dealWithDamSaheeh(fixedDurations,i, adatsOfTuhrList.last().aadat, isMawjoodaFasid, mawjoodaTuhr).first.aadatTuhr,i)
 
         }else if(fixedDurations[i].type==DurationType.DAM_IN_NIFAS_PERIOD && fixedDurations[i].days>40){
 
@@ -901,13 +894,13 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                 //we do not need aadaat yet.
                 //I'm going to run this with a bogus aadat cuz we need it for other stuff
                 dealWithIstihazaAfter(istihazaAfter,3.getMilliDays(),15.getMilliDays(),fixedDurations, i, endOfDaurIkhtilaf)
-                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, aadatHaz,aadatHaz, aadatTuhr, mutableListOf())
+                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, adatsOfHaizList.last().aadat,adatsOfHaizList.last().aadat, adatsOfTuhrList.last().aadat, mutableListOf())
                 fixedDurations[i].biggerThanForty=nifasInfo
             }else{
                 //we do need aadaat
                 //we don't need mawjoodah paki
 
-                if(aadatHaz==-1L ||aadatTuhr==-1L){
+                if(adatsOfHaizList.last().aadat==-1L ||adatsOfTuhrList.last().aadat==-1L){
 //                    TODO:See if we can solve after this even if we can't solve this
                     //give error message
                     if(language==Vls.Langs.ENGLISH){
@@ -919,18 +912,17 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                     }
                     return false
                 }
-
-                val haiz = aadatHaz
-                aadatHaz = dealWithIstihazaAfter(istihazaAfter,aadatHaz,aadatTuhr,fixedDurations, i, endOfDaurIkhtilaf)
-                adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
-                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, haiz,aadatHaz, aadatTuhr, mutableListOf())
+                var previousAadatHaz=adatsOfHaizList.last().aadat
+                val newAadatHaz = dealWithIstihazaAfter(istihazaAfter,previousAadatHaz,adatsOfTuhrList.last().aadat,fixedDurations, i, endOfDaurIkhtilaf)
+                adatsOfHaizList+=AadatAfterIndexOfFixedDuration(newAadatHaz,i)
+                val nifasInfo = BiggerThanFortyNifas(aadatNifas, istihazaAfter, previousAadatHaz,newAadatHaz, adatsOfTuhrList.last().aadat, mutableListOf())
                 fixedDurations[i].biggerThanForty=nifasInfo
             }
 
         }else if(fixedDurations[i].type==DurationType.DAM && fixedDurations[i].days>10){
             //if we hit a dam bigger than 10, check to see if we have aadat
 
-            if(aadatHaz==-1L ||aadatTuhr==-1L){
+            if(adatsOfHaizList.last().aadat==-1L ||adatsOfTuhrList.last().aadat==-1L){
 //                //here is where we want to change. if there is no habit,
 //                // instead of give error message and break, go on to the next one.
 //                // Mark this as unsolvable.
@@ -953,6 +945,7 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
             }else{//we have aadat
                 if(mawjoodaTuhr==-1L && i<1){//if mawjoodah tuhr doesn't exist and the first period is bigger than 10
                     //give error message
+                    //TODO: See if we can still solve
                     if(language==Vls.Langs.ENGLISH){
                         window.alert(StringsOfLanguages.ENGLISH.errorEnterMawjoodaPaki)
                     }else if(language==Vls.Langs.MMENGLISH){
@@ -969,15 +962,14 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                     }
                 }
                 val mp:Long = mawjoodaTuhr
-                val gp:Long = aadatTuhr
+                val gp:Long = adatsOfTuhrList.last().aadat
                 val dm:Long = fixedDurations[i].timeInMilliseconds
-                val hz:Long = aadatHaz
+                val hz:Long = adatsOfHaizList.last().aadat
                 val output:FiveSoortainOutput = fiveSoortain(mp, gp, dm, hz)
 
                 //deal with output
                 //update aadats
-                aadatHaz = output.haiz
-                adatsOfHaizList+=AadatAfterIndexOfFixedDuration(aadatHaz,i)
+                adatsOfHaizList+=AadatAfterIndexOfFixedDuration(output.haiz,i)
 
                 if(output.aadatTuhrChanges && ((i<1 && !isMawjoodaFasid) ||
                             (i>0 && fixedDurations[i-1].type==DurationType.TUHR))){//and it exists
@@ -987,22 +979,14 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
                     // it is the last dam
                     if(output.soorat==Soortain.A_3 && i==fixedDurations.lastIndex){
                         //aadat stays the same
-                    }else{
-                        aadatTuhr = mp
+                    }else{//adat tuhr changed
+                        val aadatTuhr = checkIfPreviousTuhrIsAadat(i,fixedDurations, adatsOfTuhrList.last().aadat,isMawjoodaFasid, mawjoodaTuhr).first
+                        fixedDurations= checkIfPreviousTuhrIsAadat(i,fixedDurations, adatsOfTuhrList.last().aadat, isMawjoodaFasid, mawjoodaTuhr).second
+                        adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
                     }
-                    //if aadat is bigger than or equal to 6 months
-                    if(aadatTuhr>=30*6.getMilliDays()){
-                        //make aadat 2 months
-                        aadatTuhr = 30*2.getMilliDays()
-                        //mark that tuhr as a super long tuhr
-                        //if it exists
-                        if(i>0){
-                            fixedDurations[i-1].type= DurationType.TUHR_BIGGER_THAN_6_MONTHS
-                        }
-                    }
-                    adatsOfTuhrList+=AadatAfterIndexOfFixedDuration(aadatTuhr,i)
-
                 }
+                var aadatHaz = adatsOfHaizList.last().aadat
+                var aadatTuhr = adatsOfTuhrList.last().aadat
                 val hall =  BiggerThanTenDm(mp,gp,dm,hz, output.soorat, output.istihazaBefore,
                     output.haiz, output.istihazaAfter, aadatHaz,aadatTuhr, mutableListOf())
                 fixedDurations[i].biggerThanTen=hall
@@ -1020,7 +1004,15 @@ fun dealWithBiggerThan10Dam(receivedfixedDurations: MutableList<FixedDuration>,
     return true
 }
 
-fun checkIfPreviousTuhrIsAadat(i: Int, receivedfixedDurations: MutableList<FixedDuration>, previousTuhrAadat:Long): Pair<Long,MutableList<FixedDuration>> {
+fun dealWithDamSaheeh(fixedDurations: MutableList<FixedDuration>, i: Int, previousAdatTuhr:Long, isMawjoodaFasid: Boolean, mawjoodahPaki: Long):Pair<AadatsOfHaizAndTuhr,MutableList<FixedDuration>> {
+    val aadatHaz = fixedDurations[i].timeInMilliseconds
+    val aadatTuhr = checkIfPreviousTuhrIsAadat (i, fixedDurations, previousAdatTuhr, isMawjoodaFasid, mawjoodahPaki).first
+    val fixedDurations = checkIfPreviousTuhrIsAadat (i, fixedDurations, previousAdatTuhr, isMawjoodaFasid, mawjoodahPaki).second
+    return Pair(AadatsOfHaizAndTuhr(aadatHaz,aadatTuhr), fixedDurations)
+
+}
+
+fun checkIfPreviousTuhrIsAadat(i: Int, receivedfixedDurations: MutableList<FixedDuration>, previousTuhrAadat:Long, isMawjoodaFasid: Boolean, mawjoodahPaki:Long): Pair<Long,MutableList<FixedDuration>> {
     var aadatTuhr= previousTuhrAadat
     var fixedDurations = receivedfixedDurations
 
@@ -1028,6 +1020,8 @@ fun checkIfPreviousTuhrIsAadat(i: Int, receivedfixedDurations: MutableList<Fixed
         //if there is a tuhr saheeh before this, mark it as aadat
         aadatTuhr = markTuhrAsAadat(i-1, fixedDurations).first
         fixedDurations = markTuhrAsAadat(i-1, fixedDurations).second
+    }else if(i==0 && !isMawjoodaFasid){
+        aadatTuhr = mawjoodahPaki
     }
     return Pair(aadatTuhr,fixedDurations)
 }
