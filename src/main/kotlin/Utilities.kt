@@ -1,5 +1,8 @@
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.internal.JSJoda.*
 import kotlinx.datetime.internal.JSJoda.Duration
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.html.*
 import kotlinx.html.consumers.onFinalize
 import kotlinx.html.dom.createTree
@@ -171,6 +174,16 @@ fun makeInstant(
     ("$year-${month.leadingZero()}-${day.leadingZero()}T${hour.leadingZero()}:${minute.leadingZero()}").instant(
         tzStr, tz
     )
+
+fun getNow(): Instant{
+    val now = Clock.System.now().toLocalDateTime(timeZone= TimeZone.currentSystemDefault())
+    val year = now.year
+    val month = now.monthNumber
+    val day = now.dayOfMonth
+    val hour = now.hour
+    val minute = now.minute
+    return makeInstant(year,month,day,hour, minute)
+}
 
 fun Instant.toDateInputString(isDateOnly: Boolean): String {
     val letterToTrimFrom = if (isDateOnly) 'T' else 'Z'

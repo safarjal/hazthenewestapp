@@ -1,5 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.internal.JSJoda.Instant
+import kotlinx.datetime.toLocalDateTime
 
 fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages{
     val newStr = OutputStringsLanguages()
@@ -392,80 +395,85 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
                              futureDates: MutableList<FutureDateType>,
                              timeZone: String):OutputStringsLanguages{
     val newStr = OutputStringsLanguages()
-
     for(futureDate in futureDates){
         val date = futureDate.date
         val type = futureDate.futureDates
-        when (type) {
-            TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
-                newStr.add(
-                    baseStr(Strings::haizend)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.END_OF_AADAT_TUHR -> {
-                newStr.add(
-                    baseStr(Strings::endofpaki)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.IC_FORBIDDEN_DATE -> {
-                newStr.add(
-                    baseStr(Strings::sexnotallowed)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.AFTER_TEN_DAYS -> {
-                newStr.add(
-                    baseStr(Strings::aftertendays)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.FORTY_DAYS -> {
-                newStr.add(
-                    baseStr(Strings::afterfortydays)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE -> {
-                newStr.add(
-                    baseStr(Strings::bleedingstopsbeforethreemaslachanges)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.BEFORE_THREE_DAYS -> {
-                newStr.add(
-                    baseStr(Strings::bleedingstopsbeforethree)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.IHTIYATI_GHUSL -> {
-                newStr.add(
-                    baseStr(Strings::ihtiyatighusl)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
-                newStr.add(
-                    baseStr(Strings::askagainondateifbleedingcontinues)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH -> {
-                newStr.add(
-                    baseStr(Strings::beforetendaysayyameqabliyyaallconsideredhaiz)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA -> {
-                newStr.add(
-                    baseStr(Strings::endofistehazaayyameqabliyya)
-                    .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
-                )
-            }
-            TypesOfFutureDates.TEN_DAYS_EXACTLY -> {
-                newStr.addStrings(Strings::tendaysdoghusl)
-                    .addStrings(Strings::askagainnodate)
+        if(getNow().getMillisLong()>date.getMillisLong()){
+            //no need to give advice about the past
+
+        }else{
+            //give advice about the future only.
+            when (type) {
+                TypesOfFutureDates.END_OF_AADAT_HAIZ -> {
+                    newStr.add(
+                        baseStr(Strings::haizend)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.END_OF_AADAT_TUHR -> {
+                    newStr.add(
+                        baseStr(Strings::endofpaki)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.IC_FORBIDDEN_DATE -> {
+                    newStr.add(
+                        baseStr(Strings::sexnotallowed)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.AFTER_TEN_DAYS -> {
+                    newStr.add(
+                        baseStr(Strings::aftertendays)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.FORTY_DAYS -> {
+                    newStr.add(
+                        baseStr(Strings::afterfortydays)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.BEFORE_THREE_DAYS_MASLA_WILL_CHANGE -> {
+                    newStr.add(
+                        baseStr(Strings::bleedingstopsbeforethreemaslachanges)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.BEFORE_THREE_DAYS -> {
+                    newStr.add(
+                        baseStr(Strings::bleedingstopsbeforethree)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.IHTIYATI_GHUSL -> {
+                    newStr.add(
+                        baseStr(Strings::ihtiyatighusl)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
+                    newStr.add(
+                        baseStr(Strings::askagainondateifbleedingcontinues)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.BEFORE_TEN_DAYS_AYYAMEQABLIYYAH -> {
+                    newStr.add(
+                        baseStr(Strings::beforetendaysayyameqabliyyaallconsideredhaiz)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.START_OF_AADAT_AYYAMEQABLIYYA -> {
+                    newStr.add(
+                        baseStr(Strings::endofistehazaayyameqabliyya)
+                            .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                    )
+                }
+                TypesOfFutureDates.TEN_DAYS_EXACTLY -> {
+                    newStr.addStrings(Strings::tendaysdoghusl)
+                        .addStrings(Strings::askagainnodate)
+                }
             }
         }
     }
