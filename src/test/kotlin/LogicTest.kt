@@ -2285,7 +2285,6 @@ class LogicTest {
                 typeOfInput = TypesOfInputs.DATE_AND_TIME,
             )
         )
-        println(output.outputText.mmEnglishString)
 
         val expectedEndingOutputValues =
             EndingOutputValues(
@@ -2303,7 +2302,6 @@ class LogicTest {
 //            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
 //            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
         }
-        println(output.outputText.mmEnglishString)
 
     }
     @Test
@@ -4293,8 +4291,39 @@ class LogicTest {
         assertEquals(expectedAadats.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
         assertEquals(expectedAadats.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
     }
-
     @Test
+    fun bugMaslaIssue257() {
+        val entries = listOf<Entry>(
+            Entry(makeInstant(2023, 12, 20, 8, 0), makeInstant(2023, 12, 26, 7, 0)),
+            Entry(makeInstant(2024, 1, 31, 9, 30), makeInstant(2024, 2, 6, 19, 0)),
+            Entry(makeInstant(2024, 3, 10, 9, 0), makeInstant(2024, 3, 17, 1, 0)),
+            Entry(makeInstant(2024, 4, 1, 19, 0), makeInstant(2024, 4, 12, 11, 0))
+        )
+        val output = handleEntries(
+            AllTheInputs(
+                entries,
+                typeOfMasla = TypesOfMasla.MUTADAH,
+            )
+        )
+        val expectedEndingOutputValues =
+            EndingOutputValues(
+                true,
+                AadatsOfHaizAndTuhr(parseDays("6:16")!!, parseDays("32:14")!!),
+                mutableListOf(
+                    FutureDateType(makeInstant(2024, 4, 18,15,0), TypesOfFutureDates.A3_CHANGING_TO_A2),
+                    //it wants the last to be 26, even though this is A-2
+                )
+            )
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatHaiz, output.endingOutputValues.aadats!!.aadatHaiz)
+        assertEquals(expectedEndingOutputValues.aadats!!.aadatTuhr, output.endingOutputValues.aadats!!.aadatTuhr)
+        assertEquals(expectedEndingOutputValues.filHaalPaki, output.endingOutputValues.filHaalPaki)
+        for(i in output.endingOutputValues.futureDateType.indices){
+            assertEquals(expectedEndingOutputValues.futureDateType[i].date.getMillisLong(),output.endingOutputValues.futureDateType[i].date.getMillisLong())
+            assertEquals(expectedEndingOutputValues.futureDateType[i].futureDates,output.endingOutputValues.futureDateType[i].futureDates)
+        }
+
+    }
+        @Test
     fun bugMaslaIssue195() {
         //haidh less than 3 not being created printed because ayyame qabliyya, but after aadat
         val entries = listOf<Entry>(

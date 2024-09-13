@@ -447,7 +447,7 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
             }
             TypesOfFutureDates.A3_CHANGING_TO_A2 -> {
                 newStr.add(
-                    baseStr(Strings::situationmaychangeifgap)
+                    baseStr(Strings::askagainondateifbleedingcontinues)
                     .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
                 )
             }

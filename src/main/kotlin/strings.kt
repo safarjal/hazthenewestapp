@@ -95,6 +95,7 @@ val urduStrings = Strings(
     mutada = "معتادہ",
     typeOfMasla = "مسئلے کی نوعیت",
     askagainnodate = "اگر خون جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو مسئلہ دوبارہ پوچھ لیجۓ۔\n\n",
+    askagainondateifbleedingcontinues = "اگر خون ${Rplc.DT1} تک جاری رہے، یا رک جاۓ لیکن 15 دن سے کم پاکی کے بعد دوبارہ شروع ہو جاۓ تو ضرور مسئلہ دوبارہ پوچھ لیجۓ کیونکہ مسئلہ کی نوعیت بدل جاۓ گی۔\n\n",
     tendaysdoghusl = "▪️چونکہ حیض کی مدت 10 دن ہے اور 10 دن پورے ہو چکے ہیں۔لہذا غسل کر کے عبادات شروع کر دیں\n\n",
     habitwithnifas = "${UnicodeChars.SNOWFLAKE} <b>عادت: نفاس: ${Rplc.DUR3}، حیض: ${Rplc.DUR1}، طہر: ${Rplc.DUR2}</b>\n\n",
     earlymiscarriageduration = "\n<b>اسقاط ہوا (غیر مستبین الخلقہ)</b>\n",
@@ -262,6 +263,8 @@ val englishStrings = Strings(
     typeOfMasla = "Type of Masla",
     askagainnodate = "If bleeding continues, or stops, but starts again " +
             "with gaps of less than 15 days, then please ask the masla again.\n\n",
+    askagainondateifbleedingcontinues = "If bleeding continues  till ${Rplc.DT1}, or stops, but starts again " +
+            "with gaps of less than 15 days, then please ask the masla again, as the ruling will change.\n\n",
     tendaysdoghusl = "As the maximum duration for haidh is 10 days, " +
             "and it is now ten days, please do ghusl and resume your ibadat.\n\n",
     habitwithnifas = "${UnicodeChars.SNOWFLAKE} Habit: Nifas : ${Rplc.DUR3}, Haidh : ${Rplc.DUR1}, Purity (Tuh’r): ${Rplc.DUR2} \n\n",
@@ -422,6 +425,8 @@ val mmEnglishStrings = Strings(
     mutada = "Mu'tada",
     typeOfMasla = "Type of Masla",
     askagainnodate = "If bleeding continues, or stops, but starts again with gaps of less than 15 days, then please ask the masla again.\n\n",
+    askagainondateifbleedingcontinues = "If bleeding continues  till ${Rplc.DT1}, or stops, but starts again " +
+            "with gaps of less than 15 days, then please ask the masla again, as the ruling will change.\n\n",
     tendaysdoghusl = "As the maximum duration for hayd is 10 days, and it is now ten days, please do ghusl and resume your ibadaat.\n\n",
     habitwithnifas = "Habit: Nifas : ${Rplc.DUR3}, Hayd : ${Rplc.DUR1}, Purity (Tuhr): ${Rplc.DUR2} \n\n",
     earlymiscarriageduration = "\n<b>Miscarriage of an undeveloped fetus</b>\n",

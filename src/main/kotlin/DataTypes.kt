@@ -99,6 +99,7 @@ data class Strings(
     val mutada: String,
     val typeOfMasla: String,
     val askagainnodate: String,
+    val askagainondateifbleedingcontinues: String,
     val tendaysdoghusl: String,
     val habitwithnifas: String,
     val earlymiscarriageduration: String,
