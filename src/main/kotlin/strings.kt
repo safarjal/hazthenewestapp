@@ -135,7 +135,7 @@ val urduStrings = Strings(
     tablebirth = "",
     tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
     noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
-    nowOpt = "Check if you want the Now Option"
+    nowOpt = "چیک کریں اگر ناو کرنا ہے"
 
 )
 val englishStrings = Strings(
@@ -305,7 +305,7 @@ val englishStrings = Strings(
     tablebirth = "",
     tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
     noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
-    nowOpt = "چیک کریں اگر ناو کرنا ہے"
+    nowOpt = "Check if you want the Now Option"
 
 )
 val mmEnglishStrings = Strings(
@@ -415,7 +415,7 @@ val mmEnglishStrings = Strings(
     ikhtilafimasail = "Differences of opinion",
     aadatIncreasingAtEndOfDaurIkhtilaf = "Can more days than habit become hayd at the end of daur?",
     beforetendaysayyameqabliyyaallconsideredhaiz = "If bleeding stopped at or before ${Rplc.DT1}, and there " +
-            "was an interval of at 15 days of complete purity after it, all of this will become hayd, " +
+            "was an interval of at least 15 days of complete purity after it, all of this will become hayd, " +
             "and ibadaat performed in this time will become null and void.\n\n  " +
             "If bleeding continues past ${Rplc.DT1}, all ibadaat will remain valid.\n\n",
     endofistehazaayyameqabliyya = "It is not correct for you to stop ibadaat when bleeding starts. You should " +
