@@ -397,6 +397,13 @@ fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
         val type = futureDate.futureDates
         if((getNow().getMillisLong()>date.getMillisLong()) && addNow){
             //no need to give advice about the past
+            //except Ihtiyati ghusl
+            if (type==TypesOfFutureDates.IHTIYATI_GHUSL) {
+                newStr.add(
+                    baseStr(Strings::ihtiyatighusl)
+                        .replaceDT(Rplc.DT1, date, typeOfInput, timeZone)
+                )
+            }
         }else{
             //give advice about the future only.
             when (type) {
