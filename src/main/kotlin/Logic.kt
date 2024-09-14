@@ -118,7 +118,7 @@ fun handleMubtadia(allTheInputs: AllTheInputs,
         endingOutputValues,
         allTheInputs.typeOfInput,
         allTheInputs.preMaslaValues,
-        allTheInputs.timeZone ?: "UTC")
+        allTheInputs.timeZone ?: "UTC", allTheInputs.addNow)
 
 }
 fun handleNifas(allTheInputs: AllTheInputs,
@@ -130,16 +130,16 @@ fun handleNifas(allTheInputs: AllTheInputs,
     //the above also added start of pregnancy
 
     return if(allTheInputs.pregnancy.mustabeenUlKhilqat){
-        handleMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+        handleMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList, allTheInputs.addNow)
     }else{
-        handleGhairMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList)
+        handleGhairMustabeenUlKhilqa(allTheInputs,fixedDurations,adatsOfHaizList,adatsOfTuhrList, allTheInputs.addNow)
     }
 
 }
 fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
                                  fixedDurations: MutableList<FixedDuration>,
                                  adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
-                                 adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>): OutputTexts {
+                                 adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, addNow: Boolean): OutputTexts {
     //if it's not mustabeen ulkhilqat, deal with it like haiz
     removeTuhrLessThan15(fixedDurations)
     removeTuhrLessThan15InPregnancy(fixedDurations)
@@ -191,13 +191,13 @@ fun handleGhairMustabeenUlKhilqa(allTheInputs: AllTheInputs, //isqaat
         allTheInputs.pregnancy,
         endingOutputValues,
         allTheInputs.typeOfInput,
-        allTheInputs.timeZone ?: "UTC")
+        allTheInputs.timeZone ?: "UTC", addNow)
 
 }
 fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
                             fixedDurations: MutableList<FixedDuration>,
                             adatsOfHaizList: MutableList<AadatAfterIndexOfFixedDuration>,
-                            adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>):OutputTexts{
+                            adatsOfTuhrList: MutableList<AadatAfterIndexOfFixedDuration>, addNow: Boolean):OutputTexts{
     //mark all dam in pregnancy as isithaza.
     markAllDamsInPregnancyAsHaml(fixedDurations, allTheInputs.pregnancy!!)
     removeTuhrLessThan15(fixedDurations)//do this before the next, cuz why not, mkes thigns simpler in joining dams
@@ -240,7 +240,7 @@ fun handleMustabeenUlKhilqa(allTheInputs: AllTheInputs, //wiladat
         allTheInputs.pregnancy,
         endingOutputValues,
         allTheInputs.typeOfInput,
-        allTheInputs.timeZone ?: "UTC")
+        allTheInputs.timeZone ?: "UTC", addNow)
 
 }
 fun handleMutadah(allTheInputs: AllTheInputs,
@@ -281,7 +281,7 @@ fun handleMutadah(allTheInputs: AllTheInputs,
         endingOutputValues,
         allTheInputs.typeOfInput,
         allTheInputs.preMaslaValues,
-        allTheInputs.timeZone ?: "UTC")
+        allTheInputs.timeZone ?: "UTC", allTheInputs.addNow)
 
 }
 

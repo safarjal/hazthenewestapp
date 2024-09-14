@@ -138,6 +138,7 @@ data class Strings(
     val tablebirth: String,
     val tooOldMasla: String,
     val noPersonalMasla: String,
+    val nowOpt:String,
 )
 
 data class AllTheInputs(
@@ -154,6 +155,7 @@ data class AllTheInputs(
         mubtadiaIkhitilaf = false
     ),
     val timeZone: String? = "UTC",
+    val addNow:Boolean = true,
 )
 
 // Todo: make proper uid

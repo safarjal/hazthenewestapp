@@ -1,8 +1,5 @@
 @file:Suppress("SpellCheckingInspection")
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.internal.JSJoda.Instant
-import kotlinx.datetime.toLocalDateTime
 
 fun addPreMaslaValuesText(preMaslaValues: PreMaslaValues):OutputStringsLanguages{
     val newStr = OutputStringsLanguages()
@@ -33,9 +30,9 @@ fun generateOutputStringPregnancy(fixedDurations: MutableList<FixedDuration>,
                                   pregnancy: Pregnancy,
                                   endingOutputValues: EndingOutputValues,
                                   typeOfInput: TypesOfInputs,
-                                  timeZone: String):OutputTexts{
+                                  timeZone: String, addNow:Boolean):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val newStr = generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone)
+    val newStr = generateLanguagedOutputStringPregnancy(fixedDurations,pregnancy, endingOutputValues, typeOfInput, timeZone, addNow)
 
     return OutputTexts(newStr, "", hazDatesList, endingOutputValues, fixedDurations)
 }
@@ -43,9 +40,9 @@ fun generateOutputStringMubtadia(fixedDurations: MutableList<FixedDuration>,
                                  endingOutputValues: EndingOutputValues,
                                  typeOfInput: TypesOfInputs,
                                  preMaslaValues: PreMaslaValues,
-                                 timeZone: String):OutputTexts{
+                                 timeZone: String, addNow: Boolean):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
-    val newStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues, timeZone)
+    val newStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUBTADIA, preMaslaValues, timeZone, addNow)
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
@@ -55,10 +52,10 @@ fun generateOutputStringMutadah(fixedDurations: MutableList<FixedDuration>,
                                 endingOutputValues: EndingOutputValues,
                                 typeOfInput: TypesOfInputs,
                                 preMaslaValues: PreMaslaValues,
-                                timeZone: String):OutputTexts{
+                                timeZone: String, addNow: Boolean):OutputTexts{
     val hazDatesList = getHaizDatesList(fixedDurations)
 
-    val newStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues, timeZone)
+    val newStr = generateOutputString(fixedDurations, endingOutputValues, typeOfInput, TypesOfMasla.MUTADAH, preMaslaValues, timeZone, addNow)
 
     val hazDatesStr = generateHazDatesStr(hazDatesList,typeOfInput,timeZone)
 
@@ -78,7 +75,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                                            pregnancy: Pregnancy,
                                            endingOutputValues: EndingOutputValues,
                                            typeOfInput: TypesOfInputs,
-                                           timeZone: String): OutputStringsLanguages{
+                                           timeZone: String, addNow: Boolean): OutputStringsLanguages{
     val mustabeen = pregnancy.mustabeenUlKhilqat
     val birthTime = pregnancy.birthTime
     val newStr = baseStr(Strings::answer)
@@ -118,7 +115,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
-        newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
+        newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone, addNow))
     }else{//if it is ghair mustabeenulkhilqat
         newStr.addStrings(Strings::headerline)
         for(index in fixedDurations.indices){
@@ -151,7 +148,7 @@ fun generateLanguagedOutputStringPregnancy(fixedDurations: MutableList<FixedDura
                 }
             }
         }
-        newStr.add(outputStringFinalLines (endingOutputValues, typeOfInput, timeZone))
+        newStr.add(outputStringFinalLines (endingOutputValues, typeOfInput, timeZone, addNow))
     }
     return newStr
 }
@@ -305,7 +302,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
                          typeOfInput: TypesOfInputs,
                          typesOfMasla: TypesOfMasla,
                          preMaslaValues: PreMaslaValues,
-                         timeZone: String): OutputStringsLanguages{
+                         timeZone: String, addNow: Boolean): OutputStringsLanguages{
     val newStr = baseStr(Strings::answer) //جواب:
         .add(generateTableForMenstrualMatters(fixedDurations,typeOfInput,timeZone))
         .add(addPreMaslaValuesText(preMaslaValues))
@@ -322,13 +319,13 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
             newStr.add(outputStringHeaderLineDuration(fixedDurations,index)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
                 .add(outputStringBiggerThan10HallDurations(fixedDurations, index))
             if(index==fixedDurations.size-1){//if this is the last index
-                newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
+                newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone, addNow))
             }
         }else{//not durations
             newStr.add(outputStringHeaderLine(fixedDurations,index, typeOfInput, timeZone)) //اس تاریخ سے اس تاریخ تک اتنے دن حیض
                 .add(outputStringBiggerThan10Hall(fixedDurations,index, typeOfInput, timeZone))
             if(index==fixedDurations.size-1){//if this is the last index
-                newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone))
+                newStr.add(outputStringFinalLines(endingOutputValues, typeOfInput, timeZone, addNow))
             }
         }
         index++
@@ -338,7 +335,7 @@ fun generateOutputString(fixedDurations: MutableList<FixedDuration>,
 
 fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
                            typeOfInput: TypesOfInputs,
-                           timeZone: String):OutputStringsLanguages{
+                           timeZone: String, addNow: Boolean):OutputStringsLanguages{
     val aadats = endingOutputValues.aadats
     val newStr = OutputStringsLanguages()
     newStr.add(outputStringAadatLine(typeOfInput, aadats))
@@ -348,7 +345,7 @@ fun outputStringFinalLines(endingOutputValues: EndingOutputValues,
     val futureDates = endingOutputValues.futureDateType
 
     newStr.add(outputStringFilHaalLine(filHaal))
-        .add(outputStringAskAgainLine(typeOfInput, futureDates, timeZone))
+        .add(outputStringAskAgainLine(typeOfInput, futureDates, timeZone, addNow))
         .addStrings(Strings::writedown) //plis note down line
         .addStrings(Strings::allahknows) //Allahu Aaalam line
 
@@ -393,14 +390,13 @@ fun outputStringFilHaalLine(filHaalPaki:Boolean?):OutputStringsLanguages{
 
 fun outputStringAskAgainLine(typeOfInput: TypesOfInputs,
                              futureDates: MutableList<FutureDateType>,
-                             timeZone: String):OutputStringsLanguages{
+                             timeZone: String, addNow:Boolean):OutputStringsLanguages{
     val newStr = OutputStringsLanguages()
     for(futureDate in futureDates){
         val date = futureDate.date
         val type = futureDate.futureDates
-        if(getNow().getMillisLong()>date.getMillisLong()){
+        if((getNow().getMillisLong()>date.getMillisLong()) && addNow){
             //no need to give advice about the past
-
         }else{
             //give advice about the future only.
             when (type) {

@@ -339,6 +339,16 @@ private fun TagConsumer<HTMLElement>.questionInput(inputContainerToCopyFrom: HTM
         summary { makeSpans(Strings::questionTextFieldLabel) }
         div(classes = CssC.ROW) { makeTextAreaInput(Ids.Inputs.INPUT_QUESTION) }
     }
+    div(classes = CssC.ROW) {
+        div() {
+            makeLabel(Ids.Inputs.NOW_CHECKBOX, Strings::nowOpt)
+            checkBoxInput {
+            id = Ids.Inputs.NOW_CHECKBOX
+            name = Ids.Inputs.NOW_CHECKBOX
+            checked = inputContainerToCopyFrom?.addNow != false            }
+        }
+    }
+
 }
 
 private fun TagConsumer<HTMLElement>.haizDatesInputTable(inputContainerToCopyFrom: HTMLElement?) {

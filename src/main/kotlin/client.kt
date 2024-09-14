@@ -236,7 +236,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 )
             }
             allTheInputs = AllTheInputs(
-                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
+                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone, addNow
             )
             allTheInputs = convertDurationsIntoEntries(durations, allTheInputs)
         } else {
@@ -247,7 +247,7 @@ fun parseEntries(inputContainer: HTMLElement) {
                 )
             }
             allTheInputs = AllTheInputs(
-                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone
+                entries, preMaslaValues, typeOfMasla, pregnancy, typesOfInputs, languageSelected, ikhtilaafaat, timezone, addNow
             )
         }
 
@@ -631,6 +631,8 @@ val HTMLElement.ikhtilaf3Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF3) a
 val HTMLElement.ikhtilaf3 get() = ikhtilaf3Input.checked
 val HTMLElement.ikhtilaf4Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF4) as HTMLInputElement)
 val HTMLElement.ikhtilaf4 get() = ikhtilaf4Input.checked
+val HTMLElement.addNow get() = (getChildById(Ids.Inputs.NOW_CHECKBOX) as HTMLInputElement).checked
+
 
 private var HTMLElement.haizDatesList: List<Entry>?
     get() = (contentDatesElement.asDynamic().haizDatesList as List<Entry>?)?.takeIf { it != undefined }

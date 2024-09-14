@@ -135,6 +135,7 @@ val urduStrings = Strings(
     tablebirth = "",
     tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
     noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+    nowOpt = "Check if you want the Now Option"
 
 )
 val englishStrings = Strings(
@@ -304,6 +305,7 @@ val englishStrings = Strings(
     tablebirth = "",
     tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
     noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+    nowOpt = "چیک کریں اگر ناو کرنا ہے"
 
 )
 val mmEnglishStrings = Strings(
@@ -465,6 +467,7 @@ val mmEnglishStrings = Strings(
     tablebirth = "Birth",
     tooOldMasla = "Your Masla is too old. Please contact your aalima to update your masla.",
     noPersonalMasla = "Please contact your aalima to have a Masla started for you.",
+    nowOpt = "Check if you want the Now Option"
 )
 
 

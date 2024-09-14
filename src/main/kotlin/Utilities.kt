@@ -592,6 +592,8 @@ object Ids {
         const val SUBMIT = "submit"
         const val INPUT_SAAILA = "input_saaila"
         const val INPUT_QUESTION = "input_question"
+        const val NOW_CHECKBOX = "now_checkbox"
+
     }
 
     object LoginLogout {
