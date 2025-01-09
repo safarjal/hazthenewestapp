@@ -102,11 +102,15 @@ suspend fun login(username: String, password: String) {
     }
 }
 
-fun logout() {
+fun soft_logout() {
     localStorage.removeItem(USERID)
     localStorage.removeItem(DISPLAY_NAME)
     localStorage.removeItem(AUTHORIZATION)
     localStorage.removeItem(AUTHORIZATION_DATE)
+}
+
+fun logout() {
+    soft_logout()
     if (bearerToken.isNullOrEmpty()) {
         rootHazapp!!.innerHTML = ""
         loginPage()

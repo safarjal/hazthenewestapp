@@ -67,7 +67,10 @@ private fun saveAndCopy(inputContainer: HTMLElement, small: HTMLElement, preCopi
             if (isPersonalApper) userMaslaId = maslaId.toString()
             copyTxt = "_Masla Id: ${maslaId}_\n" + preCopiedText
             smallTxt = "Saved: Id #$maslaId"
-            if (response!!.user_id == null) smallTxt += englishStrings.loginAgain
+            if (response!!.user_id == null) {
+                smallTxt += englishStrings.loginAgain
+                soft_logout()
+            }
             inputContainer.contentContainer.save(maslaId.toString())
         } else {
             smallTxt = "Copied."
