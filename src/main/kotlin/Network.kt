@@ -228,9 +228,16 @@ fun reInputData(data: LoadData, inputsContainer: HTMLElement) {
         questionTextInput.value = data.more_infos?.question.orEmpty()
         contentContainer.setAttribute("data-saved", data.id.toString())
         contentContainer.visibility = true
-        contentEnglish.innerHTML = data.answerEnglish.replaceStarWithStarAndBoldTag()
-        contentUrdu.innerHTML = data.answerUrdu.replaceStarWithStarAndBoldTag()
-        contentMMEnglish.innerHTML = data.answerMMEnglish.ifEmptyContent().replaceStarWithStarAndBoldTag()
+
+        formattedAnswers = OutputStringsLanguages(
+            urduString = data.answerUrdu,
+            englishString = data.answerEnglish,
+            mmEnglishString = data.answerMMEnglish.orEmpty()
+        )
+        val htmlAnswers = formattedAnswers.replaceStarWithStarAndBoldTag()
+        contentEnglish.innerHTML = htmlAnswers.englishString
+        contentUrdu.innerHTML = htmlAnswers.urduString
+        contentMMEnglish.innerHTML = htmlAnswers.mmEnglishString
         contentContainer.scrollIntoView()
     }
 }
