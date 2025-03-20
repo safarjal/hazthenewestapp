@@ -18,17 +18,19 @@ fun TagConsumer<HTMLElement>.content(idName: String? = null, classes: String? = 
     }
 }
 
-fun FlowContent.copyBtn(contentId: String, divClass: String, clipboard: Boolean = false) {
+fun FlowContent.copyBtn(contentId: String, divClass: String, useClipboard: Boolean = false) {
     div(classes = "$divClass ${CssC.COPY_BTN}") {
         button(classes = CssC.CALC_BTN) {
-            id = if (clipboard) Ids.Results.CLIPBOARD_JS_BTN else Ids.Results.COPY_BTN
-            if (clipboard) attributes.put("data-clipboard-target", "#$contentId")
+            id = if (useClipboard) Ids.Results.CLIPBOARD_JS_BTN else Ids.Results.COPY_BTN
+            if (useClipboard) attributes.put("data-clipboard-target", "#$contentId")
             onClickFunction = { event ->
-                if (clipboard) saveText(event) else copyText(event)
+                // MMEnglish relies solely on Clipboard to set up the onclick event.
+                // It only needs to save, not copy.
+                if (useClipboard) saveText(event) else copyText(event)
             }
             +"Save and Copy "
 
-            val iconName = if (clipboard) "word" else "whatsapp"
+            val iconName = if (useClipboard) "word" else "whatsapp"
             img(src = "./images/$iconName-icon.svg") {
                 alt = ""
                 width = "16" // Set the width as needed
@@ -40,7 +42,7 @@ fun FlowContent.copyBtn(contentId: String, divClass: String, clipboard: Boolean 
             }
         }
     }
-    if (clipboard) copyClipboard(Ids.Results.CLIPBOARD_JS_BTN)
+    if (useClipboard) copyClipboard(Ids.Results.CLIPBOARD_JS_BTN)
 }
 
 // Dealing with time inputs
