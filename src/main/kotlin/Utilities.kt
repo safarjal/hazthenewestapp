@@ -83,6 +83,14 @@ fun String.replaceStarWithStarAndBoldTag(): String {
             formattedText.substring(lastIndex + 5)
 }
 
+fun OutputStringsLanguages.replaceStarWithStarAndBoldTag(): OutputStringsLanguages {
+    return OutputStringsLanguages(
+        urduString = urduString.replaceStarWithStarAndBoldTag(),
+        englishString = englishString.replaceStarWithStarAndBoldTag(),
+        mmEnglishString = mmEnglishString.replaceStarWithStarAndBoldTag()
+    )
+}
+
 private fun insertRelative(
     ownerDocument: Document,
     block: TagConsumer<HTMLElement>.() -> Unit,
