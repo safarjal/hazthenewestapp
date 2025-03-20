@@ -761,16 +761,15 @@ object Events {
 const val NEW_LINE = "\n\n"
 
 object UnicodeChars {
-    const val RED_DIAMOND = "&#9830;&#65039;"        // RED_DIAMOND
-
+    const val RED_DIAMOND = "♦\uFE0F"        // RED_DIAMOND
     //    const val WHITE_DIAMOND = "&#128160;"            // WHITE_DIAMOND
-    const val ORANGE_DIAMOND = "&#x1F538;"           // ORANGE_DIAMOND
-    const val SNOWFLAKE = "&#10052;&#65039;"     // SNOWFLAKE
-    const val BLACK_SQUARE = "&#9642;"
-    const val FAT_DASH = "&#x2796;"
-    const val MEMO = "&#128221;"                    // MEMO
-    const val HAND_WRITING = "&#9997;&#65039;"           // HAND_WRITING
+    const val ORANGE_DIAMOND = "\uD83D\uDD38"           // ORANGE_DIAMOND
+    const val SNOWFLAKE = "❄"     // SNOWFLAKE
+    const val BLACK_SQUARE = "▪"
+    const val FAT_DASH = "➖"
+    const val MEMO = "\uD83D\uDCDD"                    // MEMO
+    const val HAND_WRITING = "✍\uFE0F"           // HAND_WRITING
     const val BLUE_SWIRL = "\uD83C\uDF00"
-    const val ABACUS = "&#129518;"
+    const val ABACUS = "\uD83E\uDDEE"
 //    const val TAB:String = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 }
