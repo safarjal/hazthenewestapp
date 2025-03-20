@@ -22,6 +22,23 @@ fun String.replaceBoldTagWithBoldAndStar(): String {
         }
 }
 
+fun OutputStringsLanguages.formatStrings(): OutputStringsLanguages {
+    return OutputStringsLanguages(
+        urduString = urduString.replaceBoldTagWithBoldAndStar(),
+        englishString = englishString.replaceBoldTagWithBoldAndStar(),
+        mmEnglishString = mmEnglishString.replaceBoldTagWithBoldAndStar()
+    )
+}
+
+fun OutputStringsLanguages.getCurrentString(): String {
+    when (languageSelected) {
+        Vls.Langs.URDU -> return urduString
+        Vls.Langs.ENGLISH -> return englishString
+        Vls.Langs.MMENGLISH -> return mmEnglishString
+    }
+    return ""
+}
+
 fun String.replaceHtmlTagsWithStringSafe(): String {
     return replace("<p>", "")
         .replace("</p>", "\n\n")
@@ -96,6 +113,7 @@ fun ChildNode.before(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelativ
 fun ChildNode.after(block: TagConsumer<HTMLElement>.() -> Unit) = insertRelative(block) { node -> after(node) }
 
 fun ParentNode.getChildById(id: String) = querySelector("#$id")
+fun ParentNode.getChildByClass(searchClass: String) = querySelector(".$searchClass")
 
 fun Element.replaceChildren(vararg nodes: Node) {
     asDynamic().replaceChildren.apply(this, nodes)
@@ -112,6 +130,9 @@ inline fun <reified T : Element> Element.getAncestor(predicate: (Element) -> Boo
 
 fun findInputContainer(event: Event) =
     (event.currentTarget as Element).getAncestor<HTMLElement> { it.id.startsWith(Ids.InputContainers.INPUT_CONTAINER) }!!
+
+fun findContentWrapper(event: Event) =
+    (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
 
 fun findRow(event: Event) = (event.currentTarget as Element).getAncestor<HTMLTableRowElement>()!!
 
