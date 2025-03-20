@@ -170,6 +170,8 @@ fun makeRangeArray(
     }
 }
 
+var formattedAnswers = OutputStringsLanguages()
+
 fun parseEntries(inputContainer: HTMLElement) {
     var entries = listOf<Entry>()
 
@@ -266,9 +268,10 @@ fun parseEntries(inputContainer: HTMLElement) {
 
         contentContainer.visibility = true
         contentContainer.setAttribute("data-saved", "false")
-        contentEnglish.innerHTML = output.outputText.englishString.replaceBoldTagWithBoldAndStar()
-        contentMMEnglish.innerHTML = output.outputText.mmEnglishString.replaceBoldTagWithBoldAndStar()
-        contentUrdu.innerHTML = output.outputText.urduString.replaceBoldTagWithBoldAndStar()
+        formattedAnswers = output.outputText.formatStrings() // TODO: send formatted strngs or raw-as-from-orig?
+        contentEnglish.innerHTML = formattedAnswers.englishString
+        contentMMEnglish.innerHTML = formattedAnswers.mmEnglishString
+        contentUrdu.innerHTML = formattedAnswers.urduString
         haizDatesList = output.hazDatesList
         populateTitleFieldIfEmpty(inputContainer, aadatHaz.value, aadatTuhr.value, mawjoodaTuhr.value)
         contentContainer.scrollIntoView()
@@ -622,6 +625,7 @@ val HTMLElement.contentEnglish get() = getChildById(Ids.Results.CONTENT_ENGLISH)
 val HTMLElement.contentMMEnglish get() = getChildById(Ids.Results.CONTENT_MMENGLISH) as HTMLParagraphElement
 val HTMLElement.contentUrdu get() = getChildById(Ids.Results.CONTENT_URDU) as HTMLParagraphElement
 private val HTMLElement.contentDatesElement get() = getChildById(Ids.Results.CONTENT_DATES) as HTMLParagraphElement
+val HTMLElement.tooltip get() = getChildByClass(Ids.Results.COPY_TOOLTIP) as HTMLElement
 
 val HTMLElement.ikhtilaf1Input get() = (getChildById(Ids.Ikhtilafat.IKHTILAF1) as HTMLInputElement)
 val HTMLElement.ikhtilaf1 get() = ikhtilaf1Input.checked

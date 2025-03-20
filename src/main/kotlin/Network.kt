@@ -142,9 +142,9 @@ suspend fun getDataFromInputsAndSend(inputsContainer: HTMLElement): LoadData? {
             typeOfMasla = maslaSelect.value,
             typeOfInput = typeSelect.value,
             entries = entries,
-            answerEnglish = contentEnglish.innerHTML.replaceHtmlTagsWithStringSafe(), // TODO: This is dangerous.
-            answerMMEnglish = contentMMEnglish.innerHTML.replaceHtmlTagsWithStringSafe(),
-            answerUrdu = contentUrdu.innerHTML.replaceHtmlTagsWithStringSafe(),
+            answerEnglish = formattedAnswers.englishString.replaceHtmlTagsWithStringSafe(), // TODO: This is dangerous.
+            answerMMEnglish = formattedAnswers.mmEnglishString.replaceHtmlTagsWithStringSafe(),
+            answerUrdu = formattedAnswers.urduString.replaceHtmlTagsWithStringSafe(),
             others = OtherValues(
                 saaila = saailaDetails,
                 question = questionText,

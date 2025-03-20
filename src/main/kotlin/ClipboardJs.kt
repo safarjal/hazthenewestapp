@@ -21,7 +21,7 @@ external interface ClipboardEvent {
     fun clearSelection()
 }
 
-private fun getPreAnswerDetails(inputContainer: HTMLElement, answerElement: HTMLElement): String {
+private fun getPreAnswerDetails(inputContainer: HTMLElement): String {
     val dateStr = languagedDateFormat(Instant.now(), TypesOfInputs.DATE_ONLY, languageSelected, addYear = true)
     val questionTxt = inputContainer.questionText + NEW_LINE
     val saailaDetails = inputContainer.saailaDetails + NEW_LINE
@@ -29,8 +29,7 @@ private fun getPreAnswerDetails(inputContainer: HTMLElement, answerElement: HTML
         "Answered by: $savedDisplayName$NEW_LINE" else ""
     val divider = "${UnicodeChars.BLUE_SWIRL}➖➖➖➖➖➖${UnicodeChars.BLUE_SWIRL}$NEW_LINE"
 
-    val answerTxt = answerElement.querySelector(".${Ids.Results.CONTENT_ANSWER}")?.innerHTML
-        ?.replaceHtmlTagsWithStringSafe()
+    val answerTxt = formattedAnswers.getCurrentString().replaceHtmlTagsWithStringSafe()
     return ("*$dateStr*$NEW_LINE" +
             saailaDetails +
             questionTxt +
@@ -58,9 +57,10 @@ private fun saveWithoutCopy(inputContainer: HTMLElement, small: HTMLElement) {
 }
 @OptIn(DelicateCoroutinesApi::class)
 private fun saveAndCopy(inputContainer: HTMLElement, small: HTMLElement, preCopiedText: String?) {
-    var copyTxt = preCopiedText
+    var copyTxt = preCopiedText.orEmpty()
     var smallTxt: String
     var response: LoadData? = null
+    var alert = false
     GlobalScope.launch { response = getDataFromInputsAndSend(inputContainer) }.invokeOnCompletion {
         if (response != null) {
             val maslaId = response!!.id
@@ -74,12 +74,16 @@ private fun saveAndCopy(inputContainer: HTMLElement, small: HTMLElement, preCopi
             inputContainer.contentContainer.save(maslaId.toString())
         } else {
             smallTxt = "Copied."
+            alert = true
+        }
+        if (preCopiedText?.isNotEmpty() == true) window.navigator.clipboard.writeText(copyTxt)
+        small.textContent = smallTxt
+        small.showTooltip()
+        if (alert) {
+            // if there is too much delay between click and copy, copy doesn't work.
             window.alert("Masla has not been saved. However, it has been copied.")
             window.setTimeout({ small.hideTooltip() }, 5000)
         }
-        if (preCopiedText?.isNotEmpty() == true) window.navigator.clipboard.writeText(copyTxt!!)
-        small.textContent = smallTxt
-        small.showTooltip()
     }
 }
 
@@ -97,13 +101,14 @@ fun saveText(event: Event) {
     }
 }
 
-fun copyText(event: Event) {
-    val answerElement =
-        (event.currentTarget as HTMLElement).getAncestor<HTMLDivElement> { it.id == Ids.Results.CONTENT_WRAPPER }
-    val inputContainer = findInputContainer(event)
-    var copyTxt = getPreAnswerDetails(inputContainer, answerElement!!)
 
-    val tooltip = answerElement.querySelector(".${Ids.Results.COPY_TOOLTIP}") as HTMLElement
+
+fun copyText(event: Event) {
+    val answerElement = findContentWrapper(event)!!
+    val inputContainer = findInputContainer(event)
+    var copyTxt = getPreAnswerDetails(inputContainer)
+
+    val tooltip = answerElement.tooltip
     val smallTxt: String
 
     if (inputContainer.contentContainer.isNotSaved()) {
@@ -130,14 +135,14 @@ fun copyClipboard(id: String) {
 
     clipboard.on("success") { e ->
         console.info("Action: ${e.action}")
-        console.info("Text: ${e.text}")
+//        console.info("Text: ${e.text}")
         console.info("Trigger: ${e.trigger}")
 
         e.clearSelection()
     }
 
     clipboard.on("error") { e ->
-        console.error("Error: ${e}", e)
+        console.error("Error: $e", e)
         console.error("Action: ${e.action}")
         console.error("Trigger: ${e.trigger}")
     }
